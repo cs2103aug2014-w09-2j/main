@@ -1,5 +1,7 @@
 
 public class Executor {
+	private static String returnedMessage = "";
+	
 	public static void getAnalyzedCommand(String command) {
 		// Analyze command
 		// ...
@@ -13,11 +15,11 @@ public class Executor {
 	
 	public static void successOrFail(boolean status) {
 		if (status == true) {
-			returnOutputMessage("Task added");
+			returnedMessage = "Task added";
 		}
 	}
 	
-	public static void returnOutputMessage(String message) {
-		Controller.getFromExecutor(message);
+	public static String returnOutputMessage() {
+		return returnedMessage;
 	}
 }

@@ -17,33 +17,31 @@ public class Controller {
     
     public static void startController() {
     	
-        outputCommand = getInput();			// TODO: Change outputText to inputCommand
-        inputCommand = outputCommand;		// TODO: remove this when the above is changed
+    	inputCommand = getInput();			
         
         passToAnalyzer(inputCommand);
         parsedCommand = getFromAnalyzer();
        
         passToExecutor(parsedCommand);
-        //outputCommand = getFromExecutor();
+        outputCommand = getFromExecutor();
         
         displayUserOutput(outputCommand);
         
     }
     
-    public static void passToAnalyzer(String inputCommand) {
+    private static void passToAnalyzer(String inputCommand) {
         Analyzer.analyzeCommand(inputCommand);
     }
     
-    public static String getFromAnalyzer() {
+    private static String getFromAnalyzer() {
         return Analyzer.getAnalyzedCommand();
     }
     
-    public static void passToExecutor(String command) {
+    private static void passToExecutor(String command) {
         Executor.getAnalyzedCommand(command);
     }
     
-    public static void getFromExecutor(String message) {
-       outputCommand = message;
-       System.out.println(message);
+    private static String getFromExecutor() {
+       return Executor.returnOutputMessage();
     }
 }

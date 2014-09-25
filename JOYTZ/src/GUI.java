@@ -35,7 +35,7 @@ public class GUI extends Composite {
      * @param parent
      * @param style
      */
-    public GUI(Composite parent, int style) {
+    private GUI(Composite parent, int style) {
         super(parent, style);
         addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
