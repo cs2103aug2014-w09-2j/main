@@ -25,7 +25,7 @@ public class GUI extends Composite {
     public static void displayOutput(String output) {
         if (textInputData.isEmpty() == false) {
             textOutputData = outputField.getText();
-            textOutputData = textOutputData.concat(textInputData + "\n");
+            textOutputData = textOutputData.concat(output + "\n");
             outputField.setText(textOutputData);
         }
     }

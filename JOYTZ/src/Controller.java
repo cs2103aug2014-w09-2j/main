@@ -1,10 +1,14 @@
 public class Controller {
 
-    private static String getInput() {
+	private static String inputCommand;
+    private static String outputCommand;
+    private static String parsedCommand;
+    
+	private static String getInput() {
         return GUI.getUserInput();
     }
     
-    private static void executeUserOutput(String outputCommand) {
+    private static void displayUserOutput(String outputCommand) {
         if (outputCommand.equals("exit")) {     // TODO: This probably shouldn't be here (should be in executor)
             System.exit(0);
         }
@@ -12,31 +16,34 @@ public class Controller {
     }
     
     public static void startController() {
-        String inputCommand;
-        String outputCommand;
-        String parsedCommand;
+    	
+        outputCommand = getInput();			// TODO: Change outputText to inputCommand
+        inputCommand = outputCommand;		// TODO: remove this when the above is changed
         
-        outputCommand = getInput();              // TODO: Change outputText to inputCommand
-        // passToAnalyzer(inputCommand);
-        // parsedCommand = getFromAnalyzer();
-        // passToExecutor(parsedCommand);
-        // outputText = getFromExecutor();
-        executeUserOutput(outputCommand);
+        passToAnalyzer(inputCommand);
+        parsedCommand = getFromAnalyzer();
+       
+        passToExecutor(parsedCommand);
+        //outputCommand = getFromExecutor();
+        
+        displayUserOutput(outputCommand);
+        
     }
     
     public static void passToAnalyzer(String inputCommand) {
-        
+        Analyzer.analyzeCommand(inputCommand);
     }
     
     public static String getFromAnalyzer() {
-        return null;
+        return Analyzer.getAnalyzedCommand();
     }
     
     public static void passToExecutor(String command) {
-        
+        Executor.getAnalyzedCommand(command);
     }
     
-    public static String getFromExecutor() {
-        return null; 
+    public static void getFromExecutor(String message) {
+       outputCommand = message;
+       System.out.println(message);
     }
 }
