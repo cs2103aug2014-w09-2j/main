@@ -1,84 +1,108 @@
 public class Analyzer {
-	private static final String ERROR_INVALID_COMMAND = "Invalid command. Please try again.";
-
-	private static String[] commandToBeAnalyzed;
-	private static String analyzedCommand;
-	
-	public static void analyzeCommand(String command) {
-		// TODO: Analyze the command. 
-		commandToBeAnalyzed = convertStringToArray(command);
-		startAnalyzer();
-	}
-	
-	public static void startAnalyzer(){
-		String action = commandToBeAnalyzed[0].toLowerCase();
+	public static ExecutableCommand runAnalyzer(Command userInput){	
+		String userCommand = userInput.getUserCommand();
 		
-		switch(action){
+		if(userCommand == ""){
+			return null;
+		}
+	
+		String userAction = getUserAction(userCommand);
+		String commandArgument = getArgument(userCommand);
+		ExecutableCommand outputCommand = new ExecutableCommand();
+		
+		switch(userAction){
 			case "add": 
-				handleAddCommand();
+				outputCommand = handleAddCommand(commandArgument);
 				break;
 			case "delete": 
-				handleDeleteCommand();
+				outputCommand = handleDeleteCommand(commandArgument);
 				break;
 			case "display": 
-				handleDisplayCommand();
+				outputCommand = handleDisplayCommand();
 				break;
 			case "clear": 
-				handleClearCommand();
+				outputCommand = handleClearCommand();
 				break;
 			case "sort":
-				handleSortCommand();
+				outputCommand = handleSortCommand();
 				break;
 			case "search":
-				handleSearchCommand();
+				outputCommand = handleSearchCommand(commandArgument);
 				break;
 			case "exit": 
-				handleExitCommand();
+				outputCommand = handleExitCommand();
 				break;
 			default:
-				analyzedCommand = "";
+				outputCommand =  null;
 		}
 		
+		return outputCommand;
 	}
 	
-	public static void handleAddCommand(){
-		return;
+	private static ExecutableCommand handleAddCommand(String arg){
+		return new ExecutableCommand("add", arg);
 	}
 	
-	public static void handleDeleteCommand(){
-		return;
-	}
-	
-	public static void handleDisplayCommand(){
-		return;
-	}
-	
-	public static void handleClearCommand(){
-		return;
-	}
-	
-	public static void handleSortCommand(){
-		return;
-	}
-	
-	public static void handleSearchCommand(){
-		return;
-	}
-	
-	public static void handleExitCommand(){
-		return;
-	}
-	
-	public static String[] convertStringToArray(String command){
-		return command.trim().split("\\s+");
-
-	}
-	
-	public static String getAnalyzedCommand() {
-		if(analyzedCommand == ""){
-			return ERROR_INVALID_COMMAND;
+	private static ExecutableCommand handleDeleteCommand(String arg){
+		if(isInteger(arg)){
+			return new ExecutableCommand("delete", Integer.parseInt(arg));
 		}
-		return analyzedCommand;
+		return new ExecutableCommand("delete", arg);
 	}
 	
+	private static ExecutableCommand handleDisplayCommand(){
+		return new ExecutableCommand("display");
+	}
+	
+	private static ExecutableCommand handleClearCommand(){
+		return new ExecutableCommand("clear");
+	}
+	
+	private static ExecutableCommand handleSortCommand(){
+		return new ExecutableCommand("sort");
+	}
+	
+	private static ExecutableCommand handleSearchCommand(String arg){
+		return new ExecutableCommand("search", arg);
+	}
+	
+	private static ExecutableCommand handleExitCommand(){
+		return new ExecutableCommand("exit");
+	}
+	
+	private static String getUserAction(String userCommand) {
+		String[] cmd = convertStrToArr(userCommand);
+		
+		return cmd[0].toLowerCase();
+	}
+	
+	private static String getArgument(String userCommand){
+		String[] cmd = convertStrToArr(userCommand);
+		String arg = "";
+		
+		for(int i = 1; i < cmd.length; i++){
+			arg = arg.concat(cmd[i]);
+			if(i + 1 != cmd.length){
+				arg = arg.concat(" ");
+			}
+		}
+		
+		return arg;
+	}
+	
+	private static String[] convertStrToArr(String str){
+		String[] arr = str.trim().split("\\s+");
+		
+		return arr;
+	}
+	
+	private static boolean isInteger(String input) {
+	    try {
+	        Integer.parseInt(input);
+	        return true;
+	    }
+	    catch(Exception e) {
+	        return false;
+	    }
+	}
 }

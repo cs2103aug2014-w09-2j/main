@@ -1,5 +1,3 @@
-package mainComponent;
-
 import java.util.Date;
 
 public class TaskObject {
@@ -15,7 +13,7 @@ public class TaskObject {
 		this.createdTime = new Date();
 		this.expireTime = d;
 		this.description = "";
-		this.state = // default active;
+		this.state = new Status();// default active;
 	}
 	
 	TaskObject(String des){
