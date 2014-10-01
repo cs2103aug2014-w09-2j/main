@@ -1,0 +1,28 @@
+public class Executor {
+	private static String command;
+	private static String message;
+	
+	 // Constructor
+	
+	public Executor(String command){
+		this.command = command;
+	}
+	
+	// Methods
+	
+	public void getAnalyzedCommand(){
+		
+	}
+	
+	private editData(){
+		
+	}
+	
+	public void sucessOrFail(){
+		
+	}
+	
+	public String returnOutputMessage(){
+		
+	}
+}
