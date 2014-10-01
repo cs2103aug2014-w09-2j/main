@@ -11,7 +11,7 @@ public class Executor {
 	// Methods
 	
 	public void getAnalyzedCommand(){
-		
+		return;
 	}
 	
 	private editData(){
@@ -19,10 +19,10 @@ public class Executor {
 	}
 	
 	public void sucessOrFail(){
-		
+		return;
 	}
 	
 	public String returnOutputMessage(){
-		
+		return null;
 	}
 }
