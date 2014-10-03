@@ -1,4 +1,4 @@
-package mainComponent;
+//package mainComponent;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ public class List {
 	public void deleteTask(Task t){
 		
 	}
-	
+	/*
 	public ArrayList<Task> filter(Date start, Date end){
 		
 	}
@@ -51,7 +51,7 @@ public class List {
 	public ArrayList<Task> getTaskInWeek(Date d){
 		
 	}
-	
+	*/
 	public void checkTaskStatus(){
 		
 	}

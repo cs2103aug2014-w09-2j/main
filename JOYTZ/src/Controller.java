@@ -1,15 +1,16 @@
 public class Controller {
 
-	private static String inputCommand;
+	private static String inputCommandString;
+	private static Command inputCommandObject;
     private static String outputCommand;
-    private static String parsedCommand;
+    private static ExecutableCommand parsedCommand;
     
 	private static String getInput() {
         return GUI.getUserInput();
     }
     
     private static void displayUserOutput(String outputCommand) {
-        if (outputCommand.equals("exit")) {     // TODO: This probably shouldn't be here (should be in executor)
+        if (outputCommand.equals("exit")) {     
             System.exit(0);
         }
         GUI.displayOutput(outputCommand);
@@ -17,10 +18,10 @@ public class Controller {
     
     public static void startController() {
     	
-    	inputCommand = getInput();			
+    	inputCommandString = getInput();			
+        inputCommandObject = convertStringToCommand(inputCommandString);
         
-        passToAnalyzer(inputCommand);
-        parsedCommand = getFromAnalyzer();
+    	parsedCommand = analyzeInput(inputCommandObject);
        
         passToExecutor(parsedCommand);
         outputCommand = getFromExecutor();
@@ -29,18 +30,22 @@ public class Controller {
         
     }
     
-    private static void passToAnalyzer(String inputCommand) {
-        Analyzer.analyzeCommand(inputCommand);
+    private static Command convertStringToCommand(String inputCommandString) {
+    	inputCommandObject = new Command(inputCommandString);
+    	return inputCommandObject;
     }
     
-    private static String getFromAnalyzer() {
-        return Analyzer.getAnalyzedCommand();
+    private static ExecutableCommand analyzeInput(Command inputCommandObject) {
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+    	return parsedCommand;
     }
     
-    private static void passToExecutor(String command) {
+    // TODO
+    private static void passToExecutor(ExecutableCommand command) {
         Executor.getAnalyzedCommand(command);
     }
     
+    // TODO
     private static String getFromExecutor() {
        return Executor.returnOutputMessage();
     }

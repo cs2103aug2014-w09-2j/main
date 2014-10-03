@@ -2,7 +2,7 @@
 public class Executor {
 	private static String returnedMessage = "";
 	
-	public static void getAnalyzedCommand(String command) {
+	public static void getAnalyzedCommand(ExecutableCommand command) {
 		// Analyze command
 		// ...
 		

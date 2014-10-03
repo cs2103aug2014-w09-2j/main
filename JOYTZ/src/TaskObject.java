@@ -13,21 +13,21 @@ public class TaskObject {
 		this.createdTime = new Date();
 		this.expireTime = d;
 		this.description = "";
-		this.state = new Status();// default active;
+		//this.state = new Status();// default active;
 	}
 	
 	TaskObject(String des){
 		this.createdTime = new Date();
 		this.expireTime = null;
 		this.description = des;
-		this.state = // default active;
+		//this.state = // default active;
 	}
 	
 	TaskObject(Date d, String des){
 		this.createdTime = new Date();
 		this.expireTime = d;
 		this.description = des;
-		this.state = // default activate;
+		//this.state = // default activate;
 	}
 	
 	/**
@@ -47,6 +47,6 @@ public class TaskObject {
 	}
 	
 	public String toString(){
-		
+		return null;
 	}
 }

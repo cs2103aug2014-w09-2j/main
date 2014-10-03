@@ -1,4 +1,4 @@
-package mainComponent;
+//package mainComponent;
 
 import java.util.Date;
 
@@ -37,7 +37,7 @@ public class Task {
 	public void setLocation(){
 		
 	}
-	
+	/*
 	public Date getTime(){
 		
 	}
@@ -49,5 +49,5 @@ public class Task {
 	public String toString(){
 		
 	}
-
+	 */
 }

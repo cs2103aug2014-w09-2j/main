@@ -1,4 +1,4 @@
-package mainComponent;
+//package mainComponent;
 
 public enum Status {
 
