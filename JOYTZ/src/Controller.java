@@ -1,8 +1,11 @@
+import java.sql.Date;
+
 public class Controller {
 
 	private static String inputCommandString;
 	private static Command inputCommandObject;
-    private static String outputCommand;
+	private static String executorStatus;
+    private static String outputCommandString;
     private static ExecutableCommand parsedCommand;
     
 	private static String getInput() {
@@ -10,9 +13,10 @@ public class Controller {
     }
     
     private static void displayUserOutput(String outputCommand) {
-        if (outputCommand.equals("exit")) {     
+        if (outputCommand.equals("exit")) {     // Should not be in this method
             System.exit(0);
         }
+        
         GUI.displayOutput(outputCommand);
     }
     
@@ -24,9 +28,10 @@ public class Controller {
     	parsedCommand = analyzeInput(inputCommandObject);
        
         passToExecutor(parsedCommand);
-        outputCommand = getFromExecutor();
+        executorStatus = getFromExecutor();
         
-        displayUserOutput(outputCommand);
+        outputCommandString = convertCommandToString(parsedCommand, executorStatus);
+        displayUserOutput(outputCommandString);
         
     }
     
@@ -38,6 +43,30 @@ public class Controller {
     private static ExecutableCommand analyzeInput(Command inputCommandObject) {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
     	return parsedCommand;
+    }
+    
+    private static String convertCommandToString(ExecutableCommand command, String executorStatus) {
+    	String action;
+    	String description;
+    	Date time;
+    	String location;
+    	String outputString;
+    	
+    	action = command.getAction();
+    	description = command.getDescription();
+    	time = command.getTime();
+    	location = command.getLocation();
+    	
+    	if (executorStatus == "true") {
+    		outputString = "Success! " + action + " task " + description + 
+    					   " at " + location + " on " + time.toString();
+    	}
+    	else {
+    		outputString = "Action failed!" + "(" + action + " task " + 
+    						description + " at " + location + " on " + time.toString() + ")";    		
+    	}
+    	return outputString;
+    	
     }
     
     // TODO
