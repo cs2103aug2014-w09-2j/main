@@ -1,5 +1,10 @@
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class Analyzer {
-	public static ExecutableCommand runAnalyzer(Command userInput){	
+	public static ExecutableCommand runAnalyzer(Command userInput) throws ParseException{	
 		String userCommand = userInput.getUserCommand();
 		
 		if(userCommand == ""){
@@ -39,15 +44,46 @@ public class Analyzer {
 		return outputCommand;
 	}
 	
-	private static ExecutableCommand handleAddCommand(String arg){
-		return new ExecutableCommand("add", arg);
+	private static ExecutableCommand handleAddCommand(String arg) throws ParseException{
+		ExecutableCommand tempCommand = new ExecutableCommand("add");
+		String[] tempArr = convertStrToArr(arg);
+		
+		tempCommand.setDescription(tempArr[0]);
+		
+		if(tempArr.length > 1){
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			Date deadline = null;
+			
+			deadline = (Date) df.parse(tempArr[1]);
+			tempCommand.setDate(deadline);
+			
+			if(tempArr.length > 2){
+				String location = null;
+				
+				for(int i = 3; i < tempArr.length; i++){
+					location = location.concat(tempArr[i]);
+					if(i + 1 != tempArr.length){
+						location = location.concat(" ");
+					}
+				}
+				
+				tempCommand.setLocation(location);
+			}
+		}
+		
+		return tempCommand;
 	}
 	
 	private static ExecutableCommand handleDeleteCommand(String arg){
+		ExecutableCommand tempCommand = new ExecutableCommand("delete");
+
 		if(isInteger(arg)){
-			return new ExecutableCommand("delete", Integer.parseInt(arg));
+			tempCommand.setItemId(Integer.parseInt(arg));
 		}
-		return new ExecutableCommand("delete", arg);
+		else{
+			tempCommand.setDescription(arg);
+		}
+		return tempCommand;
 	}
 	
 	private static ExecutableCommand handleDisplayCommand(){
@@ -63,7 +99,10 @@ public class Analyzer {
 	}
 	
 	private static ExecutableCommand handleSearchCommand(String arg){
-		return new ExecutableCommand("search", arg);
+		ExecutableCommand tempCommand = new ExecutableCommand("search");
+		tempCommand.setDescription(arg);
+		
+		return tempCommand;
 	}
 	
 	private static ExecutableCommand handleExitCommand(){
