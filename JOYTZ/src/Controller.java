@@ -46,23 +46,27 @@ public class Controller {
     }
     
     private static String convertCommandToString(ExecutableCommand command, boolean executorStatus) {
-    	String action;
-    	String description;
+    	String action = "";
+    	String description = "";
     	// Date time;
     	// String location;
     	String outputString;
     	
-    	action = command.getAction();
-    	description = command.getDescription();
-    	//time = command.getTime();
-    	//location = command.getLocation();
+    	if (command != null) {
+	    	action = command.getAction();
+	    	description = command.getDescription();
+	    	//time = command.getTime();
+	    	//location = command.getLocation();
+    	}
     	
     	// TODO: Proper output to be done later
-    	if (executorStatus == true) {
+    	// TODO: Put in another function
+    	if (command == null) {
+    		outputString = "Please enter a valid command!";
+    	} else if (executorStatus == true) {
     		outputString = "Success! " + action + " " + description; // + 
-    					   //" at " + location + " on " + time.toString();
-    	}
-    	else {
+			   				//" at " + location + " on " + time.toString();
+    	} else {
     		outputString = "Action failed! " + "(" + action + " " +
     						description + ")";// + " at " + location + " on " + time.toString() + ")";    		
     	}
