@@ -1,10 +1,10 @@
-import java.sql.Date;
+// import java.sql.Date;
 
 public class Controller {
 
 	private static String inputCommandString;
 	private static Command inputCommandObject;
-	private static String executorStatus;
+	private static boolean executorStatus;
     private static String outputCommandString;
     private static ExecutableCommand parsedCommand;
     
@@ -45,25 +45,26 @@ public class Controller {
     	return parsedCommand;
     }
     
-    private static String convertCommandToString(ExecutableCommand command, String executorStatus) {
+    private static String convertCommandToString(ExecutableCommand command, boolean executorStatus) {
     	String action;
     	String description;
-    	Date time;
-    	String location;
+    	// Date time;
+    	// String location;
     	String outputString;
     	
     	action = command.getAction();
     	description = command.getDescription();
-    	time = command.getTime();
-    	location = command.getLocation();
+    	//time = command.getTime();
+    	//location = command.getLocation();
     	
-    	if (executorStatus == "true") {
-    		outputString = "Success! " + action + " task " + description + 
-    					   " at " + location + " on " + time.toString();
+    	// TODO: Proper output to be done later
+    	if (executorStatus == true) {
+    		outputString = "Success! " + action + " " + description; // + 
+    					   //" at " + location + " on " + time.toString();
     	}
     	else {
-    		outputString = "Action failed!" + "(" + action + " task " + 
-    						description + " at " + location + " on " + time.toString() + ")";    		
+    		outputString = "Action failed! " + "(" + action + " " +
+    						description + ")";// + " at " + location + " on " + time.toString() + ")";    		
     	}
     	return outputString;
     	
@@ -75,7 +76,7 @@ public class Controller {
     }
     
     // TODO
-    private static String getFromExecutor() {
+    private static boolean getFromExecutor() {
        return Executor.returnOutputMessage();
     }
 }

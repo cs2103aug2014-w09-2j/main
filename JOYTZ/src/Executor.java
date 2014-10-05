@@ -1,6 +1,6 @@
 
 public class Executor {
-	private static String returnedMessage = "";
+	private static boolean returnedMessage = true;
 	
 	public static void getAnalyzedCommand(ExecutableCommand command) {
 		// Analyze command
@@ -15,11 +15,14 @@ public class Executor {
 	
 	public static void successOrFail(boolean status) {
 		if (status == true) {
-			returnedMessage = "Task added";
+			returnedMessage = true;
+		}
+		else {
+			returnedMessage = false;
 		}
 	}
 	
-	public static String returnOutputMessage() {
+	public static boolean returnOutputMessage() {
 		return returnedMessage;
 	}
 }
