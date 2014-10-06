@@ -1,53 +1,52 @@
-//package mainComponent;
-
 import java.util.Date;
 
-public class Task {
-	
-	Date time;
-	String Location;
+public class TaskObject {
+	Date createdTime;
+	Date expireTime;
+	String description;
+	Status state;
 	
 	/**
-	 * Constructor with two parameters
+	 * Constructor
 	 */
-	Task(){
+	TaskObject(Date d){
+		this.createdTime = new Date();
+		this.expireTime = d;
+		this.description = "";
+		//this.state = new Status();// default active;
+	}
+	
+	TaskObject(String des){
+		this.createdTime = new Date();
+		this.expireTime = null;
+		this.description = des;
+		//this.state = // default active;
+	}
+	
+	TaskObject(Date d, String des){
+		this.createdTime = new Date();
+		this.expireTime = d;
+		this.description = des;
+		//this.state = // default activate;
+	}
+	
+	/**
+	 * Methods
+	 */
+	
+	public void checkState(){
 		
 	}
 	
-	Task(Date d){
-		this.time = d;
-		this.Location = "";
-	}
-	
-	Task(Date d, String loc){
-		if (loc == null){
-			loc = "";
-		}
-		this.time = d;
-		this.Location = loc;
-	}
-	
-	/**
-	 * Method supported
-	 */
 	public void setTime(Date d){
-		
+		this.expireTime = d;
 	}
 	
-	public void setLocation(){
-		
-	}
-	/*
-	public Date getTime(){
-		
-	}
-	
-	public String getLocation(){
-		
+	public void setDescription(String des){
+		this.description = des;
 	}
 	
 	public String toString(){
-		
+		return null;
 	}
-	 */
 }
