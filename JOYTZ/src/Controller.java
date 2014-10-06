@@ -1,86 +1,91 @@
+import java.text.ParseException;
+
 // import java.sql.Date;
 
 public class Controller {
-
+	private static final String ERROR_INVALID_COMMAND = "Invalid Command";
+	
 	private static String inputCommandString;
 	private static Command inputCommandObject;
-	private static boolean executorStatus;
-    private static String outputCommandString;
+	private static Feedback feedback;
+    private static String outputString;
     private static ExecutableCommand parsedCommand;
     
 	private static String getInput() {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand) {
-        if (outputCommand.equals("exit")) {     // Should not be in this method
-            System.exit(0);
-        }
-        
+    private static void displayUserOutput(String outputCommand) {   
         GUI.displayOutput(outputCommand);
     }
     
     public static void startController() {
-    	
     	inputCommandString = getInput();			
         inputCommandObject = convertStringToCommand(inputCommandString);
         
-    	parsedCommand = analyzeInput(inputCommandObject);
+    	try {
+			parsedCommand = analyzeInput(inputCommandObject);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
        
         passToExecutor(parsedCommand);
-        executorStatus = getFromExecutor();
+        feedback = getFeedbackFromExecutor();
         
-        outputCommandString = convertCommandToString(parsedCommand, executorStatus);
-        displayUserOutput(outputCommandString);
+        outputString = proceedFeedback(feedback);
+        displayUserOutput(outputString);
         
     }
     
     private static Command convertStringToCommand(String inputCommandString) {
     	inputCommandObject = new Command(inputCommandString);
+    	
     	return inputCommandObject;
     }
     
-    private static ExecutableCommand analyzeInput(Command inputCommandObject) {
+    private static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+        
     	return parsedCommand;
     }
     
-    private static String convertCommandToString(ExecutableCommand command, boolean executorStatus) {
+    private static String proceedFeedback(Feedback feedback) {
     	String action = "";
     	String description = "";
     	// Date time;
     	// String location;
     	String outputString;
     	
-    	if (command != null) {
-	    	action = command.getAction();
-	    	description = command.getDescription();
+    	if (feedback.getResult()) {
+	    	action = feedback.getAction();
+	    	description = feedback.getDescription();
 	    	//time = command.getTime();
 	    	//location = command.getLocation();
     	}
     	
     	// TODO: Proper output to be done later
     	// TODO: Put in another function
-    	if (command == null) {
+    	if (feedback.getMessage().equals(ERROR_INVALID_COMMAND)) {
     		outputString = "Please enter a valid command!";
-    	} else if (executorStatus == true) {
+    	} else if (feedback.getResult()) {
     		outputString = "Success! " + action + " " + description; // + 
 			   				//" at " + location + " on " + time.toString();
     	} else {
     		outputString = "Action failed! " + "(" + action + " " +
     						description + ")";// + " at " + location + " on " + time.toString() + ")";    		
     	}
-    	return outputString;
     	
+    	return outputString;	
     }
     
     // TODO
     private static void passToExecutor(ExecutableCommand command) {
-        Executor.getAnalyzedCommand(command);
+        Executor.proceedAnalyzedCommand(command);
     }
     
     // TODO
-    private static boolean getFromExecutor() {
-       return Executor.returnOutputMessage();
+    private static Feedback getFeedbackFromExecutor() {
+       return Executor.getFeedback();
     }
 }

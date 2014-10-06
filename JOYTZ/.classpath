@@ -14,5 +14,7 @@
 	<classpathentry kind="lib" path="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/org.eclipse.ui.workbench_3.106.0.v20140530-0732.jar" sourcepath="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/org.eclipse.ui.workbench.source_3.106.0.v20140530-0732.jar"/>
 	<classpathentry kind="lib" path="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/com.ibm.icu_52.1.0.v201404241930.jar" sourcepath="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/com.ibm.icu.source_52.1.0.v201404241930.jar"/>
 	<classpathentry kind="lib" path="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/org.eclipse.ui.forms_3.6.100.v20140422-1825.jar" sourcepath="C:/Users/user/Desktop/eclipse-standard-luna-R-win32-x86_64/eclipse/plugins/org.eclipse.ui.forms.source_3.6.100.v20140422-1825.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.swt"/>
+	<classpathentry kind="lib" path="/Users/WhyXce/Downloads/eclipse/plugins/org.eclipse.ui.forms_3.6.100.v20140422-1825.jar" sourcepath="/Users/WhyXce/Downloads/eclipse/plugins/org.eclipse.ui.forms.source_3.6.100.v20140422-1825.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,28 +1,70 @@
 
 public class Executor {
-	private static boolean returnedMessage = true;
+	private static Feedback feedback;
 	
-	public static void getAnalyzedCommand(ExecutableCommand command) {
-		// Analyze command
-		// ...
+	public static void proceedAnalyzedCommand(ExecutableCommand command) {
+		String action = command.getAction();
 		
-		editData("add meeting 3-4pm");
-	}
-	
-	private static void editData(String actionToDo) {
-		Storage.performActions(actionToDo);
-	}
-	
-	public static void successOrFail(boolean status) {
-		if (status == true) {
-			returnedMessage = true;
+		switch(action){
+			case "add":
+				performAddAction();
+				break;
+			case "delete":
+				performDeleteAction();
+				break;
+			case "display": 
+				performDisplayAction();
+				break;
+			case "clear": 
+				performClearAction();
+				break;
+			case "sort":
+				performSortAction();
+				break;
+			case "search":
+				performSearchAction();
+				break;
+			case "exit": 
+				performExitAction();
+				break;
+			default:
+				feedback = new Feedback();
+				feedback.setMessage("Invalid Command");
 		}
-		else {
-			returnedMessage = false;
-		}
+	}
+
+	private static void performAddAction() {
+		// TODO Auto-generated method stub
+	}
+
+
+	private static void performDeleteAction() {
+		// TODO Auto-generated method stub
+	}
+
+	private static void performDisplayAction() {
+		// TODO Auto-generated method stub
+	}
+
+	private static void performClearAction() {
+		// TODO Auto-generated method stub
 	}
 	
-	public static boolean returnOutputMessage() {
-		return returnedMessage;
+	private static void performSortAction() {
+		// TODO Auto-generated method stub
+	}
+
+	private static void performSearchAction() {
+		// TODO Auto-generated method stub
+	}
+
+	private static void performExitAction() {
+		feedback = new Feedback(true, "exit");
+		
+		System.exit(0);		
+	}
+
+	public static Feedback getFeedback() {
+		return feedback;
 	}
 }

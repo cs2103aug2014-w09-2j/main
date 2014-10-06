@@ -26,6 +26,7 @@ public class ExecutableCommand {
 	/**
 	 * methods
 	 */
+	
 	public void setAction(String action){
 		this.action = action;
 	}

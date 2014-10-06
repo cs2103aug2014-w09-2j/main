@@ -12,6 +12,7 @@ public class Command {
 	/**
 	 * methods
 	 */
+	
 	public String getUserCommand(){
 		return userCommand;
 	}

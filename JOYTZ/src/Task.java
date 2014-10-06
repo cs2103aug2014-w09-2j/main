@@ -1,31 +1,33 @@
 import java.util.Date;
 
-public class TaskObject {
+public class Task {
 	Date createdTime;
-	Date expireTime;
+	Date expiredTime;
 	String description;
 	Status state;
+	String location;
 	
 	/**
 	 * Constructor
 	 */
-	TaskObject(Date d){
+	
+	Task(Date d){
 		this.createdTime = new Date();
-		this.expireTime = d;
+		this.expiredTime = d;
 		this.description = "";
 		//this.state = new Status();// default active;
 	}
 	
-	TaskObject(String des){
+	Task(String des){
 		this.createdTime = new Date();
-		this.expireTime = null;
+		this.expiredTime = null;
 		this.description = des;
 		//this.state = // default active;
 	}
 	
-	TaskObject(Date d, String des){
+	Task(Date d, String des){
 		this.createdTime = new Date();
-		this.expireTime = d;
+		this.expiredTime = d;
 		this.description = des;
 		//this.state = // default activate;
 	}
@@ -39,14 +41,14 @@ public class TaskObject {
 	}
 	
 	public void setTime(Date d){
-		this.expireTime = d;
+		this.expiredTime = d;
 	}
 	
 	public void setDescription(String des){
 		this.description = des;
 	}
 	
-	public String toString(){
-		return null;
+	public void setLocation(String loc){
+		this.location = loc;
 	}
 }
