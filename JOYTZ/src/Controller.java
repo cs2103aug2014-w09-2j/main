@@ -75,7 +75,7 @@ public class Controller {
     	if (feedback.getMessageShowToUser().equals(ERROR_INVALID_COMMAND)) {
     		outputString = "Please enter a valid command!";
     	} else if (feedback.getResult()) {
-    		outputString = "Success! " + taskName + action; // + 
+    		outputString = "Action successful! \n" + taskName + action; // + 
 			   				//" at " + location + " on " + time.toString();
     	} else {
     		outputString = "Action failed! " + "(" + action + " " +

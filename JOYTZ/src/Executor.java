@@ -6,7 +6,7 @@ import java.util.Date;
 public class Executor {
 	
 	
-	private static final String MESSAGE_ADD = "%s is added\n";
+	private static final String MESSAGE_ADD = "%s is added, due on %s\n";
 	private static final String MESSAGE_CLEAR = "all content deleted"; // from %s\n";
 	private static final String MESSAGE_DELETE = "No. %d task is deleted\n";
 	private static final String MESSAGE_DISPLAY = "Here is your time table:\n";
@@ -61,7 +61,7 @@ public class Executor {
 		Task t = new Task(name, date, des, loc);
 		feedbackObject = Storage.addTask(t);
 		if (feedbackObject.getResult()){
-			feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD, name));
+			feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD, name, date.toString()));
 		}
 		
 	}
