@@ -27,6 +27,10 @@ public class ExecutableCommand {
 	 * methods
 	 */
 	
+	///////////////////////////////////////////////////
+	// Setters
+	///////////////////////////////////////////////////
+	
 	public void setAction(String action){
 		this.action = action;
 	}
@@ -47,6 +51,10 @@ public class ExecutableCommand {
 		this.location = location;
 	}
 
+	///////////////////////////////////////////////////
+	// Getters
+	///////////////////////////////////////////////////
+	
 	public String getAction() {
 		return action;
 	}

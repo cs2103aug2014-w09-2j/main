@@ -2,12 +2,12 @@
 public class Executor {
 	private static Feedback feedback;
 	
-	public static void proceedAnalyzedCommand(ExecutableCommand command) {
+	public static void processAnalyzedCommand(ExecutableCommand command) {
 		String action = command.getAction();
 		
 		switch(action){
 			case "add":
-				performAddAction();
+				performAddAction(command);
 				break;
 			case "delete":
 				performDeleteAction();
@@ -33,8 +33,12 @@ public class Executor {
 		}
 	}
 
-	private static void performAddAction() {
-		// TODO Auto-generated method stub
+	private static void performAddAction(ExecutableCommand command) {
+		feedback = new Feedback(true, command.getAction());
+		feedback.setDescription(command.getDescription());
+		feedback.setMessage("add");
+		
+		// TODO: add it to storage
 	}
 
 

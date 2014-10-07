@@ -7,9 +7,9 @@ public class Controller {
 	
 	private static String inputCommandString;
 	private static Command inputCommandObject;
-	private static Feedback feedback;
+	private static Feedback feedbackObject;
     private static String outputString;
-    private static ExecutableCommand parsedCommand;
+    private static ExecutableCommand parsedCommandObject;
     
 	private static String getInput() {
         return GUI.getUserInput();
@@ -20,20 +20,24 @@ public class Controller {
     }
     
     public static void startController() {
+    	// Controller input
     	inputCommandString = getInput();			
         inputCommandObject = convertStringToCommand(inputCommandString);
         
+        // Analyzer
     	try {
-			parsedCommand = analyzeInput(inputCommandObject);
+			parsedCommandObject = analyzeInput(inputCommandObject);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
        
-        passToExecutor(parsedCommand);
-        feedback = getFeedbackFromExecutor();
+    	// Executor
+        passToExecutor(parsedCommandObject);
+        feedbackObject = getFeedbackFromExecutor();
         
-        outputString = proceedFeedback(feedback);
+        // Controller output
+        outputString = proceedFeedback(feedbackObject);
         displayUserOutput(outputString);
         
     }
@@ -81,7 +85,7 @@ public class Controller {
     
     // TODO
     private static void passToExecutor(ExecutableCommand command) {
-        Executor.proceedAnalyzedCommand(command);
+        Executor.processAnalyzedCommand(command);
     }
     
     // TODO

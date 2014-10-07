@@ -22,6 +22,10 @@ public class Feedback {
 	 * methods
 	 */
 	
+	///////////////////////////////////////////////////
+	// Setters
+	///////////////////////////////////////////////////
+	
 	public void setResult(boolean result){
 		this.result = result;
 	}
@@ -33,6 +37,10 @@ public class Feedback {
 	public void setMessage(String message){
 		this.message = message;
 	}
+	
+	///////////////////////////////////////////////////
+	// Getters
+	///////////////////////////////////////////////////
 	
 	public boolean getResult(){
 		return this.result;
