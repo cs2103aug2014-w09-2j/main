@@ -75,6 +75,7 @@ public class GUI extends Composite {
         Display display = new Display();
         Shell shell = new Shell(display);
         GUI gui = new GUI(shell, SWT.NONE);
+        shell.setText("JOYTZ");
         gui.pack();
         shell.pack();
         shell.open();
