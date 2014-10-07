@@ -1,4 +1,4 @@
-package V1;
+//package V1;
 
 import java.text.ParseException;
 
@@ -32,8 +32,8 @@ public class Controller {
 			e.printStackTrace();
 		}
        
-        passToExecutor(parsedCommand);
-        feedback = getFeedbackFromExecutor();
+    	feedback =startExecutor(parsedCommand);
+        // getFeedbackFromExecutor();
         
         outputString = proceedFeedback(feedback);
         displayUserOutput(outputString);
@@ -54,14 +54,14 @@ public class Controller {
     
     private static String proceedFeedback(Feedback feedback) {
     	String action = "";
-    	String description = "";
+    	//String description = "";
     	// Date time;
     	// String location;
     	String outputString;
     	
     	if (feedback.getResult()) {
-	    	action = feedback.getAction();
-	    	description = feedback.getDescription();
+	    	action = feedback.getMessageShowToUser();
+	    	//description = feedback.getDescription();
 	    	//time = command.getTime();
 	    	//location = command.getLocation();
     	}
@@ -71,23 +71,23 @@ public class Controller {
     	if (feedback.getMessageShowToUser().equals(ERROR_INVALID_COMMAND)) {
     		outputString = "Please enter a valid command!";
     	} else if (feedback.getResult()) {
-    		outputString = "Success! " + action + " " + description; // + 
+    		outputString = "Success! " + action;// + " " + description; // + 
 			   				//" at " + location + " on " + time.toString();
     	} else {
-    		outputString = "Action failed! " + "(" + action + " " +
-    						description + ")";// + " at " + location + " on " + time.toString() + ")";    		
+    		outputString = "Action failed! " + "(" + action + ")";// + " " +
+    						//description + ")";// + " at " + location + " on " + time.toString() + ")";    		
     	}
     	
     	return outputString;	
     }
     
     // TODO
-    private static void passToExecutor(ExecutableCommand command) {
-        Executor.proceedAnalyzedCommand(command);
+    private static Feedback startExecutor(ExecutableCommand command) {
+        return Executor.proceedAnalyzedCommand(command);
     }
     
     // TODO
-    private static Feedback getFeedbackFromExecutor() {
-       return Executor.getFeedback();
-    }
+    //private static Feedback getFeedbackFromExecutor() {
+    //   return Executor.getFeedback();
+    //}
 }

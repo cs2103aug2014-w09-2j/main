@@ -1,4 +1,4 @@
-package V1;
+//package V1;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ public class Executor {
 	
 	public static Feedback feedbackObject;
 	
-	public static void proceedAnalyzedCommand(ExecutableCommand command) {
+	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		
 		String action = command.getAction();
 		
@@ -53,6 +53,8 @@ public class Executor {
 				Feedback feedBackObject= new Feedback(false);
 				feedBackObject.setMessageShowToUser("Invalid Command");
 		}
+		
+		return feedbackObject;
 	}
 
 	private static void performAddAction(String name, Date date, String des, String loc) {

@@ -1,4 +1,4 @@
-package V1;
+//package V1;
 
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -49,11 +49,11 @@ public class GUI extends Composite {
         setLayout(null);
         
         inputField = new Text(this, SWT.BORDER);
-        inputField.setBounds(0, 224, 443, 49);
+        inputField.setBounds(0, 431, 443, 49);
         toolkit.adapt(inputField, true, true);
        
         outputField = new Label(this, SWT.NONE);
-        outputField.setBounds(10, 10, 433, 188);
+        outputField.setBounds(10, 10, 433, 415);
         toolkit.adapt(outputField, true, true);
      
         // We call the controller to process the user's 

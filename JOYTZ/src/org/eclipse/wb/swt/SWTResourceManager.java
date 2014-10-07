@@ -1,3 +1,5 @@
+package org.eclipse.wb.swt;
+
 /*******************************************************************************
  * Copyright (c) 2011 Google, Inc.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +10,9 @@
  * Contributors:
  *    Google, Inc. - initial API and implementation
  *******************************************************************************/
-package V1.org.eclipse.wb.swt;
+
+
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +31,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+//package V1.org.eclipse.wb.swt;
 
 /**
  * Utility class for managing OS resources associated with SWT controls such as colors, fonts, images, etc.
