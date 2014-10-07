@@ -1,4 +1,4 @@
-package V1;
+//package V1;
 
 public class Command {
 	private String userCommand;

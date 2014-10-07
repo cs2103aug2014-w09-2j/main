@@ -7,7 +7,7 @@ public class Executor {
 	
 	
 	private static final String MESSAGE_ADD = "%s is added\n";
-	private static final String MESSAGE_CLEAR = "all content deleted from %s\n";
+	private static final String MESSAGE_CLEAR = "all content deleted"; // from %s\n";
 	private static final String MESSAGE_DELETE = "No. %d task is deleted\n";
 	private static final String MESSAGE_DISPLAY = "Here is your time table:\n";
 	private static final String MESSAGE_EMPTY = "all content is deleted from %s\n";

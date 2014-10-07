@@ -58,7 +58,7 @@ public class Storage {
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask_Empty));
 		}else {
 			for (int index=0; index<listOfTask.size(); index++){
-				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask, index+1, listOfTask.get(index).toString()));
+				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask, index+1, listOfTask.get(index).getDescription().toString()));
 			}
 		}
 		return feedbackObject;
