@@ -5,7 +5,8 @@ import java.text.ParseException;
 // import java.sql.Date;
 
 public class Controller {
-	private static final String ERROR_INVALID_COMMAND = "Invalid Command";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
+	private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
 	
 	private static String inputCommandString;
 	private static Command inputCommandObject;
@@ -27,17 +28,22 @@ public class Controller {
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
+	    	
+			if(parsedCommand != null){
+	    		feedback = startExecutor(parsedCommand);
+	    		// getFeedbackFromExecutor();
+	    	}
+	    	else{
+	    		feedback = new Feedback(false);
+	    		feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
+	    	}
+	        
+	        outputString = proceedFeedback(feedback, parsedCommand);
+	        displayUserOutput(outputString);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			displayUserOutput(ERROR_INVALID_PARAMETER);
 			e.printStackTrace();
-		}
-       
-    	feedback =startExecutor(parsedCommand);
-        // getFeedbackFromExecutor();
-        
-        outputString = proceedFeedback(feedback, parsedCommand);
-        displayUserOutput(outputString);
-        
+		}      
     }
     
     private static Command convertStringToCommand(String inputCommandString) {
@@ -53,33 +59,31 @@ public class Controller {
     }
     
     private static String proceedFeedback(Feedback feedback, ExecutableCommand commandObj) {
-    	String action = "";
+    	/*String action = "";
     	String taskName = "";
-    	// Date time;
-    	// String location;
+    	Date time;
+    	String location;*/
     	String outputString;
     	
-    	if (feedback.getResult()) {
+    	/*if (feedback.getResult()) {
 	    	action = feedback.getMessageShowToUser();
 	    	if (commandObj.getDescription() != null) {
 	    		taskName = commandObj.getDescription();
 	    	} else {
 	    		taskName = "";
 	    	}
-	    	//time = command.getTime();
-	    	//location = command.getLocation();
-    	}
+	    	time = command.getTime();
+	    	location = command.getLocation();
+    	}*/
     	
     	// TODO: Proper output to be done later
     	// TODO: Put in another function
-    	if (feedback.getMessageShowToUser().equals(ERROR_INVALID_COMMAND)) {
-    		outputString = "Please enter a valid command!";
+    	if (commandObj == null) {
+    		outputString = feedback.getMessageShowToUser();
     	} else if (feedback.getResult()) {
-    		outputString = "Action successful! \n" + taskName + action; // + 
-			   				//" at " + location + " on " + time.toString();
+    		outputString = feedback.getMessageShowToUser();  
     	} else {
-    		outputString = "Action failed! " + "(" + action + " " +
-    						taskName + ")";// + " at " + location + " on " + time.toString() + ")";    		
+    		outputString = feedback.getMessageShowToUser();  		
     	}
     	
     	return outputString;	

@@ -1,48 +1,44 @@
 //package V1;
 
 import java.util.Date;
-import java.util.TimerTask;
 
-public class Task<StatusOfTask> extends TimerTask{
+public class Task{
 	
-	enum TASK_STATUS{
+	/*enum TASK_STATUS{
 		In_Process, Expired,
-		}
+	}*/
 	
 	Date createdTime;
-	Date expiredTime;
-	String taskName;
+	Date expiredDate;
 	String description;
 	String location;
-	TASK_STATUS status;
+	//TASK_STATUS status;
 	
 	/**
 	 * Constructor
 	 */
 	
-	Task(String name, Date d){
+	Task(String des, Date d){
 		this.createdTime = new Date();
-		this.expiredTime = d;
-		this.taskName = name;
-		this.description = "";
+		this.expiredDate = d;
+		this.description = des;
 		this.location = null;
-		setStatus();
+		//setStatus();
 	}
 	
-	Task(String name, Date d, String des, String loc){
+	Task(String des, Date d, String loc){
 		this.createdTime = new Date();
-		this.expiredTime = d;
-		this.taskName = name;
+		this.expiredDate = d;
 		this.description = des;
 		this.location = loc;
-		setStatus();
+		//setStatus();
 	}
 	
 	/**
 	 * Methods
 	 */
 	
-	public void setStatus(){
+	/*public void setStatus(){
 		if (expiredTime.after(createdTime)){
 			this.status = TASK_STATUS.In_Process;
 		}else {
@@ -54,16 +50,12 @@ public class Task<StatusOfTask> extends TimerTask{
 		this.status = TASK_STATUS.Expired;
 	}
 	
-	public void setStatusToBeInProcess(){
+	/*public void setStatusToBeInProcess(){
 		this.status = TASK_STATUS.In_Process;
-	}
+	}*/
 	
-	public void setTaskName(String name){
-		this.taskName = name;
-	}
-	
-	public void setTime(Date d){
-		this.expiredTime = d;
+	public void setExpiredDate(Date d){
+		this.expiredDate = d;
 	}
 	
 	public void setDescription(String des){
@@ -74,14 +66,10 @@ public class Task<StatusOfTask> extends TimerTask{
 		this.location = loc;
 	}
 	
-	public Date getTime(){
-		return this.expiredTime;
+	public Date getExpiredDate(){
+		return this.expiredDate;
 	}
-	
-	public String getTaskName(){
-		return this.taskName;
-	}
-	
+
 	public String getDescription(){
 		return this.description;
 	}
@@ -90,9 +78,9 @@ public class Task<StatusOfTask> extends TimerTask{
 		return this.location;
 	}
 
-	@Override
+	/*@Override
 	public void run() {
 		setStatusToBeExpired();
 		Executor.performCheckStatus();
-	}
+	}*/
 }

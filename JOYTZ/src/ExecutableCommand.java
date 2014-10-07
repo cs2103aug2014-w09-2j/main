@@ -5,10 +5,9 @@ import java.util.Date;
 public class ExecutableCommand {
 	private String action;
 	private String description;
-	private String taskName;
 	private Date date;
 	private String location;
-	private int ItemId;
+	private int itemId;
 
 	/**
 	 * Constructor
@@ -17,19 +16,17 @@ public class ExecutableCommand {
 	ExecutableCommand() {
 		this.action = null;
 		this.description = null;
-		this.taskName = "";
 		this.date = null;
 		this.location = null;
-		this.ItemId = -1;
+		this.itemId = -1;
 	}
 	
 	ExecutableCommand(String action){
 		this.action = action;
 		this.description = null;
-		this.taskName = "";
 		this.date = null;
 		this.location = null;
-		this.ItemId = -1;
+		this.itemId = -1;
 	}
 	
 	/**
@@ -44,10 +41,6 @@ public class ExecutableCommand {
 		this.description = description;
 	}
 	
-	public void setTaskName(String name){
-		this.taskName = name;
-	}
-	
 	public void setDate(Date date) {
 		this.date = date;
 	}
@@ -57,7 +50,7 @@ public class ExecutableCommand {
 	}
 	
 	public void setItemId(int id){
-		this.ItemId = id;
+		this.itemId = id;
 	}
 
 	public String getAction() {
@@ -66,10 +59,6 @@ public class ExecutableCommand {
 	
 	public String getDescription(){
 		return description;
-	}
-	
-	public String getTaskName(){
-		return taskName;
 	}
 
 	public Date getDate() {
@@ -81,7 +70,7 @@ public class ExecutableCommand {
 	}
 	
 	public int getItemId(){
-		return ItemId;
+		return itemId;
 	}
 
 }

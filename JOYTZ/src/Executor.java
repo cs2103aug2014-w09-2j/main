@@ -6,33 +6,28 @@ import java.util.Date;
 public class Executor {
 	
 	
-	private static final String MESSAGE_ADD = "%s is added, due on %s\n";
-	private static final String MESSAGE_CLEAR = "all content deleted"; // from %s\n";
-	private static final String MESSAGE_DELETE = "No. %d task is deleted\n";
-	private static final String MESSAGE_DISPLAY = "Here is your time table:\n";
-	private static final String MESSAGE_EMPTY = "all content is deleted from %s\n";
+	private static final String MESSAGE_ADD_SUCCESSFUL_WITH_DATE = "\"%s\" due on %s is added\n";
+	private static final String MESSAGE_ADD_SUCCESSFUL_WITHOUT_DATE = "\"%s\" is added\n";
+	private static final String MESSAGE_CLEAR_SUCCESSFUL = "all content deleted successfully\n";
+	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted\n";
+	/*private static final String MESSAGE_EMPTY = "all content is deleted from %s\n";
 	private static final String MESSAGE_SORT = "all the content in %s is sorted.\n";
 	private static final String MESSAGE_SEARCH_RESULT = "%d. %s\n";
-	private static final String MESSAGE_NO_SEARCH_RESULT = "There is not result.";
-	
-	
+	private static final String MESSAGE_NO_SEARCH_RESULT = "Searched task not found.\n";*/
+	private static final String ERROR_INVALID_INDEX = "Invalid item index, please try again.\n";
+	private static final String ERROR_NO_TASK_TO_BE_ADDED = "No task is found to be added, please try again\n";
+
 	public static Feedback feedbackObject;
 	
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
-		
 		String action = command.getAction();
 		
 		switch(action){
 			case "add":
-				String name = command.getTaskName();
-				String description = command.getDescription();
-				String location = command.getLocation();
-				Date date = command.getDate();
-				performAddAction(name, date, description, location);
+				performAddAction(command);
 				break;
 			case "delete":
-				int ItemId = command.getItemId();
-				performDeleteAction(ItemId);
+				performDeleteAction(command);
 				break;
 			case "display": 
 				performDisplayAction();
@@ -57,20 +52,43 @@ public class Executor {
 		return feedbackObject;
 	}
 
-	private static void performAddAction(String name, Date date, String des, String loc) {
-		Task t = new Task(name, date, des, loc);
-		feedbackObject = Storage.addTask(t);
-		if (feedbackObject.getResult()){
-			feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD, name, date.toString()));
-		}
+	private static void performAddAction(ExecutableCommand command) {
+		String description = command.getDescription();
+		String location = command.getLocation();
+		Date date = command.getDate();
+		feedbackObject = new Feedback(false);
 		
+		if(description == null){
+			feedbackObject.setMessageShowToUser(ERROR_NO_TASK_TO_BE_ADDED);
+		}
+		else{
+			Task t = new Task(description, date, location);
+		
+			feedbackObject = Storage.addTask(t);
+			if (feedbackObject.getResult()){
+				if(date == null){
+					feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL_WITHOUT_DATE, description));
+				}
+				else{
+					feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL_WITH_DATE, description, date));
+				}
+			}
+		}
 	}
 
-
-	private static void performDeleteAction(int ItemId) {
-		feedbackObject = Storage.deleteTask(ItemId-1);
-		if (feedbackObject.getResult()){
-			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE, ItemId));
+	private static void performDeleteAction(ExecutableCommand command) {
+		int itemId = command.getItemId();
+		feedbackObject = new Feedback(false);
+		
+		if(itemId <= 0){
+			feedbackObject.setMessageShowToUser(ERROR_INVALID_INDEX);
+		}
+		else{
+			feedbackObject = Storage.deleteTask(itemId);
+			
+			if(feedbackObject.getResult()){
+				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE_SUCCESSFUL, feedbackObject.getDescription()));
+			}
 		}
 	}
 
@@ -81,7 +99,7 @@ public class Executor {
 	private static void performClearAction() {
 		feedbackObject = Storage.clear();
 		if (feedbackObject.getResult()){
-			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR);
+			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
 	}
 	
@@ -99,9 +117,9 @@ public class Executor {
 		System.exit(0);		
 	}
 	
-	public static void performCheckStatus(){
+/*	public static void performCheckStatus(){
 		feedbackObject = Storage.checkStatus();
-	}
+	}*/
 
 	public static Feedback getFeedback() {
 		return feedbackObject;
