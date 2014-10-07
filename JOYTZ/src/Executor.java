@@ -6,10 +6,10 @@ import java.util.Date;
 public class Executor {
 	
 	
-	private static final String MESSAGE_DISPLAY = "%d. %s\n";
 	private static final String MESSAGE_ADD = "%s is added\n";
 	private static final String MESSAGE_CLEAR = "all content deleted from %s\n";
-	private static final String MESSAGE_DELETE = "deleted from %s: %s\n";
+	private static final String MESSAGE_DELETE = "No. %d task is deleted\n";
+	private static final String MESSAGE_DISPLAY = "Here is your time table:\n";
 	private static final String MESSAGE_EMPTY = "all content is deleted from %s\n";
 	private static final String MESSAGE_SORT = "all the content in %s is sorted.\n";
 	private static final String MESSAGE_SEARCH_RESULT = "%d. %s\n";
@@ -57,22 +57,23 @@ public class Executor {
 
 	private static void performAddAction(String name, Date date, String des, String loc) {
 		Task t = new Task(name, date, des, loc);
-		Boolean result = Storage.addTask(t);
-		feedbackObject = new Feedback(result);
-		if (result){
+		feedbackObject = Storage.addTask(t);
+		if (feedbackObject.getResult()){
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD, name));
-		}else{
-			feedbackObject.setMessageShowToUser(String.format(format, args));
 		}
+		
 	}
 
 
 	private static void performDeleteAction(int ItemId) {
-		Storage.deleteTask(ItemId);
+		feedbackObject = Storage.deleteTask(ItemId);
+		if (feedbackObject.getResult()){
+			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE, ItemId));
+		}
 	}
 
 	private static void performDisplayAction() {
-		// TODO Auto-generated method stub
+		feedbackObject = Storage.displayTask();
 	}
 
 	private static void performClearAction() {

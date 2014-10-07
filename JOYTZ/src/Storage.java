@@ -33,13 +33,14 @@ public class Storage {
 
 		Feedback feedbackObject = new Feedback(false);
 		
-		if (numberOfTask < ItemId || ItemId <= 0){
+		if (numberOfTask < ItemId || ItemId < 0){
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_ItemIdOutOfRange, ItemId));
 			return feedbackObject;
 		}
 		
 		feedbackObject.setResult(true);
-		listOfTask.remove(ItemId);
+		Task removedTask = listOfTask.remove(ItemId);
+		history.add(removedTask);
 		return feedbackObject;
 	}
 	
@@ -48,7 +49,26 @@ public class Storage {
 		
 		if (listOfTask.size() == 0){
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask_Empty));
+		}else {
+			for (int index=0; index<listOfTask.size(); index++){
+				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask, index+1, listOfTask.get(index).toString()));
+			}
 		}
+		return feedbackObject;
+	}
+	
+	public static Feedback clear(){
+		Feedback feedbackObject = new Feedback(false);
+		
+		for (int ItemId=0; ItemId<listOfTask.size(); ItemId++){
+			Feedback currentFeedbackObject = deleteTask(ItemId);
+			if (! currentFeedbackObject.getResult()){
+				feedbackObject.setMessageShowToUser("check storage error... should not be displayed.");
+				return feedbackObject;
+			}
+		}
+		feedbackObject.setResult(true);
+		return feedbackObject;
 	}
 	
 	
