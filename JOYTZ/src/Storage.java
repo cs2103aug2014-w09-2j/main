@@ -13,7 +13,7 @@ public class Storage {
 	
 	public static final String MESSAGE_NullTask = "The teskObject is null.\n";
 	public static final String MESSAGE_ItemIdOutOfRange = "The ID '%d' is out of range.\n";
-	public static final String MESSAGE_DisplayTask = "%d. %s\n";
+	public static final String MESSAGE_DisplayTask = "%d. %s, on %s\n";
 	public static final String MESSAGE_DisplayTask_Empty = "There is no task currently.\n";
 	public static final String MESSAGE_ExpiredTask = "%s is expired\n";
 	public static final String MESSAGE_TaskIsExpired = "%s is expired.\n";
@@ -58,7 +58,7 @@ public class Storage {
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask_Empty));
 		}else {
 			for (int index=0; index<listOfTask.size(); index++){
-				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask, index+1, listOfTask.get(index).toString()));
+				feedbackObject.setMessageShowToUser(String.format(MESSAGE_DisplayTask, index+1, listOfTask.get(index).getDescription().toString(), listOfTask.get(index).getTime().toString()));
 			}
 		}
 		return feedbackObject;

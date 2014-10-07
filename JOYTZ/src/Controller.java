@@ -35,7 +35,7 @@ public class Controller {
     	feedback =startExecutor(parsedCommand);
         // getFeedbackFromExecutor();
         
-        outputString = proceedFeedback(feedback);
+        outputString = proceedFeedback(feedback, parsedCommand);
         displayUserOutput(outputString);
         
     }
@@ -52,16 +52,20 @@ public class Controller {
     	return parsedCommand;
     }
     
-    private static String proceedFeedback(Feedback feedback) {
+    private static String proceedFeedback(Feedback feedback, ExecutableCommand commandObj) {
     	String action = "";
-    	//String description = "";
+    	String taskName = "";
     	// Date time;
     	// String location;
     	String outputString;
     	
     	if (feedback.getResult()) {
 	    	action = feedback.getMessageShowToUser();
-	    	//description = feedback.getDescription();
+	    	if (commandObj.getDescription() != null) {
+	    		taskName = commandObj.getDescription();
+	    	} else {
+	    		taskName = "";
+	    	}
 	    	//time = command.getTime();
 	    	//location = command.getLocation();
     	}
@@ -71,11 +75,11 @@ public class Controller {
     	if (feedback.getMessageShowToUser().equals(ERROR_INVALID_COMMAND)) {
     		outputString = "Please enter a valid command!";
     	} else if (feedback.getResult()) {
-    		outputString = "Success! " + action;// + " " + description; // + 
+    		outputString = "Success! " + taskName + action; // + 
 			   				//" at " + location + " on " + time.toString();
     	} else {
-    		outputString = "Action failed! " + "(" + action + ")";// + " " +
-    						//description + ")";// + " at " + location + " on " + time.toString() + ")";    		
+    		outputString = "Action failed! " + "(" + action + " " +
+    						taskName + ")";// + " at " + location + " on " + time.toString() + ")";    		
     	}
     	
     	return outputString;	
