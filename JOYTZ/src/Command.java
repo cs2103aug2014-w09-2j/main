@@ -1,5 +1,3 @@
-package V1;
-
 public class Command {
 	private String userCommand;
 
