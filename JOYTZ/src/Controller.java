@@ -1,3 +1,5 @@
+package V1;
+
 import java.text.ParseException;
 
 // import java.sql.Date;
@@ -7,9 +9,9 @@ public class Controller {
 	
 	private static String inputCommandString;
 	private static Command inputCommandObject;
-	private static Feedback feedbackObject;
+	private static Feedback feedback;
     private static String outputString;
-    private static ExecutableCommand parsedCommandObject;
+    private static ExecutableCommand parsedCommand;
     
 	private static String getInput() {
         return GUI.getUserInput();
@@ -20,24 +22,20 @@ public class Controller {
     }
     
     public static void startController() {
-    	// Controller input
     	inputCommandString = getInput();			
         inputCommandObject = convertStringToCommand(inputCommandString);
         
-        // Analyzer
     	try {
-			parsedCommandObject = analyzeInput(inputCommandObject);
+			parsedCommand = analyzeInput(inputCommandObject);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
        
-    	// Executor
-        passToExecutor(parsedCommandObject);
-        feedbackObject = getFeedbackFromExecutor();
+        passToExecutor(parsedCommand);
+        feedback = getFeedbackFromExecutor();
         
-        // Controller output
-        outputString = proceedFeedback(feedbackObject);
+        outputString = proceedFeedback(feedback);
         displayUserOutput(outputString);
         
     }
@@ -70,7 +68,7 @@ public class Controller {
     	
     	// TODO: Proper output to be done later
     	// TODO: Put in another function
-    	if (feedback.getMessage().equals(ERROR_INVALID_COMMAND)) {
+    	if (feedback.getMessageShowToUser().equals(ERROR_INVALID_COMMAND)) {
     		outputString = "Please enter a valid command!";
     	} else if (feedback.getResult()) {
     		outputString = "Success! " + action + " " + description; // + 
@@ -85,7 +83,7 @@ public class Controller {
     
     // TODO
     private static void passToExecutor(ExecutableCommand command) {
-        Executor.processAnalyzedCommand(command);
+        Executor.proceedAnalyzedCommand(command);
     }
     
     // TODO

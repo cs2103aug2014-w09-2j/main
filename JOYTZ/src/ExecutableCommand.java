@@ -1,11 +1,14 @@
+package V1;
+
 import java.sql.Date;
 
 public class ExecutableCommand {
 	private String action;
 	private String description;
-	private int itemId;
+	private String taskName;
 	private Date date;
 	private String location;
+	private int ItemId;
 
 	/**
 	 * Constructor
@@ -14,22 +17,24 @@ public class ExecutableCommand {
 	ExecutableCommand() {
 		this.action = null;
 		this.description = null;
-		this.itemId = -1;
+		this.taskName = "";
 		this.date = null;
 		this.location = null;
+		this.ItemId = -1;
 	}
 	
 	ExecutableCommand(String action){
 		this.action = action;
+		this.description = null;
+		this.taskName = "";
+		this.date = null;
+		this.location = null;
+		this.ItemId = -1;
 	}
 	
 	/**
 	 * methods
 	 */
-	
-	///////////////////////////////////////////////////
-	// Setters
-	///////////////////////////////////////////////////
 	
 	public void setAction(String action){
 		this.action = action;
@@ -39,8 +44,8 @@ public class ExecutableCommand {
 		this.description = description;
 	}
 	
-	public void setItemId(int id){
-		this.itemId = id;
+	public void setTaskName(String name){
+		this.taskName = name;
 	}
 	
 	public void setDate(Date date) {
@@ -50,11 +55,11 @@ public class ExecutableCommand {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
-	///////////////////////////////////////////////////
-	// Getters
-	///////////////////////////////////////////////////
 	
+	public void setItemId(int id){
+		this.ItemId = id;
+	}
+
 	public String getAction() {
 		return action;
 	}
@@ -63,8 +68,8 @@ public class ExecutableCommand {
 		return description;
 	}
 	
-	public int getItemId(){
-		return itemId;
+	public String getTaskName(){
+		return taskName;
 	}
 
 	public Date getDate() {
@@ -73,6 +78,10 @@ public class ExecutableCommand {
 
 	public String getLocation() {
 		return location;
+	}
+	
+	public int getItemId(){
+		return ItemId;
 	}
 
 }

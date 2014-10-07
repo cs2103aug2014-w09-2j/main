@@ -1,30 +1,30 @@
+package V1;
+
 public class Feedback {
 	boolean result;
 	String actionExecuted;
 	String description;
-	String message;
+	String messageShowToUser;
 	
 	/**
 	 * Constructor
 	 */
-
-	Feedback(){
-		result = false;
-		actionExecuted = "";
+	Feedback(boolean result){
+		this.result = result;
+		this.actionExecuted = "";
+		this.description = "";
+		this.messageShowToUser = "";
 	}
-	
 	Feedback(boolean result, String actionExecuted){
 		this.result = result;
 		this.actionExecuted = actionExecuted;
+		this.description = "";
+		this.messageShowToUser = "";
 	}
 	
 	/**
 	 * methods
 	 */
-	
-	///////////////////////////////////////////////////
-	// Setters
-	///////////////////////////////////////////////////
 	
 	public void setResult(boolean result){
 		this.result = result;
@@ -34,13 +34,9 @@ public class Feedback {
 		this.description = description;
 	}
 	
-	public void setMessage(String message){
-		this.message = message;
+	public void setMessageShowToUser(String message){
+		this.messageShowToUser = message;
 	}
-	
-	///////////////////////////////////////////////////
-	// Getters
-	///////////////////////////////////////////////////
 	
 	public boolean getResult(){
 		return this.result;
@@ -54,7 +50,7 @@ public class Feedback {
 		return this.description;
 	}
 	
-	public String getMessage(){
-		return this.message;
+	public String getMessageShowToUser(){
+		return this.messageShowToUser;
 	}
 }
