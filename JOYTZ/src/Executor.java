@@ -68,7 +68,7 @@ public class Executor {
 
 
 	private static void performDeleteAction(int ItemId) {
-		feedbackObject = Storage.deleteTask(ItemId);
+		feedbackObject = Storage.deleteTask(ItemId-1);
 		if (feedbackObject.getResult()){
 			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE, ItemId));
 		}
