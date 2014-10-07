@@ -77,11 +77,14 @@ public class Executor {
 	}
 
 	private static void performClearAction() {
-		// TODO Auto-generated method stub
+		feedbackObject = Storage.clear();
+		if (feedbackObject.getResult()){
+			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR);
+		}
 	}
 	
 	private static void performSortAction() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubs
 	}
 
 	private static void performSearchAction() {
@@ -92,6 +95,10 @@ public class Executor {
 		feedbackObject = new Feedback(true, "exit");
 		
 		System.exit(0);		
+	}
+	
+	public static void performCheckStatus(){
+		feedbackObject = Storage.checkStatus();
 	}
 
 	public static Feedback getFeedback() {

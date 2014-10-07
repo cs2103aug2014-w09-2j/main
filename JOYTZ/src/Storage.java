@@ -1,17 +1,22 @@
 package V1;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
 
 
 public class Storage {
 	static ArrayList<Task> listOfTask = new ArrayList<Task>();
 	static ArrayList<Task> history = new ArrayList<Task>();
 	static int numberOfTask;
+	static Timer timer = new Timer();
 	
 	public static final String MESSAGE_NullTask = "The teskObject is null.";
 	public static final String MESSAGE_ItemIdOutOfRange = "The ID '%d' is out of range.";
 	public static final String MESSAGE_DisplayTask = "%d. %s\n";
 	public static final String MESSAGE_DisplayTask_Empty = "There is no task currently.\n";
+	public static final String MESSAGE_ExpiredTask = "%s is expired";
+	public static final String MESSAGE_TaskIsExpired = "%s is expired.";
 	/**
 	 * Methods
 	 */
@@ -25,6 +30,7 @@ public class Storage {
 		
 		feedbackObject.setResult(true);
 		listOfTask.add(t);
+		timer.schedule(t, t.getTime());
 		numberOfTask++;
 		return feedbackObject;
 	}
@@ -40,6 +46,7 @@ public class Storage {
 		
 		feedbackObject.setResult(true);
 		Task removedTask = listOfTask.remove(ItemId);
+		removedTask.cancel();
 		history.add(removedTask);
 		return feedbackObject;
 	}
@@ -68,6 +75,21 @@ public class Storage {
 			}
 		}
 		feedbackObject.setResult(true);
+		return feedbackObject;
+	}
+	
+	public static Feedback checkStatus(){
+		Feedback feedbackObject = new Feedback(true);
+		
+		Date now = new Date();
+		for (int ItemId=0; ItemId<listOfTask.size(); ItemId++){
+			if (listOfTask.get(ItemId).getTime().before(now)){
+				Task removedTask = listOfTask.remove(ItemId);
+				removedTask.setStatusToBeExpired();
+				history.add(removedTask);
+				feedbackObject.setMessageShowToUser(String.format(MESSAGE_TaskIsExpired, removedTask.toString()));
+			}
+		}
 		return feedbackObject;
 	}
 	
