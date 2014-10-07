@@ -11,12 +11,12 @@ public class Storage {
 	static int numberOfTask;
 	static Timer timer = new Timer();
 	
-	public static final String MESSAGE_NullTask = "The teskObject is null.";
-	public static final String MESSAGE_ItemIdOutOfRange = "The ID '%d' is out of range.";
+	public static final String MESSAGE_NullTask = "The teskObject is null.\n";
+	public static final String MESSAGE_ItemIdOutOfRange = "The ID '%d' is out of range.\n";
 	public static final String MESSAGE_DisplayTask = "%d. %s\n";
 	public static final String MESSAGE_DisplayTask_Empty = "There is no task currently.\n";
-	public static final String MESSAGE_ExpiredTask = "%s is expired";
-	public static final String MESSAGE_TaskIsExpired = "%s is expired.";
+	public static final String MESSAGE_ExpiredTask = "%s is expired\n";
+	public static final String MESSAGE_TaskIsExpired = "%s is expired.\n";
 	/**
 	 * Methods
 	 */
