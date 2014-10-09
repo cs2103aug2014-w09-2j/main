@@ -20,27 +20,27 @@ public class ExecutableCommand {
 		this.location = null;
 		this.itemId = -1;
 	}
-	
-	ExecutableCommand(String action){
+
+	ExecutableCommand(String action) {
 		this.action = action;
 		this.description = null;
 		this.date = null;
 		this.location = null;
 		this.itemId = -1;
 	}
-	
+
 	/**
 	 * methods
 	 */
-	
-	public void setAction(String action){
+
+	public void setAction(String action) {
 		this.action = action;
 	}
-	
-	public void setDescription(String description){
+
+	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
@@ -48,16 +48,16 @@ public class ExecutableCommand {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
-	public void setItemId(int id){
+
+	public void setItemId(int id) {
 		this.itemId = id;
 	}
 
 	public String getAction() {
 		return action;
 	}
-	
-	public String getDescription(){
+
+	public String getDescription() {
 		return description;
 	}
 
@@ -68,8 +68,8 @@ public class ExecutableCommand {
 	public String getLocation() {
 		return location;
 	}
-	
-	public int getItemId(){
+
+	public int getItemId() {
 		return itemId;
 	}
 

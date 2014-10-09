@@ -35,8 +35,7 @@ public class Storage {
 
 		if (numberOfTask < itemId) {
 			feedbackObject.setMessageShowToUser(String.format(
-												ERROR_INDEX_OUT_OF_RANGE, 
-												itemId));
+					ERROR_INDEX_OUT_OF_RANGE, itemId));
 			return feedbackObject;
 		}
 
@@ -55,7 +54,7 @@ public class Storage {
 
 		if (listOfTask.size() == 0) {
 			feedbackObject.setMessageShowToUser(String
-												.format(MESSAGE_EMPTY_TASK));
+					.format(MESSAGE_EMPTY_TASK));
 		} else {
 			for (int index = 0; index < listOfTask.size(); index++) {
 				Date date = listOfTask.get(index).getExpiredDate();
