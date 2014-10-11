@@ -21,10 +21,13 @@ public class Controller {
     
     private static void displayUserOutput(String outputCommand, ExecutableCommand command, int numOfTasksAdded) {   
         GUI.displayOutput(outputCommand);
+        
         String date = command.getTaskDate().toString();
         String name = command.getTaskName();
         String location = command.getTaskLocation();
         String description = command.getTaskDescription();
+        int taskId = command.getTaskId();
+        String action = command.getAction();
         
         if (date == null) {
         	date = "";
@@ -38,8 +41,11 @@ public class Controller {
         if (description == null) {
         	description = "";
         }
+        if (action.equals("delete")) {
+        	numOfTasksAdded--;
+        }
         
-        GUI.updateTable(numOfTasksAdded, date, name, location, description);
+        GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
     }
     
     public static void startController() {
@@ -48,7 +54,8 @@ public class Controller {
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
-	    	
+	    	//System.out.println(parsedCommand.getAction() + parsedCommand.getTaskName());
+			
 			if(parsedCommand != null){
 	    		feedback = startExecutor(parsedCommand);
 	    		// getFeedbackFromExecutor();
