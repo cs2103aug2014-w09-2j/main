@@ -10,6 +10,7 @@ public class ExecutableCommand {
 	private String taskLocation;
 	private String taskPriority;
 	private int taskId;
+	private String errorMessage;
 
 	/**
 	 * Constructor
@@ -19,18 +20,22 @@ public class ExecutableCommand {
 		this.action = "";
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = null;
+		this.taskDeadline = new Date();
 		this.taskLocation = "";
+		this.taskPriority = "";
 		this.taskId = -1;
+		this.errorMessage = "";
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = null;
+		this.taskDeadline = new Date();
 		this.taskLocation = "";
+		this.taskPriority = "";
 		this.taskId = -1;
+		this.errorMessage = "";
 	}
 
 	/**
@@ -40,11 +45,11 @@ public class ExecutableCommand {
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
-	public void setTaskName(String name){
+
+	public void setTaskName(String name) {
 		this.taskName = name;
 	}
-	
+
 	public void setTaskDescription(String description) {
 		this.taskDescription = description;
 	}
@@ -56,23 +61,27 @@ public class ExecutableCommand {
 	public void setTaskLocation(String location) {
 		this.taskLocation = location;
 	}
-	
-	public void setTaskPriority(String priority){
+
+	public void setTaskPriority(String priority) {
 		this.taskPriority = priority;
 	}
-	
+
 	public void setTaskId(int id) {
 		this.taskId = id;
+	}
+
+	public void setErrorMessage(String message) {
+		this.errorMessage = message;
 	}
 
 	public String getAction() {
 		return action;
 	}
-	
-	public String getTaskName(){
+
+	public String getTaskName() {
 		return taskName;
 	}
-	
+
 	public String getTaskDescription() {
 		return taskDescription;
 	}
@@ -84,13 +93,16 @@ public class ExecutableCommand {
 	public String getTaskLocation() {
 		return taskLocation;
 	}
-	
-	public String getTaskPriority(){
+
+	public String getTaskPriority() {
 		return taskPriority;
 	}
-	
+
 	public int getTaskId() {
 		return taskId;
 	}
 
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }
