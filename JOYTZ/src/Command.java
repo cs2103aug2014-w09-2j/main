@@ -6,16 +6,16 @@ public class Command {
 	/**
 	 * Constructor
 	 */
-	
-	Command(String userInput){
+
+	Command(String userInput) {
 		this.userCommand = userInput;
 	}
-	
+
 	/**
 	 * methods
 	 */
-	
-	public String getUserCommand(){
+
+	public String getUserCommand() {
 		return userCommand;
 	}
 }

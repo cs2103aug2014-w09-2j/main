@@ -5,52 +5,53 @@ public class Feedback {
 	String actionExecuted;
 	String description;
 	String messageShowToUser;
-	
+
 	/**
 	 * Constructor
 	 */
-	Feedback(boolean result){
+	Feedback(boolean result) {
 		this.result = result;
 		this.actionExecuted = "";
 		this.description = "";
 		this.messageShowToUser = "";
 	}
-	Feedback(boolean result, String actionExecuted){
+
+	Feedback(boolean result, String actionExecuted) {
 		this.result = result;
 		this.actionExecuted = actionExecuted;
 		this.description = "";
 		this.messageShowToUser = "";
 	}
-	
+
 	/**
 	 * methods
 	 */
-	
-	public void setResult(boolean result){
+
+	public void setResult(boolean result) {
 		this.result = result;
 	}
-	
-	public void setDescription(String description){
+
+	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public void setMessageShowToUser(String message){
+
+	public void setMessageShowToUser(String message) {
 		this.messageShowToUser += message;
 	}
-	
-	public boolean getResult(){
+
+	public boolean getResult() {
 		return this.result;
 	}
-	
-	public String getAction(){
+
+	public String getAction() {
 		return this.actionExecuted;
 	}
-	
-	public String getDescription(){
+
+	public String getDescription() {
 		return this.description;
 	}
-	
-	public String getMessageShowToUser(){
+
+	public String getMessageShowToUser() {
 		return this.messageShowToUser;
 	}
 }

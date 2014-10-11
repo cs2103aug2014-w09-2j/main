@@ -2,85 +2,79 @@
 
 import java.util.Date;
 
-public class Task{
-	
-	/*enum TASK_STATUS{
-		In_Process, Expired,
-	}*/
-	
+public class Task {
+
+	/*
+	 * enum TASK_STATUS{ In_Process, Expired, }
+	 */
+
 	Date createdTime;
 	Date expiredDate;
 	String description;
 	String location;
-	//TASK_STATUS status;
-	
+
+	// TASK_STATUS status;
+
 	/**
 	 * Constructor
 	 */
-	
-	Task(String des, Date d){
+
+	Task(String des, Date d) {
 		this.createdTime = new Date();
 		this.expiredDate = d;
 		this.description = des;
 		this.location = null;
-		//setStatus();
+		// setStatus();
 	}
-	
-	Task(String des, Date d, String loc){
+
+	Task(String des, Date d, String loc) {
 		this.createdTime = new Date();
 		this.expiredDate = d;
 		this.description = des;
 		this.location = loc;
-		//setStatus();
+		// setStatus();
 	}
-	
+
 	/**
 	 * Methods
 	 */
-	
-	/*public void setStatus(){
-		if (expiredTime.after(createdTime)){
-			this.status = TASK_STATUS.In_Process;
-		}else {
-			this.status = TASK_STATUS.Expired;
-		}
-	}
-	
-	public void setStatusToBeExpired(){
-		this.status = TASK_STATUS.Expired;
-	}
-	
-	/*public void setStatusToBeInProcess(){
-		this.status = TASK_STATUS.In_Process;
-	}*/
-	
-	public void setExpiredDate(Date d){
+
+	/*
+	 * public void setStatus(){ if (expiredTime.after(createdTime)){ this.status
+	 * = TASK_STATUS.In_Process; }else { this.status = TASK_STATUS.Expired; } }
+	 * 
+	 * public void setStatusToBeExpired(){ this.status = TASK_STATUS.Expired; }
+	 * 
+	 * /*public void setStatusToBeInProcess(){ this.status =
+	 * TASK_STATUS.In_Process; }
+	 */
+
+	public void setExpiredDate(Date d) {
 		this.expiredDate = d;
 	}
-	
-	public void setDescription(String des){
+
+	public void setDescription(String des) {
 		this.description = des;
 	}
-	
-	public void setLocation(String loc){
+
+	public void setLocation(String loc) {
 		this.location = loc;
 	}
-	
-	public Date getExpiredDate(){
+
+	public Date getExpiredDate() {
 		return this.expiredDate;
 	}
 
-	public String getDescription(){
+	public String getDescription() {
 		return this.description;
 	}
-	
-	public String getLocation(){
+
+	public String getLocation() {
 		return this.location;
 	}
 
-	/*@Override
-	public void run() {
-		setStatusToBeExpired();
-		Executor.performCheckStatus();
-	}*/
+	/*
+	 * @Override public void run() { setStatusToBeExpired();
+	 * Executor.performCheckStatus(); }
+	 */
 }
