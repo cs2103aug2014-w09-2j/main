@@ -4,35 +4,29 @@ import java.util.Date;
 
 public class Task {
 
-	/*
-	 * enum TASK_STATUS{ In_Process, Expired, }
-	 */
-
-	Date createdTime;
-	Date expiredDate;
-	String description;
-	String location;
-
-	// TASK_STATUS status;
+	// task attributes.
+	public String taskName;
+	public Date taskDeadline;
+	public String taskDescription = "";
+	public String taskLocation = "";
+	
+	// currently not in use.
+	public String taskPriority = "";
+	private int taskId;
+	
+	// toString return a String in this format.
+	public static final String toStringFormat = "name: %s deadline: %s description: %s location: %s";
 
 	/**
 	 * Constructor
 	 */
-
-	Task(String des, Date d) {
-		this.createdTime = new Date();
-		this.expiredDate = d;
-		this.description = des;
-		this.location = null;
-		// setStatus();
+	Task(String name){
+		this.taskName = name;
 	}
 
-	Task(String des, Date d, String loc) {
-		this.createdTime = new Date();
-		this.expiredDate = d;
-		this.description = des;
-		this.location = loc;
-		// setStatus();
+	Task(String name, Date date) {
+		this.taskName = name;
+		this.taskDeadline = date;
 	}
 
 	/**
@@ -49,28 +43,33 @@ public class Task {
 	 * TASK_STATUS.In_Process; }
 	 */
 
-	public void setExpiredDate(Date d) {
-		this.expiredDate = d;
+	public void setTaskDeadline(Date d) {
+		this.taskDeadline = d;
 	}
 
-	public void setDescription(String des) {
-		this.description = des;
+	public void setTaskDescription(String des) {
+		this.taskDescription = des;
 	}
 
-	public void setLocation(String loc) {
-		this.location = loc;
+	public void setTaskLocation(String loc) {
+		this.taskLocation = loc;
 	}
 
-	public Date getExpiredDate() {
-		return this.expiredDate;
+	public Date getTaskDeadline() {
+		return this.taskDeadline;
 	}
 
-	public String getDescription() {
-		return this.description;
+	public String getTaskDescription() {
+		return this.taskDescription;
 	}
 
-	public String getLocation() {
-		return this.location;
+	public String getTaskLocation() {
+		return this.taskLocation;
+	}
+	
+	public String toStirng(){
+		String result = String.format(toStringFormat, this.taskName, this.taskDeadline, this.taskDescription, this.taskLocation);
+		return result;
 	}
 
 	/*
