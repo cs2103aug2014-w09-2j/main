@@ -52,14 +52,14 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
 		String[] tempArr = convertStrToArr(arg);
 
-		tempCommand.setDescription(tempArr[0]);
+		tempCommand.setTaskName(tempArr[0]);
 
 		if (tempArr.length > 1) {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Date deadline = null;
 
 			deadline = (Date) df.parse(tempArr[1]);
-			tempCommand.setDate(deadline);
+			tempCommand.setTaskDeadline(deadline);
 
 			if (tempArr.length > 2) {
 				String location = null;
@@ -71,7 +71,7 @@ public class Analyzer {
 					}
 				}
 
-				tempCommand.setLocation(location);
+				tempCommand.setTaskLocation(location);
 			}
 		}
 
@@ -82,9 +82,9 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("delete");
 
 		if (isInteger(arg)) {
-			tempCommand.setItemId(Integer.parseInt(arg));
+			tempCommand.setTaskId(Integer.parseInt(arg));
 		} else {
-			tempCommand.setDescription(arg);
+			tempCommand.setTaskName(arg);
 		}
 		return tempCommand;
 	}
@@ -103,7 +103,7 @@ public class Analyzer {
 
 	private static ExecutableCommand handleSearchCommand(String arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
-		tempCommand.setDescription(arg);
+		tempCommand.setTaskName(arg);
 
 		return tempCommand;
 	}
