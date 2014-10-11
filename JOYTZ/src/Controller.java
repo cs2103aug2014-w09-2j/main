@@ -19,7 +19,7 @@ public class Controller {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand, ExecutableCommand command, int numOfTasksAdded) {   
+    private static void displayUserOutput(String outputCommand, ExecutableCommand command) {   
         GUI.displayOutput(outputCommand);
         
         String date = command.getTaskDate().toString();
@@ -29,19 +29,17 @@ public class Controller {
         int taskId = command.getTaskId();
         String action = command.getAction();
         
-        if (date == null) {
-        	date = "";
-        }
-        if (name == null) {
-        	name = "";
-        }
-        if (location == null) {
-        	location = "";
-        }
-        if (description == null) {
-        	description = "";
-        }
-        if (action.equals("delete")) {
+        // Debugging code
+        System.out.println("Controller, displaying output: " + 
+			        		parsedCommand.getAction() + " " + 
+							parsedCommand.getTaskName() + " " +
+							parsedCommand.getTaskDate().toString() + " " + 
+							parsedCommand.getTaskDescription() + " " +
+							parsedCommand.getTaskLocation());
+        
+        if (action.equals("add")) {
+        	numOfTasksAdded++;	
+        } else if (action.equals("delete")) {
         	numOfTasksAdded--;
         }
         
@@ -54,8 +52,17 @@ public class Controller {
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
-	    	//System.out.println(parsedCommand.getAction() + parsedCommand.getTaskName());
 			
+			// Debugging code
+	    	System.out.println("Controller, after analyzer: " + 
+	    						parsedCommand.getAction() + " " + 
+	    						parsedCommand.getTaskName() + " " +
+	    						parsedCommand.getTaskDate().toString() + " " + 
+	    						parsedCommand.getTaskDescription() + " " +
+	    						parsedCommand.getTaskLocation());
+			//displayUserOutput("success", parsedCommand);
+	    	
+	    	
 			if(parsedCommand != null){
 	    		feedback = startExecutor(parsedCommand);
 	    		// getFeedbackFromExecutor();
@@ -67,11 +74,14 @@ public class Controller {
 	        
 	        outputString = proceedFeedback(feedback, parsedCommand);
 	        
-	        displayUserOutput(outputString, parsedCommand, numOfTasksAdded);
+	        System.out.println("Controller, before display: " + parsedCommand.getAction() + " " + parsedCommand.getTaskName());
+	        displayUserOutput(outputString, parsedCommand);
+	        
 		} catch (ParseException e) {
-			displayUserOutput(ERROR_INVALID_PARAMETER, parsedCommand, numOfTasksAdded);
+			displayUserOutput(ERROR_INVALID_PARAMETER, parsedCommand);
 			e.printStackTrace();
-		}      
+		}   
+		 
     }
     
     private static Command convertStringToCommand(String inputCommandString) {
@@ -87,25 +97,8 @@ public class Controller {
     }
     
     private static String proceedFeedback(Feedback feedback, ExecutableCommand commandObj) {
-    	/*String action = "";
-    	String taskName = "";
-    	Date time;
-    	String location;*/
     	String outputString;
     	
-    	/*if (feedback.getResult()) {
-	    	action = feedback.getMessageShowToUser();
-	    	if (commandObj.getDescription() != null) {
-	    		taskName = commandObj.getDescription();
-	    	} else {
-	    		taskName = "";
-	    	}
-	    	time = command.getTime();
-	    	location = command.getLocation();
-    	}*/
-    	
-    	// TODO: Proper output to be done later
-    	// TODO: Put in another function
     	if (commandObj == null) {
     		outputString = feedback.getMessageShowToUser();
     	} else if (feedback.getResult()) {

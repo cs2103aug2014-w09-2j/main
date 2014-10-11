@@ -4,11 +4,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -17,8 +14,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.GridLayout;
 
 public class GUI extends Composite {
@@ -47,18 +42,28 @@ public class GUI extends Composite {
     
     // Pass object in here
     public static void updateTable(int numOfTasks, String date, String name, String location, String description, String action, int taskId) {
-    	// Date
-    	// Name
-    	table.removeAll();
     	
+    	
+
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
+    		// we need to clear the table to prevent duplicate
+    		table.removeAll();
+    		
+    		// Debugging code
+    		System.out.println("GUI, displaying output: " + 
+    							action + " " + 
+			    				name + " " +
+			    				date + " " + 
+			    				description + " " +
+			    				location + " " +
+			    				taskId);
+    		
 	    	for (int i = 0; i < numOfTasks; i++) {
 	            TableItem item = new TableItem(table, SWT.NONE);
 	            item.setText(new String[] { i + ".", date, name, location, description });
 	        }
-    	}
-    	else if (action.equals("delete")) {
+    	} else if (action.equals("delete")) {
     		table.clear(taskId);
     	}
     }
@@ -81,7 +86,7 @@ public class GUI extends Composite {
         
         table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
         GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-        gd_table.heightHint = 244;
+        gd_table.heightHint = 248;
         table.setLayoutData(gd_table);
         toolkit.adapt(table);
         toolkit.paintBordersFor(table);
@@ -89,7 +94,7 @@ public class GUI extends Composite {
         table.setLinesVisible(true);
         
         tblclmnNo = new TableColumn(table, SWT.NONE);
-        tblclmnNo.setWidth(34);
+        tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
         
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
@@ -108,13 +113,18 @@ public class GUI extends Composite {
         tblclmnRemarks.setWidth(118);
         tblclmnRemarks.setText("Description");
         
-         outputField = new Text(this, SWT.FILL | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-         GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-         gd_outputField.widthHint = 370;
-         gd_outputField.heightHint = 73;
-         outputField.setLayoutData(gd_outputField);
-         outputField.setEditable(false);
-         toolkit.adapt(outputField, true, true);
+       // for (int i = 0; i < 5; i++) {
+       //     TableItem item = new TableItem(table, SWT.NONE);
+       //     item.setText(new String[] { i + "."});
+       // }
+        
+        outputField = new Text(this, SWT.FILL | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+        GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        gd_outputField.widthHint = 370;
+        gd_outputField.heightHint = 73;
+        outputField.setLayoutData(gd_outputField);
+        outputField.setEditable(false);
+        toolkit.adapt(outputField, true, true);
         
         inputField = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
         GridData gd_inputField = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
