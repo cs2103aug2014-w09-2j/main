@@ -11,12 +11,8 @@ public class ExecutableCommand {
 	private String taskPriority;
 	private int taskId;
 	private String errorMessage;
+	private String updateIndicator;
 	private String updatedTaskName;
-	private String updatedTaskDescription;
-	private Date updatedTaskDeadline;
-	private String updatedTaskLocation;
-	private String updatedTaskPriority;
-	private int updatedTaskId;
 
 	/**
 	 * Constructor
@@ -31,12 +27,8 @@ public class ExecutableCommand {
 		this.taskPriority = "";
 		this.taskId = -1;
 		this.errorMessage = "";
+		this.updateIndicator = "";
 		this.updatedTaskName = "";
-		this.updatedTaskDescription = "";
-		this.updatedTaskDeadline = new Date();
-		this.updatedTaskLocation = "";
-		this.updatedTaskPriority = "";
-		this.updatedTaskId = -1;
 	}
 
 	ExecutableCommand(String action) {
@@ -48,12 +40,8 @@ public class ExecutableCommand {
 		this.taskPriority = "";
 		this.taskId = -1;
 		this.errorMessage = "";
+		this.updateIndicator = "";
 		this.updatedTaskName = "";
-		this.updatedTaskDescription = "";
-		this.updatedTaskDeadline = new Date();
-		this.updatedTaskLocation = "";
-		this.updatedTaskPriority = "";
-		this.updatedTaskId = -1;
 	}
 
 	/**
@@ -92,24 +80,8 @@ public class ExecutableCommand {
 		this.errorMessage = message;
 	}
 
-	public void setUpdatedTaskId(int id) {
-		this.updatedTaskId = id;
-	}
-
-	public void setUpdatedTaskDescription(String description) {
-		this.updatedTaskDescription = description;
-	}
-
-	public void setUpdatedTaskDeadline(Date date) {
-		this.updatedTaskDeadline = date;
-	}
-
-	public void setUpdatedTaskLocation(String location) {
-		this.updatedTaskLocation = location;
-	}
-
-	public void setUpdatedTaskPriority(String priority) {
-		this.updatedTaskPriority = priority;
+	public void setUpdateIndicator(String indicator) {
+		this.updateIndicator = indicator;
 	}
 
 	public void setUpdatedTaskName(String name) {
@@ -152,27 +124,11 @@ public class ExecutableCommand {
 		return errorMessage;
 	}
 
+	public String getUpdateIndicator() {
+		return updateIndicator;
+	}
+
 	public String getUpdatedTaskName() {
 		return updatedTaskName;
-	}
-
-	public String getUpdatedTaskDescription() {
-		return updatedTaskDescription;
-	}
-
-	public Date getUpdatedTaskDeadline() {
-		return updatedTaskDeadline;
-	}
-
-	public String getUpdatedTaskLocation() {
-		return updatedTaskLocation;
-	}
-
-	public String getUpdatedTaskPriority() {
-		return updatedTaskPriority;
-	}
-
-	public int getUpdatedTaskId() {
-		return updatedTaskId;
 	}
 }

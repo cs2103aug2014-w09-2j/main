@@ -8,8 +8,13 @@ import java.text.SimpleDateFormat;
 public class Analyzer {
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.";
 	private static final String ERROR_NULL_COMMAND = "Command is not indicated.";
-	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated";
-	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated";
+	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.";
+	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.";
+	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item to be updated is not specified.";
+	private static final String ERROR_NULL_UPDATED_ITEM = "Item to be updated is not exist.";
+	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.";
+
+	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
@@ -74,10 +79,8 @@ public class Analyzer {
 		}
 
 		if (arg.length == 3) {
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			Date deadline = null;
+			Date deadline = (Date) df.parse(arg[2]);
 
-			deadline = (Date) df.parse(arg[2]);
 			tempCommand.setTaskDeadline(deadline);
 		}
 
@@ -110,9 +113,52 @@ public class Analyzer {
 		return tempCommand;
 	}
 
-	private static ExecutableCommand handleUpdateCommand(String[] arg) {
+	private static ExecutableCommand handleUpdateCommand(String[] arg)
+			throws ParseException {
 		ExecutableCommand tempCommand = new ExecutableCommand("update");
 
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1) {
+			tempCommand.setErrorMessage(ERROR_NULL_UPDATED_ITEM);
+
+			return tempCommand;
+		}
+
+		String taskToBeUpdated = arg[0];
+
+		if (isInteger(taskToBeUpdated)) {
+			tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
+		} else {
+			tempCommand.setTaskName(taskToBeUpdated);
+		}
+
+		String updateIndicator = arg[1];
+		String updatedItem = arg[2];
+
+		switch (updateIndicator) {
+		case "name":
+			tempCommand.setUpdatedTaskName(updatedItem);
+			break;
+		case "description":
+			tempCommand.setTaskDescription(updatedItem);
+			break;
+		case "deadline":
+			Date updatedDeadline = (Date) df.parse(updatedItem);
+
+			tempCommand.setTaskDeadline(updatedDeadline);
+			break;
+		case "location":
+			tempCommand.setTaskLocation(updatedItem);
+			break;
+		case "priority":
+			tempCommand.setTaskPriority(updatedItem);
+			break;
+		default:
+			tempCommand.setErrorMessage(ERROR_INVALID_UPDATE_INDICATOR);
+		}
 		return tempCommand;
 	}
 
