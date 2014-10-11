@@ -85,9 +85,28 @@ public class Storage {
 			history.add(listOfTask.get(itemId));
 		}
 		listOfTask.clear();
+<<<<<<< HEAD
 		
 		return true;
 	}
+=======
+		feedbackObject.setResult(true);
+
+		return feedbackObject;
+	}
+	
+	/*public static Feedback saveToFile(){
+		try {
+			openFile();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}*/
+>>>>>>> 3ec95dcebdd2d42169c1e234c230ead7b81876fd
 	
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with name {@fileName}

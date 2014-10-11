@@ -6,17 +6,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Analyzer {
+	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.";
+	private static final String ERROR_NULL_COMMAND = "Command is not indicated.";
+	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated";
+	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated";
+
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
 		String userCommand = userInput.getUserCommand();
+		ExecutableCommand outputCommand = new ExecutableCommand();
 
 		if (userCommand == "") {
-			return null;
+			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
+
+			return outputCommand;
 		}
 
 		String userAction = getUserAction(userCommand);
 		String[] commandArgument = getArgument(userCommand);
-		ExecutableCommand outputCommand = new ExecutableCommand();
 
 		switch (userAction) {
 		case "add":
@@ -51,6 +58,11 @@ public class Analyzer {
 			throws ParseException {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
 
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
+
+			return tempCommand;
+		}
 		tempCommand.setTaskName(arg[0]);
 
 		if (arg.length == 2) {
@@ -75,6 +87,12 @@ public class Analyzer {
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("delete");
 
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
+
+			return tempCommand;
+		}
+
 		if (isInteger(arg[0])) {
 			tempCommand.setTaskId(Integer.parseInt(arg[0]));
 		} else {
@@ -98,6 +116,13 @@ public class Analyzer {
 
 	private static ExecutableCommand handleSearchCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_SEARCH);
+
+			return tempCommand;
+		}
+
 		tempCommand.setTaskName(arg[0]);
 
 		return tempCommand;
@@ -118,7 +143,7 @@ public class Analyzer {
 		String[] arg = new String[cmd.length - 1];
 
 		for (int i = 1; i < cmd.length; i++) {
-			arg[i - 1] = cmd[i];
+			arg[i - 1] = cmd[i].trim();
 		}
 
 		return arg;
