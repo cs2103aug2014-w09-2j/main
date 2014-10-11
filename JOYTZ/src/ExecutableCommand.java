@@ -16,20 +16,20 @@ public class ExecutableCommand {
 	 */
 
 	ExecutableCommand() {
-		this.action = null;
-		this.taskName = null;
-		this.taskDescription = null;
+		this.action = "";
+		this.taskName = "";
+		this.taskDescription = "";
 		this.taskDeadline = null;
-		this.taskLocation = null;
+		this.taskLocation = "";
 		this.taskId = -1;
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
-		this.taskName = null;
-		this.taskDescription = null;
+		this.taskName = "";
+		this.taskDescription = "";
 		this.taskDeadline = null;
-		this.taskLocation = null;
+		this.taskLocation = "";
 		this.taskId = -1;
 	}
 

@@ -80,7 +80,7 @@ public class Analyzer {
 		} else {
 			tempCommand.setTaskName(arg[0]);
 		}
-
+		
 		return tempCommand;
 	}
 

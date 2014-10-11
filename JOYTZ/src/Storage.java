@@ -121,7 +121,7 @@ public class Storage {
 		return feedbackObject;
 	}
 	
-	public static Feedback saveToFile(){
+	/*public static Feedback saveToFile(){
 		try {
 			openFile();
 			
@@ -131,7 +131,7 @@ public class Storage {
 		
 		
 		
-	}
+	}*/
 	
 	public static void openFile() throws IOException{
 		file = new File(fileName);
