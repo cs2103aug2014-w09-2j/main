@@ -13,13 +13,15 @@ public class Controller {
 	private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
+    private static int numOfTasksAdded;
     
 	private static String getInput() {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand) {   
+    private static void displayUserOutput(String outputCommand, int numTasks) {   
         GUI.displayOutput(outputCommand);
+        GUI.updateTable(numTasks);
     }
     
     public static void startController() {
@@ -39,9 +41,10 @@ public class Controller {
 	    	}
 	        
 	        outputString = proceedFeedback(feedback, parsedCommand);
-	        displayUserOutput(outputString);
+	        
+	        displayUserOutput(outputString, ++numOfTasksAdded);
 		} catch (ParseException e) {
-			displayUserOutput(ERROR_INVALID_PARAMETER);
+			displayUserOutput(ERROR_INVALID_PARAMETER, numOfTasksAdded);
 			e.printStackTrace();
 		}      
     }

@@ -7,6 +7,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
@@ -20,7 +21,7 @@ public class GUI extends Composite {
     private static Text outputField;
     private static String textInputData = "";
     private static String textOutputData = "";
-    private Table table;
+    private static Table table;
     private TableColumn tblclmnRemarks;
 
     public static String getUserInput() {
@@ -29,9 +30,21 @@ public class GUI extends Composite {
     
     public static void displayOutput(String output) {
         if (textInputData.isEmpty() == false) {
-            textOutputData = outputField.getText();
-            textOutputData = textOutputData.concat(output + "\n");
-            outputField.setText(textOutputData);
+            // textOutputData = outputField.getText();
+            // textOutputData = textOutputData.concat(output + "\n");
+            outputField.setText(output);
+        }
+    }
+    
+    // Pass object in here
+    public static void updateTable(int numOfTasks) {
+    	// Date
+    	// Name
+    	table.removeAll();
+    	
+    	for (int i = 0; i < numOfTasks; i++) {
+            TableItem item = new TableItem(table, SWT.NONE);
+            item.setText(new String[] { "Date " + i, "some task", "some remark" });
         }
     }
     
@@ -62,7 +75,7 @@ public class GUI extends Composite {
          toolkit.adapt(outputField, true, true);
         
         table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
-        table.setBounds(10, 10, 433, 304);
+        table.setSize(425, 300);
         toolkit.adapt(table);
         toolkit.paintBordersFor(table);
         table.setHeaderVisible(true);
@@ -73,13 +86,13 @@ public class GUI extends Composite {
         tblclmnDate.setText("Due Date");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
-        tblclmnName.setWidth(100);
+        tblclmnName.setWidth(200);
         tblclmnName.setText("Name");
         
         tblclmnRemarks = new TableColumn(table, SWT.NONE);
-        tblclmnRemarks.setWidth(100);
+        tblclmnRemarks.setWidth(118);
         tblclmnRemarks.setText("Remarks");
-     
+        
         // We call the controller to process the user's 
         // input once the user presses "enter"
         inputField.addKeyListener(new KeyAdapter() {
