@@ -74,10 +74,8 @@ public class Storage {
 		}
 		
 		Task task = listOfTask.get(taskId);
-		
 		return task;
 	}
-
 
 	public static boolean clean() {
 		
@@ -85,15 +83,11 @@ public class Storage {
 			history.add(listOfTask.get(itemId));
 		}
 		listOfTask.clear();
-<<<<<<< HEAD
 		
 		return true;
 	}
-=======
-		feedbackObject.setResult(true);
 
-		return feedbackObject;
-	}
+	
 	
 	/*public static Feedback saveToFile(){
 		try {
@@ -106,7 +100,6 @@ public class Storage {
 		
 		
 	}*/
->>>>>>> 3ec95dcebdd2d42169c1e234c230ead7b81876fd
 	
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with name {@fileName}
@@ -136,19 +129,6 @@ public class Storage {
 		
 		return true;
 	}
-	
-
-	/*
-	 * public static Feedback checkStatus(){ Feedback feedbackObject = new
-	 * Feedback(true);
-	 * 
-	 * Date now = new Date(); for (int itemId = 0; itemId < listOfTask.size();
-	 * itemId++){ if (listOfTask.get(itemId).getTime().before(now)){ Task
-	 * removedTask = listOfTask.remove(itemId);
-	 * removedTask.setStatusToBeExpired(); history.add(removedTask);
-	 * feedbackObject.setMessageShowToUser(String.format(MESSAGE_EXPIRED,
-	 * removedTask.toString())); } } return feedbackObject; }
-	 */
 	
 	public static int getSizeOfListOfTask() {
 		int size = listOfTask.size();

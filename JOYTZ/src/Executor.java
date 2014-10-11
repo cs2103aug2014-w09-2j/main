@@ -100,7 +100,8 @@ public class Executor {
 		try{
 			for (int taskId=0; taskId<Storage.getSizeOfListOfTask(); taskId++){
 				Task task = Storage.get(taskId);
-				feedbackObject.setMessageShowToUser("display the task, finish later.");
+				feedbackObject.setMessageShowToUser("Here are the tasks\n");
+				feedbackObject.setDescription(task.toStirng());
 			}
 		} catch(Exception e){
 			feedbackObject.setResult(false);
