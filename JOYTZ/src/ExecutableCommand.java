@@ -4,10 +4,11 @@ import java.util.Date;
 
 public class ExecutableCommand {
 	private String action;
-	private String description;
-	private Date date;
-	private String location;
-	private int itemId;
+	private String taskName;
+	private String taskDescription;
+	private Date taskDeadline;
+	private String taskLocation;
+	private int taskId;
 
 	/**
 	 * Constructor
@@ -15,18 +16,20 @@ public class ExecutableCommand {
 
 	ExecutableCommand() {
 		this.action = null;
-		this.description = null;
-		this.date = null;
-		this.location = null;
-		this.itemId = -1;
+		this.taskName = null;
+		this.taskDescription = null;
+		this.taskDeadline = null;
+		this.taskLocation = null;
+		this.taskId = -1;
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
-		this.description = null;
-		this.date = null;
-		this.location = null;
-		this.itemId = -1;
+		this.taskName = null;
+		this.taskDescription = null;
+		this.taskDeadline = null;
+		this.taskLocation = null;
+		this.taskId = -1;
 	}
 
 	/**
@@ -36,41 +39,49 @@ public class ExecutableCommand {
 	public void setAction(String action) {
 		this.action = action;
 	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	
+	public void setTaskName(String name){
+		this.taskName = name;
+	}
+	
+	public void setTaskDescription(String description) {
+		this.taskDescription = description;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTaskDeadline(Date date) {
+		this.taskDeadline = date;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setTaskLocation(String location) {
+		this.taskLocation = location;
 	}
 
-	public void setItemId(int id) {
-		this.itemId = id;
+	public void setTaskId(int id) {
+		this.taskId = id;
 	}
 
 	public String getAction() {
 		return action;
 	}
-
-	public String getDescription() {
-		return description;
+	
+	public String getTaskName(){
+		return taskName;
+	}
+	
+	public String getTaskDescription() {
+		return taskDescription;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getTaskDate() {
+		return taskDeadline;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getTaskLocation() {
+		return taskLocation;
 	}
 
-	public int getItemId() {
-		return itemId;
+	public int getTaskId() {
+		return taskId;
 	}
 
 }

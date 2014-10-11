@@ -47,9 +47,9 @@ public class Executor {
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
-		String description = command.getDescription();
-		String location = command.getLocation();
-		Date date = command.getDate();
+		String description = command.getTaskDescription();
+		String location = command.getTaskLocation();
+		Date date = command.getTaskDate();
 		feedbackObject = new Feedback(false);
 
 		if (description == null) {
@@ -72,7 +72,7 @@ public class Executor {
 	}
 
 	private static void performDeleteAction(ExecutableCommand command) {
-		int itemId = command.getItemId();
+		int itemId = command.getTaskId();
 		feedbackObject = new Feedback(false);
 
 		if (itemId <= 0) {
