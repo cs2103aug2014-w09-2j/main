@@ -15,7 +15,7 @@ public class Analyzer {
 		}
 
 		String userAction = getUserAction(userCommand);
-		String commandArgument = getArgument(userCommand);
+		String[] commandArgument = getArgument(userCommand);
 		ExecutableCommand outputCommand = new ExecutableCommand();
 
 		switch (userAction) {
@@ -47,45 +47,40 @@ public class Analyzer {
 		return outputCommand;
 	}
 
-	private static ExecutableCommand handleAddCommand(String arg)
+	private static ExecutableCommand handleAddCommand(String[] arg)
 			throws ParseException {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
-		String[] tempArr = convertStrToArr(arg);
 
-		tempCommand.setTaskName(tempArr[0]);
+		tempCommand.setTaskName(arg[0]);
 
-		if (tempArr.length > 1) {
+		if (arg.length == 2) {
+			tempCommand.setTaskDescription(arg[1]);
+		}
+
+		if (arg.length == 3) {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Date deadline = null;
 
-			deadline = (Date) df.parse(tempArr[1]);
+			deadline = (Date) df.parse(arg[2]);
 			tempCommand.setTaskDeadline(deadline);
+		}
 
-			if (tempArr.length > 2) {
-				String location = null;
-
-				for (int i = 3; i < tempArr.length; i++) {
-					location = location.concat(tempArr[i]);
-					if (i + 1 != tempArr.length) {
-						location = location.concat(" ");
-					}
-				}
-
-				tempCommand.setTaskLocation(location);
-			}
+		if (arg.length == 4) {
+			tempCommand.setTaskLocation(arg[3]);
 		}
 
 		return tempCommand;
 	}
 
-	private static ExecutableCommand handleDeleteCommand(String arg) {
+	private static ExecutableCommand handleDeleteCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("delete");
 
-		if (isInteger(arg)) {
-			tempCommand.setTaskId(Integer.parseInt(arg));
+		if (isInteger(arg[0])) {
+			tempCommand.setTaskId(Integer.parseInt(arg[0]));
 		} else {
-			tempCommand.setTaskName(arg);
+			tempCommand.setTaskName(arg[0]);
 		}
+		
 		return tempCommand;
 	}
 
@@ -101,9 +96,9 @@ public class Analyzer {
 		return new ExecutableCommand("sort");
 	}
 
-	private static ExecutableCommand handleSearchCommand(String arg) {
+	private static ExecutableCommand handleSearchCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
-		tempCommand.setTaskName(arg);
+		tempCommand.setTaskName(arg[0]);
 
 		return tempCommand;
 	}
@@ -118,22 +113,19 @@ public class Analyzer {
 		return cmd[0].toLowerCase();
 	}
 
-	private static String getArgument(String userCommand) {
+	private static String[] getArgument(String userCommand) {
 		String[] cmd = convertStrToArr(userCommand);
-		String arg = "";
+		String[] arg = new String[cmd.length - 1];
 
 		for (int i = 1; i < cmd.length; i++) {
-			arg = arg.concat(cmd[i]);
-			if (i + 1 != cmd.length) {
-				arg = arg.concat(" ");
-			}
+			arg[i - 1] = cmd[i];
 		}
 
 		return arg;
 	}
 
 	private static String[] convertStrToArr(String str) {
-		String[] arr = str.trim().split("\\s+");
+		String[] arr = str.trim().split(",");
 
 		return arr;
 	}

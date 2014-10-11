@@ -8,6 +8,7 @@ public class ExecutableCommand {
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
+	private String taskPriority;
 	private int taskId;
 
 	/**
@@ -15,20 +16,20 @@ public class ExecutableCommand {
 	 */
 
 	ExecutableCommand() {
-		this.action = null;
-		this.taskName = null;
-		this.taskDescription = null;
+		this.action = "";
+		this.taskName = "";
+		this.taskDescription = "";
 		this.taskDeadline = null;
-		this.taskLocation = null;
+		this.taskLocation = "";
 		this.taskId = -1;
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
-		this.taskName = null;
-		this.taskDescription = null;
+		this.taskName = "";
+		this.taskDescription = "";
 		this.taskDeadline = null;
-		this.taskLocation = null;
+		this.taskLocation = "";
 		this.taskId = -1;
 	}
 
@@ -55,7 +56,11 @@ public class ExecutableCommand {
 	public void setTaskLocation(String location) {
 		this.taskLocation = location;
 	}
-
+	
+	public void setTaskPriority(String priority){
+		this.taskPriority = priority;
+	}
+	
 	public void setTaskId(int id) {
 		this.taskId = id;
 	}
@@ -79,7 +84,11 @@ public class ExecutableCommand {
 	public String getTaskLocation() {
 		return taskLocation;
 	}
-
+	
+	public String getTaskPriority(){
+		return taskPriority;
+	}
+	
 	public int getTaskId() {
 		return taskId;
 	}

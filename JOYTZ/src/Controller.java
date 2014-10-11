@@ -19,9 +19,27 @@ public class Controller {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand, int numTasks) {   
+    private static void displayUserOutput(String outputCommand, ExecutableCommand command, int numOfTasksAdded) {   
         GUI.displayOutput(outputCommand);
-        GUI.updateTable(numTasks);
+        String date = command.getTaskDate().toString();
+        String name = command.getTaskName();
+        String location = command.getTaskLocation();
+        String description = command.getTaskDescription();
+        
+        if (date == null) {
+        	date = "";
+        }
+        if (name == null) {
+        	name = "";
+        }
+        if (location == null) {
+        	location = "";
+        }
+        if (description == null) {
+        	description = "";
+        }
+        
+        GUI.updateTable(numOfTasksAdded, date, name, location, description);
     }
     
     public static void startController() {
@@ -42,9 +60,9 @@ public class Controller {
 	        
 	        outputString = proceedFeedback(feedback, parsedCommand);
 	        
-	        displayUserOutput(outputString, ++numOfTasksAdded);
+	        displayUserOutput(outputString, parsedCommand, numOfTasksAdded);
 		} catch (ParseException e) {
-			displayUserOutput(ERROR_INVALID_PARAMETER, numOfTasksAdded);
+			displayUserOutput(ERROR_INVALID_PARAMETER, parsedCommand, numOfTasksAdded);
 			e.printStackTrace();
 		}      
     }

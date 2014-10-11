@@ -23,6 +23,8 @@ public class GUI extends Composite {
     private static String textOutputData = "";
     private static Table table;
     private TableColumn tblclmnRemarks;
+    private TableColumn tblclmnNo;
+    private TableColumn tblclmnLocation;
 
     public static String getUserInput() {
         return textInputData;        
@@ -37,14 +39,14 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int numOfTasks) {
+    public static void updateTable(int numOfTasks, String date, String name, String location, String description) {
     	// Date
     	// Name
     	table.removeAll();
     	
     	for (int i = 0; i < numOfTasks; i++) {
             TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { "Date " + i, "some task", "some remark" });
+            item.setText(new String[] { i + ".", date, name, location, description });
         }
     }
     
@@ -81,17 +83,25 @@ public class GUI extends Composite {
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         
+        tblclmnNo = new TableColumn(table, SWT.NONE);
+        tblclmnNo.setWidth(34);
+        tblclmnNo.setText("No.");
+        
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
         tblclmnDate.setWidth(100);
         tblclmnDate.setText("Due Date");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
-        tblclmnName.setWidth(200);
-        tblclmnName.setText("Name");
+        tblclmnName.setWidth(92);
+        tblclmnName.setText("Task Name");
+        
+        tblclmnLocation = new TableColumn(table, SWT.NONE);
+        tblclmnLocation.setWidth(100);
+        tblclmnLocation.setText("Location");
         
         tblclmnRemarks = new TableColumn(table, SWT.NONE);
         tblclmnRemarks.setWidth(118);
-        tblclmnRemarks.setText("Remarks");
+        tblclmnRemarks.setText("Description");
         
         // We call the controller to process the user's 
         // input once the user presses "enter"
