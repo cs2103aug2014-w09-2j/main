@@ -46,15 +46,21 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int numOfTasks, String date, String name, String location, String description) {
+    public static void updateTable(int numOfTasks, String date, String name, String location, String description, String action, int taskId) {
     	// Date
     	// Name
     	table.removeAll();
     	
-    	for (int i = 0; i < numOfTasks; i++) {
-            TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { i + ".", date, name, location, description });
-        }
+    	// 1 row = 1 TableItem
+    	if (action.equals("add")) {
+	    	for (int i = 0; i < numOfTasks; i++) {
+	            TableItem item = new TableItem(table, SWT.NONE);
+	            item.setText(new String[] { i + ".", date, name, location, description });
+	        }
+    	}
+    	else if (action.equals("delete")) {
+    		table.clear(taskId);
+    	}
     }
     
     /**
@@ -63,7 +69,7 @@ public class GUI extends Composite {
      * @param style
      */
     private GUI(Composite parent, int style) {
-        super(parent, SWT.NONE);
+        super(parent, SWT.BORDER);
         addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                 toolkit.dispose();
@@ -74,8 +80,8 @@ public class GUI extends Composite {
         setLayout(new GridLayout(1, false));
         
         table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
-        GridData gd_table = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-        gd_table.heightHint = 149;
+        GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gd_table.heightHint = 244;
         table.setLayoutData(gd_table);
         toolkit.adapt(table);
         toolkit.paintBordersFor(table);
@@ -103,7 +109,7 @@ public class GUI extends Composite {
         tblclmnRemarks.setText("Description");
         
          outputField = new Text(this, SWT.FILL | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-         GridData gd_outputField = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+         GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
          gd_outputField.widthHint = 370;
          gd_outputField.heightHint = 73;
          outputField.setLayoutData(gd_outputField);
@@ -111,16 +117,10 @@ public class GUI extends Composite {
          toolkit.adapt(outputField, true, true);
         
         inputField = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-        GridData gd_inputField = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        GridData gd_inputField = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         gd_inputField.widthHint = 367;
         gd_inputField.heightHint = 53;
         inputField.setLayoutData(gd_inputField);
-        GridData gd = new GridData();
-        gd.heightHint = 53;
-        gd.widthHint = 221;
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        inputField.setLayoutData(gd);
         toolkit.adapt(inputField, true, true);
         
         // We call the controller to process the user's 
@@ -140,15 +140,8 @@ public class GUI extends Composite {
     
     public static void main(String[] args){
         Display display = new Display();
-        final Shell shell = new Shell(display);
-        
-        shell.addListener (SWT.Resize,  new Listener () {
-            public void handleEvent (Event e) {
-              Rectangle rect = shell.getClientArea ();
-              System.out.println(rect);
-            }
-          });
-        
+        Shell shell = new Shell(display);
+           
         GUI gui = new GUI(shell, SWT.NONE);
         shell.setText("JOYTZ");
         gui.pack();
