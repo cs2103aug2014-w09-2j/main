@@ -78,28 +78,17 @@ public class Storage {
 	}
 
 	public static boolean clean() {
-		
+		if (isEmpty()){
+			return true;
+		}
 		for (int itemId = 0; itemId < listOfTask.size(); itemId++) {
 			history.add(listOfTask.get(itemId));
 		}
 		listOfTask.clear();
-		
 		return true;
 	}
 
 	
-	
-	/*public static Feedback saveToFile(){
-		try {
-			openFile();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-	}*/
 	
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with name {@fileName}
@@ -107,32 +96,58 @@ public class Storage {
 	 * @throws IOException
 	 */
 	
-	public static void openFile() throws IOException{
+	public static void getFileReady() throws IOException{
 		file = new File(fileName);
 		if (!file.exists()){
 			file.createNewFile();
 		}
 		writer = new FileWriter (file);
+		fr = new FileReader(file);
+		br = new BufferedReader(fr);
+	}
+	
+	public static void saveFile() throws IOException{
+		
+		getFileReady();
+
 		date = new Date();
 		dateString= format.format(date);
 		writer.write(dateString);
-	}
-	
-	public static boolean saveToFile() throws IOException{
-		
-		openFile();
 		
 		for (int index=0; index<listOfTask.size(); index++){
 			String str = listOfTask.get(index).toString();
 			writer.write(str);
 		}
+		return;
+	}
+	
+	public static void reloadFile() throws IOException{
+		getFileReady();
 		
-		return true;
+		if (!isEmpty()){
+			clean();
+		}
+		
+		String s = br.readLine();
+		System.out.println("reloading file from " + s);
+		
+		s = br.readLine();
+		while(!s.equals("")){
+			Task t = new Task();
+			t.convertFromString(s);
+			listOfTask.add(t);
+		}
+		
+		return;
 	}
 	
 	public static int getSizeOfListOfTask() {
 		int size = listOfTask.size();
 		return size;
+	}
+	
+	public static boolean isEmpty(){
+		return listOfTask.isEmpty();
 	}
 
 
