@@ -32,6 +32,9 @@ public class Analyzer {
 		case "delete":
 			outputCommand = handleDeleteCommand(commandArgument);
 			break;
+		case "update":
+			outputCommand = handleUpdateCommand(commandArgument);
+			break;
 		case "display":
 			outputCommand = handleDisplayCommand();
 			break;
@@ -63,6 +66,7 @@ public class Analyzer {
 
 			return tempCommand;
 		}
+
 		tempCommand.setTaskName(arg[0]);
 
 		if (arg.length == 2) {
@@ -79,6 +83,10 @@ public class Analyzer {
 
 		if (arg.length == 4) {
 			tempCommand.setTaskLocation(arg[3]);
+		}
+
+		if (arg.length == 5) {
+			tempCommand.setTaskPriority(arg[4]);
 		}
 
 		return tempCommand;
@@ -98,6 +106,12 @@ public class Analyzer {
 		} else {
 			tempCommand.setTaskName(arg[0]);
 		}
+
+		return tempCommand;
+	}
+
+	private static ExecutableCommand handleUpdateCommand(String[] arg) {
+		ExecutableCommand tempCommand = new ExecutableCommand("update");
 
 		return tempCommand;
 	}

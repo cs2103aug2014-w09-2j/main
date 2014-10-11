@@ -47,55 +47,71 @@ public class Executor {
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
+
+		String name = command.getTaskName();
+		Date date = command.getTaskDate();
 		String description = command.getTaskDescription();
 		String location = command.getTaskLocation();
-		Date date = command.getTaskDate();
+		
 		feedbackObject = new Feedback(false);
 
-		if (description == null) {
-			feedbackObject.setMessageShowToUser(ERROR_NO_TASK_TO_BE_ADDED);
-		} else {
-			Task t = new Task(description, date, location);
-
-			feedbackObject = Storage.addTask(t);
-			if (feedbackObject.getResult()) {
-				if (date == null) {
-					feedbackObject.setMessageShowToUser(String.format(
-							MESSAGE_ADD_SUCCESSFUL_WITHOUT_DATE, description));
-				} else {
-					feedbackObject.setMessageShowToUser(String
-							.format(MESSAGE_ADD_SUCCESSFUL_WITH_DATE,
-									description, date));
-				}
-			}
+		if (name == null) {
+			feedbackObject.setMessageShowToUser("Task should contain a task name.");
 		}
+			
+		// create a task object with all the attributes.
+		Task t = new Task(name);
+		t.setTaskDeadline(date);
+		t.setTaskDescription(description);
+		t.setTaskLocation(location);
+		
+		// add the task into the storage.
+		try {
+			feedbackObject.setResult(Storage.add(t));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		feedbackObject.setMessageShowToUser("Message added sccessfully.");
 	}
 
 	private static void performDeleteAction(ExecutableCommand command) {
-		int itemId = command.getTaskId();
+		int TaskId = command.getTaskId();
 		feedbackObject = new Feedback(false);
 
-		if (itemId <= 0) {
-			feedbackObject.setMessageShowToUser(ERROR_INVALID_INDEX);
+		if (TaskId <= 0 || TaskId>Storage.getSizeOfListOfTask()) {
+			feedbackObject.setMessageShowToUser("Index out of range.");
 		} else {
-			feedbackObject = Storage.deleteTask(itemId);
+			try {
+				feedbackObject.setResult(Storage.delete(TaskId));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			if (feedbackObject.getResult()) {
-				feedbackObject.setMessageShowToUser(String.format(
-						MESSAGE_DELETE_SUCCESSFUL,
-						feedbackObject.getDescription()));
+				feedbackObject.setMessageShowToUser("task has been deleted.");
 			}
 		}
 	}
-
+	
 	private static void performDisplayAction() {
-		feedbackObject = Storage.displayTask();
+		
+		feedbackObject = new Feedback(true);
+		try{
+			for (int taskId=0; taskId<Storage.getSizeOfListOfTask(); taskId++){
+				Task task = Storage.get(taskId);
+				feedbackObject.setMessageShowToUser("display the task, finish later.");
+			}
+		} catch(Exception e){
+			feedbackObject.setResult(false);
+			e.printStackTrace();
+		}
 	}
 
 	private static void performClearAction() {
-		feedbackObject = Storage.clear();
+		feedbackObject.setResult(Storage.clean());
 		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+			feedbackObject.setMessageShowToUser("List has been cleaned.");
 		}
 	}
 
