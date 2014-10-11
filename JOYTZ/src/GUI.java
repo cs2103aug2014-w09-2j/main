@@ -39,14 +39,14 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int numOfTasks) {
+    public static void updateTable(int numOfTasks, String date, String name, String location, String description) {
     	// Date
     	// Name
     	table.removeAll();
     	
     	for (int i = 0; i < numOfTasks; i++) {
             TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { i + ".", "Date ", "some task", "some remark" });
+            item.setText(new String[] { i + ".", date, name, location, description });
         }
     }
     
