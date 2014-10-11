@@ -1,15 +1,44 @@
 //package V1;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 
 public class Storage {
+	
+	// this is the two list of tasks.
 	static ArrayList<Task> listOfTask = new ArrayList<Task>();
 	static ArrayList<Task> history = new ArrayList<Task>();
 	static int numberOfTask = 0;
+	
+	// the timer is used to track the expired date of task.
 	static Timer timer = new Timer();
-
+	
+	// this file contains all the messages that user want to record.
+	private static File file;
+	public static String fileName = "RecordFile.txt";
+		
+	// this file contains all the user commands.
+	private static FileWriter writer;
+	
+	// these three are for recording time information in the log file.
+	private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+	private static Date date;
+	private static String dateString;
+		
+	// this is only for reload the original user file.
+	private static FileReader fr;
+	private static BufferedReader br;
+	
+	// the message in the feedback object.
 	private static final String ERROR_INDEX_OUT_OF_RANGE = "The index '%d' is out of range.\n";
 	private static final String MESSAGE_DISPLAY_WITH_DATE = "%d. \"%s\" due on %s\n";
 	private static final String MESSAGE_DISPLAY_WITHOUT_DATE = "%d. \"%s\" without due date\n";
@@ -90,6 +119,29 @@ public class Storage {
 		feedbackObject.setResult(true);
 
 		return feedbackObject;
+	}
+	
+	public static Feedback saveToFile(){
+		try {
+			openFile();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	public static void openFile() throws IOException{
+		file = new File(fileName);
+		if (!file.exists()){
+			file.createNewFile();
+		}
+		writer = new FileWriter (file);
+		date = new Date();
+		dateString= format.format(date);
+		writer.write(dateString);
 	}
 
 	/*

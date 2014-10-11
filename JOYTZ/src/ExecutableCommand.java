@@ -8,6 +8,7 @@ public class ExecutableCommand {
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
+	private String taskPriority;
 	private int taskId;
 
 	/**
@@ -55,7 +56,11 @@ public class ExecutableCommand {
 	public void setTaskLocation(String location) {
 		this.taskLocation = location;
 	}
-
+	
+	public void setTaskPriority(String priority){
+		this.taskPriority = priority;
+	}
+	
 	public void setTaskId(int id) {
 		this.taskId = id;
 	}
@@ -79,7 +84,11 @@ public class ExecutableCommand {
 	public String getTaskLocation() {
 		return taskLocation;
 	}
-
+	
+	public String getTaskPriority(){
+		return taskPriority;
+	}
+	
 	public int getTaskId() {
 		return taskId;
 	}
