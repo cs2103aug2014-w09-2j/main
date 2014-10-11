@@ -4,7 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="/Users/WhyXce/Downloads/eclipse/plugins/org.eclipse.ui.forms_3.6.100.v20140422-1825.jar" sourcepath="/Users/WhyXce/Downloads/eclipse/plugins/org.eclipse.ui.forms.source_3.6.100.v20140422-1825.jar"/>
 	<classpathentry kind="lib" path="/Users/WhyXce/Downloads/swt-4.4-cocoa-macosx-x86_64/swt.jar"/>
-	<classpathentry kind="lib" path="org.eclipse.swt.win32.win32.x86_64_3.103.0.v20140605-2012.jar"/>
-	<classpathentry kind="lib" path="org.eclipse.ui.forms_3.6.100.v20140422-1825.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
