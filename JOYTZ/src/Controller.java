@@ -22,28 +22,31 @@ public class Controller {
     private static void displayUserOutput(String outputCommand, ExecutableCommand command) {   
         GUI.displayOutput(outputCommand);
         
-        String date = command.getTaskDeadline().toString();
-        String name = command.getTaskName();
-        String location = command.getTaskLocation();
-        String description = command.getTaskDescription();
-        int taskId = command.getTaskId();
-        String action = command.getAction();
-        
-        // Debugging code
-        System.out.println("Controller, displaying output: " + 
-			        		parsedCommand.getAction() + " " + 
-							parsedCommand.getTaskName() + " " +
-							parsedCommand.getTaskDeadline().toString() + " " + 
-							parsedCommand.getTaskDescription() + " " +
-							parsedCommand.getTaskLocation());
-        
-        if (action.equals("add")) {
-        	numOfTasksAdded++;	
-        } else if (action.equals("delete")) {
-        	numOfTasksAdded--;
-        }
-        
-        GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+		// If there is no error message
+        if (command.getErrorMessage().length() == 0) {
+			String date = command.getTaskDeadline().toString();
+			String name = command.getTaskName();
+			String location = command.getTaskLocation();
+			String description = command.getTaskDescription();
+			int taskId = command.getTaskId();
+			String action = command.getAction();
+			
+			// Debugging code
+			System.out.println("Controller, displaying output: " + 
+								parsedCommand.getAction() + " " + 
+								parsedCommand.getTaskName() + " " +
+								parsedCommand.getTaskDeadline().toString() + " " + 
+								parsedCommand.getTaskDescription() + " " +
+								parsedCommand.getTaskLocation());
+			
+			if (action.equals("add")) {
+				numOfTasksAdded++;	
+			} else if (action.equals("delete")) {
+				numOfTasksAdded--;
+			}
+			
+			GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+		}
     }
     
     public static void startController() {
@@ -53,30 +56,34 @@ public class Controller {
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
 			
-			// Debugging code
-	    	System.out.println("Controller, after analyzer: " + 
-	    						parsedCommand.getAction() + " " + 
-	    						parsedCommand.getTaskName() + " " +
-	    						parsedCommand.getTaskDeadline().toString() + " " + 
-	    						parsedCommand.getTaskDescription() + " " +
-	    						parsedCommand.getTaskLocation());
-			//displayUserOutput("success", parsedCommand);
-	    	
-	    	
-			if(parsedCommand != null){
-	    		feedback = startExecutor(parsedCommand);
-	    		// getFeedbackFromExecutor();
-	    	}
-	    	else{
-	    		feedback = new Feedback(false);
-	    		feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
-	    	}
-	        
-	        outputString = proceedFeedback(feedback, parsedCommand);
-	        
-	        System.out.println("Controller, before display: " + parsedCommand.getAction() + " " + parsedCommand.getTaskName());
-	        displayUserOutput(outputString, parsedCommand);
-	        
+			if (parsedCommand.getErrorMessage().length() != 0) {
+				// There is an error. 
+				 displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
+			} else {
+			
+				// Debugging code
+				System.out.println("Controller, after analyzer: " + 
+									parsedCommand.getAction() + " " + 
+									parsedCommand.getTaskName() + " " +
+									parsedCommand.getTaskDeadline().toString() + " " + 
+									parsedCommand.getTaskDescription() + " " +
+									parsedCommand.getTaskLocation());
+				//displayUserOutput("success", parsedCommand);
+				
+				
+				if(parsedCommand != null){
+					feedback = startExecutor(parsedCommand);
+					// getFeedbackFromExecutor();
+				} else{
+					feedback = new Feedback(false);
+					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
+				}
+				
+				outputString = proceedFeedback(feedback, parsedCommand);
+				
+				System.out.println("Controller, before display: " + parsedCommand.getAction() + " " + parsedCommand.getTaskName());
+				displayUserOutput(outputString, parsedCommand);
+	        }
 		} catch (ParseException e) {
 			displayUserOutput(ERROR_INVALID_PARAMETER, parsedCommand);
 			e.printStackTrace();

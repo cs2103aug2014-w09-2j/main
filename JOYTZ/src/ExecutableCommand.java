@@ -157,7 +157,7 @@ public class ExecutableCommand {
 			}
 		case "taskDeadline":
 			Date check = new Date(0, 0, 0);
-			if(getTaskDeadline().equals(check)){
+			if(getTaskDeadline().equals(null)){
 				result = true;
 			}
 		case "taskLocation":
