@@ -28,7 +28,7 @@ public class ExecutableCommand {
 		this.action = "";
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = new Date();
+		this.taskDeadline = new Date(0, 0, 0);
 		this.taskLocation = "";
 		this.taskPriority = "";
 		this.taskId = -1;
@@ -41,7 +41,7 @@ public class ExecutableCommand {
 		this.action = action;
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = new Date();
+		this.taskDeadline = new Date(0, 0, 0);
 		this.taskLocation = "";
 		this.taskPriority = "";
 		this.taskId = -1;
@@ -110,7 +110,7 @@ public class ExecutableCommand {
 		return taskDescription;
 	}
 
-	public Date getTaskDate() {
+	public Date getTaskDeadline() {
 		return taskDeadline;
 	}
 
@@ -136,5 +136,41 @@ public class ExecutableCommand {
 
 	public String getUpdatedTaskName() {
 		return updatedTaskName;
+	}
+	
+	public boolean contains(String data){
+		boolean result = false;
+		
+		switch(data){
+		case "taskName":
+			if(getTaskName() != ""){
+				result = true;
+			}
+		case "taskDescription":
+			if(getTaskDescription() != ""){
+				result = true;
+			}
+		case "taskDeadline":
+			Date check = new Date(0, 0, 0);
+			if(getTaskDeadline().equals(check)){
+				result = true;
+			}
+		case "taskLocation":
+			if(getTaskLocation() != ""){
+				result = true;
+			}
+		case "taskPriority":
+			if(getTaskPriority() != ""){
+				result = true;
+			}
+		case "taskId":
+			if(getTaskId() != -1){
+				result = true;
+			}
+		default:
+			result = false;
+		}
+		
+		return result;
 	}
 }

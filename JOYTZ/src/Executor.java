@@ -8,6 +8,7 @@ public class Executor {
 	private static final String MESSAGE_ADD_SUCCESSFUL_WITHOUT_DATE = "\"%s\" is added\n";
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "all content deleted successfully\n";
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted\n";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command.\nPlease try again.\n";
 	private static final String ERROR_INVALID_INDEX = "Invalid item index, please try again.\n";
 	private static final String ERROR_NO_TASK_TO_BE_ADDED = "No task is found to be added, please try again\n";
 
@@ -42,7 +43,7 @@ public class Executor {
 			break;
 		default:
 			Feedback feedBackObject = new Feedback(false);
-			feedBackObject.setMessageShowToUser("Invalid Command");
+			feedBackObject.setMessageShowToUser(ERROR_INVALID_COMMAND);
 		}
 
 		return feedbackObject;
@@ -54,9 +55,8 @@ public class Executor {
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
-
 		String name = command.getTaskName();
-		Date date = command.getTaskDate();
+		Date date = command.getTaskDeadline();
 		String description = command.getTaskDescription();
 		String location = command.getTaskLocation();
 		

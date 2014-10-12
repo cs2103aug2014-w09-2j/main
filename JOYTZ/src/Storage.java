@@ -87,8 +87,6 @@ public class Storage {
 		listOfTask.clear();
 		return true;
 	}
-
-	
 	
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with name {@fileName}

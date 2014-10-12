@@ -22,7 +22,7 @@ public class Controller {
     private static void displayUserOutput(String outputCommand, ExecutableCommand command) {   
         GUI.displayOutput(outputCommand);
         
-        String date = command.getTaskDate().toString();
+        String date = command.getTaskDeadline().toString();
         String name = command.getTaskName();
         String location = command.getTaskLocation();
         String description = command.getTaskDescription();
@@ -33,7 +33,7 @@ public class Controller {
         System.out.println("Controller, displaying output: " + 
 			        		parsedCommand.getAction() + " " + 
 							parsedCommand.getTaskName() + " " +
-							parsedCommand.getTaskDate().toString() + " " + 
+							parsedCommand.getTaskDeadline().toString() + " " + 
 							parsedCommand.getTaskDescription() + " " +
 							parsedCommand.getTaskLocation());
         
@@ -57,7 +57,7 @@ public class Controller {
 	    	System.out.println("Controller, after analyzer: " + 
 	    						parsedCommand.getAction() + " " + 
 	    						parsedCommand.getTaskName() + " " +
-	    						parsedCommand.getTaskDate().toString() + " " + 
+	    						parsedCommand.getTaskDeadline().toString() + " " + 
 	    						parsedCommand.getTaskDescription() + " " +
 	    						parsedCommand.getTaskLocation());
 			//displayUserOutput("success", parsedCommand);
