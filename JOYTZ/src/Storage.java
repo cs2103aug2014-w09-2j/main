@@ -40,12 +40,12 @@ public class Storage {
 	/**
 	 * addTask() method add in task passed by Executor.
 	 * @param Task t
-	 * @throws nullTaskException 
+	 * @throws Exception (null object) 
 	 */
 
 	public static boolean add(Task t) throws Exception {
 		if (t.equals(null)){
-			throw new Exception("the task object is null.");
+			throw new Exception(StringFormat.exceptionNullTaskObject);
 		}
 		
 		listOfTask.add(t);
@@ -57,7 +57,7 @@ public class Storage {
 
 	public static boolean delete(int taskId) throws Exception {
 		if (taskId<0 || taskId>getSizeOfListOfTask()){
-			throw new Exception("TaskId out of range. TaskId : " + taskId);
+			throw new Exception(String.format(StringFormat.exceptionTaskOutOfRange, taskId));
 		}
 		
 		Task removedTask = listOfTask.remove(taskId - 1);
@@ -70,7 +70,7 @@ public class Storage {
 	
 	public static Task get(int taskId) throws Exception{
 		if (taskId<0 || taskId>getSizeOfListOfTask()){
-			throw new Exception("TaskId out of range. TaskId : " + taskId);
+			throw new Exception(String.format(StringFormat.exceptionTaskOutOfRange, taskId));
 		}
 		
 		Task task = listOfTask.get(taskId);
@@ -113,7 +113,7 @@ public class Storage {
 		writer.write(dateString);
 		
 		for (int index=0; index<listOfTask.size(); index++){
-			String str = listOfTask.get(index).toString();
+			String str = listOfTask.get(index).convertTaskToString();
 			writer.write(str);
 		}
 		return;
@@ -147,6 +147,7 @@ public class Storage {
 	public static boolean isEmpty(){
 		return listOfTask.isEmpty();
 	}
+
 
 
 }

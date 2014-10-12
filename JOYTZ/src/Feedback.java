@@ -45,7 +45,7 @@ public class Feedback {
 	}
 
 	public void setMessageShowToUser(String message) {
-		this.messageShowToUser += message;
+		this.messageShowToUser = message;
 	}
 
 	public boolean getResult() {
