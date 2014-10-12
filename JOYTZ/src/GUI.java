@@ -1,5 +1,7 @@
 //package V1;
 
+import java.util.logging.Logger;
+
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -17,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
 public class GUI extends Composite {
+	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
     private Text inputField;
@@ -41,30 +44,34 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int numOfTasks, String date, String name, String location, String description, String action, int taskId) {
-    	
-    	
+    public static void updateTable(int taskNumber, String date, String name, String location, String description, String action, int taskId) {
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
     		// we need to clear the table to prevent duplicate
-    		table.removeAll();
+    		//table.removeAll();
     		
     		// Debugging code
-    		System.out.println("GUI, displaying output: " + 
-    							action + " " + 
-			    				name + " " +
-			    				date + " " + 
-			    				description + " " +
-			    				location + " " +
-			    				taskId);
+    		LOGGER.info("GUI, adding to table: " + 
+						action + " " + 
+	    				name + " " +
+	    				date + " " + 
+	    				description + " " +
+	    				location + " " +
+	    				taskId);
     		
-	    	for (int i = 0; i < numOfTasks; i++) {
-	            TableItem item = new TableItem(table, SWT.NONE);
-	            item.setText(new String[] { i + ".", date, name, location, description });
-	        }
+    	    TableItem item = new TableItem(table, SWT.NONE);
+            item.setText(new String[] { taskNumber + ".", date, name, location, description });
+	        
     	} else if (action.equals("delete")) {
-    		table.clear(taskId);
+    		table.clear(taskId-1);
+    	} else if (action.equals("display")) {
+    		if (taskNumber == 0) {
+    			table.removeAll();
+    		}
+    		
+    		TableItem item = new TableItem(table, SWT.NONE);
+            item.setText(new String[] { taskNumber + ".", date, name, location, description });
     	}
     }
     
@@ -98,11 +105,11 @@ public class GUI extends Composite {
         tblclmnNo.setText("No.");
         
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
-        tblclmnDate.setWidth(100);
+        tblclmnDate.setWidth(154);
         tblclmnDate.setText("Due Date");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
-        tblclmnName.setWidth(92);
+        tblclmnName.setWidth(154);
         tblclmnName.setText("Task Name");
         
         tblclmnLocation = new TableColumn(table, SWT.NONE);
@@ -150,7 +157,7 @@ public class GUI extends Composite {
     
     public static void main(String[] args){
         Display display = new Display();
-        Shell shell = new Shell(display);
+        Shell shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN );
            
         GUI gui = new GUI(shell, SWT.NONE);
         shell.setText("JOYTZ");
