@@ -3,13 +3,19 @@
 import java.util.Date;
 
 public class ExecutableCommand {
+	
+	// attributes in this object.
 	private String action;
 	private String taskName;
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
+	
+	// currently not in use.
 	private String taskPriority;
 	private int taskId;
+	
+	// this is for update method.
 	private String errorMessage;
 	private String updateIndicator;
 	private String updatedTaskName;

@@ -35,6 +35,8 @@ public class Executor {
 		case "search":
 			performSearchAction();
 			break;
+		case "update":
+			performUpdateFunction();
 		case "exit":
 			performExitAction();
 			break;
@@ -44,6 +46,11 @@ public class Executor {
 		}
 
 		return feedbackObject;
+	}
+
+	private static void performUpdateFunction() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
