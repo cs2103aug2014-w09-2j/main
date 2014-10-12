@@ -12,6 +12,7 @@ public class Analyzer {
 	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.";
 	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item to be updated is not specified.";
 	private static final String ERROR_NULL_UPDATED_ITEM = "Item to be updated is not exist.";
+	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.";
 	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.";
 
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -61,7 +62,7 @@ public class Analyzer {
 
 		return outputCommand;
 	}
-	
+
 	private static ExecutableCommand handleAddCommand(String[] arg)
 			throws ParseException {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
@@ -105,7 +106,12 @@ public class Analyzer {
 		}
 
 		if (isInteger(arg[0])) {
-			tempCommand.setTaskId(Integer.parseInt(arg[0]));
+			int index = Integer.parseInt(arg[0]);
+			if (index < 1) {
+				tempCommand.setErrorMessage(ERROR_INVALID_INDEX);
+			} else {
+				tempCommand.setTaskId(Integer.parseInt(arg[0]));
+			}
 		} else {
 			tempCommand.setTaskName(arg[0]);
 		}
