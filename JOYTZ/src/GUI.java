@@ -1,5 +1,7 @@
 //package V1;
 
+import java.util.logging.Logger;
+
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
@@ -17,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
 public class GUI extends Composite {
+	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
     private Text inputField;
@@ -42,8 +45,6 @@ public class GUI extends Composite {
     
     // Pass object in here
     public static void updateTable(int numOfTasks, String date, String name, String location, String description, String action, int taskId) {
-    	
-    	
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
@@ -51,13 +52,13 @@ public class GUI extends Composite {
     		table.removeAll();
     		
     		// Debugging code
-    		System.out.println("GUI, displaying output: " + 
-    							action + " " + 
-			    				name + " " +
-			    				date + " " + 
-			    				description + " " +
-			    				location + " " +
-			    				taskId);
+    		LOGGER.info("GUI, displaying output: " + 
+						action + " " + 
+	    				name + " " +
+	    				date + " " + 
+	    				description + " " +
+	    				location + " " +
+	    				taskId);
     		
 	    	for (int i = 0; i < numOfTasks; i++) {
 	            TableItem item = new TableItem(table, SWT.NONE);
