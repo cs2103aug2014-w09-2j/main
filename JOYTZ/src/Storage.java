@@ -132,7 +132,7 @@ public class Storage {
 		s = br.readLine();
 		while(!s.equals("")){
 			Task t = new Task();
-			t.convertFromString(s);
+			t.convertStringToTask(s);
 			listOfTask.add(t);
 		}
 		

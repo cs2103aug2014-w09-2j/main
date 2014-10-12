@@ -1,10 +1,19 @@
+import java.util.ArrayList;
+
 //package V1;
 
 public class Feedback {
+	
+	// attributes
 	boolean result;
+	String messageShowToUser;
+	
+	// ArrayList only for display method.
+	ArrayList<String> dispalyList = new ArrayList<String>();
+	
+	// currently not in use.
 	String actionExecuted;
 	String description;
-	String messageShowToUser;
 
 	/**
 	 * Constructor

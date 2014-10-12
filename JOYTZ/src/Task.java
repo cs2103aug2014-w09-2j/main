@@ -15,8 +15,6 @@ public class Task {
 	private int taskId;
 	
 	// another way to express a task.
-	public static final String taskString = "%s-%s-%s-%s";
-	public static final int splitLimites = 3;
 
 	/**
 	 * Constructor
@@ -72,21 +70,25 @@ public class Task {
 		return this.taskLocation;
 	}
 	
-	public String convertToString(){
-		String result = String.format(taskString, this.taskName, this.taskDeadline.getTime(), this.taskDescription, this.taskLocation);
+	
+	/**
+	 * Conversion between String and Task Object.
+	 * When converting back, must create a task Object, and use this object to convert.
+	 * Thus, all the information will be filled into this object.
+	 * @return
+	 */
+	public String convertTaskToString(){
+		String result = String.format(StringFormat.taskString, this.taskName, this.taskDeadline.getTime(), this.taskDescription, this.taskLocation);
 		return result;
 	}
 	
-	public void convertFromString(String taskString){
-		String[] taskAttribute = taskString.split("-", splitLimites);
+	public void convertStringToTask(String taskString){
+		String[] taskAttribute = taskString.split("-", StringFormat.splitLimites);
 		this.taskName = taskAttribute[0];
 		this.taskDeadline = new Date(Long.parseLong(taskAttribute[1]));
 		this.taskDescription = taskAttribute[2];
 		this.taskLocation = taskAttribute[3];
 	}
 
-	/*
-	 * @Override public void run() { setStatusToBeExpired();
-	 * Executor.performCheckStatus(); }
-	 */
+	
 }

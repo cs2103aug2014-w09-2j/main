@@ -11,7 +11,7 @@ public class Executor {
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\nPlease try again.\n";
 	private static final String ERROR_INVALID_INDEX = "Invalid item index, please try again.\n";
 	private static final String ERROR_NO_TASK_TO_BE_ADDED = "No task is found to be added, please try again\n";
-
+	private static final String MESSAGE_STORAGE_IS_EMPTY = "The storage is empty.\n";
 	public static Feedback feedbackObject;
 
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
@@ -53,6 +53,7 @@ public class Executor {
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 	private static void performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
@@ -82,6 +83,7 @@ public class Executor {
 		feedbackObject.setMessageShowToUser("Message added sccessfully.");
 	}
 
+	
 	private static void performDeleteAction(ExecutableCommand command) {
 		int TaskId = command.getTaskId();
 		feedbackObject = new Feedback(false);
@@ -101,17 +103,31 @@ public class Executor {
 		}
 	}
 	
+	
 	private static void performDisplayAction() {
 		
-		feedbackObject = new Feedback(true);
-		try{
-			for (int taskId=0; taskId<Storage.getSizeOfListOfTask(); taskId++){
-				feedbackObject.setMessageShowToUser("Here are the tasks\n");
-			}
-		} catch(Exception e){
-			feedbackObject.setResult(false);
-			e.printStackTrace();
+		feedbackObject = new Feedback(false);
+		
+		// check whether the Storage is empty. If so, add in corresponding message in feedbackObjcet.
+		if (Storage.isEmpty()){
+			feedbackObject.setMessageShowToUser(String.format(MESSAGE_STORAGE_IS_EMPTY));
+			return;
 		}
+		
+		// put every Task String in the Feedback.displayList.
+		feedbackObject.setMessageShowToUser("Here are the tasks\n");
+		for (int taskId=0; taskId<Storage.getSizeOfListOfTask(); taskId++){
+			Task currentTask;
+			
+			// in case the TaskId is out of range.
+			try {
+				currentTask = Storage.get(taskId);
+				feedbackObject.dispalyList.add(currentTask.convertTaskToString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	private static void performClearAction() {
