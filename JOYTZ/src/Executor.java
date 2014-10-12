@@ -27,7 +27,7 @@ public class Executor {
 	
 	// these are for Save and Reload.
 	private static final String MESSAGE_CONNOT_SAVE_TO_FILE = "Cannot store the Storage to file\n";
-	private static final String MESSAGE_SAVE_SUCCESSfULLY = "The Storage is saved successfully.\n";
+	private static final String MESSAGE_SAVED_SUCCESSFULLY = "The Storage is saved successfully.\n";
 
 	public static Feedback feedbackObject;
 
@@ -55,6 +55,7 @@ public class Executor {
 			break;
 		case "update":
 			performUpdateFunction(command);
+			break;
 		case "exit":
 			performExitAction();
 			break;
@@ -86,7 +87,6 @@ public class Executor {
 		case "name":
 			String newName = command.getTaskName();
 			targetTask.setTaskName(newName);
-			;
 			break;
 		case "description":
 			String newDescription = command.getTaskDescription();
@@ -110,7 +110,6 @@ public class Executor {
 		}
 		feedbackObject.setResult(true);
 		feedbackObject.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFULLY);
-		return;
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
@@ -123,7 +122,7 @@ public class Executor {
 
 		if (name == null) {
 			feedbackObject
-					.setMessageShowToUser(String.format(ERROR_TASK_WITHOUT_NAME));
+					.setMessageShowToUser(ERROR_TASK_WITHOUT_NAME);
 			return;
 		}
 
@@ -171,8 +170,7 @@ public class Executor {
 		// check whether the Storage is empty. If so, add in corresponding
 		// message in feedbackObjcet.
 		if (Storage.isEmpty()) {
-			feedbackObject.setMessageShowToUser(String
-					.format(MESSAGE_STORAGE_IS_EMPTY));
+			feedbackObject.setMessageShowToUser(MESSAGE_STORAGE_IS_EMPTY);
 			return;
 		}
 
@@ -192,7 +190,7 @@ public class Executor {
 		}
 
 		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser(String.format(MESSAGE_DISPLAY_SUCCESSFULLY));
+		feedbackObject.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
 		return;
 	}
 
@@ -201,7 +199,7 @@ public class Executor {
 		feedbackObject.setResult(Storage.clean());
 
 		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser(String.format(MESSAGE_CLEAR_SUCCESSFULLY));
+			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFULLY);
 		}
 		return;
 	}
@@ -229,7 +227,7 @@ public class Executor {
 
 		feedbackObject.setResult(true);
 		feedbackObject.setMessageShowToUser(String
-				.format(MESSAGE_SAVE_SUCCESSfULLY));
+				.format(MESSAGE_SAVED_SUCCESSFULLY));
 		System.exit(0);
 	}
 
