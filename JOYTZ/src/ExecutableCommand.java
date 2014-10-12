@@ -3,14 +3,25 @@
 import java.util.Date;
 
 public class ExecutableCommand {
+	
+	// attributes in this object.
 	private String action;
 	private String taskName;
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
-	private String taskPriority;
+	
+	// this is for delete method.
 	private int taskId;
+	
+	// currently not in use.
+	private String taskPriority;
+	
+	
+	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
+	
+	// these are for update method.
 	private String updateIndicator;
 	private String updatedTaskName;
 
