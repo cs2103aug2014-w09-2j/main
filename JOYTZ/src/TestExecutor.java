@@ -86,25 +86,22 @@ public class TestExecutor {
 
 		assertEquals(true, feedbackObject.getResult());
 	}
-	
+
 	/*
-	// test update function.
-	@Test
-	public void testUpdateMethod() {
-
-		Executor ex = initializeStroage();
-
-		command4 = new ExecutableCommand();
-		command4.setAction("update");
-		command4.setTaskId(0);
-		command4.setUpdateIndicator("location");
-		command4.setTaskLocation("com1,SR2");
-
-		ex.proceedAnalyzedCommand(command4);
-		Feedback feedbackObject = ex.getFeedback();
-
-		assertEquals(true, feedbackObject.getResult());
-	}
-	*/
+	 * // test update function.
+	 * 
+	 * @Test public void testUpdateMethod() {
+	 * 
+	 * Executor ex = initializeStroage();
+	 * 
+	 * command4 = new ExecutableCommand(); command4.setAction("update");
+	 * command4.setTaskId(0); command4.setUpdateIndicator("location");
+	 * command4.setTaskLocation("com1,SR2");
+	 * 
+	 * ex.proceedAnalyzedCommand(command4); Feedback feedbackObject =
+	 * ex.getFeedback();
+	 * 
+	 * assertEquals(true, feedbackObject.getResult()); }
+	 */
 
 }

@@ -9,21 +9,21 @@ public class Task {
 	public Date taskDeadline;
 	public String taskDescription = "";
 	public String taskLocation = "";
-	
+
 	// currently not in use.
 	public String taskPriority = "";
 	private int taskId;
-	
+
 	// another way to express a task.
 
 	/**
 	 * Constructor
 	 */
-	
-	Task(){	
+
+	Task() {
 	}
-	
-	Task(String name){
+
+	Task(String name) {
 		this.taskName = name;
 	}
 
@@ -35,11 +35,11 @@ public class Task {
 	/**
 	 * Methods
 	 */
-	
-	public void setTaskName(String name){
+
+	public void setTaskName(String name) {
 		this.taskName = name;
 	}
-	
+
 	public void setTaskDeadline(Date d) {
 		this.taskDeadline = d;
 	}
@@ -51,9 +51,13 @@ public class Task {
 	public void setTaskLocation(String loc) {
 		this.taskLocation = loc;
 	}
-	
-	public void setTaskPriority(String priority){
+
+	public void setTaskPriority(String priority) {
 		this.taskPriority = priority;
+	}
+
+	public String getTaskName() {
+		return this.taskName;
 	}
 
 	public Date getTaskDeadline() {
@@ -67,26 +71,28 @@ public class Task {
 	public String getTaskLocation() {
 		return this.taskLocation;
 	}
-	
-	
+
 	/**
-	 * Conversion between String and Task Object.
-	 * When converting back, must create a task Object, and use this object to convert.
-	 * Thus, all the information will be filled into this object.
+	 * Conversion between String and Task Object. When converting back, must
+	 * create a task Object, and use this object to convert. Thus, all the
+	 * information will be filled into this object.
+	 * 
 	 * @return
 	 */
-	public String convertTaskToString(){
-		String result = String.format(StringFormat.taskString, this.taskName, this.taskDeadline.getTime(), this.taskDescription, this.taskLocation);
+	public String convertTaskToString() {
+		String result = String.format(StringFormat.taskString, this.taskName,
+				this.taskDeadline.getTime(), this.taskDescription,
+				this.taskLocation);
 		return result;
 	}
-	
-	public void convertStringToTask(String taskString){
-		String[] taskAttribute = taskString.split("-", StringFormat.splitLimits);
+
+	public void convertStringToTask(String taskString) {
+		String[] taskAttribute = taskString
+				.split("-", StringFormat.splitLimits);
 		this.taskName = taskAttribute[0];
 		this.taskDeadline = new Date(Long.parseLong(taskAttribute[1]));
 		this.taskDescription = taskAttribute[2];
 		this.taskLocation = taskAttribute[3];
 	}
 
-	
 }

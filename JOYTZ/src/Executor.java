@@ -1,19 +1,33 @@
 //package V1;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class Executor {
-
-	private static final String MESSAGE_ADD_SUCCESSFUL_WITH_DATE = "\"%s\" due on %s is added\n";
-	private static final String MESSAGE_ADD_SUCCESSFUL_WITHOUT_DATE = "\"%s\" is added\n";
-	private static final String MESSAGE_CLEAR_SUCCESSFUL = "all content deleted successfully\n";
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted\n";
+	
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\nPlease try again.\n";
-	private static final String ERROR_INVALID_INDEX = "Invalid item index, please try again.\n";
-	private static final String ERROR_NO_TASK_TO_BE_ADDED = "No task is found to be added, please try again\n";
+	
+	// these are for Add Method.
+	private static final String MESSAGE_ADD_SUCCESSFUL = "Task %s is added successfully.\n";
+	private static final String ERROR_TASK_WITHOUT_NAME = "Task should contains a name.\n";
+	
+	// these are for Delete Method.
+	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted successfully.\n";
+	
+	// these are for Clear Method.
+	private static final String MESSAGE_CLEAR_SUCCESSFULLY = "all content cleared successfully\n";
+	
+	// these are for Display Method.
 	private static final String MESSAGE_STORAGE_IS_EMPTY = "The storage is empty.\n";
-	private static final String MESSAGE_WRONG_INDICATOR = "The indicator is wrong.\n";
-	private static final String MESSAGE_TASKID_OUT_OF_RANGE = "The taskid is out of range. TaskId : %d\n";
+	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Here are the tasks.\n";
+	
+	// these are for Update Method.
+	private static final String ERROR_WRONG_INDICATOR = "The indicator is wrong.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFULLY = "Task has been updated successfully.\n";
+	
+	// these are for Save and Reload.
+	private static final String MESSAGE_CONNOT_SAVE_TO_FILE = "Cannot store the Storage to file\n";
+	private static final String MESSAGE_SAVE_SUCCESSfULLY = "The Storage is saved successfully.\n";
 
 	public static Feedback feedbackObject;
 
@@ -64,8 +78,7 @@ public class Executor {
 		try {
 			targetTask = Storage.get(taskId);
 		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(String.format(
-					MESSAGE_TASKID_OUT_OF_RANGE, taskId));
+			feedbackObject.setMessageShowToUser(e.getMessage());
 			return;
 		}
 
@@ -92,10 +105,11 @@ public class Executor {
 			targetTask.setTaskPriority(newPriority);
 			break;
 		default:
-			feedbackObject.setMessageShowToUser(MESSAGE_WRONG_INDICATOR);
+			feedbackObject.setMessageShowToUser(ERROR_WRONG_INDICATOR);
 			return;
 		}
 		feedbackObject.setResult(true);
+		feedbackObject.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFULLY);
 		return;
 	}
 
@@ -109,7 +123,8 @@ public class Executor {
 
 		if (name == null) {
 			feedbackObject
-					.setMessageShowToUser("Task should contain a task name.");
+					.setMessageShowToUser(String.format(ERROR_TASK_WITHOUT_NAME));
+			return;
 		}
 
 		// create a task object with all the attributes.
@@ -122,32 +137,29 @@ public class Executor {
 		try {
 			feedbackObject.setResult(Storage.add(t));
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser("Message added sccessfully.");
-	}
-
-	private static void performDeleteAction(ExecutableCommand command) {
-		int TaskId = command.getTaskId();
-		feedbackObject = new Feedback(false, "delete");
-
-		// check whether the taskId is out of range.
-		if (TaskId <= 0 || TaskId > Storage.getSizeOfListOfTask()) {
-			feedbackObject.setMessageShowToUser("Index out of range.");
+			feedbackObject.setMessageShowToUser(e.getMessage());
 			return;
 		}
 
+		feedbackObject.setResult(true);
+		feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
+	}
+
+	private static void performDeleteAction(ExecutableCommand command) {
+		int taskId = command.getTaskId();
+		String taskName;
+		feedbackObject = new Feedback(false, "delete");
+
 		try {
-			feedbackObject.setResult(Storage.delete(TaskId));
+			taskName = Storage.get(taskId).getTaskName();
+			feedbackObject.setResult(Storage.delete(taskId));
 		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(String.format(
-					MESSAGE_TASKID_OUT_OF_RANGE, TaskId));
+			feedbackObject.setMessageShowToUser(e.getMessage());
+			return;
 		}
 
 		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser("task has been deleted.");
+			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE_SUCCESSFUL, taskName));
 		}
 		return;
 	}
@@ -174,12 +186,13 @@ public class Executor {
 				feedbackObject.dispalyList.add(currentTask
 						.convertTaskToString());
 			} catch (Exception e) {
-				e.printStackTrace();
+				feedbackObject.setMessageShowToUser(e.getMessage());
+				return;
 			}
 		}
 
 		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser("Here are the tasks\n");
+		feedbackObject.setMessageShowToUser(String.format(MESSAGE_DISPLAY_SUCCESSFULLY));
 		return;
 	}
 
@@ -188,7 +201,7 @@ public class Executor {
 		feedbackObject.setResult(Storage.clean());
 
 		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser("List has been cleaned.");
+			feedbackObject.setMessageShowToUser(String.format(MESSAGE_CLEAR_SUCCESSFULLY));
 		}
 		return;
 	}
@@ -202,7 +215,21 @@ public class Executor {
 	}
 
 	private static void performExitAction() {
-		feedbackObject = new Feedback(true, "exit");
+		feedbackObject = new Feedback(false, "exit");
+
+		// check whether the storage can store the information into a file.
+		try {
+			Storage.saveFile();
+		} catch (IOException e) {
+			feedbackObject.setMessageShowToUser(String
+					.format(MESSAGE_CONNOT_SAVE_TO_FILE));
+			e.printStackTrace();
+			return;
+		}
+
+		feedbackObject.setResult(true);
+		feedbackObject.setMessageShowToUser(String
+				.format(MESSAGE_SAVE_SUCCESSfULLY));
 		System.exit(0);
 	}
 
