@@ -83,7 +83,7 @@ public class Task {
 	}
 	
 	public void convertStringToTask(String taskString){
-		String[] taskAttribute = taskString.split("-", StringFormat.splitLimites);
+		String[] taskAttribute = taskString.split("-", StringFormat.splitLimits);
 		this.taskName = taskAttribute[0];
 		this.taskDeadline = new Date(Long.parseLong(taskAttribute[1]));
 		this.taskDescription = taskAttribute[2];
