@@ -10,8 +10,8 @@ public class Analyzer {
 	private static final String ERROR_NULL_COMMAND = "Command is not indicated.";
 	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.";
 	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.";
-	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item to be updated is not specified.";
-	private static final String ERROR_NULL_UPDATED_ITEM = "Item to be updated is not exist.";
+	private static final String ERROR_NULL_UPDATED_TASK = "Task to be updated is not indicated.";
+	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.";
 	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.";
 	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.";
 
@@ -124,11 +124,11 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("update");
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_NULL_UPDATED_TASK);
 
 			return tempCommand;
 		} else if (arg.length == 1) {
-			tempCommand.setErrorMessage(ERROR_NULL_UPDATED_ITEM);
+			tempCommand.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
 
 			return tempCommand;
 		}
