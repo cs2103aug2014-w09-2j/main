@@ -1,10 +1,13 @@
 //package V1;
 
 import java.text.ParseException;
+import java.util.logging.Logger;
 
 // import java.sql.Date;
 
 public class Controller {
+	private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+	
 	private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
 	private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
 	
@@ -24,6 +27,7 @@ public class Controller {
         
 		// If there is no error message
         if (command.getErrorMessage().length() == 0) {
+        	parseDisplayTasks();
 			String date = command.getTaskDeadline().toString();
 			String name = command.getTaskName();
 			String location = command.getTaskLocation();
@@ -32,12 +36,12 @@ public class Controller {
 			String action = command.getAction();
 			
 			// Debugging code
-			System.out.println("Controller, displaying output: " + 
-								parsedCommand.getAction() + " " + 
-								parsedCommand.getTaskName() + " " +
-								parsedCommand.getTaskDeadline().toString() + " " + 
-								parsedCommand.getTaskDescription() + " " +
-								parsedCommand.getTaskLocation());
+			LOGGER.info("Controller, displaying output: " + 
+						parsedCommand.getAction() + " " + 
+						parsedCommand.getTaskName() + " " +
+						parsedCommand.getTaskDeadline().toString() + " " + 
+						parsedCommand.getTaskDescription() + " " +
+						parsedCommand.getTaskLocation());
 			
 			if (action.equals("add")) {
 				numOfTasksAdded++;	
@@ -49,7 +53,22 @@ public class Controller {
 		}
     }
     
-    public static void startController() {
+    // Call updateTable() in each iteration
+    private static void parseDisplayTasks() {
+		// TODO Auto-generated method stub
+    	if (parsedCommand.getAction().equals("display")){
+			for(int i = 0; i < feedback.dispalyList.size(); i++){
+				System.out.println(feedback.dispalyList.get(i));
+			}
+		}
+    	//String[] arr = str.trim().split(",");
+
+		//return arr;
+	}
+
+	public static void startController() {
+    	LOGGER.info("Controller started");
+    	
     	inputCommandString = getInput();			
         inputCommandObject = convertStringToCommand(inputCommandString);
         
@@ -62,12 +81,12 @@ public class Controller {
 			} else {
 			
 				// Debugging code
-				System.out.println("Controller, after analyzer: " + 
-									parsedCommand.getAction() + " " + 
-									parsedCommand.getTaskName() + " " +
-									parsedCommand.getTaskDeadline().toString() + " " + 
-									parsedCommand.getTaskDescription() + " " +
-									parsedCommand.getTaskLocation());
+				LOGGER.info("Controller, after analyzer: " + 
+							parsedCommand.getAction() + " " + 
+							parsedCommand.getTaskName() + " " +
+							parsedCommand.getTaskDeadline().toString() + " " + 
+							parsedCommand.getTaskDescription() + " " +
+							parsedCommand.getTaskLocation());
 				//displayUserOutput("success", parsedCommand);
 				
 				
@@ -78,10 +97,9 @@ public class Controller {
 					feedback = new Feedback(false);
 					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 				}
-				
+
 				outputString = proceedFeedback(feedback, parsedCommand);
 				
-				System.out.println("Controller, before display: " + parsedCommand.getAction() + " " + parsedCommand.getTaskName());
 				displayUserOutput(outputString, parsedCommand);
 	        }
 		} catch (ParseException e) {
