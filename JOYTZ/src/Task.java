@@ -35,17 +35,11 @@ public class Task {
 	/**
 	 * Methods
 	 */
-
-	/*
-	 * public void setStatus(){ if (expiredTime.after(createdTime)){ this.status
-	 * = TASK_STATUS.In_Process; }else { this.status = TASK_STATUS.Expired; } }
-	 * 
-	 * public void setStatusToBeExpired(){ this.status = TASK_STATUS.Expired; }
-	 * 
-	 * /*public void setStatusToBeInProcess(){ this.status =
-	 * TASK_STATUS.In_Process; }
-	 */
-
+	
+	public void setTaskName(String name){
+		this.taskName = name;
+	}
+	
 	public void setTaskDeadline(Date d) {
 		this.taskDeadline = d;
 	}
@@ -56,6 +50,10 @@ public class Task {
 
 	public void setTaskLocation(String loc) {
 		this.taskLocation = loc;
+	}
+	
+	public void setTaskPriority(String priority){
+		this.taskPriority = priority;
 	}
 
 	public Date getTaskDeadline() {
