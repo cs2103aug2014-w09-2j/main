@@ -14,12 +14,17 @@ public class Task {
 	public String taskPriority = "";
 	private int taskId;
 	
-	// toString return a String in this format.
-	public static final String toStringFormat = "name: %s deadline: %s description: %s location: %s";
+	// another way to express a task.
+	public static final String taskString = "%s-%s-%s-%s";
+	public static final int splitLimites = 3;
 
 	/**
 	 * Constructor
 	 */
+	
+	Task(){	
+	}
+	
 	Task(String name){
 		this.taskName = name;
 	}
@@ -67,9 +72,17 @@ public class Task {
 		return this.taskLocation;
 	}
 	
-	public String toStirng(){
-		String result = String.format(toStringFormat, this.taskName, this.taskDeadline, this.taskDescription, this.taskLocation);
+	public String convertToString(){
+		String result = String.format(taskString, this.taskName, this.taskDeadline.getTime(), this.taskDescription, this.taskLocation);
 		return result;
+	}
+	
+	public void convertFromString(String taskString){
+		String[] taskAttribute = taskString.split("-", splitLimites);
+		this.taskName = taskAttribute[0];
+		this.taskDeadline = new Date(Long.parseLong(taskAttribute[1]));
+		this.taskDescription = taskAttribute[2];
+		this.taskLocation = taskAttribute[3];
 	}
 
 	/*
