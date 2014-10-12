@@ -29,7 +29,7 @@ public class Storage {
 	private static FileWriter writer;
 	
 	// these three are for recording current information in the log file.
-	private static DateFormat format = new SimpleDateFormat("New Log: yyyy-MM-dd HH:mm:ss.SSSSSS");
+	private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 	private static Date date;
 	private static String dateString;
 		
@@ -87,8 +87,6 @@ public class Storage {
 		listOfTask.clear();
 		return true;
 	}
-
-	
 	
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with name {@fileName}

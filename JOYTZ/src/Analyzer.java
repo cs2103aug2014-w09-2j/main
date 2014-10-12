@@ -61,7 +61,7 @@ public class Analyzer {
 
 		return outputCommand;
 	}
-
+	
 	private static ExecutableCommand handleAddCommand(String[] arg)
 			throws ParseException {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
