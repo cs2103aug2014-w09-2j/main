@@ -181,8 +181,8 @@ public class Storage {
 		dateString = format.format(date);
 		writer.write(dateString);
 
-		for (int index = 0; index < taskList.size(); index++) {
-			String str = taskList.get(index).convertTaskToString();
+		for (int i = 0; i < taskList.size(); i++) {
+			String str = taskList.get(i).convertTaskToString();
 			writer.write(str);
 		}
 		return;
@@ -204,8 +204,6 @@ public class Storage {
 			t.convertStringToTask(s);
 			taskList.add(t);
 		}
-
-		return;
 	}
 
 	private static Date convertStringToDate(String d) {
