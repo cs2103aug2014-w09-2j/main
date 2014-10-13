@@ -9,12 +9,10 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
-	private static final String ERROR_TASK_WITHOUT_NAME = "Task name should be mentioned.\n";
 
 	// these are for Delete Method.
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted successfully.\n";
-	private static final String ERROR_DELETE_UNSUCCESSFUL = "Fail to delete task %d: \"%s\".\n";
-	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.\n";
+	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
+	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
@@ -77,17 +75,12 @@ public class Executor {
 
 		feedback = new Feedback(false);
 
-		if (name == "") {
-			feedback.setErrorMessage(ERROR_TASK_WITHOUT_NAME);
-			return;
-		}
-
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
 		// add the task into the storage.
 		feedback.setResult(Storage.add(t));
-		
+
 		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
 				name));
 
@@ -98,25 +91,16 @@ public class Executor {
 		String taskName;
 		feedback = new Feedback(false);
 
-		if (taskId < 0) {
-			feedback.setErrorMessage(ERROR_INVALID_INDEX);
-			return;
-		}
-
-		try {
-			taskName = Storage.get(taskId).getTaskName();
-			feedback.setResult(Storage.delete(taskId));
-		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
-			return;
-		}
+		feedback.setResult(Storage.delete(taskId));
 
 		if (feedback.getResult()) {
+			taskName = Storage.get(taskId).getTaskName();
 			feedback.setMessageShowToUser(String.format(
 					MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
 		} else {
-			feedback.setErrorMessage(ERROR_DELETE_UNSUCCESSFUL);
+			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
+
 	}
 
 	private static void performUpdateAction(ExecutableCommand command) {
@@ -129,10 +113,6 @@ public class Executor {
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
-		if (taskId < 0) {
-			feedback.setErrorMessage(ERROR_INVALID_INDEX);
-			return;
-		}
 		System.out.println(updateIndicator);
 		System.out.println(command.getTaskDescription());
 		switch (updateIndicator) {

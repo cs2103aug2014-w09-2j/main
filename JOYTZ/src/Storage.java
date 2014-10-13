@@ -60,6 +60,7 @@ public class Storage {
 		}
 
 		Task removedTask = taskList.remove(taskId - 1);
+
 		// removedTask.cancel();
 		numberOfTask--;
 		history.add(removedTask);
@@ -101,13 +102,8 @@ public class Storage {
 
 	}
 
-	public static Task get(int taskId) throws Exception {
-		if (taskId > getTaskListSize()) {
-			throw new Exception(String.format(
-					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
-		}
-
-		return taskList.get(taskId);
+	public static Task get(int taskId) {
+		return taskList.get(taskId - 1);
 	}
 
 	public static boolean clean() {

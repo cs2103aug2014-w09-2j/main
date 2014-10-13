@@ -10,11 +10,7 @@ public class ExecutableCommand {
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
-
-	// this is for delete method.
 	private int taskId;
-
-	// currently not in use.
 	private String taskPriority;
 
 	// errorMessage is used for Analyzer to report error to controller.
