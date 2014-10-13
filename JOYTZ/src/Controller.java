@@ -27,43 +27,43 @@ public class Controller {
         
 		// If there is no error message
         if (command.getErrorMessage().length() == 0) {
-        	parseDisplayTasks();
-			String date = command.getTaskDeadline().toString();
+        	String action = command.getAction();
+        	String date = command.getTaskDeadline().toString();
 			String name = command.getTaskName();
 			String location = command.getTaskLocation();
 			String description = command.getTaskDescription();
 			int taskId = command.getTaskId();
-			String action = command.getAction();
 			
-			// Debugging code
+        	if (action.equals("add")) {
+				numOfTasksAdded++;
+				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+			
+        	} else if (action.equals("delete")) {
+				numOfTasksAdded--;
+				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+			
+        	} else if (action.equals("display")) {
+        		parseDisplayTasks(action);
+			}
+
+        	// Debugging code
 			LOGGER.info("Controller, displaying output: " + 
 						parsedCommand.getAction() + " " + 
 						parsedCommand.getTaskName() + " " +
 						parsedCommand.getTaskDeadline().toString() + " " + 
 						parsedCommand.getTaskDescription() + " " +
 						parsedCommand.getTaskLocation());
-			
-			if (action.equals("add")) {
-				numOfTasksAdded++;	
-			} else if (action.equals("delete")) {
-				numOfTasksAdded--;
-			}
-			
-			GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+
 		}
     }
     
     // Call updateTable() in each iteration
-    private static void parseDisplayTasks() {
-		// TODO Auto-generated method stub
-    	if (parsedCommand.getAction().equals("display")){
-			for(int i = 0; i < feedback.dispalyList.size(); i++){
-				System.out.println(feedback.dispalyList.get(i));
-			}
+    private static void parseDisplayTasks(String action) {
+		for(int i = 0; i < feedback.displayList.size(); i++){
+			System.out.println(feedback.displayList.get(i));	// Debug logging
+			String[] arr = feedback.displayList.get(i).trim().split("--");
+			GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
 		}
-    	//String[] arr = str.trim().split(",");
-
-		//return arr;
 	}
 
 	public static void startController() {
