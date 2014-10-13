@@ -12,9 +12,10 @@ import java.util.Date;
 import java.util.Timer;
 
 public class Storage {
+	public static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
 
 	// this is the two list of tasks.
-	public static ArrayList<Task> listOfTask = new ArrayList<Task>();
+	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	public static ArrayList<Task> history = new ArrayList<Task>();
 	public static int numberOfTask = 0;
 
@@ -46,25 +47,58 @@ public class Storage {
 	 */
 
 	public static boolean add(Task t) {
-		listOfTask.add(t);
+		taskList.add(t);
 		// timer.schedule(t, t.getTime());
 		numberOfTask++;
 
 		return true;
 	}
 
-	public static boolean delete(int taskId) throws Exception {
+	public static boolean delete(int taskId) {
 		if (taskId > getTaskListSize()) {
-			throw new Exception(String.format(
-					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
+			return false;
 		}
 
-		Task removedTask = listOfTask.remove(taskId - 1);
+		Task removedTask = taskList.remove(taskId - 1);
 		// removedTask.cancel();
 		numberOfTask--;
 		history.add(removedTask);
 
 		return true;
+	}
+
+	public static boolean update(int taskId, String updateIndicator,
+			String newInfo) {
+		if (taskId > getTaskListSize()) {
+			return false;
+		}
+
+		Task targetTask = taskList.get(taskId - 1);
+
+		switch (updateIndicator) {
+		case "name":
+			targetTask.setTaskName(newInfo);
+			break;
+		case "description":
+			targetTask.setTaskDescription(newInfo);
+			break;
+		case "deadline":
+			Date newDate = convertStringToDate(newInfo);
+			targetTask.setTaskDeadline(newDate);
+			break;
+		case "location":
+			targetTask.setTaskLocation(newInfo);
+			break;
+		case "priority":
+			targetTask.setTaskPriority(newInfo);
+		default:
+			return false;
+		}
+
+		taskList.set(taskId - 1, targetTask);
+
+		return true;
+
 	}
 
 	public static Task get(int taskId) throws Exception {
@@ -73,15 +107,15 @@ public class Storage {
 					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
 		}
 
-		return listOfTask.get(taskId);
+		return taskList.get(taskId);
 	}
 
 	public static boolean clean() {
 		if (!isEmpty()) {
-			for (int itemId = 0; itemId < listOfTask.size(); itemId++) {
-				history.add(listOfTask.get(itemId));
+			for (int itemId = 0; itemId < taskList.size(); itemId++) {
+				history.add(taskList.get(itemId));
 			}
-			listOfTask.clear();
+			taskList.clear();
 		}
 		return true;
 	}
@@ -112,8 +146,8 @@ public class Storage {
 		dateString = format.format(date);
 		writer.write(dateString);
 
-		for (int index = 0; index < listOfTask.size(); index++) {
-			String str = listOfTask.get(index).convertTaskToString();
+		for (int index = 0; index < taskList.size(); index++) {
+			String str = taskList.get(index).convertTaskToString();
 			writer.write(str);
 		}
 		return;
@@ -133,18 +167,27 @@ public class Storage {
 		while (!s.equals("")) {
 			Task t = new Task();
 			t.convertStringToTask(s);
-			listOfTask.add(t);
+			taskList.add(t);
 		}
 
 		return;
 	}
 
+	private static Date convertStringToDate(String d) {
+		String[] temp = d.trim().split("-");
+		int year = Integer.parseInt(temp[0]);
+		int month = Integer.parseInt(temp[1]);
+		int day = Integer.parseInt(temp[2]);
+
+		return new Date(day, month, year);
+	}
+
 	public static int getTaskListSize() {
-		return listOfTask.size();
+		return taskList.size();
 	}
 
 	public static boolean isEmpty() {
-		return listOfTask.isEmpty();
+		return taskList.isEmpty();
 	}
 
 }

@@ -24,6 +24,7 @@ public class Executor {
 	// these are for Update Method.
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task has been updated successfully.\n";
+	private static final String ERROR_UPDATE_UNSUCCESSFUL = "Fail to update \"%s\".";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -122,7 +123,8 @@ public class Executor {
 	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
-		Task targetTask;
+		String taskName = command.getTaskName();
+		String newInfo;
 
 		feedback = new Feedback(false);
 
@@ -133,40 +135,35 @@ public class Executor {
 			return;
 		}
 
-		try {
-			targetTask = Storage.get(taskId);
-		} catch (Exception e) {
-			feedback.setMessageShowToUser(e.getMessage());
-			return;
-		}
-
 		switch (updateIndicator) {
 		case "name":
-			String newName = command.getTaskName();
-			targetTask.setTaskName(newName);
+			newInfo = command.getTaskName();
 			break;
 		case "description":
-			String newDescription = command.getTaskDescription();
-			targetTask.setTaskDescription(newDescription);
+			newInfo = command.getTaskDescription();
 			break;
 		case "deadline":
-			Date newDeadline = command.getTaskDeadline();
-			targetTask.setTaskDeadline(newDeadline);
+			String newDate = command.getTaskDeadline().toString();
+			newInfo = newDate;
 			break;
 		case "location":
-			String newLocation = command.getTaskLocation();
-			targetTask.setTaskLocation(newLocation);
+			newInfo = command.getTaskLocation();
 			break;
 		case "priority":
-			String newPriority = command.getTaskPriority();
-			targetTask.setTaskPriority(newPriority);
+			newInfo = command.getTaskPriority();
 			break;
 		default:
 			feedback.setMessageShowToUser(ERROR_INVALID_INDICATOR);
 			return;
 		}
-		feedback.setResult(true);
-		feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
+
+		feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
+
+		if (feedback.getResult()) {
+			feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
+		} else {
+			feedback.setErrorMessage(ERROR_UPDATE_UNSUCCESSFUL);
+		}
 	}
 
 	private static void performClearAction() {
@@ -175,9 +172,8 @@ public class Executor {
 
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
-		}
-		else{
-			feedback.setErrorMessage(ERROR_CLEAR_UNSUCCESSFUL);
+		} else {
+			feedback.setErrorMessage(String.format(ERROR_CLEAR_UNSUCCESSFUL));
 		}
 		return;
 	}
