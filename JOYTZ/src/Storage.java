@@ -14,12 +14,12 @@ import java.util.Timer;
 public class Storage {
 
 	// this is the two list of tasks.
-	static ArrayList<Task> listOfTask = new ArrayList<Task>();
-	static ArrayList<Task> history = new ArrayList<Task>();
-	static int numberOfTask = 0;
+	public static ArrayList<Task> listOfTask = new ArrayList<Task>();
+	public static ArrayList<Task> history = new ArrayList<Task>();
+	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
-	static Timer timer = new Timer();
+	public static Timer timer = new Timer();
 
 	// this file contains all the messages that user want to record.
 	private static File file;
@@ -42,9 +42,7 @@ public class Storage {
 	 * addTask() method add in task passed by Executor.
 	 * 
 	 * @param Task
-	 *            t
 	 * @throws Exception
-	 *             (null object)
 	 */
 
 	public static boolean add(Task t) {
