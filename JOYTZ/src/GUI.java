@@ -52,13 +52,15 @@ public class GUI extends Composite {
     		//table.removeAll();
     		
     		// Debugging code
-    		LOGGER.info("GUI, adding to table: " + 
-						action + " " + 
-	    				name + " " +
-	    				date + " " + 
-	    				description + " " +
-	    				location + " " +
-	    				taskId);
+    		LOGGER.info("==============\n" +
+						"Writing to table:  \n" + 
+						"	Action = " + action + "\n" + 
+						"	Name = " + name + "\n" +
+						"	Deadline = " + date + "\n" + 
+						"	Description = " + description + "\n" +
+						"	Location = " + location + "\n" +
+						"	Priority = not implemented in code yet" + "\n" +
+    					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { taskNumber + ".", date, name, location, description });

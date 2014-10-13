@@ -47,28 +47,30 @@ public class Controller {
 			//}
 
         	// Debugging code
-			LOGGER.info("Controller, displaying output: " + 
+			/*LOGGER.info("---------------------\n " +
+						"Controller, displaying output: " + 
 						parsedCommand.getAction() + " " + 
 						parsedCommand.getTaskName() + " " +
 						parsedCommand.getTaskDeadline().toString() + " " + 
 						parsedCommand.getTaskDescription() + " " +
 						parsedCommand.getTaskLocation());
-
+			*/
 		}
     }
     
     // Call updateTable() in each iteration
     private static void parseDisplayTasks(String action) {
+    	System.out.println("===================");
+    	System.out.println("Display string from feedback object: ");
 		for(int i = 0; i < feedback.getTaskList().size(); i++){
-			System.out.println(feedback.getTaskList().get(i));	// Debug logging
+			System.out.println("	" + feedback.getTaskList().get(i));	// Debug logging
 			//String[] arr = feedback.getTaskList().get(i).trim().split("--");
 			//GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
 		}
+		System.out.println("===================");
 	}
 
 	public static void startController() {
-    	LOGGER.info("Controller started");
-    	
     	inputCommandString = getInput();			
         inputCommandObject = convertStringToCommand(inputCommandString);
         
@@ -78,17 +80,18 @@ public class Controller {
 			if (parsedCommand.getErrorMessage().length() != 0) {
 				// There is an error. 
 				 displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
-			} else {
+			} else {	
 			
 				// Debugging code
-				LOGGER.info("Controller, after analyzer: " + 
-							parsedCommand.getAction() + " " + 
-							parsedCommand.getTaskName() + " " +
-							parsedCommand.getTaskDeadline().toString() + " " + 
-							parsedCommand.getTaskDescription() + " " +
-							parsedCommand.getTaskLocation());
-				//displayUserOutput("success", parsedCommand);
-				
+				LOGGER.info("==============\n" +
+							"After analyzer: \n" + 
+							"	Action = " + parsedCommand.getAction() + "\n" + 
+							"	Name = " + parsedCommand.getTaskName() + "\n" +
+							"	Deadline = " + parsedCommand.getTaskDeadline().toString() + "\n" + 
+							"	Description = " + parsedCommand.getTaskDescription() + "\n" +
+							"	Location = " + parsedCommand.getTaskLocation() + "\n" +
+							"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
+							"====================\n");
 				
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
