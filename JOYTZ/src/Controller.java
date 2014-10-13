@@ -63,10 +63,10 @@ public class Controller {
 			// assertEquals(5, arrayLength);
 
 			if (arrayLength == 1) {
-				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, -1);
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i);
 			}
 			else if (arrayLength == 2) {
-				GUI.updateTable(i, arr[1], arr[0], "No location", "No description", action, -1);
+				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i);
 			}
 			
 		}
