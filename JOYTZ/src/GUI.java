@@ -71,7 +71,7 @@ public class GUI extends Composite {
     					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { taskNumber + ".", date, name, location, description });
+            item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description });
 	        
     	} else if (action.equals("delete")) {
     		// Debugging code
