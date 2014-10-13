@@ -68,7 +68,10 @@ public class Task {
 	public String getTaskLocation() {
 		return this.taskLocation;
 	}
-
+	
+	public String getTaskPriority(){
+		return this.taskPriority;
+	}
 	/**
 	 * Conversion between String and Task Object. When converting back, must
 	 * create a task Object, and use this object to convert. Thus, all the

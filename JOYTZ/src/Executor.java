@@ -61,6 +61,10 @@ public class Executor {
 			Feedback feedBackObject = new Feedback(false);
 			feedBackObject.setMessageShowToUser(ERROR_INVALID_COMMAND);
 		}
+		
+		if(feedback.getResult()){
+			feedback.setTaskList(Storage.getTaskList());
+		}
 
 		return feedback;
 	}
@@ -108,7 +112,7 @@ public class Executor {
 			taskName = Storage.get(taskId).getTaskName();
 			feedback.setResult(Storage.delete(taskId));
 		} catch (Exception e) {
-			feedback.setMessageShowToUser(e.getMessage());
+			feedback.setErrorMessage(e.getMessage());
 			return;
 		}
 
@@ -194,7 +198,7 @@ public class Executor {
 		try {
 			Storage.saveFile();
 		} catch (IOException e) {
-			feedback.setMessageShowToUser(String
+			feedback.setErrorMessage(String
 					.format(ERROR_FAIL_SAVE_TO_FILE));
 			e.printStackTrace();
 			return;
@@ -204,7 +208,7 @@ public class Executor {
 		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 		System.exit(0);
 	}
-
+	
 	public static Feedback getFeedback() {
 		return feedback;
 	}

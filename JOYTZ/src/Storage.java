@@ -120,6 +120,41 @@ public class Storage {
 		return true;
 	}
 
+	public static ArrayList<String> getTaskList() {
+		ArrayList<String> displayList = new ArrayList<String>();
+
+		for (int i = 0; i < taskList.size(); i++) {
+			Task task = taskList.get(i);
+			String taskString = task.getTaskName();
+			Date checkDate = new Date(0, 0, 0);
+
+			if (!task.getTaskDescription().equals("")) {
+				taskString = taskString.concat("~");
+				taskString = taskString.concat(task.getTaskDescription());
+			}
+
+			if (!task.getTaskDeadline().equals(checkDate)) {
+				taskString = taskString.concat("~");
+				taskString = taskString.concat(task.getTaskDeadline()
+						.toString());
+			}
+
+			if (!task.getTaskLocation().equals("")) {
+				taskString = taskString.concat("~");
+				taskString = taskString.concat(task.getTaskLocation());
+			}
+
+			if (!task.getTaskPriority().equals("")) {
+				taskString = taskString.concat("~");
+				taskString = taskString.concat(task.getTaskDescription());
+			}
+
+			displayList.add(taskString);
+		}
+
+		return displayList;
+	}
+
 	/**
 	 * openFile() will set up the File and FileWriter, also create a file with
 	 * name {@fileName} a new line will be added to the file to
