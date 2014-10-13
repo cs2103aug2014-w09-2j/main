@@ -15,6 +15,7 @@ public class Analyzer {
 	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
 	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.\n";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -55,7 +56,7 @@ public class Analyzer {
 			outputCommand = handleExitCommand();
 			break;
 		default:
-			outputCommand = null;
+			outputCommand.setErrorMessage(ERROR_INVALID_COMMAND);
 		}
 
 		return outputCommand;
