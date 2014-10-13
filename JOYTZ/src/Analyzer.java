@@ -144,6 +144,8 @@ public class Analyzer {
 
 		String updateIndicator = arg[1];
 		String updatedItem = arg[2];
+		
+		tempCommand.setUpdateIndicator(updateIndicator);
 
 		switch (updateIndicator) {
 		case "name":

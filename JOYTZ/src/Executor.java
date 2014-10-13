@@ -134,7 +134,8 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_INDEX);
 			return;
 		}
-
+		System.out.println(updateIndicator);
+		System.out.println(command.getTaskDescription());
 		switch (updateIndicator) {
 		case "name":
 			newInfo = command.getTaskName();
@@ -153,7 +154,7 @@ public class Executor {
 			newInfo = command.getTaskPriority();
 			break;
 		default:
-			feedback.setMessageShowToUser(ERROR_INVALID_INDICATOR);
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
 
@@ -162,7 +163,7 @@ public class Executor {
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
 		} else {
-			feedback.setErrorMessage(ERROR_UPDATE_UNSUCCESSFUL);
+			feedback.setErrorMessage(String.format(ERROR_UPDATE_UNSUCCESSFUL, taskName));
 		}
 	}
 
