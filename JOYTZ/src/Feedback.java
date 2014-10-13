@@ -9,7 +9,7 @@ public class Feedback {
 	String messageShowToUser;
 	
 	// ArrayList only for display method.
-	ArrayList<String> dispalyList = new ArrayList<String>();
+	ArrayList<String> displayList = new ArrayList<String>();
 	
 	// currently not in use.
 	String actionExecuted;

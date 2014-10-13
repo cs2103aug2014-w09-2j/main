@@ -59,9 +59,9 @@ public class Controller {
     
     // Call updateTable() in each iteration
     private static void parseDisplayTasks(String action) {
-		for(int i = 0; i < feedback.dispalyList.size(); i++){
-			System.out.println(feedback.dispalyList.get(i));	// Debug logging
-			String[] arr = feedback.dispalyList.get(i).trim().split("--");
+		for(int i = 0; i < feedback.displayList.size(); i++){
+			System.out.println(feedback.displayList.get(i));	// Debug logging
+			String[] arr = feedback.displayList.get(i).trim().split("--");
 			GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
 		}
 	}

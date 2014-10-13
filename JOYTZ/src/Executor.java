@@ -181,7 +181,7 @@ public class Executor {
 			// in case the TaskId is out of range.
 			try {
 				currentTask = Storage.get(taskId);
-				feedbackObject.dispalyList.add(currentTask
+				feedbackObject.displayList.add(currentTask
 						.convertTaskToString());
 			} catch (Exception e) {
 				feedbackObject.setMessageShowToUser(e.getMessage());
