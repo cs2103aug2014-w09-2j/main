@@ -54,7 +54,7 @@ public class Executor {
 			performSearchAction();
 			break;
 		case "update":
-			performUpdateFunction(command);
+			performUpdateAction(command);
 		case "exit":
 			performExitAction();
 			break;
@@ -66,15 +66,14 @@ public class Executor {
 		return feedbackObject;
 	}
 
-	private static void performUpdateFunction(ExecutableCommand command) {
+	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
 		Task targetTask;
 
 		feedbackObject = new Feedback(false, "update");
 
-		// check whether the task is out of range, catch the exception, and end
-		// the function.
+		// check whether the task is out of range, catch the exception.
 		try {
 			targetTask = Storage.get(taskId);
 		} catch (Exception e) {
