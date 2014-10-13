@@ -53,7 +53,7 @@ public class GUI extends Composite {
     		
     		// Debugging code
     		LOGGER.info("==============\n" +
-						"Writing to table:  \n" + 
+						"Writing to table (GUI):  \n" + 
 						"	Action = " + action + "\n" + 
 						"	Name = " + name + "\n" +
 						"	Deadline = " + date + "\n" + 

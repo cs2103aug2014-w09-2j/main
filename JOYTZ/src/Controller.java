@@ -71,7 +71,13 @@ public class Controller {
 	}
 
 	public static void startController() {
-    	inputCommandString = getInput();			
+    	inputCommandString = getInput();
+    	
+    	LOGGER.info("==============\n" +
+					"User Input: \n" + 
+					"	" + inputCommandString + "\n" + 
+					"====================\n");
+    	
         inputCommandObject = convertStringToCommand(inputCommandString);
         
     	try {
