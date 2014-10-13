@@ -60,7 +60,7 @@ public class Controller {
 			int arrayLength = arr.length;
 			
 			// Must have: Name, date, location, description, task ID
-			assertEquals(5, arrayLength);
+			// assertEquals(5, arrayLength);
 
 			if (arrayLength == 1) {
 				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, -1);
