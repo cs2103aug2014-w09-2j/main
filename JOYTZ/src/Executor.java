@@ -19,10 +19,7 @@ public class Executor {
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-
-	// these are for Display Method.
-	private static final String MESSAGE_STORAGE_IS_EMPTY = "The task storage is empty.\n";
-	private static final String MESSAGE_DISPLAY_SUCCESSFUL = "Here are the exist tasks.\n";
+	private static final String ERROR_CLEAR_UNSUCCESSFUL = "Fail to clear task list.\n";
 
 	// these are for Update Method.
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
@@ -46,9 +43,6 @@ public class Executor {
 			break;
 		case "update":
 			performUpdateAction(command);
-			break;
-		case "display":
-			performDisplayAction();
 			break;
 		case "clear":
 			performClearAction();
@@ -175,42 +169,15 @@ public class Executor {
 		feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
 	}
 
-	private static void performDisplayAction() {
-
-		feedback = new Feedback(false);
-
-		// check whether the Storage is empty. If so, add in corresponding
-		// message in feedbackObjcet.
-		if (Storage.isEmpty()) {
-			feedback.setMessageShowToUser(MESSAGE_STORAGE_IS_EMPTY);
-			return;
-		}
-
-		// put every Task String in the Feedback.displayList.
-		for (int taskId = 0; taskId < Storage.getTaskListSize(); taskId++) {
-			Task currentTask;
-
-			// in case the TaskId is out of range.
-			try {
-				currentTask = Storage.get(taskId);
-				feedback.getTaskList().add(currentTask.convertTaskToString());
-			} catch (Exception e) {
-				feedback.setMessageShowToUser(e.getMessage());
-				return;
-			}
-		}
-
-		feedback.setResult(true);
-		feedback.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFUL);
-		return;
-	}
-
 	private static void performClearAction() {
 		feedback = new Feedback(false);
 		feedback.setResult(Storage.clean());
 
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+		}
+		else{
+			feedback.setErrorMessage(ERROR_CLEAR_UNSUCCESSFUL);
 		}
 		return;
 	}

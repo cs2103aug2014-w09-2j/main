@@ -58,7 +58,7 @@ public class Storage {
 			throw new Exception(String.format(
 					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
 		}
-		
+
 		Task removedTask = listOfTask.remove(taskId - 1);
 		// removedTask.cancel();
 		numberOfTask--;
@@ -77,13 +77,12 @@ public class Storage {
 	}
 
 	public static boolean clean() {
-		if (isEmpty()) {
-			return true;
+		if (!isEmpty()) {
+			for (int itemId = 0; itemId < listOfTask.size(); itemId++) {
+				history.add(listOfTask.get(itemId));
+			}
+			listOfTask.clear();
 		}
-		for (int itemId = 0; itemId < listOfTask.size(); itemId++) {
-			history.add(listOfTask.get(itemId));
-		}
-		listOfTask.clear();
 		return true;
 	}
 

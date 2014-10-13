@@ -42,9 +42,6 @@ public class Analyzer {
 		case "update":
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
-		case "display":
-			outputCommand = handleDisplayCommand();
-			break;
 		case "clear":
 			outputCommand = handleClearCommand();
 			break;
@@ -170,10 +167,6 @@ public class Analyzer {
 		}
 
 		return tempCommand;
-	}
-
-	private static ExecutableCommand handleDisplayCommand() {
-		return new ExecutableCommand("display");
 	}
 
 	private static ExecutableCommand handleClearCommand() {
