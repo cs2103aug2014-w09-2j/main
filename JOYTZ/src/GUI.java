@@ -44,11 +44,18 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int taskNumber, String date, String name, String location, String description, String action, int taskId) {
+    public static void updateTable(int taskNumber, String date, 
+    							   String name, String location, 
+    							   String description, String action, 
+    							   int taskId) {
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
-   		
+    		if (taskNumber == 0) {
+    			table.removeAll();
+    		}
+    		
+    		
     		// Debugging code
     		LOGGER.info("==============\n" +
 						"Writing to table (GUI):  \n" + 
@@ -67,6 +74,13 @@ public class GUI extends Composite {
             item.setText(new String[] { taskNumber + ".", date, name, location, description });
 	        
     	} else if (action.equals("delete")) {
+    		// Debugging code
+    		LOGGER.info("==============\n" +
+						"Deleting from table (GUI):  \n" + 
+						"	Action = " + action + "\n" + 
+						"	Task ID = " + taskId + "\n" +
+    					"====================\n");
+    		
     		table.clear(taskId-1);
     	} else if (action.equals("display")) {
     		if (taskNumber == 0) {

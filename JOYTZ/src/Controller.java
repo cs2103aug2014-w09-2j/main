@@ -2,6 +2,7 @@
 
 import java.text.ParseException;
 import java.util.logging.Logger;
+import static org.junit.Assert.*;
 
 // import java.sql.Date;
 
@@ -36,29 +37,40 @@ public class Controller {
 			
         	if (action.equals("add")) {
 				numOfTasksAdded++;
-				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
         	} else if (action.equals("delete")) {
 				numOfTasksAdded--;
-				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
-        	} //else if (action.equals("display")) {
-        		parseDisplayTasks(action);
-			//}
-
+        	} 
+        	parseDisplayTasks(action);
 		}
     }
     
     // Call updateTable() in each iteration
     private static void parseDisplayTasks(String action) {
-    	System.out.println("===================");
-    	System.out.println("Display string from feedback object: ");
 		for(int i = 0; i < feedback.getTaskList().size(); i++){
-			System.out.println("	" + feedback.getTaskList().get(i));	// Debug logging
-			//String[] arr = feedback.getTaskList().get(i).trim().split("--");
-			//GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
+			System.out.println("===================\n" +
+								"Display string from feedback object: \n" + 
+								"	" + feedback.getTaskList().get(i) + "\n" +
+								"===================\n");
+			
+			String[] arr = feedback.getTaskList().get(i).trim().split("~");
+			int arrayLength = arr.length;
+			
+			// Must have: Name, date, location, description, task ID
+			assertEquals(5, arrayLength);
+
+			if (arrayLength == 1) {
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, -1);
+			}
+			else if (arrayLength == 2) {
+				GUI.updateTable(i, arr[1], arr[0], "No location", "No description", action, -1);
+			}
+			
 		}
-		System.out.println("===================");
+		
 	}
 
 	public static void startController() {
@@ -123,7 +135,7 @@ public class Controller {
     	return inputCommandObject;
     }
     
-    private static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
+    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
         
     	return parsedCommand;
@@ -143,13 +155,8 @@ public class Controller {
     	return outputString;	
     }
     
-    // TODO
-    private static Feedback startExecutor(ExecutableCommand command) {
+    public static Feedback startExecutor(ExecutableCommand command) {
         return Executor.proceedAnalyzedCommand(command);
     }
     
-    // TODO
-    //private static Feedback getFeedbackFromExecutor() {
-    //   return Executor.getFeedback();
-    //}
 }
