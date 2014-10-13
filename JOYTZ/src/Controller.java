@@ -46,15 +46,6 @@ public class Controller {
         		parseDisplayTasks(action);
 			//}
 
-        	// Debugging code
-			/*LOGGER.info("---------------------\n " +
-						"Controller, displaying output: " + 
-						parsedCommand.getAction() + " " + 
-						parsedCommand.getTaskName() + " " +
-						parsedCommand.getTaskDeadline().toString() + " " + 
-						parsedCommand.getTaskDescription() + " " +
-						parsedCommand.getTaskLocation());
-			*/
 		}
     }
     
@@ -80,25 +71,33 @@ public class Controller {
     	
         inputCommandObject = convertStringToCommand(inputCommandString);
         
+        LOGGER.info("==============\n" +
+				"Command object: \n" + 
+				"	" + inputCommandObject.getUserCommand() + "\n" + 
+				"====================\n");
+        
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
+			
+			// Debugging code
+			LOGGER.info("==============\n" +
+						"After analyzer: \n" + 
+						"	Action = " + parsedCommand.getAction() + "\n" + 
+						"	Name = " + parsedCommand.getTaskName() + "\n" +
+						"	Deadline = " + parsedCommand.getTaskDeadline().toString() + "\n" + 
+						"	Description = " + parsedCommand.getTaskDescription() + "\n" +
+						"	Location = " + parsedCommand.getTaskLocation() + "\n" +
+						"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
+						"	Task ID = " + parsedCommand.getTaskId() + "\n" +
+						"	Error message = " + parsedCommand.getErrorMessage() + "\n" +
+						"	Update indicator = " + parsedCommand.getUpdateIndicator() + "\n" +
+						"	Updated task name = " + parsedCommand.getUpdatedTaskName() + "\n" + 
+						"====================\n");
 			
 			if (parsedCommand.getErrorMessage().length() != 0) {
 				// There is an error. 
 				 displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
 			} else {	
-			
-				// Debugging code
-				LOGGER.info("==============\n" +
-							"After analyzer: \n" + 
-							"	Action = " + parsedCommand.getAction() + "\n" + 
-							"	Name = " + parsedCommand.getTaskName() + "\n" +
-							"	Deadline = " + parsedCommand.getTaskDeadline().toString() + "\n" + 
-							"	Description = " + parsedCommand.getTaskDescription() + "\n" +
-							"	Location = " + parsedCommand.getTaskLocation() + "\n" +
-							"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
-							"====================\n");
-				
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
 					// getFeedbackFromExecutor();

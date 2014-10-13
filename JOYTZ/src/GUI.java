@@ -48,9 +48,7 @@ public class GUI extends Composite {
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
-    		// we need to clear the table to prevent duplicate
-    		//table.removeAll();
-    		
+   		
     		// Debugging code
     		LOGGER.info("==============\n" +
 						"Writing to table (GUI):  \n" + 
@@ -59,7 +57,10 @@ public class GUI extends Composite {
 						"	Deadline = " + date + "\n" + 
 						"	Description = " + description + "\n" +
 						"	Location = " + location + "\n" +
-						"	Priority = not implemented in code yet" + "\n" +
+						"	Priority = not implemented in GUI yet" + "\n" +
+						"	Task ID = " + taskId + "\n" +
+						"	Update indicator = not implemented in GUI yet" + "\n" +
+						"	Updated task name = not implemented in GUI yet" + "\n" + 
     					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
