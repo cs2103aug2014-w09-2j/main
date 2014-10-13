@@ -74,7 +74,7 @@ public class Storage {
 			return false;
 		}
 
-		Task targetTask = taskList.get(taskId - 1);
+		Task targetTask = get(taskId);
 
 		switch (updateIndicator) {
 		case "name":

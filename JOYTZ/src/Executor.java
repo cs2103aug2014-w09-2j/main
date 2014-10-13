@@ -16,12 +16,10 @@ public class Executor {
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-	private static final String ERROR_CLEAR_UNSUCCESSFUL = "Fail to clear task list.\n";
 
 	// these are for Update Method.
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task has been updated successfully.\n";
-	private static final String ERROR_UPDATE_UNSUCCESSFUL = "Fail to update \"%s\".";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"has been updated successfully.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -106,18 +104,16 @@ public class Executor {
 	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
-		String taskName = command.getTaskName();
+		String taskName;
 		String newInfo;
 
 		feedback = new Feedback(false);
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
-		System.out.println(updateIndicator);
-		System.out.println(command.getTaskDescription());
 		switch (updateIndicator) {
 		case "name":
-			newInfo = command.getTaskName();
+			newInfo = command.getUpdatedTaskName();
 			break;
 		case "description":
 			newInfo = command.getTaskDescription();
@@ -140,10 +136,11 @@ public class Executor {
 		feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
 
 		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
+			taskName = Storage.get(taskId).getTaskName();
+			feedback.setMessageShowToUser(String.format(
+					MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
 		} else {
-			feedback.setErrorMessage(String.format(ERROR_UPDATE_UNSUCCESSFUL,
-					taskName));
+			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 	}
 
@@ -151,12 +148,7 @@ public class Executor {
 		feedback = new Feedback(false);
 		feedback.setResult(Storage.clean());
 
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
-		} else {
-			feedback.setErrorMessage(String.format(ERROR_CLEAR_UNSUCCESSFUL));
-		}
-		return;
+		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 	}
 
 	private static void performSortAction() {
