@@ -7,60 +7,56 @@ public class Feedback {
 	// attributes
 	boolean result;
 	String messageShowToUser;
+	String errorMessage;
 	
 	// ArrayList only for display method.
-	ArrayList<String> displayList = new ArrayList<String>();
-	
-	// currently not in use.
-	String actionExecuted;
-	String description;
+	ArrayList<String> taskList = new ArrayList<String>();
 
 	/**
 	 * Constructor
 	 */
 	Feedback(boolean result) {
 		this.result = result;
-		this.actionExecuted = "";
-		this.description = "";
-		this.messageShowToUser = "";
-	}
-
-	Feedback(boolean result, String actionExecuted) {
-		this.result = result;
-		this.actionExecuted = actionExecuted;
-		this.description = "";
 		this.messageShowToUser = "";
 	}
 
 	/**
-	 * methods
+	 * Set methods
 	 */
 
 	public void setResult(boolean result) {
 		this.result = result;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public void setMessageShowToUser(String message) {
 		this.messageShowToUser = message;
 	}
-
+	
+	public void setErrorMessage(String message){
+		this.errorMessage = message;
+	}
+	
+	public void setTaskList(ArrayList<String> taskList){
+		this.taskList = taskList;
+	}
+	
+	/**
+	 * Get methods
+	 */
+	
 	public boolean getResult() {
 		return this.result;
 	}
 
-	public String getAction() {
-		return this.actionExecuted;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
 	public String getMessageShowToUser() {
 		return this.messageShowToUser;
+	}
+	
+	public String getErrorMessage(){
+		return this.getErrorMessage();
+	}
+	
+	public ArrayList<String> getTaskList(){
+		return this.taskList;
 	}
 }

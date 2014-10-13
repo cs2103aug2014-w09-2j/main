@@ -6,14 +6,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Analyzer {
-	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.";
-	private static final String ERROR_NULL_COMMAND = "Command is not indicated.";
-	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.";
-	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.";
-	private static final String ERROR_NULL_UPDATED_TASK = "Task to be updated is not indicated.";
-	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.";
-	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.";
-	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.";
+	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
+	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
+	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
+	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.\n";
+	private static final String ERROR_NULL_UPDATED_TASK = "Task to be updated is not indicated.\n";
+	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.\n";
+	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.\n";
+	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
+	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.\n";
 
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -113,7 +114,7 @@ public class Analyzer {
 				tempCommand.setTaskId(Integer.parseInt(arg[0]));
 			}
 		} else {
-			tempCommand.setTaskName(arg[0]);
+			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
 		}
 
 		return tempCommand;
@@ -138,7 +139,9 @@ public class Analyzer {
 		if (isInteger(taskToBeUpdated)) {
 			tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
 		} else {
-			tempCommand.setTaskName(taskToBeUpdated);
+			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
+
+			return tempCommand;
 		}
 
 		String updateIndicator = arg[1];
@@ -165,6 +168,7 @@ public class Analyzer {
 		default:
 			tempCommand.setErrorMessage(ERROR_INVALID_UPDATE_INDICATOR);
 		}
+
 		return tempCommand;
 	}
 
@@ -189,7 +193,11 @@ public class Analyzer {
 			return tempCommand;
 		}
 
-		tempCommand.setTaskName(arg[0]);
+		if (isInteger(arg[0])) {
+			tempCommand.setTaskId(Integer.parseInt(arg[0]));
+		} else {
+			tempCommand.setTaskName(arg[0]);
+		}
 
 		return tempCommand;
 	}
@@ -216,7 +224,7 @@ public class Analyzer {
 	}
 
 	private static String[] convertStrToArr(String str) {
-		String[] arr = str.trim().split(",");
+		String[] arr = str.trim().split("~");
 
 		return arr;
 	}

@@ -47,11 +47,7 @@ public class Storage {
 	 *             (null object)
 	 */
 
-	public static boolean add(Task t) throws Exception {
-		if (t.equals(null)) {
-			throw new Exception(StringFormat.EXCPTION_NULL_TASK_OBJECT);
-		}
-
+	public static boolean add(Task t) {
 		listOfTask.add(t);
 		// timer.schedule(t, t.getTime());
 		numberOfTask++;
@@ -60,11 +56,11 @@ public class Storage {
 	}
 
 	public static boolean delete(int taskId) throws Exception {
-		if (taskId < 0 || taskId > getSizeOfListOfTask()) {
+		if (taskId > getTaskListSize()) {
 			throw new Exception(String.format(
 					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
 		}
-
+		
 		Task removedTask = listOfTask.remove(taskId - 1);
 		// removedTask.cancel();
 		numberOfTask--;
@@ -74,13 +70,12 @@ public class Storage {
 	}
 
 	public static Task get(int taskId) throws Exception {
-		if (taskId < 0 || taskId > getSizeOfListOfTask()) {
+		if (taskId > getTaskListSize()) {
 			throw new Exception(String.format(
 					StringFormat.EXCEPTION_TASK_OUT_OF_RANGE, taskId));
 		}
 
-		Task task = listOfTask.get(taskId);
-		return task;
+		return listOfTask.get(taskId);
 	}
 
 	public static boolean clean() {
@@ -147,9 +142,8 @@ public class Storage {
 		return;
 	}
 
-	public static int getSizeOfListOfTask() {
-		int size = listOfTask.size();
-		return size;
+	public static int getTaskListSize() {
+		return listOfTask.size();
 	}
 
 	public static boolean isEmpty() {
