@@ -42,9 +42,9 @@ public class Controller {
 				numOfTasksAdded--;
 				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
-        	} else if (action.equals("display")) {
+        	} //else if (action.equals("display")) {
         		parseDisplayTasks(action);
-			}
+			//}
 
         	// Debugging code
 			LOGGER.info("Controller, displaying output: " + 
@@ -61,8 +61,8 @@ public class Controller {
     private static void parseDisplayTasks(String action) {
 		for(int i = 0; i < feedback.getTaskList().size(); i++){
 			System.out.println(feedback.getTaskList().get(i));	// Debug logging
-			String[] arr = feedback.getTaskList().get(i).trim().split("--");
-			GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
+			//String[] arr = feedback.getTaskList().get(i).trim().split("--");
+			//GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
 		}
 	}
 
