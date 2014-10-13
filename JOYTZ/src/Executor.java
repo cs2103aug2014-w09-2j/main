@@ -9,7 +9,6 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
-	private static final String ERROR_ADD_UNSUCCESSFUL = "Fail to add \"%s\".\n";
 	private static final String ERROR_TASK_WITHOUT_NAME = "Task name should be mentioned.\n";
 
 	// these are for Delete Method.
@@ -59,10 +58,10 @@ public class Executor {
 			break;
 		default:
 			Feedback feedBackObject = new Feedback(false);
-			feedBackObject.setMessageShowToUser(ERROR_INVALID_COMMAND);
+			feedBackObject.setErrorMessage(ERROR_INVALID_COMMAND);
 		}
-		
-		if(feedback.getResult()){
+
+		if (feedback.getResult()) {
 			feedback.setTaskList(Storage.getTaskList());
 		}
 
@@ -79,7 +78,7 @@ public class Executor {
 		feedback = new Feedback(false);
 
 		if (name == "") {
-			feedback.setMessageShowToUser(ERROR_TASK_WITHOUT_NAME);
+			feedback.setErrorMessage(ERROR_TASK_WITHOUT_NAME);
 			return;
 		}
 
@@ -88,14 +87,10 @@ public class Executor {
 
 		// add the task into the storage.
 		feedback.setResult(Storage.add(t));
+		
+		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
+				name));
 
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
-					name));
-		} else {
-			feedback.setErrorMessage(String
-					.format(ERROR_ADD_UNSUCCESSFUL, name));
-		}
 	}
 
 	private static void performDeleteAction(ExecutableCommand command) {
@@ -167,7 +162,8 @@ public class Executor {
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFUL);
 		} else {
-			feedback.setErrorMessage(String.format(ERROR_UPDATE_UNSUCCESSFUL, taskName));
+			feedback.setErrorMessage(String.format(ERROR_UPDATE_UNSUCCESSFUL,
+					taskName));
 		}
 	}
 
@@ -198,8 +194,7 @@ public class Executor {
 		try {
 			Storage.saveFile();
 		} catch (IOException e) {
-			feedback.setErrorMessage(String
-					.format(ERROR_FAIL_SAVE_TO_FILE));
+			feedback.setErrorMessage(String.format(ERROR_FAIL_SAVE_TO_FILE));
 			e.printStackTrace();
 			return;
 		}
@@ -208,7 +203,7 @@ public class Executor {
 		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 		System.exit(0);
 	}
-	
+
 	public static Feedback getFeedback() {
 		return feedback;
 	}

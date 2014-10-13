@@ -14,10 +14,16 @@ public class Task {
 	/**
 	 * Constructor
 	 */
-	Task(){
+	Task() {
+		this.taskName = "";
+		this.taskDeadline = new Date(0, 0, 0);
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
 	}
-	
-	Task(String name, Date deadline, String description, String location, String priority) {
+
+	Task(String name, Date deadline, String description, String location,
+			String priority) {
 		this.taskName = name;
 		this.taskDeadline = deadline;
 		this.taskDescription = description;
@@ -48,11 +54,11 @@ public class Task {
 	public void setTaskPriority(String priority) {
 		this.taskPriority = priority;
 	}
-	
+
 	/**
 	 * Get methods
 	 */
-	
+
 	public String getTaskName() {
 		return this.taskName;
 	}
@@ -68,10 +74,11 @@ public class Task {
 	public String getTaskLocation() {
 		return this.taskLocation;
 	}
-	
-	public String getTaskPriority(){
+
+	public String getTaskPriority() {
 		return this.taskPriority;
 	}
+
 	/**
 	 * Conversion between String and Task Object. When converting back, must
 	 * create a task Object, and use this object to convert. Thus, all the

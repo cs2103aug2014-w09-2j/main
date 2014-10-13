@@ -3,12 +3,12 @@ import java.util.ArrayList;
 //package V1;
 
 public class Feedback {
-	
+
 	// attributes
 	boolean result;
 	String messageShowToUser;
 	String errorMessage;
-	
+
 	// ArrayList only for display method.
 	ArrayList<String> taskList = new ArrayList<String>();
 
@@ -31,32 +31,32 @@ public class Feedback {
 	public void setMessageShowToUser(String message) {
 		this.messageShowToUser = message;
 	}
-	
-	public void setErrorMessage(String message){
+
+	public void setErrorMessage(String message) {
 		this.errorMessage = message;
 	}
-	
-	public void setTaskList(ArrayList<String> taskList){
+
+	public void setTaskList(ArrayList<String> taskList) {
 		this.taskList = taskList;
 	}
-	
+
 	/**
 	 * Get methods
 	 */
-	
+
 	public boolean getResult() {
-		return this.result;
+		return result;
 	}
 
 	public String getMessageShowToUser() {
-		return this.messageShowToUser;
+		return messageShowToUser;
 	}
-	
-	public String getErrorMessage(){
-		return this.getErrorMessage();
+
+	public String getErrorMessage() {
+		return errorMessage;
 	}
-	
-	public ArrayList<String> getTaskList(){
-		return this.taskList;
+
+	public ArrayList<String> getTaskList() {
+		return taskList;
 	}
 }

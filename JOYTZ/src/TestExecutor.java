@@ -5,103 +5,31 @@ import java.util.Date;
 import org.junit.Test;
 
 public class TestExecutor {
+	private static final String ERROR_TASK_WITHOUT_NAME = "Task name should be mentioned.\n";
+	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
 
-	// executableCommand: add taskName, date, description, location.
-	ExecutableCommand command1;
+	private static final String TEST = "testTask";
 
-	// executableCommand: delete taskId.
-	ExecutableCommand command2;
-
-	// executableCommand: display taskId.
-	ExecutableCommand command3;
-
-	// executableCommand: update taskId.
-	ExecutableCommand command4;
-
-	// others currently not in use.
-	ExecutableCommand command5;
-
-	// initialization the storage.
-	public Executor initializeStroage() {
-		Executor executor = new Executor();
-
-		ExecutableCommand ec = new ExecutableCommand();
-		ec.setAction("add");
-		ec.setTaskName("testTask");
-		ec.setTaskDeadline(new Date());
-		ec.setTaskDescription("this is a test task.");
-		ec.setTaskLocation("com1, SR1");
-
-		executor.proceedAnalyzedCommand(ec);
-
-		return executor;
-	}
-
-	// test add function.
 	@Test
-	public void testAddMethod() {
+	public void testPerformAddAction() {
+		ExecutableCommand test1 = new ExecutableCommand("add");
+		ExecutableCommand test2 = new ExecutableCommand("add");
+		test2.setTaskName(TEST);
+		Feedback expected1 = new Feedback(false);
+		Feedback expected2 = new Feedback(true);
 
-		Executor ex = initializeStroage();
+		expected1.setErrorMessage(ERROR_TASK_WITHOUT_NAME);
+		expected2.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
+				TEST));
 
-		command1 = new ExecutableCommand();
-		command1.setAction("add");
-		command1.setTaskName("addtask");
-		command1.setTaskDeadline(new Date());
-		command1.setTaskDescription("testing task for add method.");
-		command1.setTaskLocation("comm1");
+		// test case 1
+		assertEquals("fail to get task name to be added",
+				expected1.getErrorMessage(),
+				Executor.proceedAnalyzedCommand(test1).getErrorMessage());
 
-		ex.proceedAnalyzedCommand(command1);
-		Feedback feedbackObject = ex.getFeedback();
-
-		assertEquals(true, feedbackObject.getResult());
+		// test case 2
+		assertEquals("fail to add task", expected2.getMessageShowToUser(),
+				Executor.proceedAnalyzedCommand(test2).getMessageShowToUser());
 	}
-
-	// test delete function.
-	@Test
-	public void testDeleteMethod() {
-
-		Executor ex = initializeStroage();
-
-		command2 = new ExecutableCommand();
-		command2.setAction("delete");
-		command2.setTaskId(1);
-
-		ex.proceedAnalyzedCommand(command2);
-		Feedback feedbackObject = ex.getFeedback();
-
-		assertEquals(true, feedbackObject.getResult());
-	}
-
-	// test display function.
-	@Test
-	public void testDisplayMethod() {
-
-		Executor ex = initializeStroage();
-
-		command3 = new ExecutableCommand();
-		command3.setAction("display");
-
-		ex.proceedAnalyzedCommand(command3);
-		Feedback feedbackObject = ex.getFeedback();
-
-		assertEquals(true, feedbackObject.getResult());
-	}
-
-	/*
-	 * // test update function.
-	 * 
-	 * @Test public void testUpdateMethod() {
-	 * 
-	 * Executor ex = initializeStroage();
-	 * 
-	 * command4 = new ExecutableCommand(); command4.setAction("update");
-	 * command4.setTaskId(0); command4.setUpdateIndicator("location");
-	 * command4.setTaskLocation("com1,SR2");
-	 * 
-	 * ex.proceedAnalyzedCommand(command4); Feedback feedbackObject =
-	 * ex.getFeedback();
-	 * 
-	 * assertEquals(true, feedbackObject.getResult()); }
-	 */
 
 }
