@@ -62,11 +62,17 @@ public class Controller {
 			// Must have: Name, date, location, description, task ID
 			// assertEquals(5, arrayLength);
 
+			// updateTable(Table index number, date, name, location, description, action, taskId)
 			if (arrayLength == 1) {
-				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i);
-			}
-			else if (arrayLength == 2) {
-				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i);
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i, "No priority");
+			} else if (arrayLength == 2) {
+				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i, "No priority");
+			} else if (arrayLength == 3) {
+				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, i, "No priority");
+			} else if (arrayLength == 4) {
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, "No priority");
+			} else if (arrayLength == 5) {
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, arr[4]);
 			}
 			
 		}

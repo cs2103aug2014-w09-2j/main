@@ -30,6 +30,7 @@ public class GUI extends Composite {
     private TableColumn tblclmnRemarks;
     private TableColumn tblclmnNo;
     private TableColumn tblclmnLocation;
+    private TableColumn tblclmnPriority;
 
     public static String getUserInput() {
         return textInputData;        
@@ -47,7 +48,7 @@ public class GUI extends Composite {
     public static void updateTable(int taskNumber, String date, 
     							   String name, String location, 
     							   String description, String action, 
-    							   int taskId) {
+    							   int taskId, String priority) {
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
@@ -64,14 +65,14 @@ public class GUI extends Composite {
 						"	Deadline = " + date + "\n" + 
 						"	Description = " + description + "\n" +
 						"	Location = " + location + "\n" +
-						"	Priority = not implemented in GUI yet" + "\n" +
+						"	Priority = " + priority + "\n" +
 						"	Task ID = " + taskId + "\n" +
 						"	Update indicator = not implemented in GUI yet" + "\n" +
 						"	Updated task name = not implemented in GUI yet" + "\n" + 
     					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { taskNumber + ".", date, name, location, description });
+            item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
 	        
     	} else if (action.equals("delete")) {
     		// Debugging code
@@ -136,6 +137,10 @@ public class GUI extends Composite {
         tblclmnRemarks = new TableColumn(table, SWT.NONE);
         tblclmnRemarks.setWidth(118);
         tblclmnRemarks.setText("Description");
+        
+        tblclmnPriority = new TableColumn(table, SWT.NONE);
+        tblclmnPriority.setWidth(100);
+        tblclmnPriority.setText("Priority");
         
        // for (int i = 0; i < 5; i++) {
        //     TableItem item = new TableItem(table, SWT.NONE);
