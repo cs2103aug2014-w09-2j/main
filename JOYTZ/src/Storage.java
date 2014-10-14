@@ -1,18 +1,14 @@
 //package V1;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
+import java.io.*;
+import java.security.InvalidParameterException;
+import java.text.*;
+import java.util.*;
 
 public class Storage {
-	public static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
+	private static final String ERROR_NULL_OBJECT = "Null Object.";
+	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d";
 
 	// this is the two list of tasks.
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -22,22 +18,28 @@ public class Storage {
 	// the timer is used to track the expired date of task.
 	public static Timer timer = new Timer();
 
-	// this file contains all the messages that user want to record.
-	private static File file;
-	public static String fileName = "RecordFile.txt";
+	// the file that used to save current tasks when user exit the program.
+	private static File taskListFile;
+	private static File historyFile;
+	private static String taskListFileName = "TaskList.txt";
+	private static String historyFileName = "Histroy.txt";
 
-	// this file contains all the user commands.
-	private static FileWriter writer;
+	// these are for reading the user saved file.
+	private static FileReader taskListFileReader;
+	private static BufferedReader taskListBufferedReader;
+	private static FileReader historyFileReader;
+	private static BufferedReader historyBufferedReader;
 
-	// these three are for recording current information in the log file.
+	// these are for writing file.
+	private static FileWriter taskListWriter;
+	private static FileWriter historyWriter;
+
+	// these three are for recording current information in the file.
 	private static DateFormat format = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSSSSS");
 	private static Date date;
 	private static String dateString;
-
-	// this is only for reload the original user file.
-	private static FileReader fr;
-	private static BufferedReader br;
+	private static String taskStringFormat = "%s-%s-%s-%s-%s";
 
 	/**
 	 * addTask() method add in task passed by Executor.
@@ -47,6 +49,15 @@ public class Storage {
 	 */
 
 	public static boolean add(Task t) {
+		if (t == null) {
+			throw new InvalidParameterException(ERROR_NULL_OBJECT);
+		}
+		assert !t.getTaskName().equals("") : "No task name.";
+		assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
+		assert !t.getTaskDescription().equals("") : "No task description.";
+		assert !t.getTaskLocation().equals("") : "No task location.";
+		assert !t.getTaskPriority().equals("") : "No task priority.";
+
 		taskList.add(t);
 		// timer.schedule(t, t.getTime());
 		numberOfTask++;
@@ -54,11 +65,21 @@ public class Storage {
 		return true;
 	}
 
+	/**
+	 * Delete a task from taskList, and move it to history. Invalid taskId will
+	 * throw NullPointerException;
+	 * 
+	 * @param taskId
+	 * @return
+	 */
+
 	public static boolean delete(int taskId) {
-		if (taskId > getTaskListSize()) {
-			return false;
+		if (taskId <= 0 || taskId > getTaskListSize()) {
+			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
+					taskId));
 		}
 
+		assert taskId > 0 : "taskId :" + taskId;
 		Task removedTask = taskList.remove(taskId - 1);
 
 		// removedTask.cancel();
@@ -68,43 +89,77 @@ public class Storage {
 		return true;
 	}
 
+	/**
+	 * Update a task's certain attributes
+	 * 
+	 * @param taskId
+	 * @param updateIndicator
+	 * @param newInfo
+	 * @return
+	 * @throws Exception
+	 */
+
 	public static boolean update(int taskId, String updateIndicator,
-			String newInfo) {
-		if (taskId > getTaskListSize()) {
-			return false;
+			String newInfo) throws Exception {
+		if (taskId <= 0 || taskId > getTaskListSize()) {
+			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
+					taskId));
 		}
 
 		Task targetTask = get(taskId);
 
 		switch (updateIndicator) {
 		case "name":
+			assert newInfo instanceof String : "name: " + newInfo;
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
+			assert newInfo instanceof String : "description: " + newInfo;
 			targetTask.setTaskDescription(newInfo);
 			break;
 		case "deadline":
+			assert newInfo instanceof String : "deadline: " + newInfo;
+			assert newInfo.contains("%s-%s-%s");
 			Date newDate = convertStringToDate(newInfo);
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
+			assert newInfo instanceof String : "location: " + newInfo;
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
+			assert newInfo instanceof String : "priority: " + newInfo;
 			targetTask.setTaskPriority(newInfo);
 		default:
-			return false;
+			assert false : updateIndicator;
+			throw new Exception(ERROR_INVALID_INDICATOR);
 		}
 
 		taskList.set(taskId - 1, targetTask);
 
 		return true;
-
 	}
+
+	/**
+	 * Get a task in the taskList by taskId
+	 * 
+	 * @param taskId
+	 * @return
+	 */
 
 	public static Task get(int taskId) {
+		if (taskId <= 0 || taskId > getTaskListSize()) {
+			throw new IndexOutOfBoundsException();
+		}
 		return taskList.get(taskId - 1);
 	}
+
+	/**
+	 * Clean all the task Objects in the taskList; Put all the tasks into
+	 * history
+	 * 
+	 * @return
+	 */
 
 	public static boolean clean() {
 		if (!isEmpty()) {
@@ -113,6 +168,7 @@ public class Storage {
 			}
 			taskList.clear();
 		}
+		assert taskList.isEmpty() : "Size of list :" + taskList.size();
 		return true;
 	}
 
@@ -124,24 +180,24 @@ public class Storage {
 			String taskString = task.getTaskName();
 			Date checkDate = new Date(0, 0, 0);
 
-			if (!task.getTaskDescription().equals("")) {
-				taskString = taskString.concat("~");
-				taskString = taskString.concat(task.getTaskDescription());
-			}
-
 			if (!task.getTaskDeadline().equals(checkDate)) {
-				taskString = taskString.concat("~");
+				taskString = taskString.concat("-");
 				taskString = taskString.concat(task.getTaskDeadline()
 						.toString());
 			}
 
+			if (!task.getTaskDescription().equals("")) {
+				taskString = taskString.concat("-");
+				taskString = taskString.concat(task.getTaskDescription());
+			}
+
 			if (!task.getTaskLocation().equals("")) {
-				taskString = taskString.concat("~");
+				taskString = taskString.concat("-");
 				taskString = taskString.concat(task.getTaskLocation());
 			}
 
 			if (!task.getTaskPriority().equals("")) {
-				taskString = taskString.concat("~");
+				taskString = taskString.concat("-");
 				taskString = taskString.concat(task.getTaskDescription());
 			}
 
@@ -159,48 +215,82 @@ public class Storage {
 	 * @throws IOException
 	 */
 
-	public static void getFileReady() throws IOException {
-		file = new File(fileName);
-		if (!file.exists()) {
-			file.createNewFile();
+	private static void openFile() throws IOException {
+		taskListFile = new File(taskListFileName);
+		historyFile = new File(historyFileName);
+
+		if (!taskListFile.exists()) {
+			taskListFile.createNewFile();
 		}
-		writer = new FileWriter(file);
-		fr = new FileReader(file);
-		br = new BufferedReader(fr);
+		if (!historyFile.exists()) {
+			historyFile.createNewFile();
+		}
+
+		taskListWriter = new FileWriter(taskListFile);
+		taskListFileReader = new FileReader(taskListFile);
+		taskListBufferedReader = new BufferedReader(taskListFileReader);
+
+		historyWriter = new FileWriter(historyFile);
+		historyFileReader = new FileReader(historyFile);
+		historyBufferedReader = new BufferedReader(historyFileReader);
+	}
+
+	private static void closeFile() throws IOException {
+		taskListBufferedReader.close();
+		taskListFileReader.close();
+		taskListWriter.close();
+
+		historyBufferedReader.close();
+		historyFileReader.close();
+		historyWriter.close();
 	}
 
 	public static void saveFile() throws IOException {
 
-		getFileReady();
+		openFile();
+		assert taskListFile.canWrite() : "taskListFile cannot write.";
+		assert historyFile.canWrite() : "historyFile cannot write.";
 
 		date = new Date();
 		dateString = format.format(date);
-		writer.write(dateString);
+		taskListWriter.write(dateString);
+		historyWriter.write(dateString);
 
 		for (int i = 0; i < taskList.size(); i++) {
-			String str = taskList.get(i).convertTaskToString();
-			writer.write(str);
+			String str = convertTaskToString(taskList.get(i));
+			taskListWriter.write(str);
 		}
+
+		closeFile();
 		return;
 	}
 
 	public static void reloadFile() throws IOException {
-		getFileReady();
+		openFile();
 
 		if (!isEmpty()) {
 			clean();
 		}
 
-		String s = br.readLine();
+		String s = taskListBufferedReader.readLine();
 		System.out.println("reloading file from " + s);
 
-		s = br.readLine();
+		s = taskListBufferedReader.readLine();
 		while (!s.equals("")) {
-			Task t = new Task();
-			t.convertStringToTask(s);
-			taskList.add(t);
+			Task task = convertStringToTask(taskListBufferedReader.readLine());
+			taskList.add(task);
 		}
+
+		closeFile();
+		return;
 	}
+
+	/**
+	 * Convert a dateFormatString to Date Object.
+	 * 
+	 * @param d
+	 * @return
+	 */
 
 	private static Date convertStringToDate(String d) {
 		String[] temp = d.trim().split("-");
@@ -217,6 +307,36 @@ public class Storage {
 
 	public static boolean isEmpty() {
 		return taskList.isEmpty();
+	}
+
+	/**
+	 * Conversion between String and Task Object. When converting back, must
+	 * create a task Object, and use this object to convert. Thus, all the
+	 * information will be filled into this object.
+	 * 
+	 * @return
+	 */
+	private static String convertTaskToString(Task task) {
+		String result = String.format(taskStringFormat, task.getTaskName(),
+				task.getTaskDeadline().getTime(), task.getTaskDescription(),
+				task.getTaskLocation(), task.getTaskPriority());
+		return result;
+	}
+
+	private static Task convertStringToTask(String taskString) {
+		String[] taskAttribute = taskString.split("-");
+		Task task = new Task();
+
+		assert taskAttribute.length == 5 : taskAttribute.toString();
+		assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+
+		task.setTaskName(taskAttribute[0]);
+		task.setTaskDeadline(new Date(Long.parseLong(taskAttribute[1])));
+		task.setTaskDescription(taskAttribute[2]);
+		task.setTaskLocation(taskAttribute[3]);
+		task.setTaskPriority(taskAttribute[4]);
+
+		return task;
 	}
 
 }

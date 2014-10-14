@@ -79,27 +79,4 @@ public class Task {
 		return this.taskPriority;
 	}
 
-	/**
-	 * Conversion between String and Task Object. When converting back, must
-	 * create a task Object, and use this object to convert. Thus, all the
-	 * information will be filled into this object.
-	 * 
-	 * @return
-	 */
-	public String convertTaskToString() {
-		String result = String.format(StringFormat.taskString, this.taskName,
-				this.taskDeadline.getTime(), this.taskDescription,
-				this.taskLocation);
-		return result;
-	}
-
-	public void convertStringToTask(String taskString) {
-		String[] taskAttribute = taskString
-				.split("-", StringFormat.splitLimits);
-		this.taskName = taskAttribute[0];
-		this.taskDeadline = new Date(Long.parseLong(taskAttribute[1]));
-		this.taskDescription = taskAttribute[2];
-		this.taskLocation = taskAttribute[3];
-	}
-
 }

@@ -1,5 +1,3 @@
-//package V1;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -124,7 +122,6 @@ public class Executor {
 					.setMessageShowToUser(ERROR_TASK_WITHOUT_NAME);
 			return;
 		}
-
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
@@ -170,20 +167,13 @@ public class Executor {
 			return;
 		}
 
-		// put every Task String in the Feedback.displayList.
-		for (int taskId = 0; taskId < Storage.getTaskListSize(); taskId++) {
-			Task currentTask;
-
-			// in case the TaskId is out of range.
-			try {
-				currentTask = Storage.get(taskId);
-				feedbackObject.taskList.add(currentTask
-						.convertTaskToString());
-			} catch (Exception e) {
-				feedbackObject.setMessageShowToUser(e.getMessage());
-				return;
-			}
+		try {
+			feedbackObject.setTaskList(Storage.getTaskList());
+		} catch (Exception e) {
+			feedbackObject.setMessageShowToUser(e.getMessage());
+			return;
 		}
+	
 
 		feedbackObject.setResult(true);
 		feedbackObject.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
@@ -196,16 +186,19 @@ public class Executor {
 
 		if (feedbackObject.getResult()) {
 			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFULLY);
+
+			return;
 		}
-		return;
+		Storage.clean();
+
+		feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFULLY);
+		feedbackObject = new Feedback(false);
 	}
 
 	private static void performSortAction() {
-		// TODO Auto-generated method stubs
 	}
 
 	private static void performSearchAction() {
-		// TODO Auto-generated method stub
 	}
 
 	private static void performExitAction() {

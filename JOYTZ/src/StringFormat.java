@@ -7,7 +7,7 @@ public class StringFormat {
 	 * ###################################################
 	 */
 	// this is format for taskString.
-	public static String taskString = "%s-%s-%s-%s";
+	public static String taskString = "%s-%s-%s-%s-%s";
 	public static int splitLimits = 3;
 	
 	
