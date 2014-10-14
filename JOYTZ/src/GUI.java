@@ -25,7 +25,7 @@ public class GUI extends Composite {
     private Text inputField;
     private static Text outputField;
     private static String textInputData = "";
-    private static String textOutputData = "";
+    //private static String textOutputData = "";
     private static Table table;
     private TableColumn tblclmnRemarks;
     private TableColumn tblclmnNo;
@@ -48,14 +48,13 @@ public class GUI extends Composite {
     public static void updateTable(int taskNumber, String date, 
     							   String name, String location, 
     							   String description, String action, 
-    							   int taskId, String priority) {
+    							   String priority) {
 
     	// 1 row = 1 TableItem
     	//if (action.equals("add") || action.equals("delete")) {
     		if (taskNumber == 0) {
     			table.removeAll();
     		}
-    		
     		
     		// Debugging code
     		LOGGER.info("==============\n" +
@@ -66,15 +65,14 @@ public class GUI extends Composite {
 						"	Description = " + description + "\n" +
 						"	Location = " + location + "\n" +
 						"	Priority = " + priority + "\n" +
-						"	Task ID = " + taskId + "\n" +
-						"	Update indicator = not implemented in GUI yet" + "\n" +
-						"	Updated task name = not implemented in GUI yet" + "\n" + 
     					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
 	        
-    	} /*else if (action.equals("delete")) {
+    } 
+    /**
+      else if (action.equals("delete")) {
     		// Debugging code
     		LOGGER.info("==============\n" +
 						"Deleting from table (GUI):  \n" + 
@@ -90,8 +88,9 @@ public class GUI extends Composite {
     		
     		TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { taskNumber + ".", date, name, location, description });
-    	}*/
-   // }
+    	}
+    }
+    */
     
     /**
      * Create the composite.
