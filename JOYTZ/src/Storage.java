@@ -186,25 +186,38 @@ public class Storage {
 			Task task = taskList.get(i);
 			String taskString = task.getTaskName();
 			Date checkDate = new Date(0, 0, 0);
-
+			
+			// description
 			if (!task.getTaskDescription().equals("")) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDescription());
+			}else {
+				taskString = taskString.concat("~ ");
 			}
+			
+			// deadline
 			if (!task.getTaskDeadline().equals(checkDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDeadline()
 						.toString());
+			}else {
+				taskString = taskString.concat("~ ");
 			}
-
+			
+			// location
 			if (!task.getTaskLocation().equals("")) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskLocation());
+			}else {
+				taskString = taskString.concat("~ ");
 			}
-
+			
+			// priority
 			if (!task.getTaskPriority().equals("")) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskPriority());
+			}else {
+				taskString = taskString.concat("~ ");
 			}
 
 			displayList.add(taskString);
@@ -252,11 +265,27 @@ public class Storage {
 	}
 
 	public static void saveFile() throws IOException {
+		taskListFile = new File(taskListFileName);
+		historyFile = new File(historyFileName);
 
-		openFile();
+		if (!taskListFile.exists()) {
+			taskListFile.createNewFile();
+		}
+		if (!historyFile.exists()) {
+			historyFile.createNewFile();
+		}
+
+		taskListWriter = new FileWriter(taskListFile);
+		taskListFileReader = new FileReader(taskListFile);
+		taskListBufferedReader = new BufferedReader(taskListFileReader);
+
+		historyWriter = new FileWriter(historyFile);
+		historyFileReader = new FileReader(historyFile);
+		historyBufferedReader = new BufferedReader(historyFileReader);
+
 		//assert taskListFile.canWrite() : "taskListFile cannot write.";
 		//assert historyFile.canWrite() : "historyFile cannot write.";
-
+		
 		Date date = new Date();
 		String dateString = format.format(date);
 		taskListWriter.write(String.format(messageStringInFile, dateString));
@@ -280,14 +309,13 @@ public class Storage {
 
 		String s = taskListBufferedReader.readLine();
 		System.out.println("reloading file from " + s);
-
+		System.out.println(s);
 		s = taskListBufferedReader.readLine();
 		while (!s.equals("")) {
 			Task task = convertStringToTask(taskListBufferedReader.readLine());
 			taskList.add(task);
 		}
 
-		closeFile();
 		return;
 	}
 

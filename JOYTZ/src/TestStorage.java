@@ -104,6 +104,7 @@ public class TestStorage {
 		try {
 			Storage.saveFile();
 			Storage.cleanUpEveryThing();
+			Storage.reloadFile();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
