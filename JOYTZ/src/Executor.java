@@ -9,6 +9,7 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
+	private static final String ERROR_FAIL_TO_ADD = "Fail to add task.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -73,6 +74,12 @@ public class Executor {
 		String priority = command.getTaskPriority();
 
 		feedback = new Feedback(false);
+		
+		if(name == ""){
+			feedback.setMessageShowToUser(ERROR_FAIL_TO_ADD);
+			return;
+		}	
+			
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
