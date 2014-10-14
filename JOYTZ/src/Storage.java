@@ -204,7 +204,7 @@ public class Storage {
 
 			if (!task.getTaskPriority().equals("")) {
 				taskString = taskString.concat("~");
-				taskString = taskString.concat(task.getTaskDescription());
+				taskString = taskString.concat(task.getTaskPriority());
 			}
 
 			displayList.add(taskString);
