@@ -4,11 +4,9 @@
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
-
 import org.junit.Test;
 
-public class ExecutorTesting {
+public class TestExecutor1 {
 
 	@Test
 	public void testInvalidComand() {
