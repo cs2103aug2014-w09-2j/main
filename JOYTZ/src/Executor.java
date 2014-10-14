@@ -72,7 +72,7 @@ public class Executor {
 		int taskId = command.getTaskId();
 		Task targetTask;
 
-		feedbackObject = new Feedback(false, "update");
+		feedbackObject = new Feedback(false);
 
 		// check whether the task is out of range, catch the exception.
 		try {
@@ -116,8 +116,8 @@ public class Executor {
 		Date date = command.getTaskDeadline();
 		String description = command.getTaskDescription();
 		String location = command.getTaskLocation();
-
-		feedbackObject = new Feedback(false, "add");
+		String priority = command.getTaskPriority();
+		feedbackObject = new Feedback(false);
 
 		if (name == null) {
 			feedbackObject
@@ -126,10 +126,7 @@ public class Executor {
 		}
 
 		// create a task object with all the attributes.
-		Task t = new Task(name);
-		t.setTaskDeadline(date);
-		t.setTaskDescription(description);
-		t.setTaskLocation(location);
+		Task t = new Task(name, date, description, location, priority);
 
 		// add the task into the storage.
 		try {
@@ -146,7 +143,7 @@ public class Executor {
 	private static void performDeleteAction(ExecutableCommand command) {
 		int taskId = command.getTaskId();
 		String taskName;
-		feedbackObject = new Feedback(false, "delete");
+		feedbackObject = new Feedback(false);
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
@@ -164,7 +161,7 @@ public class Executor {
 
 	private static void performDisplayAction() {
 
-		feedbackObject = new Feedback(false, "display");
+		feedbackObject = new Feedback(false);
 
 		// check whether the Storage is empty. If so, add in corresponding
 		// message in feedbackObjcet.
@@ -174,13 +171,13 @@ public class Executor {
 		}
 
 		// put every Task String in the Feedback.displayList.
-		for (int taskId = 0; taskId < Storage.getSizeOfListOfTask(); taskId++) {
+		for (int taskId = 0; taskId < Storage.getTaskListSize(); taskId++) {
 			Task currentTask;
 
 			// in case the TaskId is out of range.
 			try {
 				currentTask = Storage.get(taskId);
-				feedbackObject.displayList.add(currentTask
+				feedbackObject.taskList.add(currentTask
 						.convertTaskToString());
 			} catch (Exception e) {
 				feedbackObject.setMessageShowToUser(e.getMessage());
@@ -194,7 +191,7 @@ public class Executor {
 	}
 
 	private static void performClearAction() {
-		feedbackObject = new Feedback(false, "clear");
+		feedbackObject = new Feedback(false);
 		feedbackObject.setResult(Storage.clean());
 
 		if (feedbackObject.getResult()) {
@@ -212,7 +209,7 @@ public class Executor {
 	}
 
 	private static void performExitAction() {
-		feedbackObject = new Feedback(false, "exit");
+		feedbackObject = new Feedback(false);
 
 		// check whether the storage can store the information into a file.
 		try {
