@@ -1,5 +1,7 @@
 //package V1;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +22,8 @@ public class Analyzer {
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
+		assertNotNull("User input is null", userInput);
+
 		String userCommand = userInput.getUserCommand();
 		ExecutableCommand outputCommand = new ExecutableCommand();
 
@@ -63,6 +67,8 @@ public class Analyzer {
 
 	private static ExecutableCommand handleAddCommand(String[] arg)
 			throws ParseException {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
 
 		if (arg.length == 0) {
@@ -95,6 +101,8 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand("delete");
 
 		if (arg.length == 0) {
@@ -119,6 +127,8 @@ public class Analyzer {
 
 	private static ExecutableCommand handleUpdateCommand(String[] arg)
 			throws ParseException {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand("update");
 
 		if (arg.length == 0) {
@@ -188,6 +198,8 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handleSearchCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
 
 		if (arg.length == 0) {
@@ -216,6 +228,8 @@ public class Analyzer {
 	}
 
 	private static String[] getArgument(String userCommand) {
+		assertNotNull("User command argument is null", userCommand);
+
 		String[] cmd = convertStrToArr(userCommand);
 		String[] arg = new String[cmd.length - 1];
 
