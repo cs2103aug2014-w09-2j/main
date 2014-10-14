@@ -10,7 +10,6 @@ public class TestAnalyzer {
 	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
 	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_NULL_UPDATED_TASK = "Task to be updated is not indicated.\n";
 	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.\n";
 	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
 
@@ -113,7 +112,7 @@ public class TestAnalyzer {
 		Command test8 = new Command("update~2~priority~high");
 
 		ExecutableCommand expected = new ExecutableCommand("update");
-		expected.setErrorMessage(ERROR_NULL_UPDATED_TASK);
+		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
 		expected.setTaskName("meeting");
 		expected.setTaskDescription("discussion about CS2103T");
 		expected.setTaskDeadline((java.util.Date) df.parse("27/10/2014"));

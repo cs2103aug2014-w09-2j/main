@@ -51,7 +51,7 @@ public class GUI extends Composite {
     							   int taskId, String priority) {
 
     	// 1 row = 1 TableItem
-    	if (action.equals("add")) {
+    	//if (action.equals("add") || action.equals("delete")) {
     		if (taskNumber == 0) {
     			table.removeAll();
     		}
@@ -74,7 +74,7 @@ public class GUI extends Composite {
     	    TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
 	        
-    	} else if (action.equals("delete")) {
+    	} /*else if (action.equals("delete")) {
     		// Debugging code
     		LOGGER.info("==============\n" +
 						"Deleting from table (GUI):  \n" + 
@@ -90,8 +90,8 @@ public class GUI extends Composite {
     		
     		TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { taskNumber + ".", date, name, location, description });
-    	}
-    }
+    	}*/
+   // }
     
     /**
      * Create the composite.
