@@ -54,7 +54,7 @@ public class TestStorage {
 			assertEquals(true, Storage.update(1, "name", expectedNameString));
 			assertEquals(true, Storage.update(1, "description", expectedDescriptionString));
 			assertEquals(true, Storage.update(1, "location", expectedLocationString));
-			assertEquals(true, Storage.update(1, "deadline", "11-11-2015"));
+			assertEquals(true, Storage.update(1, "deadline", expectedDate.getTime()+""));
 			assertEquals(true, Storage.update(1, "priority", expectedPriorityString));
 			
 			String nameString = Storage.get(1).getTaskName();
@@ -102,9 +102,12 @@ public class TestStorage {
 		
 		assertEquals(2, Storage.getTaskListSize());
 		try {
+			Storage.saveFile();
+			Storage.cleanUpEveryThing();
 			Storage.reloadFile();
 			
-		} catch (IOException e) {
+			assertEquals(2, Storage.getTaskListSize());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

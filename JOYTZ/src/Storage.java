@@ -6,6 +6,10 @@ import java.text.*;
 import java.util.*;
 
 public class Storage {
+	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
+	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
+	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
+	private static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
@@ -19,8 +23,8 @@ public class Storage {
 	public static Timer timer = new Timer();
 
 	// the file that used to save current tasks when user exit the program.
-	private static File taskListFile;
-	private static File historyFile;
+	//private static File taskListFile;
+	//private static File historyFile;
 	private static String taskListFileName = "TaskList.txt";
 	private static String historyFileName = "Histroy.txt";
 
@@ -226,48 +230,16 @@ public class Storage {
 		return displayList;
 	}
 
+	
 	/**
-	 * openFile() will set up the File and FileWriter, also create a file with
-	 * name {@fileName} a new line will be added to the file to
-	 * indicate a new save.
-	 * 
+	 * SaveFile will save all the tasks in History and taskList into  two files.
 	 * @throws IOException
 	 */
 
-	private static void openFile() throws IOException {
-		taskListFile = new File(taskListFileName);
-		historyFile = new File(historyFileName);
-
-		if (!taskListFile.exists()) {
-			taskListFile.createNewFile();
-		}
-		if (!historyFile.exists()) {
-			historyFile.createNewFile();
-		}
-
-		taskListWriter = new FileWriter(taskListFile);
-		taskListFileReader = new FileReader(taskListFile);
-		taskListBufferedReader = new BufferedReader(taskListFileReader);
-
-		historyWriter = new FileWriter(historyFile);
-		historyFileReader = new FileReader(historyFile);
-		historyBufferedReader = new BufferedReader(historyFileReader);
-	}
-
-	private static void closeFile() throws IOException {
-		taskListBufferedReader.close();
-		taskListFileReader.close();
-		taskListWriter.close();
-
-		historyBufferedReader.close();
-		historyFileReader.close();
-		historyWriter.close();
-	}
-
-	public static void saveFile() throws IOException {
+	public static void saveFile() throws Exception {
 		
-		taskListFile = new File(taskListFileName);
-		historyFile = new File(historyFileName);
+		File taskListFile = new File(taskListFileName);
+		File historyFile = new File(historyFileName);
 
 		if (!taskListFile.exists()) {
 			taskListFile.createNewFile();
@@ -277,12 +249,7 @@ public class Storage {
 		}
 
 		taskListWriter = new FileWriter(taskListFile);
-		taskListFileReader = new FileReader(taskListFile);
-		taskListBufferedReader = new BufferedReader(taskListFileReader);
-
 		historyWriter = new FileWriter(historyFile);
-		historyFileReader = new FileReader(historyFile);
-		historyBufferedReader = new BufferedReader(historyFileReader);
 
 		//assert taskListFile.canWrite() : "taskListFile cannot write.";
 		//assert historyFile.canWrite() : "historyFile cannot write.";
@@ -296,25 +263,51 @@ public class Storage {
 			String str = convertTaskToString(taskList.get(i));
 			taskListWriter.write(str);
 		}
-
-		closeFile();
+		for (int i=0; i<history.size(); i++){
+			String str = convertTaskToString(history.get(i));
+			historyWriter.write(str);
+		}
+		
+		taskListWriter.close();
+		historyWriter.close();
+		
 		return;
 	}
+	
+	/**
+	 * reloadFile will reload task to the arrayList from two file.
+	 * @throws Exception
+	 */
 
-	public static void reloadFile() throws IOException {
-		openFile();
+	public static void reloadFile() throws Exception {
+		File taskListFile = new File(taskListFileName);
+		File historyFile = new File(historyFileName);
+
+		if (!taskListFile.exists()) {
+			throw new Exception(MESSAGE_TASK_LIST_FILE_NOT_EXIST);
+		}
+		if (!historyFile.exists()) {
+			throw new Exception(MESSAGE_HISTORY_FILE_NOT_EXIST);
+		}
+
+		taskListFileReader = new FileReader(taskListFile);
+		taskListBufferedReader = new BufferedReader(taskListFileReader);
+
+		historyFileReader = new FileReader(historyFile);
+		historyBufferedReader = new BufferedReader(historyFileReader);
 
 		if (!isEmpty()) {
-			clean();
+			cleanUpEveryThing();
 		}
 
 		String s = taskListBufferedReader.readLine();
-		System.out.println("reloading file from " + s);
-		System.out.println(s);
+		System.out.println(String.format(MESSAGE_RELOADING_FILE, s));
+		
 		s = taskListBufferedReader.readLine();
-		while (!s.equals("")) {
-			Task task = convertStringToTask(taskListBufferedReader.readLine());
+		while (s != null) {
+			Task task = convertStringToTask(s);
 			taskList.add(task);
+			s = taskListBufferedReader.readLine();
 		}
 
 		return;
@@ -326,23 +319,6 @@ public class Storage {
 	 * @param d
 	 * @return
 	 */
-
-	private static Date convertStringToDate(String d) {
-		/*
-		String[] temp = d.trim().split("-");
-		int year = Integer.parseInt(temp[0]);
-		int month = Integer.parseInt(temp[1]);
-		int day = Integer.parseInt(temp[2]);
-		*/
-		Date date = new Date();
-		try {
-			date = (Date) taskDateFormat.parse(d);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return date;
-	}
 
 	public static int getTaskListSize() {
 		return taskList.size();
@@ -362,27 +338,38 @@ public class Storage {
 	 * information will be filled into this object.
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	private static String convertTaskToString(Task task) {
+	private static String convertTaskToString(Task task) throws Exception {
+		if (task == null){
+			throw new Exception(ERROR_NULL_OBJECT);
+		}
 		String result = String.format(taskStringFormat, task.getTaskName(),
 				task.getTaskDeadline().getTime(), task.getTaskDescription(),
 				task.getTaskLocation(), task.getTaskPriority());
 		return result;
 	}
 
-	private static Task convertStringToTask(String taskString) {
-		String[] taskAttribute = taskString.split("-");
+	private static Task convertStringToTask(String taskString) throws Exception {
+		System.out.println(taskString);
 		Task task = new Task();
 
 		//assert taskAttribute.length == 5 : taskAttribute.toString();
 		//assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
-
-		task.setTaskName(taskAttribute[0]);
-		task.setTaskDeadline(new Date(Long.parseLong(taskAttribute[1])));
-		task.setTaskDescription(taskAttribute[2]);
-		task.setTaskLocation(taskAttribute[3]);
-		task.setTaskPriority(taskAttribute[4]);
-
+		if (taskString == null){
+			task = null;
+		}else {
+			String[] taskAttribute = taskString.split("-");
+			if (taskAttribute.length != 5){
+				throw new Exception(String.format(ERROR_INVALID_TASK_RECORD, taskString));
+			}else {
+				task.setTaskName(taskAttribute[0]);
+				task.setTaskDeadline(new Date(Long.parseLong(taskAttribute[1])));
+				task.setTaskDescription(taskAttribute[2]);
+				task.setTaskLocation(taskAttribute[3]);
+				task.setTaskPriority(taskAttribute[4]);
+			}
+		}
 		return task;
 	}
 

@@ -179,7 +179,7 @@ public class Executor {
 		// check whether the storage can store the information into a file.
 		try {
 			Storage.saveFile();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			feedback.setErrorMessage(String.format(ERROR_FAIL_SAVE_TO_FILE));
 			e.printStackTrace();
 			return;
