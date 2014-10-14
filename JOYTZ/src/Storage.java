@@ -4,8 +4,13 @@ import java.io.*;
 import java.security.InvalidParameterException;
 import java.text.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Storage {
+	
+	private static final Logger LOGGER = Logger.getLogger(Storage.class.getName());
+	
+	// Exception messages
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
 	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
@@ -61,7 +66,16 @@ public class Storage {
 		//assert !t.getTaskDescription().equals("") : "No task description.";
 		//assert !t.getTaskLocation().equals("") : "No task location.";
 		//assert !t.getTaskPriority().equals("") : "No task priority.";
-
+		
+		LOGGER.info("==============\n" +
+				"Storage add task: \n" + 
+				"task name: " + t.getTaskName() + "\n" +
+				"task description: " + t.getTaskDescription() + "\n" + 
+				"task location: " + t.getTaskLocation() + "\n" +
+				"task date: " + t.getTaskDeadline().toString() + "\n" +
+				"task priority: " + t.getTaskPriority() + "\n" +
+				"====================\n");
+		
 		taskList.add(t);
 		// timer.schedule(t, t.getTime());
 		numberOfTask++;
@@ -85,6 +99,15 @@ public class Storage {
 
 		// assert taskId > 0 : "taskId :" + taskId;
 		Task removedTask = taskList.remove(taskId - 1);
+		
+		LOGGER.info("==============\n" +
+				"Storage delete task. taskId: " + taskId + "\n" + 
+				"task name: " + removedTask.getTaskName() + "\n" +
+				"task description: " + removedTask.getTaskDescription() + "\n" + 
+				"task location: " + removedTask.getTaskLocation() + "\n" +
+				"task date: " + removedTask.getTaskDeadline().toString() + "\n" +
+				"task priority: " + removedTask.getTaskPriority() + "\n" +
+				"====================\n");
 
 		// removedTask.cancel();
 		numberOfTask--;
@@ -139,6 +162,12 @@ public class Storage {
 			//assert false : updateIndicator;
 			throw new Exception(ERROR_INVALID_INDICATOR);
 		}
+		
+		LOGGER.info("==============\n" +
+				"Storage update task. taskId: " + taskId + "\n" + 
+				"task name: " + targetTask.getTaskName() + "\n" +
+				"task indicator: " + updateIndicator + "\n" + 
+				"====================\n");
 
 		taskList.set(taskId - 1, targetTask);
 
