@@ -107,7 +107,7 @@ public class GUI extends Composite {
         
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
         tblclmnDate.setWidth(154);
-        tblclmnDate.setText("Due Date");
+        tblclmnDate.setText("Deadline");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
         tblclmnName.setWidth(154);
