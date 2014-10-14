@@ -7,8 +7,8 @@ import java.util.*;
 
 public class Storage {
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
-	private static final String ERROR_NULL_OBJECT = "Null Object.";
-	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d";
+	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
+	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
 
 	// this is the two list of tasks.
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -37,9 +37,9 @@ public class Storage {
 	// these three are for recording current information in the file.
 	private static DateFormat format = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSSSSS");
-	private static Date date;
-	private static String dateString;
-	private static String taskStringFormat = "%s-%s-%s-%s-%s";
+	private static String taskStringFormat = "%s-%s-%s-%s-%s\n";
+	private static DateFormat taskDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	private static String messageStringInFile = "User saved at %s.\n";
 
 	/**
 	 * addTask() method add in task passed by Executor.
@@ -52,11 +52,11 @@ public class Storage {
 		if (t == null) {
 			throw new InvalidParameterException(ERROR_NULL_OBJECT);
 		}
-		assert !t.getTaskName().equals("") : "No task name.";
-		assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
-		assert !t.getTaskDescription().equals("") : "No task description.";
-		assert !t.getTaskLocation().equals("") : "No task location.";
-		assert !t.getTaskPriority().equals("") : "No task priority.";
+		//assert !t.getTaskName().equals("") : "No task name.";
+		//assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
+		//assert !t.getTaskDescription().equals("") : "No task description.";
+		//assert !t.getTaskLocation().equals("") : "No task location.";
+		//assert !t.getTaskPriority().equals("") : "No task priority.";
 
 		taskList.add(t);
 		// timer.schedule(t, t.getTime());
@@ -79,7 +79,7 @@ public class Storage {
 					taskId));
 		}
 
-		assert taskId > 0 : "taskId :" + taskId;
+		//assert taskId > 0 : "taskId :" + taskId;
 		Task removedTask = taskList.remove(taskId - 1);
 
 		// removedTask.cancel();
@@ -110,28 +110,29 @@ public class Storage {
 
 		switch (updateIndicator) {
 		case "name":
-			assert newInfo instanceof String : "name: " + newInfo;
+			//assert newInfo instanceof String : "name: " + newInfo;
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
-			assert newInfo instanceof String : "description: " + newInfo;
+			//assert newInfo instanceof String : "description: " + newInfo;
 			targetTask.setTaskDescription(newInfo);
 			break;
 		case "deadline":
-			assert newInfo instanceof String : "deadline: " + newInfo;
-			assert newInfo.contains("%s-%s-%s");
+			//assert newInfo instanceof String : "deadline: " + newInfo;
+			//assert newInfo.contains("%s-%s-%s");
 			Date newDate = convertStringToDate(newInfo);
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
-			assert newInfo instanceof String : "location: " + newInfo;
+			//assert newInfo instanceof String : "location: " + newInfo;
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
-			assert newInfo instanceof String : "priority: " + newInfo;
+			//assert newInfo instanceof String : "priority: " + newInfo;
 			targetTask.setTaskPriority(newInfo);
+			break;
 		default:
-			assert false : updateIndicator;
+			//assert false : updateIndicator;
 			throw new Exception(ERROR_INVALID_INDICATOR);
 		}
 
@@ -171,6 +172,12 @@ public class Storage {
 		assert taskList.isEmpty() : "Size of list :" + taskList.size();
 		return true;
 	}
+	
+	// only for test.
+	public static void cleanUpEveryThing(){
+		history.clear();
+		taskList.clear();
+	}
 
 	public static ArrayList<String> getTaskList() {
 		ArrayList<String> displayList = new ArrayList<String>();
@@ -180,15 +187,14 @@ public class Storage {
 			String taskString = task.getTaskName();
 			Date checkDate = new Date(0, 0, 0);
 
+			if (!task.getTaskDescription().equals("")) {
+				taskString = taskString.concat("~");
+				taskString = taskString.concat(task.getTaskDescription());
+			}
 			if (!task.getTaskDeadline().equals(checkDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDeadline()
 						.toString());
-			}
-
-			if (!task.getTaskDescription().equals("")) {
-				taskString = taskString.concat("~");
-				taskString = taskString.concat(task.getTaskDescription());
 			}
 
 			if (!task.getTaskLocation().equals("")) {
@@ -248,13 +254,13 @@ public class Storage {
 	public static void saveFile() throws IOException {
 
 		openFile();
-		assert taskListFile.canWrite() : "taskListFile cannot write.";
-		assert historyFile.canWrite() : "historyFile cannot write.";
+		//assert taskListFile.canWrite() : "taskListFile cannot write.";
+		//assert historyFile.canWrite() : "historyFile cannot write.";
 
-		date = new Date();
-		dateString = format.format(date);
-		taskListWriter.write(dateString);
-		historyWriter.write(dateString);
+		Date date = new Date();
+		String dateString = format.format(date);
+		taskListWriter.write(String.format(messageStringInFile, dateString));
+		historyWriter.write(String.format(messageStringInFile, dateString));
 
 		for (int i = 0; i < taskList.size(); i++) {
 			String str = convertTaskToString(taskList.get(i));
@@ -293,16 +299,28 @@ public class Storage {
 	 */
 
 	private static Date convertStringToDate(String d) {
+		/*
 		String[] temp = d.trim().split("-");
 		int year = Integer.parseInt(temp[0]);
 		int month = Integer.parseInt(temp[1]);
 		int day = Integer.parseInt(temp[2]);
+		*/
+		Date date = new Date();
+		try {
+			date = (Date) taskDateFormat.parse(d);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-		return new Date(day, month, year);
+		return date;
 	}
 
 	public static int getTaskListSize() {
 		return taskList.size();
+	}
+	
+	public static int getHistorySize(){
+		return history.size();
 	}
 
 	public static boolean isEmpty() {
@@ -327,8 +345,8 @@ public class Storage {
 		String[] taskAttribute = taskString.split("-");
 		Task task = new Task();
 
-		assert taskAttribute.length == 5 : taskAttribute.toString();
-		assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+		//assert taskAttribute.length == 5 : taskAttribute.toString();
+		//assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
 
 		task.setTaskName(taskAttribute[0]);
 		task.setTaskDeadline(new Date(Long.parseLong(taskAttribute[1])));
