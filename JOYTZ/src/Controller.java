@@ -2,6 +2,7 @@
 
 import java.text.ParseException;
 import java.util.logging.Logger;
+import static org.junit.Assert.*;
 
 // import java.sql.Date;
 
@@ -36,60 +37,85 @@ public class Controller {
 			
         	if (action.equals("add")) {
 				numOfTasksAdded++;
-				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
         	} else if (action.equals("delete")) {
 				numOfTasksAdded--;
-				GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
+				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
-        	} else if (action.equals("display")) {
-        		parseDisplayTasks(action);
-			}
-
-        	// Debugging code
-			LOGGER.info("Controller, displaying output: " + 
-						parsedCommand.getAction() + " " + 
-						parsedCommand.getTaskName() + " " +
-						parsedCommand.getTaskDeadline().toString() + " " + 
-						parsedCommand.getTaskDescription() + " " +
-						parsedCommand.getTaskLocation());
-
+        	} 
+        	parseDisplayTasks(action);
 		}
     }
     
     // Call updateTable() in each iteration
     private static void parseDisplayTasks(String action) {
-		for(int i = 0; i < feedback.displayList.size(); i++){
-			System.out.println(feedback.displayList.get(i));	// Debug logging
-			String[] arr = feedback.displayList.get(i).trim().split("--");
-			GUI.updateTable(i, arr[1], arr[0], arr[2], "", action, 0);
+		for(int i = 0; i < feedback.getTaskList().size(); i++){
+			System.out.println("===================\n" +
+								"Display string from feedback object: \n" + 
+								"	" + feedback.getTaskList().get(i) + "\n" +
+								"===================\n");
+			
+			String[] arr = feedback.getTaskList().get(i).trim().split("~");
+			int arrayLength = arr.length;
+			
+			// Must have: Name, date, location, description, task ID
+			// assertEquals(5, arrayLength);
+
+			// updateTable(Table index number, date, name, location, description, action, taskId)
+			if (arrayLength == 1) {
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i, "No priority");
+			} else if (arrayLength == 2) {
+				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i, "No priority");
+			} else if (arrayLength == 3) {
+				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, i, "No priority");
+			} else if (arrayLength == 4) {
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, "No priority");
+			} else if (arrayLength == 5) {
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, arr[4]);
+			}
+			
 		}
+		
 	}
 
 	public static void startController() {
-    	LOGGER.info("Controller started");
+    	inputCommandString = getInput();
     	
-    	inputCommandString = getInput();			
+    	LOGGER.info("==============\n" +
+					"User Input: \n" + 
+					"	" + inputCommandString + "\n" + 
+					"====================\n");
+    	
         inputCommandObject = convertStringToCommand(inputCommandString);
+        
+        LOGGER.info("==============\n" +
+				"Command object: \n" + 
+				"	" + inputCommandObject.getUserCommand() + "\n" + 
+				"====================\n");
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
 			
+			// Debugging code
+			LOGGER.info("==============\n" +
+						"After analyzer: \n" + 
+						"	Action = " + parsedCommand.getAction() + "\n" + 
+						"	Name = " + parsedCommand.getTaskName() + "\n" +
+						"	Deadline = " + parsedCommand.getTaskDeadline().toString() + "\n" + 
+						"	Description = " + parsedCommand.getTaskDescription() + "\n" +
+						"	Location = " + parsedCommand.getTaskLocation() + "\n" +
+						"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
+						"	Task ID = " + parsedCommand.getTaskId() + "\n" +
+						"	Error message = " + parsedCommand.getErrorMessage() + "\n" +
+						"	Update indicator = " + parsedCommand.getUpdateIndicator() + "\n" +
+						"	Updated task name = " + parsedCommand.getUpdatedTaskName() + "\n" + 
+						"====================\n");
+			
 			if (parsedCommand.getErrorMessage().length() != 0) {
 				// There is an error. 
 				 displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
-			} else {
-			
-				// Debugging code
-				LOGGER.info("Controller, after analyzer: " + 
-							parsedCommand.getAction() + " " + 
-							parsedCommand.getTaskName() + " " +
-							parsedCommand.getTaskDeadline().toString() + " " + 
-							parsedCommand.getTaskDescription() + " " +
-							parsedCommand.getTaskLocation());
-				//displayUserOutput("success", parsedCommand);
-				
-				
+			} else {	
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
 					// getFeedbackFromExecutor();
@@ -115,7 +141,7 @@ public class Controller {
     	return inputCommandObject;
     }
     
-    private static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
+    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
         
     	return parsedCommand;
@@ -135,13 +161,8 @@ public class Controller {
     	return outputString;	
     }
     
-    // TODO
-    private static Feedback startExecutor(ExecutableCommand command) {
+    public static Feedback startExecutor(ExecutableCommand command) {
         return Executor.proceedAnalyzedCommand(command);
     }
     
-    // TODO
-    //private static Feedback getFeedbackFromExecutor() {
-    //   return Executor.getFeedback();
-    //}
 }

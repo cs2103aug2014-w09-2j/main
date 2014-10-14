@@ -30,6 +30,7 @@ public class GUI extends Composite {
     private TableColumn tblclmnRemarks;
     private TableColumn tblclmnNo;
     private TableColumn tblclmnLocation;
+    private TableColumn tblclmnPriority;
 
     public static String getUserInput() {
         return textInputData;        
@@ -44,26 +45,43 @@ public class GUI extends Composite {
     }
     
     // Pass object in here
-    public static void updateTable(int taskNumber, String date, String name, String location, String description, String action, int taskId) {
+    public static void updateTable(int taskNumber, String date, 
+    							   String name, String location, 
+    							   String description, String action, 
+    							   int taskId, String priority) {
 
     	// 1 row = 1 TableItem
     	if (action.equals("add")) {
-    		// we need to clear the table to prevent duplicate
-    		//table.removeAll();
+    		if (taskNumber == 0) {
+    			table.removeAll();
+    		}
+    		
     		
     		// Debugging code
-    		LOGGER.info("GUI, adding to table: " + 
-						action + " " + 
-	    				name + " " +
-	    				date + " " + 
-	    				description + " " +
-	    				location + " " +
-	    				taskId);
+    		LOGGER.info("==============\n" +
+						"Writing to table (GUI):  \n" + 
+						"	Action = " + action + "\n" + 
+						"	Name = " + name + "\n" +
+						"	Deadline = " + date + "\n" + 
+						"	Description = " + description + "\n" +
+						"	Location = " + location + "\n" +
+						"	Priority = " + priority + "\n" +
+						"	Task ID = " + taskId + "\n" +
+						"	Update indicator = not implemented in GUI yet" + "\n" +
+						"	Updated task name = not implemented in GUI yet" + "\n" + 
+    					"====================\n");
     		
     	    TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { taskNumber + ".", date, name, location, description });
+            item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
 	        
     	} else if (action.equals("delete")) {
+    		// Debugging code
+    		LOGGER.info("==============\n" +
+						"Deleting from table (GUI):  \n" + 
+						"	Action = " + action + "\n" + 
+						"	Task ID = " + taskId + "\n" +
+    					"====================\n");
+    		
     		table.clear(taskId-1);
     	} else if (action.equals("display")) {
     		if (taskNumber == 0) {
@@ -119,6 +137,10 @@ public class GUI extends Composite {
         tblclmnRemarks = new TableColumn(table, SWT.NONE);
         tblclmnRemarks.setWidth(118);
         tblclmnRemarks.setText("Description");
+        
+        tblclmnPriority = new TableColumn(table, SWT.NONE);
+        tblclmnPriority.setWidth(100);
+        tblclmnPriority.setText("Priority");
         
        // for (int i = 0; i < 5; i++) {
        //     TableItem item = new TableItem(table, SWT.NONE);

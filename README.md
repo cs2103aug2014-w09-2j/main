@@ -7,17 +7,24 @@ Current functions and how to use them
 --------------
 
 1. Add
-  - add (task) (date)
-  - Do note that at the current iteration, the task cannot be more than one word
-  - Date format: DD/MM/YYYY
+  - add~task name~description~deadline~location~priority
+  - Not all arguments have to be used. For example:
+   	- add~task
+  - To skip an argument, leave it blank. For example:
+	- add~task name~~deadline~~priority
+  - Deadline format: DD/MM/YYYY
 
 2. Delete
-  - delete (task number)
+  - delete~task number
   - The task number can be viewed through the display command
 
-3. Display
-  - display
+3. Update
+  - update~index~indicator~new info
 
-4. Exit
+4. Clear
+  - clear
+  - Clears all data
+  
+5. Exit
   - exit
   - This exits the program

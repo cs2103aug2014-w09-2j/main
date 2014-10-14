@@ -3,24 +3,19 @@
 import java.util.Date;
 
 public class ExecutableCommand {
-	
+
 	// attributes in this object.
 	private String action;
 	private String taskName;
 	private String taskDescription;
 	private Date taskDeadline;
 	private String taskLocation;
-	
-	// this is for delete method.
 	private int taskId;
-	
-	// currently not in use.
 	private String taskPriority;
-	
-	
+
 	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
-	
+
 	// these are for update method.
 	private String updateIndicator;
 	private String updatedTaskName;
@@ -141,41 +136,5 @@ public class ExecutableCommand {
 
 	public String getUpdatedTaskName() {
 		return updatedTaskName;
-	}
-	
-	public boolean contains(String data){
-		boolean result = false;
-		
-		switch(data){
-		case "taskName":
-			if(getTaskName() != ""){
-				result = true;
-			}
-		case "taskDescription":
-			if(getTaskDescription() != ""){
-				result = true;
-			}
-		case "taskDeadline":
-			Date check = new Date(0, 0, 0);
-			if(getTaskDeadline().equals(null)){
-				result = true;
-			}
-		case "taskLocation":
-			if(getTaskLocation() != ""){
-				result = true;
-			}
-		case "taskPriority":
-			if(getTaskPriority() != ""){
-				result = true;
-			}
-		case "taskId":
-			if(getTaskId() != -1){
-				result = true;
-			}
-		default:
-			result = false;
-		}
-		
-		return result;
 	}
 }

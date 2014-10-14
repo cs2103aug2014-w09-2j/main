@@ -20,7 +20,7 @@ public class StringFormat {
 	
 	// String format for Exception in Storage.
 	public static final String EXCPTION_NULL_TASK_OBJECT= "Task Object is null.";
-	public static final String EXCEPTION_TASK_OUT_OF_RANGE = "Task Id is out of range. TaskId : %d";
+	public static final String EXCEPTION_TASK_OUT_OF_RANGE = "Task index %d indicated is out of range.\n";
 	
 	
 	/**

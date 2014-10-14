@@ -7,33 +7,32 @@ public class Task {
 	// task attributes.
 	public String taskName;
 	public Date taskDeadline;
-	public String taskDescription = "";
-	public String taskLocation = "";
-
-	// currently not in use.
-	public String taskPriority = "";
-	private int taskId;
-
-	// another way to express a task.
+	public String taskDescription;
+	public String taskLocation;
+	public String taskPriority;
 
 	/**
 	 * Constructor
 	 */
-
 	Task() {
+		this.taskName = "";
+		this.taskDeadline = new Date(0, 0, 0);
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
 	}
 
-	Task(String name) {
+	Task(String name, Date deadline, String description, String location,
+			String priority) {
 		this.taskName = name;
-	}
-
-	Task(String name, Date date) {
-		this.taskName = name;
-		this.taskDeadline = date;
+		this.taskDeadline = deadline;
+		this.taskDescription = description;
+		this.taskLocation = location;
+		this.taskPriority = priority;
 	}
 
 	/**
-	 * Methods
+	 * Set methods
 	 */
 
 	public void setTaskName(String name) {
@@ -56,6 +55,10 @@ public class Task {
 		this.taskPriority = priority;
 	}
 
+	/**
+	 * Get methods
+	 */
+
 	public String getTaskName() {
 		return this.taskName;
 	}
@@ -70,6 +73,10 @@ public class Task {
 
 	public String getTaskLocation() {
 		return this.taskLocation;
+	}
+
+	public String getTaskPriority() {
+		return this.taskPriority;
 	}
 
 	/**
