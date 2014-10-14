@@ -17,7 +17,7 @@ public class Controller {
 	private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-    private static int numOfTasksAdded;
+    //private static int numOfTasksAdded;
     
 	private static String getInput() {
         return GUI.getUserInput();
@@ -29,10 +29,10 @@ public class Controller {
 		// If there is no error message
         if (command.getErrorMessage().length() == 0) {
         	String action = command.getAction();
-        	String date = command.getTaskDeadline().toString();
-			String name = command.getTaskName();
-			String location = command.getTaskLocation();
-			String description = command.getTaskDescription();
+        	//String date = command.getTaskDeadline().toString();
+			//String name = command.getTaskName();
+			//String location = command.getTaskLocation();
+			//String description = command.getTaskDescription();
 			int taskId = command.getTaskId();
 			/*
         	if (action.equals("add")) {
@@ -48,7 +48,9 @@ public class Controller {
 		}
     }
     
-    // Call updateTable() in each iteration
+    // getTaskList() string MUST HAVE: Name~ date~ location~ description~ priority
+	// If something is empty: Name~date~~~priority
+	// If not, I don't know what the string belongs to after I split it.
     private static void parseDisplayTasks(String action, int taskId) {
 		for(int i = 0; i < feedback.getTaskList().size(); i++){
 			System.out.println("===================\n" +
@@ -59,25 +61,22 @@ public class Controller {
 			String[] arr = feedback.getTaskList().get(i).trim().split("~");
 			int arrayLength = arr.length;
 			
-			// MUST HAVE: Name, date, location, description, priority
-			// If not, I don't know what the string belongs to after I split it.
 			// assertEquals(5, arrayLength);
 
-			// updateTable(Table index number, date, name, location, description, action, taskId, priority)
+			// updateTable(Table index number, date, name, location, description, action, priority)
+			// arrayLength 1 to 4 should not be needed at all
 			if (arrayLength == 1) {
-				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, taskId, "No priority");
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, "No priority");
 			} else if (arrayLength == 2) {
-				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, taskId, "No priority");
+				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, "No priority");
 			} else if (arrayLength == 3) {
-				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, taskId, "No priority");
+				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, "No priority");
 			} else if (arrayLength == 4) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, taskId, "No priority");
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, "No priority");
 			} else if (arrayLength == 5) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, taskId, arr[4]);
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, arr[4]);
 			}
-			
 		}
-		
 	}
 
 	public static void startController() {
