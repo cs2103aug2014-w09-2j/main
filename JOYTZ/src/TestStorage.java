@@ -102,8 +102,6 @@ public class TestStorage {
 		
 		assertEquals(2, Storage.getTaskListSize());
 		try {
-			Storage.saveFile();
-			Storage.cleanUpEveryThing();
 			Storage.reloadFile();
 			
 		} catch (IOException e) {

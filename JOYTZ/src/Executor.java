@@ -128,7 +128,7 @@ public class Executor {
 			newInfo = command.getTaskDescription();
 			break;
 		case "deadline":
-			String newDate = command.getTaskDeadline().toString();
+			String newDate = command.getTaskDeadline().getTime() + "";
 			newInfo = newDate;
 			break;
 		case "location":
