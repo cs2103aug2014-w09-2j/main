@@ -18,6 +18,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
+import static org.junit.Assert.*;
+
 public class GUI extends Composite {
 	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
@@ -54,6 +56,7 @@ public class GUI extends Composite {
     	//if (action.equals("add") || action.equals("delete")) {
     		if (taskNumber == 0) {
     			table.removeAll();
+    			assertEquals(0, table.getItemCount());
     		}
     		
     		// Debugging code
@@ -140,11 +143,6 @@ public class GUI extends Composite {
         tblclmnPriority = new TableColumn(table, SWT.NONE);
         tblclmnPriority.setWidth(100);
         tblclmnPriority.setText("Priority");
-        
-       // for (int i = 0; i < 5; i++) {
-       //     TableItem item = new TableItem(table, SWT.NONE);
-       //     item.setText(new String[] { i + "."});
-       // }
         
         outputField = new Text(this, SWT.FILL | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
         GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
