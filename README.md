@@ -19,7 +19,13 @@ Current functions and how to use them
   - The task number can be viewed through the display command
 
 3. Update
-  - update~index~indicator~new info
+  - update~task number~indicator~new info
+  - The indicators are:
+  	- name
+  	- description
+  	- deadline
+  	- location
+  	- priority
 
 4. Clear
   - clear
