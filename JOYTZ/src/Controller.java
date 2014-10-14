@@ -59,18 +59,9 @@ public class Controller {
 				String[] arr = feedback.getTaskList().get(i).trim().split("~");
 				int arrayLength = arr.length;
 				
-				// assertEquals(5, arrayLength);
-	
 				// updateTable(Table index number, date, name, location, description, action, priority)
-				// arrayLength 1 to 4 should not be needed at all
-				if (arrayLength == 1) {
-					GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, "No priority");
-				} else if (arrayLength == 2) {
-					GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, "No priority");
-				} else if (arrayLength == 3) {
-					GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, "No priority");
-				} else if (arrayLength == 4) {
-					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, "No priority");
+				if (arrayLength == 4) {
+					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, "");
 				} else if (arrayLength == 5) {
 					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, arr[4]);
 				}
