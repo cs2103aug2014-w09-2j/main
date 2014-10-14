@@ -34,7 +34,7 @@ public class Controller {
 			String location = command.getTaskLocation();
 			String description = command.getTaskDescription();
 			int taskId = command.getTaskId();
-			
+			/*
         	if (action.equals("add")) {
 				numOfTasksAdded++;
 				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
@@ -43,13 +43,13 @@ public class Controller {
 				numOfTasksAdded--;
 				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
 			
-        	} 
-        	parseDisplayTasks(action);
+        	} */
+        	parseDisplayTasks(action, taskId);
 		}
     }
     
     // Call updateTable() in each iteration
-    private static void parseDisplayTasks(String action) {
+    private static void parseDisplayTasks(String action, int taskId) {
 		for(int i = 0; i < feedback.getTaskList().size(); i++){
 			System.out.println("===================\n" +
 								"Display string from feedback object: \n" + 
@@ -59,20 +59,21 @@ public class Controller {
 			String[] arr = feedback.getTaskList().get(i).trim().split("~");
 			int arrayLength = arr.length;
 			
-			// Must have: Name, date, location, description, task ID
+			// MUST HAVE: Name, date, location, description, priority
+			// If not, I don't know what the string belongs to after I split it.
 			// assertEquals(5, arrayLength);
 
-			// updateTable(Table index number, date, name, location, description, action, taskId)
+			// updateTable(Table index number, date, name, location, description, action, taskId, priority)
 			if (arrayLength == 1) {
-				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i, "No priority");
+				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, taskId, "No priority");
 			} else if (arrayLength == 2) {
-				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i, "No priority");
+				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, taskId, "No priority");
 			} else if (arrayLength == 3) {
-				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, i, "No priority");
+				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, taskId, "No priority");
 			} else if (arrayLength == 4) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, "No priority");
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, taskId, "No priority");
 			} else if (arrayLength == 5) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, arr[4]);
+				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, taskId, arr[4]);
 			}
 			
 		}
