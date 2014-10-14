@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.util.logging.Logger;
 import static org.junit.Assert.*;
 
-// import java.sql.Date;
-
 public class Controller {
 	private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
 	
@@ -17,70 +15,72 @@ public class Controller {
 	private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-    private static int numOfTasksAdded;
     
 	private static String getInput() {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand, ExecutableCommand command) {   
+    private static void displayUserOutput(String outputCommand, ExecutableCommand command) {
+    	assertNotNull("Output feedback message is null", outputCommand);
+    	assertNotNull("ExecutableCommand object is null during display", command);
+    	if(outputCommand.length() == 0) {
+    		fail("Output feedback message is empty");
+    	}
+    	
         GUI.displayOutput(outputCommand);
         
 		// If there is no error message
         if (command.getErrorMessage().length() == 0) {
         	String action = command.getAction();
-        	String date = command.getTaskDeadline().toString();
-			String name = command.getTaskName();
-			String location = command.getTaskLocation();
-			String description = command.getTaskDescription();
+        	//String date = command.getTaskDeadline().toString();
+			//String name = command.getTaskName();
+			//String location = command.getTaskLocation();
+			//String description = command.getTaskDescription();
 			int taskId = command.getTaskId();
-			
-        	if (action.equals("add")) {
-				numOfTasksAdded++;
-				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
-			
-        	} else if (action.equals("delete")) {
-				numOfTasksAdded--;
-				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
-			
-        	} 
-        	parseDisplayTasks(action);
+
+        	parseDisplayTasks(action, taskId);
 		}
     }
     
-    // Call updateTable() in each iteration
-    private static void parseDisplayTasks(String action) {
-		for(int i = 0; i < feedback.getTaskList().size(); i++){
-			System.out.println("===================\n" +
-								"Display string from feedback object: \n" + 
-								"	" + feedback.getTaskList().get(i) + "\n" +
-								"===================\n");
-			
-			String[] arr = feedback.getTaskList().get(i).trim().split("~");
-			int arrayLength = arr.length;
-			
-			// Must have: Name, date, location, description, task ID
-			// assertEquals(5, arrayLength);
-
-			// updateTable(Table index number, date, name, location, description, action, taskId)
-			if (arrayLength == 1) {
-				GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, i, "No priority");
-			} else if (arrayLength == 2) {
-				GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, i, "No priority");
-			} else if (arrayLength == 3) {
-				GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, i, "No priority");
-			} else if (arrayLength == 4) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, "No priority");
-			} else if (arrayLength == 5) {
-				GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, i, arr[4]);
+    // Preconditions:
+    // getTaskList() strings MUST HAVE: Name~ date~ location~ description~ priority
+	// If something is empty: Name~date~~~priority
+	// If not, I don't know what the string belongs to after I split it.
+    private static void parseDisplayTasks(String action, int taskId) {
+    	if (feedback.getTaskList().size() == 0) { // happens after "clear" command
+    		GUI.updateTable(0, "No date", "No name", "No location", "No description", action, "No priority");
+    	} else {
+			for(int i = 0; i < feedback.getTaskList().size(); i++){
+				System.out.println("===================\n" +
+									"Display string from feedback object: \n" + 
+									"	" + feedback.getTaskList().get(i) + "\n" +
+									"===================\n");
+				
+				String[] arr = feedback.getTaskList().get(i).trim().split("~");
+				int arrayLength = arr.length;
+				
+				// assertEquals(5, arrayLength);
+	
+				// updateTable(Table index number, date, name, location, description, action, priority)
+				// arrayLength 1 to 4 should not be needed at all
+				if (arrayLength == 1) {
+					GUI.updateTable(i, "No date", arr[0], "No location", "No description", action, "No priority");
+				} else if (arrayLength == 2) {
+					GUI.updateTable(i, "No date", arr[0], "No location", arr[1], action, "No priority");
+				} else if (arrayLength == 3) {
+					GUI.updateTable(i, arr[2], arr[0], "No location", arr[1], action, "No priority");
+				} else if (arrayLength == 4) {
+					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, "No priority");
+				} else if (arrayLength == 5) {
+					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, arr[4]);
+				}
 			}
-			
-		}
-		
+    	}
 	}
 
 	public static void startController() {
     	inputCommandString = getInput();
+    	assertNotNull("Input user string is null", inputCommandString);
     	
     	LOGGER.info("==============\n" +
 					"User Input: \n" + 
@@ -88,6 +88,7 @@ public class Controller {
 					"====================\n");
     	
         inputCommandObject = convertStringToCommand(inputCommandString);
+        assertNotNull("Input command object is null", inputCommandObject);
         
         LOGGER.info("==============\n" +
 				"Command object: \n" + 
@@ -96,6 +97,7 @@ public class Controller {
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
+			assertNotNull("ExecutableCommand object is null after analyzer", parsedCommand);
 			
 			// Debugging code
 			LOGGER.info("==============\n" +
@@ -118,13 +120,15 @@ public class Controller {
 			} else {	
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
-					// getFeedbackFromExecutor();
+					assertNotNull("Feedback object is null after executor", feedback);
+
 				} else{
 					feedback = new Feedback(false);
 					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 				}
 
 				outputString = proceedFeedback(feedback, parsedCommand);
+				assertNotNull("Feedback output string is null", outputString);
 				
 				displayUserOutput(outputString, parsedCommand);
 	        }

@@ -129,6 +129,10 @@ public class Analyzer {
 			tempCommand.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
 
 			return tempCommand;
+		} else if (!isInteger(arg[0])) {
+			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
+
+			return tempCommand;
 		} else if (Integer.parseInt(arg[0]) < 1) {
 			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
