@@ -73,21 +73,21 @@ public class Analyzer {
 
 		tempCommand.setTaskName(arg[0]);
 
-		if (arg.length == 2) {
+		if (arg.length >= 2) {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 
-		if (arg.length == 3) {
+		if (arg.length >= 3) {
 			Date deadline = (Date) df.parse(arg[2]);
 
 			tempCommand.setTaskDeadline(deadline);
 		}
 
-		if (arg.length == 4) {
+		if (arg.length >= 4) {
 			tempCommand.setTaskLocation(arg[3]);
 		}
 
-		if (arg.length == 5) {
+		if (arg.length >= 5) {
 			tempCommand.setTaskPriority(arg[4]);
 		}
 
