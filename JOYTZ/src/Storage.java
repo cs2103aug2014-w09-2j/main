@@ -181,23 +181,23 @@ public class Storage {
 			Date checkDate = new Date(0, 0, 0);
 
 			if (!task.getTaskDeadline().equals(checkDate)) {
-				taskString = taskString.concat("-");
+				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDeadline()
 						.toString());
 			}
 
 			if (!task.getTaskDescription().equals("")) {
-				taskString = taskString.concat("-");
+				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDescription());
 			}
 
 			if (!task.getTaskLocation().equals("")) {
-				taskString = taskString.concat("-");
+				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskLocation());
 			}
 
 			if (!task.getTaskPriority().equals("")) {
-				taskString = taskString.concat("-");
+				taskString = taskString.concat("~");
 				taskString = taskString.concat(task.getTaskDescription());
 			}
 

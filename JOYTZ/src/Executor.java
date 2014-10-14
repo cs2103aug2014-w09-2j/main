@@ -1,33 +1,32 @@
+//package V1;
+
 import java.io.IOException;
 import java.util.Date;
 
 public class Executor {
-	
-	private static final String ERROR_INVALID_COMMAND = "Invalid command.\nPlease try again.\n";
-	
-	// these are for Add Method.
-	private static final String MESSAGE_ADD_SUCCESSFUL = "Task %s is added successfully.\n";
-	private static final String ERROR_TASK_WITHOUT_NAME = "Task should contains a name.\n";
-	
-	// these are for Delete Method.
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "\"%s\" is deleted successfully.\n";
-	
-	// these are for Clear Method.
-	private static final String MESSAGE_CLEAR_SUCCESSFULLY = "all content cleared successfully\n";
-	
-	// these are for Display Method.
-	private static final String MESSAGE_STORAGE_IS_EMPTY = "The storage is empty.\n";
-	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Here are the tasks.\n";
-	
-	// these are for Update Method.
-	private static final String ERROR_WRONG_INDICATOR = "The indicator is wrong.\n";
-	private static final String MESSAGE_UPDATE_SUCCESSFULLY = "Task has been updated successfully.\n";
-	
-	// these are for Save and Reload.
-	private static final String MESSAGE_CONNOT_SAVE_TO_FILE = "Cannot store the Storage to file\n";
-	private static final String MESSAGE_SAVED_SUCCESSFULLY = "The Storage is saved successfully.\n";
 
-	public static Feedback feedbackObject;
+	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+
+	// these are for Add Method.
+	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
+	private static final String ERROR_FAIL_TO_ADD = "Fail to add task.\n";
+
+	// these are for Delete Method.
+	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
+	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+
+	// these are for Clear Method.
+	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
+
+	// these are for Update Method.
+	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"has been updated successfully.\n";
+
+	// these are for Save and Reload.
+	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
+	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
+
+	public static Feedback feedback;
 
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		String action = command.getAction();
@@ -39,8 +38,8 @@ public class Executor {
 		case "delete":
 			performDeleteAction(command);
 			break;
-		case "display":
-			performDisplayAction();
+		case "update":
+			performUpdateAction(command);
 			break;
 		case "clear":
 			performClearAction();
@@ -51,176 +50,146 @@ public class Executor {
 		case "search":
 			performSearchAction();
 			break;
-		case "update":
-			performUpdateAction(command);
-			break;
 		case "exit":
 			performExitAction();
 			break;
 		default:
-			Feedback feedBackObject = new Feedback(false);
-			feedBackObject.setMessageShowToUser(ERROR_INVALID_COMMAND);
+			Feedback feedbackObject = new Feedback(false);
+			feedbackObject.setErrorMessage(ERROR_INVALID_COMMAND);
+			return feedbackObject;
 		}
 
-		return feedbackObject;
-	}
-	
-	private static void performUpdateAction(ExecutableCommand command) {
-		String updateIndicator = command.getUpdateIndicator();
-		int taskId = command.getTaskId();
-		Task targetTask;
-
-		feedbackObject = new Feedback(false);
-
-		// check whether the task is out of range, catch the exception.
-		try {
-			targetTask = Storage.get(taskId);
-		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(e.getMessage());
-			return;
+		if (feedback.getResult()) {
+			feedback.setTaskList(Storage.getTaskList());
 		}
 
-		switch (updateIndicator) {
-		case "name":
-			String newName = command.getTaskName();
-			targetTask.setTaskName(newName);
-			break;
-		case "description":
-			String newDescription = command.getTaskDescription();
-			targetTask.setTaskDescription(newDescription);
-			break;
-		case "deadline":
-			Date newDate = command.getTaskDeadline();
-			targetTask.setTaskDeadline(newDate);
-			break;
-		case "location":
-			String newLocation = command.getTaskLocation();
-			targetTask.setTaskLocation(newLocation);
-			break;
-		case "priority":
-			String newPriority = command.getTaskPriority();
-			targetTask.setTaskPriority(newPriority);
-			break;
-		default:
-			feedbackObject.setMessageShowToUser(ERROR_WRONG_INDICATOR);
-			return;
-		}
-		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser(MESSAGE_UPDATE_SUCCESSFULLY);
+		return feedback;
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
-		Date date = command.getTaskDeadline();
 		String description = command.getTaskDescription();
+		Date date = command.getTaskDeadline();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-		feedbackObject = new Feedback(false);
 
-		if (name == null) {
-			feedbackObject
-					.setMessageShowToUser(ERROR_TASK_WITHOUT_NAME);
+		feedback = new Feedback(false);
+		
+		if(name == ""){
+			feedback.setMessageShowToUser(ERROR_FAIL_TO_ADD);
 			return;
-		}
+		}	
+			
+
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
 		// add the task into the storage.
-		try {
-			feedbackObject.setResult(Storage.add(t));
-		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(e.getMessage());
-			return;
-		}
+		feedback.setResult(Storage.add(t));
 
-		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
+		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
+				name));
+
 	}
 
 	private static void performDeleteAction(ExecutableCommand command) {
 		int taskId = command.getTaskId();
 		String taskName;
-		feedbackObject = new Feedback(false);
+		feedback = new Feedback(false);
 
-		try {
+		feedback.setResult(Storage.delete(taskId));
+
+		if (feedback.getResult()) {
 			taskName = Storage.get(taskId).getTaskName();
-			feedbackObject.setResult(Storage.delete(taskId));
-		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(e.getMessage());
-			return;
+			feedback.setMessageShowToUser(String.format(
+					MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
+		} else {
+			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 
-		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser(String.format(MESSAGE_DELETE_SUCCESSFUL, taskName));
-		}
-		return;
 	}
 
-	private static void performDisplayAction() {
+	private static void performUpdateAction(ExecutableCommand command) {
+		String updateIndicator = command.getUpdateIndicator();
+		int taskId = command.getTaskId();
+		String taskName;
+		String newInfo;
 
-		feedbackObject = new Feedback(false);
+		feedback = new Feedback(false);
 
-		// check whether the Storage is empty. If so, add in corresponding
-		// message in feedbackObjcet.
-		if (Storage.isEmpty()) {
-			feedbackObject.setMessageShowToUser(MESSAGE_STORAGE_IS_EMPTY);
+		// check whether the task is out of range, catch the exception, and end
+		// the function.
+		switch (updateIndicator) {
+		case "name":
+			newInfo = command.getUpdatedTaskName();
+			break;
+		case "description":
+			newInfo = command.getTaskDescription();
+			break;
+		case "deadline":
+			String newDate = command.getTaskDeadline().toString();
+			newInfo = newDate;
+			break;
+		case "location":
+			newInfo = command.getTaskLocation();
+			break;
+		case "priority":
+			newInfo = command.getTaskPriority();
+			break;
+		default:
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
 
 		try {
-			feedbackObject.setTaskList(Storage.getTaskList());
+			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
 		} catch (Exception e) {
-			feedbackObject.setMessageShowToUser(e.getMessage());
-			return;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	
 
-		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
-		return;
+		if (feedback.getResult()) {
+			taskName = Storage.get(taskId).getTaskName();
+			feedback.setMessageShowToUser(String.format(
+					MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
+		} else {
+			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		}
 	}
 
 	private static void performClearAction() {
-		feedbackObject = new Feedback(false);
-		feedbackObject.setResult(Storage.clean());
+		feedback = new Feedback(false);
+		feedback.setResult(Storage.clean());
 
-		if (feedbackObject.getResult()) {
-			feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFULLY);
-
-			return;
-		}
-		Storage.clean();
-
-		feedbackObject.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFULLY);
-		feedbackObject = new Feedback(false);
+		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 	}
 
 	private static void performSortAction() {
+		// TODO Auto-generated method stubs
 	}
 
 	private static void performSearchAction() {
+		// TODO Auto-generated method stub
 	}
 
 	private static void performExitAction() {
-		feedbackObject = new Feedback(false);
+		feedback = new Feedback(false);
 
 		// check whether the storage can store the information into a file.
 		try {
 			Storage.saveFile();
 		} catch (IOException e) {
-			feedbackObject.setMessageShowToUser(String
-					.format(MESSAGE_CONNOT_SAVE_TO_FILE));
+			feedback.setErrorMessage(String.format(ERROR_FAIL_SAVE_TO_FILE));
 			e.printStackTrace();
 			return;
 		}
 
-		feedbackObject.setResult(true);
-		feedbackObject.setMessageShowToUser(String
-				.format(MESSAGE_SAVED_SUCCESSFULLY));
+		feedback.setResult(true);
+		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 		System.exit(0);
 	}
 
 	public static Feedback getFeedback() {
-		return feedbackObject;
+		return feedback;
 	}
 }
