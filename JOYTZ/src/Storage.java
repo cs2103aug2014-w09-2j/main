@@ -120,7 +120,7 @@ public class Storage {
 		case "deadline":
 			//assert newInfo instanceof String : "deadline: " + newInfo;
 			//assert newInfo.contains("%s-%s-%s");
-			Date newDate = convertStringToDate(newInfo);
+			Date newDate = new Date(Long.parseLong(newInfo));
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
@@ -265,6 +265,7 @@ public class Storage {
 	}
 
 	public static void saveFile() throws IOException {
+		
 		taskListFile = new File(taskListFileName);
 		historyFile = new File(historyFileName);
 
