@@ -1,5 +1,3 @@
-//package V1;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -80,7 +78,6 @@ public class Executor {
 			return;
 		}	
 			
-
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
@@ -153,18 +150,16 @@ public class Executor {
 	}
 
 	private static void performClearAction() {
-		feedback = new Feedback(false);
-		feedback.setResult(Storage.clean());
+		Storage.clean();
 
 		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+		feedback = new Feedback(false);
 	}
 
 	private static void performSortAction() {
-		// TODO Auto-generated method stubs
 	}
 
 	private static void performSearchAction() {
-		// TODO Auto-generated method stub
 	}
 
 	private static void performExitAction() {
