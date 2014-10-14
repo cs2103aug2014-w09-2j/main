@@ -54,12 +54,8 @@ public class Executor {
 			performSearchAction();
 			break;
 		case "update":
-<<<<<<< HEAD
 			performUpdateAction(command);
-=======
-			performUpdateFunction(command);
 			break;
->>>>>>> 1f019e86d80dbcab6477e2c8334e1740c97a2508
 		case "exit":
 			performExitAction();
 			break;
@@ -70,7 +66,7 @@ public class Executor {
 
 		return feedbackObject;
 	}
-
+	
 	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
