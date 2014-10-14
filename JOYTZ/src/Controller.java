@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.util.logging.Logger;
 import static org.junit.Assert.*;
 
-// import java.sql.Date;
-
 public class Controller {
 	private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
 	
@@ -17,7 +15,6 @@ public class Controller {
 	private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-    //private static int numOfTasksAdded;
     
 	private static String getInput() {
         return GUI.getUserInput();
@@ -40,26 +37,18 @@ public class Controller {
 			//String location = command.getTaskLocation();
 			//String description = command.getTaskDescription();
 			int taskId = command.getTaskId();
-			/*
-        	if (action.equals("add")) {
-				numOfTasksAdded++;
-				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
-			
-        	} else if (action.equals("delete")) {
-				numOfTasksAdded--;
-				//GUI.updateTable(numOfTasksAdded, date, name, location, description, action, taskId);
-			
-        	} */
+
         	parseDisplayTasks(action, taskId);
 		}
     }
     
-    // getTaskList() string MUST HAVE: Name~ date~ location~ description~ priority
+    // Preconditions:
+    // getTaskList() strings MUST HAVE: Name~ date~ location~ description~ priority
 	// If something is empty: Name~date~~~priority
 	// If not, I don't know what the string belongs to after I split it.
     private static void parseDisplayTasks(String action, int taskId) {
     	if (feedback.getTaskList().size() == 0) { // happens after "clear" command
-    		
+    		GUI.updateTable(0, "No date", "No name", "No location", "No description", action, "No priority");
     	} else {
 			for(int i = 0; i < feedback.getTaskList().size(); i++){
 				System.out.println("===================\n" +

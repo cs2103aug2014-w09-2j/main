@@ -52,15 +52,15 @@ public class GUI extends Composite {
     							   String description, String action, 
     							   String priority) {
 
-    	// 1 row = 1 TableItem
-    	//if (action.equals("add") || action.equals("delete")) {
-    		if (taskNumber == 0) {
-    			table.removeAll();
-    			assertEquals(0, table.getItemCount());
-    		}
-    		
-    		// Debugging code
-    		LOGGER.info("==============\n" +
+    	// To prevent multiple of the same entries, we clear the whole table first
+		if (taskNumber == 0) {
+			table.removeAll();
+			assertEquals(0, table.getItemCount());
+		}
+		
+		if (!action.equals("clear")) {
+			// Debugging code
+			LOGGER.info("==============\n" +
 						"Writing to table (GUI):  \n" + 
 						"	Action = " + action + "\n" + 
 						"	Name = " + name + "\n" +
@@ -68,32 +68,13 @@ public class GUI extends Composite {
 						"	Description = " + description + "\n" +
 						"	Location = " + location + "\n" +
 						"	Priority = " + priority + "\n" +
-    					"====================\n");
-    		
-    	    TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
-	        
+						"====================\n");
+			
+			// 1 row = 1 TableItem
+		    TableItem item = new TableItem(table, SWT.NONE);
+	        item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
+		}    
     } 
-    /**
-      else if (action.equals("delete")) {
-    		// Debugging code
-    		LOGGER.info("==============\n" +
-						"Deleting from table (GUI):  \n" + 
-						"	Action = " + action + "\n" + 
-						"	Task ID = " + taskId + "\n" +
-    					"====================\n");
-    		
-    		table.clear(taskId-1);
-    	} else if (action.equals("display")) {
-    		if (taskNumber == 0) {
-    			table.removeAll();
-    		}
-    		
-    		TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { taskNumber + ".", date, name, location, description });
-    	}
-    }
-    */
     
     /**
      * Create the composite.
