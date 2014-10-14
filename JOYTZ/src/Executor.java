@@ -97,13 +97,14 @@ public class Executor {
 		String taskName;
 		feedback = new Feedback(false);
 
-		feedback.setResult(Storage.delete(taskId));
 
-		if (feedback.getResult()) {
-			taskName = Storage.get(taskId).getTaskName();
+		taskName = Storage.get(taskId).getTaskName();
+		feedback.setResult(Storage.delete(taskId));
+		
+		if (feedback.getResult()){
 			feedback.setMessageShowToUser(String.format(
 					MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-		} else {
+		}else {
 			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 

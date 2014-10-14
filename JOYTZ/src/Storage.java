@@ -79,7 +79,7 @@ public class Storage {
 					taskId));
 		}
 
-		//assert taskId > 0 : "taskId :" + taskId;
+		// assert taskId > 0 : "taskId :" + taskId;
 		Task removedTask = taskList.remove(taskId - 1);
 
 		// removedTask.cancel();
