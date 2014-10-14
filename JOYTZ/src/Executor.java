@@ -53,8 +53,9 @@ public class Executor {
 			performExitAction();
 			break;
 		default:
-			Feedback feedBackObject = new Feedback(false);
-			feedBackObject.setErrorMessage(ERROR_INVALID_COMMAND);
+			Feedback feedbackObject = new Feedback(false);
+			feedbackObject.setErrorMessage(ERROR_INVALID_COMMAND);
+			return feedbackObject;
 		}
 
 		if (feedback.getResult()) {
