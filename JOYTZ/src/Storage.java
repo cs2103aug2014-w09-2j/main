@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 public class Storage {
 	
 	private static final Logger LOGGER = Logger.getLogger(Storage.class.getName());
+	private static final boolean ASSERTION = false;
 	
 	// Exception messages
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
@@ -61,11 +62,13 @@ public class Storage {
 		if (t == null) {
 			throw new InvalidParameterException(ERROR_NULL_OBJECT);
 		}
-		//assert !t.getTaskName().equals("") : "No task name.";
-		//assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
-		//assert !t.getTaskDescription().equals("") : "No task description.";
-		//assert !t.getTaskLocation().equals("") : "No task location.";
-		//assert !t.getTaskPriority().equals("") : "No task priority.";
+		if (ASSERTION){
+			assert !t.getTaskName().equals("") : "No task name.";
+			assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
+			assert !t.getTaskDescription().equals("") : "No task description.";
+			assert !t.getTaskLocation().equals("") : "No task location.";
+			assert !t.getTaskPriority().equals("") : "No task priority.";
+		}
 		
 		LOGGER.info("==============\n" +
 				"Storage add task: \n" + 
@@ -96,8 +99,9 @@ public class Storage {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
 		}
-
-		// assert taskId > 0 : "taskId :" + taskId;
+		if (ASSERTION){
+			assert taskId > 0 : "taskId :" + taskId;
+		}
 		Task removedTask = taskList.remove(taskId - 1);
 		
 		LOGGER.info("==============\n" +
@@ -137,29 +141,39 @@ public class Storage {
 
 		switch (updateIndicator) {
 		case "name":
-			//assert newInfo instanceof String : "name: " + newInfo;
+			if (ASSERTION)
+				assert newInfo instanceof String : "name: " + newInfo;
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
-			//assert newInfo instanceof String : "description: " + newInfo;
+			if(ASSERTION)
+				assert newInfo instanceof String : "description: " + newInfo;
 			targetTask.setTaskDescription(newInfo);
 			break;
 		case "deadline":
-			//assert newInfo instanceof String : "deadline: " + newInfo;
-			//assert newInfo.contains("%s-%s-%s");
+			if(ASSERTION){
+				assert newInfo instanceof String : "deadline: " + newInfo;
+				assert newInfo.contains("%s-%s-%s");
+			}
 			Date newDate = new Date(Long.parseLong(newInfo));
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
-			//assert newInfo instanceof String : "location: " + newInfo;
+			if(ASSERTION){
+				assert newInfo instanceof String : "location: " + newInfo;
+			}
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
-			//assert newInfo instanceof String : "priority: " + newInfo;
+			if (ASSERTION){
+				assert newInfo instanceof String : "priority: " + newInfo;
+			}
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
-			//assert false : updateIndicator;
+			if(ASSERTION){
+				assert false : updateIndicator;
+			}
 			throw new Exception(ERROR_INVALID_INDICATOR);
 		}
 		
@@ -210,6 +224,19 @@ public class Storage {
 	public static void cleanUpEveryThing(){
 		history.clear();
 		taskList.clear();
+	}
+	
+	/**
+	 * Sort the task in taskList corresponding to parameter key.
+	 * @return
+	 * @throws Exception 
+	 */
+	public static void sort(String key) throws Exception{
+		if (isEmpty()){
+			throw new Exception("There is no task to sort.");
+		}
+		Task.setSortKey(key);
+		taskList.sort(null);
 	}
 
 	public static ArrayList<String> getTaskList() {
@@ -279,9 +306,11 @@ public class Storage {
 
 		taskListWriter = new FileWriter(taskListFile);
 		historyWriter = new FileWriter(historyFile);
-
-		//assert taskListFile.canWrite() : "taskListFile cannot write.";
-		//assert historyFile.canWrite() : "historyFile cannot write.";
+		
+		if(ASSERTION){
+			assert taskListFile.canWrite() : "taskListFile cannot write.";
+			assert historyFile.canWrite() : "historyFile cannot write.";
+		}
 		
 		Date date = new Date();
 		String dateString = format.format(date);
@@ -382,9 +411,10 @@ public class Storage {
 	private static Task convertStringToTask(String taskString) throws Exception {
 		System.out.println(taskString);
 		Task task = new Task();
-
-		//assert taskAttribute.length == 5 : taskAttribute.toString();
-		//assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+		
+		if (ASSERTION){
+			assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+		}
 		if (taskString == null){
 			task = null;
 		}else {
