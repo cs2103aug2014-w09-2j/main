@@ -8,19 +8,21 @@ Current functions and how to use them
 
 1. Add
   - add~task name~description~deadline~location~priority
+  - Deadline format: DD/MM/YYYY  
   - Not all arguments have to be used. For example:
    	- add~task
   - To skip an argument, leave it blank. For example:
 	- add~task name~~deadline~~priority
-  - Deadline format: DD/MM/YYYY
+  - The order must be strictly followed
+  
 
 2. Delete
   - delete~task number
-  - The task number can be viewed through the display command
+  - The task number can be viewed from the table in the display
 
 3. Update
   - update~task number~indicator~new info
-  - The indicators are:
+  - The possible indicators are:
   	- name
   	- description
   	- deadline
