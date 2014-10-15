@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.graphics.Point;
 
 public class GUI {
 	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
@@ -23,6 +24,12 @@ public class GUI {
     private static Text outputField;
     private static String textInputData = "";
     private static Table table;
+    private static TableColumn tblclmnNo;
+    private static TableColumn tblclmnName;
+    private static TableColumn tblclmnDate;
+    private static TableColumn tblclmnLocation;
+    private static TableColumn tblclmnPriority;
+    private static TableColumn tblclmnDescription;
     
     /**
      * A getter method for the controller to obtain the user's input
@@ -86,17 +93,57 @@ public class GUI {
 		    TableItem item = new TableItem(table, SWT.NONE);
 	        item.setText(new String[] { (taskNumber+1) + ".", date, name, location, 
 	        							description, priority });
-		}    
+		}
+		resizeTable();
     } 
+    
+    /**
+     * Resizes the columns in the table based 
+     * on the width of the application.
+     * 
+     * @author Joel
+	 */
+    private static void resizeTable() {
+    	int tableWidth = table.getSize().x;
+    	int scrollbarWidth = table.getVerticalBar().getSize().x;
+    	
+    	int widthLeft = tableWidth - tblclmnNo.getWidth() - 
+    					tblclmnDate.getWidth() - scrollbarWidth;
+    	int widthPerColumn = widthLeft / 4;
+    	
+    	// Resize all the columns to fit the data,
+		tblclmnNo.pack();
+        tblclmnDate.pack();
+        tblclmnName.pack();
+        tblclmnPriority.pack();
+        tblclmnDescription.pack();
+        tblclmnLocation.pack();
+        
+        // prevent it from being too big
+		if (tblclmnName.getWidth() >= widthPerColumn) {
+			tblclmnName.setWidth(widthPerColumn);
+		}
+		if (tblclmnPriority.getWidth() >= widthPerColumn) {
+			tblclmnPriority.setWidth(widthPerColumn);
+		}
+		if (tblclmnDescription.getWidth() >= widthPerColumn) {
+			tblclmnDescription.setWidth(widthPerColumn);
+		}
+		if (tblclmnLocation.getWidth() >= widthPerColumn) {
+			tblclmnLocation.setWidth(widthPerColumn);
+		}  
+    }
     
     public static void main(String[] args) {
         Display display = Display.getDefault();
-		Shell shell = new Shell();
+        Shell shell = new Shell();
+		shell.setToolTipText("To-do list app of the year");
 		shell.setSize(641, 497);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("JOYTZ");
         
-        table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+        table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        table.setSize(new Point(400, 400));
         table.setToolTipText("View your tasks here");
         GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_table.heightHint = 248;
@@ -104,27 +151,28 @@ public class GUI {
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         
-        TableColumn tblclmnNo = new TableColumn(table, SWT.NONE);
+        tblclmnNo = new TableColumn(table, SWT.CENTER);
+        tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
         
-        TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
+        tblclmnDate = new TableColumn(table, SWT.CENTER);
         tblclmnDate.setWidth(92);
         tblclmnDate.setText("Deadline");
         
-        TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
+        tblclmnName = new TableColumn(table, SWT.CENTER);
         tblclmnName.setWidth(154);
         tblclmnName.setText("Task Name");
         
-        TableColumn tblclmnLocation = new TableColumn(table, SWT.NONE);
+        tblclmnLocation = new TableColumn(table, SWT.CENTER);
         tblclmnLocation.setWidth(100);
         tblclmnLocation.setText("Location");
         
-        TableColumn tblclmnRemarks = new TableColumn(table, SWT.NONE);
-        tblclmnRemarks.setWidth(118);
-        tblclmnRemarks.setText("Description");
+        tblclmnDescription = new TableColumn(table, SWT.CENTER);
+        tblclmnDescription.setWidth(118);
+        tblclmnDescription.setText("Description");
         
-        TableColumn tblclmnPriority = new TableColumn(table, SWT.NONE);
+        tblclmnPriority = new TableColumn(table, SWT.CENTER);
         tblclmnPriority.setWidth(100);
         tblclmnPriority.setText("Priority");
         
@@ -133,9 +181,9 @@ public class GUI {
         outputField.setText("Commands: \nadd~task name~description~dd/mm/yyyy~location~priority\r\n" +
         					"delete~index number \n" + "update~index number~attribute~new data\n" + 
         					"clear\n" + "exit");
-        GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        GridData gd_outputField = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
         gd_outputField.widthHint = 370;
-        gd_outputField.heightHint = 73;
+        gd_outputField.heightHint = 154;
         outputField.setLayoutData(gd_outputField);
         outputField.setEditable(false);
         
@@ -143,7 +191,7 @@ public class GUI {
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gd_inputField.heightHint = 50;
+        gd_inputField.heightHint = 85;
         inputField.setLayoutData(gd_inputField);
         
         // We call the controller to process the user's 
