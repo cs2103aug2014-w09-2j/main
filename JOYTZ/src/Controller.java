@@ -133,7 +133,6 @@ public class Controller {
 						"	Task ID = " + parsedCommand.getTaskId() + "\n" +
 						"	Error message = " + parsedCommand.getErrorMessage() + "\n" +
 						"	Update indicator = " + parsedCommand.getIndicator() + "\n" +
-						//"	Updated task name = " + parsedCommand.getUpdatedTaskName() + "\n" + 
 						"====================\n");
 			
 			if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
