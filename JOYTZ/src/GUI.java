@@ -23,9 +23,6 @@ public class GUI {
     private static Text outputField;
     private static String textInputData = "";
     private static Table table;
-    private static Shell shell;
-    private static TableColumn tblclmnNo;
-    private static TableColumn tblclmnDate;
     
     /**
      * A getter method for the controller to obtain the user's input
@@ -94,7 +91,7 @@ public class GUI {
     
     public static void main(String[] args) {
         Display display = Display.getDefault();
-		shell = new Shell();
+		Shell shell = new Shell();
 		shell.setSize(641, 497);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("JOYTZ");
@@ -107,11 +104,11 @@ public class GUI {
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         
-        tblclmnNo = new TableColumn(table, SWT.NONE);
+        TableColumn tblclmnNo = new TableColumn(table, SWT.NONE);
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
         
-        tblclmnDate = new TableColumn(table, SWT.NONE);
+        TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
         tblclmnDate.setWidth(92);
         tblclmnDate.setText("Deadline");
         
@@ -136,7 +133,7 @@ public class GUI {
         outputField.setText("Commands: \nadd~task name~description~dd/mm/yyyy~location~priority\r\n" +
         					"delete~index number \n" + "update~index number~attribute~new data\n" + 
         					"clear\n" + "exit");
-        GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_outputField.widthHint = 370;
         gd_outputField.heightHint = 73;
         outputField.setLayoutData(gd_outputField);
@@ -145,7 +142,7 @@ public class GUI {
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
-        GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_inputField.heightHint = 50;
         inputField.setLayoutData(gd_inputField);
         
