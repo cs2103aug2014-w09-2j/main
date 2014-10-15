@@ -99,9 +99,9 @@ public class Storage {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
 		}
-		if (ASSERTION){
-			assert taskId > 0 : "taskId :" + taskId;
-		}
+		
+		assert taskId > 0 : "taskId :" + taskId;
+		
 		Task removedTask = taskList.remove(taskId - 1);
 		
 		LOGGER.info("==============\n" +
@@ -141,40 +141,47 @@ public class Storage {
 
 		switch (updateIndicator) {
 		case "name":
-			if (ASSERTION)
-				assert newInfo instanceof String : "name: " + newInfo;
+			
+			assert newInfo instanceof String : "name: " + newInfo;
+		
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
-			if(ASSERTION)
-				assert newInfo instanceof String : "description: " + newInfo;
-			targetTask.setTaskDescription(newInfo);
+
+			assert newInfo instanceof String : "description: " + newInfo;
+		
 			break;
 		case "deadline":
-			if(ASSERTION){
-				assert newInfo instanceof String : "deadline: " + newInfo;
-				assert newInfo.contains("%s-%s-%s");
-			}
+			assert newInfo instanceof String : "deadline: " + newInfo;
+			assert newInfo.contains("%s-%s-%s");
+			
 			Date newDate = new Date(Long.parseLong(newInfo));
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
-			if(ASSERTION){
-				assert newInfo instanceof String : "location: " + newInfo;
-			}
+			
+			assert newInfo instanceof String : "location: " + newInfo;
+			
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
-			if (ASSERTION){
-				assert newInfo instanceof String : "priority: " + newInfo;
-			}
+			
+			assert newInfo instanceof String : "priority: " + newInfo;
+			
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
+<<<<<<< HEAD
+			
+			assert false : updateIndicator;
+			
+			throw new Exception(ERROR_INVALID_INDICATOR);
+=======
 			if(ASSERTION){
 				assert false : updateIndicator;
 			}
 			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
+>>>>>>> 6052d243a7867a0e2db902ae5b5dcd7e8e16d6d6
 		}
 		
 		LOGGER.info("==============\n" +
@@ -316,10 +323,10 @@ public class Storage {
 		taskListWriter = new FileWriter(taskListFile);
 		historyWriter = new FileWriter(historyFile);
 		
-		if(ASSERTION){
-			assert taskListFile.canWrite() : "taskListFile cannot write.";
-			assert historyFile.canWrite() : "historyFile cannot write.";
-		}
+		
+		assert taskListFile.canWrite() : "taskListFile cannot write.";
+		assert historyFile.canWrite() : "historyFile cannot write.";
+		
 		
 		Date date = new Date();
 		String dateString = format.format(date);
