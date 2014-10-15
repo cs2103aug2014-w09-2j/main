@@ -230,13 +230,13 @@ public class Storage {
 	 * @throws Exception 
 	 */
 
-	public static boolean sort(String key) throws Exception {
+	public static boolean sort(String key) {
 		String keyValueString = "name-description-deadline-location-priority";
 		if (isEmpty()){
-			throw new Exception("There is no task to sort.");
+			throw new NoSuchElementException("There is no task to sort.");
 		}
 		if (!keyValueString.contains(key)){
-			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
+			throw new NoSuchElementException(String.format(ERROR_INVALID_SORT_KEY, key));
 		}
 		Task.setSortKey(key);
 		Collections.sort(taskList);
