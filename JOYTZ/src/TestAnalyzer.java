@@ -127,7 +127,7 @@ public class TestAnalyzer {
 		expected3.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
 
 		ExecutableCommand expected4 = new ExecutableCommand("update");
-		expected4.setUpdatedTaskName("dating");
+		expected4.setTaskName("dating");
 
 		// test case 1
 		assertEquals("null argument case is not handled",
@@ -146,8 +146,8 @@ public class TestAnalyzer {
 
 		// test case 4
 		assertEquals("fail to get task name to be updated",
-				expected4.getUpdatedTaskName(), Analyzer.runAnalyzer(test4)
-						.getUpdatedTaskName());
+				expected4.getTaskName(), Analyzer.runAnalyzer(test4)
+						.getTaskName());
 
 		// test case 5
 		assertEquals("fail to get task description to be updated",

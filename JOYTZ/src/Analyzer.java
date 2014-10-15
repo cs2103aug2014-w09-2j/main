@@ -11,14 +11,12 @@ public class Analyzer {
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
 	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
 	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
-	private static final String ERROR_NULL_SEARCH_INDICATOR = "Search indicator is not mentioned.\n";
 	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.\n";
-	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.\n";
+	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
-	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Update indicator is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
-	private static final String ERROR_INVALID_SEARCH_INDICATOR = "Search indicator is invalid.\n";
 
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -138,7 +136,7 @@ public class Analyzer {
 
 			return tempCommand;
 		} else if (arg.length == 1) {
-			tempCommand.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 
 			return tempCommand;
 		} else if (!isInteger(arg[0])) {
@@ -185,7 +183,7 @@ public class Analyzer {
 			tempCommand.setTaskPriority(updatedItem);
 			break;
 		default:
-			tempCommand.setErrorMessage(ERROR_INVALID_UPDATE_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 		}
 
 		return tempCommand;
@@ -199,13 +197,15 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_SEARCH_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 
 			return tempCommand;
 		}
-		
-		tempCommand.setIndicator(arg[0].toLowerCase());
-		
+
+		String sortIndicator = arg[0].toLowerCase();
+
+		tempCommand.setIndicator(sortIndicator);
+
 		return tempCommand;
 	}
 
@@ -215,7 +215,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_SEARCH_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 
 			return tempCommand;
 		} else if (arg.length == 1) {
@@ -224,23 +224,26 @@ public class Analyzer {
 			return tempCommand;
 		}
 
-		tempCommand.setIndicator(arg[0]);
+		String searchIndicator = arg[0].toLowerCase();
+		String searchKey = arg[1];
 
-		switch (arg[0]) {
+		tempCommand.setIndicator(searchIndicator);
+
+		switch (searchIndicator) {
 		case "name":
-			tempCommand.setTaskName(arg[1]);
+			tempCommand.setTaskName(searchKey);
 			break;
 		case "priority":
-			tempCommand.setTaskPriority(arg[1]);
+			tempCommand.setTaskPriority(searchKey);
 			break;
 		case "location":
-			tempCommand.setTaskLocation(arg[1]);
+			tempCommand.setTaskLocation(searchKey);
 			break;
 		case "id":
-			tempCommand.setTaskId(Integer.parseInt(arg[1]));
+			tempCommand.setTaskId(Integer.parseInt(searchKey));
 			break;
 		default:
-			tempCommand.setErrorMessage(ERROR_INVALID_SEARCH_INDICATOR);
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 		}
 
 		return tempCommand;
