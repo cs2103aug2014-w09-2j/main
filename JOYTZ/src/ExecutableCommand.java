@@ -25,7 +25,6 @@ public class ExecutableCommand {
 	
 	// these are for search method
 	private String searchIndicator;
-	private String searchedKey;
 
 	/**
 	 * Constructor
@@ -44,7 +43,6 @@ public class ExecutableCommand {
 		this.updatedTaskName = "";
 		this.sortIndicator = "";
 		this.searchIndicator = "";
-		this.searchedKey = "";
 	}
 
 	ExecutableCommand(String action) {
@@ -60,7 +58,6 @@ public class ExecutableCommand {
 		this.updatedTaskName = "";
 		this.sortIndicator = "";
 		this.searchIndicator = "";
-		this.searchedKey = "";
 	}
 
 	/**
@@ -113,10 +110,6 @@ public class ExecutableCommand {
 	
 	public void setSearchIndicator(String indicator){
 		this.searchIndicator = indicator;
-	}
-	
-	public void setSearchedKey(String key){
-		this.searchedKey = key;
 	}
 
 	/**
@@ -171,7 +164,4 @@ public class ExecutableCommand {
 		return searchIndicator;
 	}
 	
-	public String getSearchedKey(){
-		return searchedKey;
-	}
 }
