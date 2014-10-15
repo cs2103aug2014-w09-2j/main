@@ -62,6 +62,7 @@ public class Storage {
 		if (t == null) {
 			throw new InvalidParameterException(ERROR_NULL_OBJECT);
 		}
+		
 		assert !t.getTaskName().equals("") : "No task name.";
 		assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
 		assert !t.getTaskDescription().equals("") : "No task description.";
@@ -130,7 +131,7 @@ public class Storage {
 	 */
 
 	public static boolean update(int taskId, String updateIndicator,
-			String newInfo) throws Exception {
+			String newInfo){
 		if (taskId <= 0 || taskId > getTaskListSize()) {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
@@ -170,10 +171,17 @@ public class Storage {
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
+<<<<<<< HEAD
 			
 			assert false : updateIndicator;
 			
 			throw new Exception(ERROR_INVALID_INDICATOR);
+=======
+			if(ASSERTION){
+				assert false : updateIndicator;
+			}
+			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
+>>>>>>> 6052d243a7867a0e2db902ae5b5dcd7e8e16d6d6
 		}
 		
 		LOGGER.info("==============\n" +
@@ -230,12 +238,21 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static void sort(String key) throws Exception{
+	public static boolean sort(String key, boolean deadlineIndicator) {
 		if (isEmpty()){
-			throw new Exception("There is no task to sort.");
+			throw new NoSuchElementException("There is no task to sort.");
 		}
-		Task.setSortKey(key);
 		Collections.sort(taskList);
+		return true;
+	}
+	
+	/**
+	 * Search the task in taskList corresponding to parameter key.
+	 * @return
+	 * @throws Exception 
+	 */
+	public static boolean search(String key, boolean deadlineIndicator){
+		return true;
 	}
 
 	public static ArrayList<String> getTaskList() {
