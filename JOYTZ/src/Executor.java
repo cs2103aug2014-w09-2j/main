@@ -152,7 +152,7 @@ public class Executor {
 	 * 
 	 */
 	private static void performUpdateAction(ExecutableCommand command) {
-		String updateIndicator = command.getUpdateIndicator();
+		String updateIndicator = command.getIndicator();
 		int taskId = command.getTaskId();
 		String taskName;
 		String newInfo;
@@ -166,7 +166,7 @@ public class Executor {
 		// the function.
 		switch (updateIndicator) {
 		case "name":
-			newInfo = command.getUpdatedTaskName();
+			newInfo = command.getTaskName();
 			break;
 		case "description":
 			newInfo = command.getTaskDescription();
@@ -223,34 +223,30 @@ public class Executor {
 	 * 
 	 */
 	private static void performSortAction(ExecutableCommand command) {
-		String keyString = command.getSortIndicator();
+		String sortKey = command.getIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !keyString.equals(""): "Sort no category";
+		assert !sortKey.equals(""): "Sort no category";
 		
 		// check what category user want to sort
-<<<<<<< HEAD
-		try{
-			feedback.setResult(Storage.sort(keyString));
-		}catch (Exception e){
-			feedback.setErrorMessage(e.getMessage());
-=======
-		switch (sortCategory) {
+		switch (sortKey) {
 		case "name":
 		case "priority":
 		case "location":
 		case "deadline":
-			feedback.setResult(Storage.sort(sortCategory));
+			feedback.setResult(Storage.sort(sortKey));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
->>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
 		}
 
 		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
+			feedback.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL, sortKey));
+		}
+		else{
+			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
 		}
 	}
 
@@ -262,12 +258,10 @@ public class Executor {
 	 * 
 	 */
 	private static void performSearchAction(ExecutableCommand command) {
-		String searchIndicator = command.getSearchIndicator();
-		String searchedKey = command.getSearchedKey();
+		String searchIndicator = command.getIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !searchedKey.equals("") : "No key needed to search";
 		assert !searchIndicator.equals(""): "No search indicator";
 
 		// check which category user want to search key
@@ -276,7 +270,7 @@ public class Executor {
 		case "priority":
 		case "location":
 		case "deadline":
-			feedback.setResult(Storage.search(searchedKey));
+			feedback.setResult(Storage.search(searchIndicator));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);

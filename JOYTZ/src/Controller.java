@@ -132,8 +132,7 @@ public class Controller {
 						"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
 						"	Task ID = " + parsedCommand.getTaskId() + "\n" +
 						"	Error message = " + parsedCommand.getErrorMessage() + "\n" +
-						"	Update indicator = " + parsedCommand.getUpdateIndicator() + "\n" +
-						"	Updated task name = " + parsedCommand.getUpdatedTaskName() + "\n" + 
+						"	Update indicator = " + parsedCommand.getIndicator() + "\n" +
 						"====================\n");
 			
 			if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
