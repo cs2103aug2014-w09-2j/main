@@ -132,14 +132,17 @@ public class Executor {
 		// pre-condition
 		assert taskId != -1 : "Task index " + taskId;
 
-		taskName = Storage.get(taskId).getTaskName();
-		feedback.setResult(Storage.delete(taskId));
-
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(String.format(
-					MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-		} else {
-			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		try {
+			taskName = Storage.get(taskId).getTaskName();
+			feedback.setResult(Storage.delete(taskId));
+			
+			if (feedback.getResult()) {
+				feedback.setMessageShowToUser(String.format(
+						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
+			}
+			
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
 		}
 
 	}
@@ -188,15 +191,13 @@ public class Executor {
 
 		try {
 			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
+			if (feedback.getResult()) {
+				taskName = Storage.get(taskId).getTaskName();
+				feedback.setMessageShowToUser(String.format(
+						MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
+			}
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
-		}
-
-		if (feedback.getResult()) {
-			taskName = Storage.get(taskId).getTaskName();
-			feedback.setResult(true);
-			feedback.setMessageShowToUser(String.format(
-					MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
 		}
 	}
 
