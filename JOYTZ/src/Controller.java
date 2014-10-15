@@ -2,7 +2,6 @@
 
 import java.text.ParseException;
 import java.util.logging.Logger;
-import static org.junit.Assert.*;
 
 public class Controller {
 	private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
@@ -21,11 +20,9 @@ public class Controller {
     }
     
     private static void displayUserOutput(String outputCommand, ExecutableCommand command) {
-    	assertNotNull("Output feedback message is null", outputCommand);
-    	assertNotNull("ExecutableCommand object is null during display", command);
-    	if(outputCommand.length() == 0) {
-    		fail("Output feedback message is empty");
-    	}
+    	assert outputCommand != null;
+    	assert command != null;
+    	assert outputCommand.length() != 0;
     	
         GUI.displayOutput(outputCommand);
         
@@ -48,7 +45,7 @@ public class Controller {
 	// If not, I don't know what the string belongs to after I split it.
     private static void parseDisplayTasks(String action, int taskId) {
     	if (feedback.getTaskList().size() == 0) { // happens after "clear" command
-    		GUI.updateTable(0, "No date", "No name", "No location", "No description", action, "No priority");
+    		GUI.updateTable(0, "", "", "", "", action, "");
     	} else {
 			for(int i = 0; i < feedback.getTaskList().size(); i++){
 				System.out.println("===================\n" +
@@ -59,11 +56,13 @@ public class Controller {
 				String[] arr = feedback.getTaskList().get(i).trim().split("~");
 				int arrayLength = arr.length;
 				
+				String[] dateArr = arr[2].trim().split(" ");
+				
 				// updateTable(Table index number, date, name, location, description, action, priority)
 				if (arrayLength == 4) {
-					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, "");
+					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], arr[0], arr[3], arr[1], action, "");
 				} else if (arrayLength == 5) {
-					GUI.updateTable(i, arr[2], arr[0], arr[3], arr[1], action, arr[4]);
+					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], arr[0], arr[3], arr[1], action, arr[4]);
 				}
 			}
     	}
@@ -71,7 +70,7 @@ public class Controller {
 
 	public static void startController() {
     	inputCommandString = getInput();
-    	assertNotNull("Input user string is null", inputCommandString);
+    	assert inputCommandString != null;
     	
     	LOGGER.info("==============\n" +
 					"User Input: \n" + 
@@ -79,7 +78,7 @@ public class Controller {
 					"====================\n");
     	
         inputCommandObject = convertStringToCommand(inputCommandString);
-        assertNotNull("Input command object is null", inputCommandObject);
+        assert inputCommandObject != null;
         
         LOGGER.info("==============\n" +
 				"Command object: \n" + 
@@ -88,7 +87,7 @@ public class Controller {
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
-			assertNotNull("ExecutableCommand object is null after analyzer", parsedCommand);
+			assert parsedCommand != null;
 			
 			// Debugging code
 			LOGGER.info("==============\n" +
@@ -111,15 +110,15 @@ public class Controller {
 			} else {	
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
-					assertNotNull("Feedback object is null after executor", feedback);
-
+					assert feedback != null;
+					
 				} else{
 					feedback = new Feedback(false);
 					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 				}
 
 				outputString = proceedFeedback(feedback, parsedCommand);
-				assertNotNull("Feedback output string is null", outputString);
+				assert outputString != null;
 				
 				displayUserOutput(outputString, parsedCommand);
 	        }

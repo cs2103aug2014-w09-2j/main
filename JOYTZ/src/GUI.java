@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
-import static org.junit.Assert.*;
-
 public class GUI extends Composite {
 	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
@@ -55,7 +53,7 @@ public class GUI extends Composite {
     	// To prevent multiple of the same entries, we clear the whole table first
 		if (taskNumber == 0) {
 			table.removeAll();
-			assertEquals(0, table.getItemCount());
+			assert table.getItemCount() == 0;
 		}
 		
 		if (!action.equals("clear")) {
@@ -106,7 +104,7 @@ public class GUI extends Composite {
         tblclmnNo.setText("No.");
         
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
-        tblclmnDate.setWidth(154);
+        tblclmnDate.setWidth(82);
         tblclmnDate.setText("Deadline");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
