@@ -62,12 +62,13 @@ public class Storage {
 		if (t == null) {
 			throw new InvalidParameterException(ERROR_NULL_OBJECT);
 		}
-		assert !t.getTaskName().equals("") : "No task name.";
-		assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
-		assert !t.getTaskDescription().equals("") : "No task description.";
-		assert !t.getTaskLocation().equals("") : "No task location.";
-		assert !t.getTaskPriority().equals("") : "No task priority.";
-		
+		if (ASSERTION){
+			assert !t.getTaskName().equals("") : "No task name.";
+			assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
+			assert !t.getTaskDescription().equals("") : "No task description.";
+			assert !t.getTaskLocation().equals("") : "No task location.";
+			assert !t.getTaskPriority().equals("") : "No task priority.";
+		}
 		
 		LOGGER.info("==============\n" +
 				"Storage add task: \n" + 
@@ -130,7 +131,7 @@ public class Storage {
 	 */
 
 	public static boolean update(int taskId, String updateIndicator,
-			String newInfo) throws Exception {
+			String newInfo){
 		if (taskId <= 0 || taskId > getTaskListSize()) {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
@@ -173,7 +174,7 @@ public class Storage {
 			if(ASSERTION){
 				assert false : updateIndicator;
 			}
-			throw new Exception(ERROR_INVALID_INDICATOR);
+			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
 		}
 		
 		LOGGER.info("==============\n" +
@@ -230,12 +231,13 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static void sort(String key) throws Exception{
+	public static boolean sort(String key) {
 		if (isEmpty()){
-			throw new Exception("There is no task to sort.");
+			throw new NoSuchElementException("There is no task to sort.");
 		}
 		Task.setSortKey(key);
-		Collections.sort(taskList);
+		taskList.sort(null);
+		return true;
 	}
 
 	public static ArrayList<String> getTaskList() {
