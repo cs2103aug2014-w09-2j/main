@@ -46,6 +46,9 @@ public class Analyzer {
 		case "update":
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
+		case "display":
+			outputCommand = handlDisplayCommand(commandArgument);
+			break;
 		case "clear":
 			outputCommand = handleClearCommand();
 			break;
@@ -84,9 +87,13 @@ public class Analyzer {
 		}
 
 		if (arg.length >= 3) {
-			Date deadline = (Date) df.parse(arg[2]);
+			if (arg[2].equals("")) {
+				tempCommand.setTaskDeadline(new Date(0, 0, 0));
+			} else {
+				Date deadline = (Date) df.parse(arg[2]);
 
-			tempCommand.setTaskDeadline(deadline);
+				tempCommand.setTaskDeadline(deadline);
+			}
 		}
 
 		if (arg.length >= 4) {
@@ -189,6 +196,10 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+		return new ExecutableCommand("display");
+	}
+
 	private static ExecutableCommand handleClearCommand() {
 		return new ExecutableCommand("clear");
 	}
@@ -209,7 +220,8 @@ public class Analyzer {
 		return tempCommand;
 	}
 
-	private static ExecutableCommand handleSearchCommand(String[] arg) {
+	private static ExecutableCommand handleSearchCommand(String[] arg)
+			throws ParseException {
 		assertNotNull("User argument is null", arg);
 
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
@@ -232,6 +244,10 @@ public class Analyzer {
 		switch (searchIndicator) {
 		case "name":
 			tempCommand.setTaskName(searchKey);
+			break;
+		case "deadline":
+			Date searchDeadline = (Date) df.parse(searchKey);
+			tempCommand.setTaskDeadline(searchDeadline);
 			break;
 		case "priority":
 			tempCommand.setTaskPriority(searchKey);
