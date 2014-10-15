@@ -28,7 +28,6 @@ public class Executor {
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
-	private static final String ERROR_FAIL_TO_SEARCH = "Invalid key search.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -141,11 +140,12 @@ public class Executor {
 				feedback.setMessageShowToUser(String.format(
 						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
 			}
-			
+			else{
+				feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+			}
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
-
 	}
 
 	/**
