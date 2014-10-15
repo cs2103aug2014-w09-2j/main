@@ -31,13 +31,23 @@ Current functions and how to use them
 
 4. Search
 	- search~indicator~key
-	- The indicator can be either the "name" or "id"
+	- The possible indicators are:
+		- name
+		- id (seen from the index numbers in the table)
 	- Input the task's name if searching through the name, and input the index number if searching through id
 
-5. Clear
+5. Sort
+	- sort~indicator
+	- The possible indicators are:
+		- name
+		- deadline (dd/mm/yyyy)
+		- location
+		- priority
+	
+6. Clear
   	- clear
   	- Clears all data
   
-6. Exit
+7. Exit
   	- exit
   	- This exits the program
