@@ -1,5 +1,6 @@
 //package V1;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Executor {
@@ -259,8 +260,15 @@ public class Executor {
 	 * 
 	 */
 	private static void performSearchAction(ExecutableCommand command) {
-		String searchIndicator = command.getIndicator();
 		feedback = new Feedback(false);
+		
+		String searchIndicator = command.getIndicator();
+		String searchValue;
+		ArrayList<String> resultList;
+		
+		if (searchIndicator == null){
+			//
+		}
 
 		// pre-condition
 		assert !searchIndicator.equals(""): "No search indicator";
@@ -268,21 +276,36 @@ public class Executor {
 		// check which category user want to search key
 		switch (searchIndicator) {
 		case "name":
+			searchValue = command.getTaskName();
+			break;
 		case "priority":
+			searchValue = command.getTaskPriority();
+			break;
 		case "location":
-		case "deadline":
-			feedback.setResult(Storage.search(searchIndicator));
+			searchValue = command.getTaskLocation();
+			break;
+		case "id":
+			searchValue = command.getTaskId() + "";
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
-
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
-		} else {
-			feedback.setErrorMessage(ERROR_FAIL_TO_SEARCH);
+		
+		if (searchValue == null){
+			//
 		}
+		
+		try {
+			resultList = Storage.search(searchIndicator, searchValue);
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
+			return;
+		}
+
+		feedback.setResult(true);
+		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		return;
 	}
 
 	/**

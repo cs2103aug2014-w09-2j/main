@@ -12,6 +12,7 @@ public class Storage {
 	private static final boolean ASSERTION = false;
 	
 	// Exception messages
+	private static final String MESSAGE_NO_TASK_MEET_REQUIREMENTS = "No task meet requirements.";
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
 	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
@@ -249,15 +250,46 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean search(String key){
-		return true;
+	public static ArrayList<String> search(String indicator, String searchValue) throws Exception{
+		String keyValueString = "name-description-deadline-location-priority";
+		ArrayList<String> resultList = new ArrayList<String>();
+		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
+		
+		if (isEmpty()){
+			throw new Exception("There is no task to sort.");
+		}
+		if (!keyValueString.contains(indicator)){
+			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, indicator));
+		}
+		
+		for (int index=0; index<taskList.size(); index++){
+			Task task = taskList.get(index);
+			if (task.get(indicator).equals(searchValue)){
+				requiredTaskList.add(task);
+			}
+		}
+		
+		if (requiredTaskList.size() == 0){
+			throw new Exception(MESSAGE_NO_TASK_MEET_REQUIREMENTS);
+		}
+		
+		resultList = getTaskList(requiredTaskList);
+		return resultList;
+	}
+	
+	/**
+	 * get the string format of all tasks in taskList and store in arrayList.
+	 * @return
+	 */
+	public static ArrayList<String> getTaskList(){
+		return getTaskList(taskList);
 	}
 
-	public static ArrayList<String> getTaskList() {
+	private static ArrayList<String> getTaskList(ArrayList<Task> list) {
 		ArrayList<String> displayList = new ArrayList<String>();
 
-		for (int i = 0; i < taskList.size(); i++) {
-			Task task = taskList.get(i);
+		for (int i = 0; i < list.size(); i++) {
+			Task task = list.get(i);
 			String taskString = task.getTaskName();
 			Date checkDate = new Date(0, 0, 0);
 			
