@@ -229,9 +229,9 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
+
 	public static boolean sort(String key) throws Exception {
 		String keyValueString = "name-description-deadline-location-priority";
-		
 		if (isEmpty()){
 			throw new Exception("There is no task to sort.");
 		}
