@@ -1,6 +1,6 @@
 //package V1;
 
-import java.io.IOException;
+import static org.junit.Assert.*;
 import java.util.Date;
 
 public class Executor {
@@ -9,7 +9,6 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
-	private static final String ERROR_FAIL_TO_ADD = "Fail to add task.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -67,18 +66,18 @@ public class Executor {
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
+		assertNotNull("Command is not null", command);
+		if(command.getTaskName() == ""){
+			fail("Task name is empty");
+		}
+		
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
 		Date date = command.getTaskDeadline();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
 
-		feedback = new Feedback(false);
-		
-		if(name == ""){
-			feedback.setMessageShowToUser(ERROR_FAIL_TO_ADD);
-			return;
-		}	
+		feedback = new Feedback(false);	
 			
 
 		// create a task object with all the attributes.
@@ -93,6 +92,11 @@ public class Executor {
 	}
 
 	private static void performDeleteAction(ExecutableCommand command) {
+		assertNotNull("Command is not null", command);
+		if(command.getTaskId() == -1){
+			fail("Task index is empty");
+		}
+		
 		int taskId = command.getTaskId();
 		String taskName;
 		feedback = new Feedback(false);
@@ -111,6 +115,14 @@ public class Executor {
 	}
 
 	private static void performUpdateAction(ExecutableCommand command) {
+		assertNotNull("Command is not null", command);
+		if(command.getUpdateIndicator() == ""){
+			fail("Update indicator is empty");
+		}
+		if(command.getTaskId() == -1){
+			fail("Task index is -1");
+		}
+		
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
 		String taskName;
@@ -145,7 +157,6 @@ public class Executor {
 		try {
 			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
