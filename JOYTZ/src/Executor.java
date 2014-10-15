@@ -24,7 +24,7 @@ public class Executor {
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
 	private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
-	
+
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
 	private static final String ERROR_FAIL_TO_SEARCH = "Invalid key search.\n";
@@ -35,6 +35,11 @@ public class Executor {
 
 	public static Feedback feedback;
 
+	/**
+	 * Called by Controller to initialize Executor.
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		if (command == null) {
 			throw new NullPointerException(ERROR_NULL_OBJECT);
@@ -79,8 +84,14 @@ public class Executor {
 
 		return feedback;
 	}
-	
 
+	/**
+	 * Perform add action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
@@ -109,8 +120,14 @@ public class Executor {
 				name));
 
 	}
-
 	
+	/**
+	 * Perform delete action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performDeleteAction(ExecutableCommand command) {
 		int taskId = command.getTaskId();
 		String taskName;
@@ -130,8 +147,14 @@ public class Executor {
 		}
 
 	}
-	
 
+	/**
+	 * Perform update action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
@@ -177,8 +200,12 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 	}
-	
 
+	/**
+	 * Perform clear action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
 	private static void performClearAction() {
 		feedback = new Feedback(false);
 
@@ -188,8 +215,14 @@ public class Executor {
 		// post-condition
 		assert feedback.getResult() : "Nothing to clear";
 	}
-	
 
+	/**
+	 * Perform sort action wit command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performSortAction(ExecutableCommand command) {
 		String sortCategory = command.getSortIndicator();
 		boolean deadlineIndicator = false;
@@ -197,7 +230,7 @@ public class Executor {
 
 		// pre-condition
 		assert deadlineIndicator == false;
-		
+
 		// check what category user want to sort
 		switch (sortCategory) {
 		case "name":
@@ -213,7 +246,6 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
-		
 
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
@@ -221,17 +253,23 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
 		}
 	}
-	
 
+	/**
+	 * Perform search action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getSearchIndicator();
 		String searchedKey = command.getSearchedKey();
 		boolean deadlineIndicator = false;
 		feedback = new Feedback(false);
-		
+
 		// pre-condition
-		assert !searchedKey.equals(""): "No key needed to search";
-		
+		assert !searchedKey.equals("") : "No key needed to search";
+
 		// check which category user want to search key
 		switch (searchIndicator) {
 		case "name":
@@ -247,20 +285,28 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
-		
+
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 		} else {
 			feedback.setErrorMessage(ERROR_FAIL_TO_SEARCH);
 		}
 	}
-	
 
+	/**
+	 * Perform undo action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
 	private static void performUndoAction() {
 
 	}
-	
 
+	/**
+	 * Perform exit action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
 	private static void performExitAction() {
 		feedback = new Feedback(false);
 
@@ -277,8 +323,11 @@ public class Executor {
 		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 		System.exit(0);
 	}
-	
 
+	/**
+	 * Return feedback to user
+	 * 
+	 */
 	public static Feedback getFeedback() {
 		return feedback;
 	}
