@@ -152,7 +152,7 @@ public class Executor {
 	 * 
 	 */
 	private static void performUpdateAction(ExecutableCommand command) {
-		String updateIndicator = command.getUpdateIndicator();
+		String updateIndicator = command.getIndicator();
 		int taskId = command.getTaskId();
 		String taskName;
 		String newInfo;
@@ -166,7 +166,7 @@ public class Executor {
 		// the function.
 		switch (updateIndicator) {
 		case "name":
-			newInfo = command.getUpdatedTaskName();
+			newInfo = command.getTaskName();
 			break;
 		case "description":
 			newInfo = command.getTaskDescription();
@@ -223,7 +223,7 @@ public class Executor {
 	 * 
 	 */
 	private static void performSortAction(ExecutableCommand command) {
-		String sortKey = command.getSortIndicator();
+		String sortKey = command.getIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
@@ -258,12 +258,10 @@ public class Executor {
 	 * 
 	 */
 	private static void performSearchAction(ExecutableCommand command) {
-		String searchIndicator = command.getSearchIndicator();
-		String searchedKey = command.getSearchedKey();
+		String searchIndicator = command.getIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !searchedKey.equals("") : "No key needed to search";
 		assert !searchIndicator.equals(""): "No search indicator";
 
 		// check which category user want to search key
@@ -272,7 +270,7 @@ public class Executor {
 		case "priority":
 		case "location":
 		case "deadline":
-			feedback.setResult(Storage.search(searchedKey));
+			feedback.setResult(Storage.search(searchIndicator));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
