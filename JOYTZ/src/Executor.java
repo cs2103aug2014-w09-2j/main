@@ -298,6 +298,7 @@ public class Executor {
 		
 		try {
 			resultList = Storage.search(searchIndicator, searchValue);
+			feedback.setTaskList(resultList);
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 			return;
