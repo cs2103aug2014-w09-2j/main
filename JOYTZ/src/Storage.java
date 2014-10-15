@@ -154,7 +154,6 @@ public class Storage {
 			break;
 		case "deadline":
 			assert newInfo instanceof String : "deadline: " + newInfo;
-			assert newInfo.contains("%s-%s-%s");
 			
 			Date newDate = new Date(Long.parseLong(newInfo));
 			targetTask.setTaskDeadline(newDate);
@@ -170,18 +169,9 @@ public class Storage {
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
-<<<<<<< HEAD
 			assert false : updateIndicator;
 			throw new Exception(ERROR_INVALID_INDICATOR);
-=======
-			
-			assert false : updateIndicator;
-			
-			if(ASSERTION){
-				assert false : updateIndicator;
-			}
-			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
->>>>>>> 96c8fa7784b98cd6100c62943d7af33a82e35dac
+
 		}
 		
 		LOGGER.info("==============\n" +
@@ -239,12 +229,9 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-<<<<<<< HEAD
 	public static boolean sort(String key) throws Exception {
 		String keyValueString = "name-description-deadline-location-priority";
-=======
-	public static boolean sort(String key) {
->>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
+		
 		if (isEmpty()){
 			throw new Exception("There is no task to sort.");
 		}
