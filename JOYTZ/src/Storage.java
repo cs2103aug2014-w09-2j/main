@@ -231,11 +231,20 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean sort(String key) {
+	public static boolean sort(String key, boolean deadlineIndicator) {
 		if (isEmpty()){
 			throw new NoSuchElementException("There is no task to sort.");
 		}
 		Collections.sort(taskList);
+		return true;
+	}
+	
+	/**
+	 * Search the task in taskList corresponding to parameter key.
+	 * @return
+	 * @throws Exception 
+	 */
+	public static boolean search(String key, boolean deadlineIndicator){
 		return true;
 	}
 

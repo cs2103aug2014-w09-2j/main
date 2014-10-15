@@ -18,13 +18,16 @@ public class Executor {
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
-	private static final String ERROR_INVALID_SORTING_INDICATOR = "The sorting indicator is invalid.\n";
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
 	private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
+	
+	// these are for Search Method
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
+	private static final String ERROR_FAIL_TO_SEARCH = "Invalid key search.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -56,7 +59,7 @@ public class Executor {
 			performSortAction(command);
 			break;
 		case "search":
-			performSearchAction();
+			performSearchAction(command);
 			break;
 		case "undo":
 			performUndoAction();
@@ -76,6 +79,7 @@ public class Executor {
 
 		return feedback;
 	}
+	
 
 	private static void performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
@@ -90,7 +94,7 @@ public class Executor {
 		assert !description.equals("") : "No task description";
 		assert !date.equals(new Date()) : " No deadline";
 		assert !location.equals("") : "No task location";
-		assert !priority.equals("") : "no priority";
+		assert !priority.equals("") : "No priority";
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
@@ -106,13 +110,14 @@ public class Executor {
 
 	}
 
+	
 	private static void performDeleteAction(ExecutableCommand command) {
 		int taskId = command.getTaskId();
 		String taskName;
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert taskId != -1 : "No task index";
+		assert taskId != -1 : "Task index " + taskId;
 
 		taskName = Storage.get(taskId).getTaskName();
 		feedback.setResult(Storage.delete(taskId));
@@ -125,6 +130,7 @@ public class Executor {
 		}
 
 	}
+	
 
 	private static void performUpdateAction(ExecutableCommand command) {
 		String updateIndicator = command.getUpdateIndicator();
@@ -135,7 +141,7 @@ public class Executor {
 
 		// pre-condition
 		assert !updateIndicator.equals("") : "No update indicator";
-		assert taskId != -1 : "No task index";
+		assert taskId != -1 : "Task index " + taskId;
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
@@ -171,6 +177,7 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 	}
+	
 
 	private static void performClearAction() {
 		feedback = new Feedback(false);
@@ -181,26 +188,32 @@ public class Executor {
 		// post-condition
 		assert feedback.getResult() : "Nothing to clear";
 	}
+	
 
 	private static void performSortAction(ExecutableCommand command) {
-		String sortKey = command.getSortIndicator();
+		String sortCategory = command.getSortIndicator();
+		boolean deadlineIndicator = false;
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !sortKey.equals("") : "No sort indicator";
-
-		// check what category sorted
-		switch (sortKey) {
+		assert deadlineIndicator == false;
+		
+		// check what category user want to sort
+		switch (sortCategory) {
 		case "name":
-		case "deadline":
 		case "priority":
 		case "location":
-			feedback.setResult(Storage.sort(sortKey));
+			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
+			break;
+		case "deadline":
+			deadlineIndicator = true;
+			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
 			break;
 		default:
-			feedback.setErrorMessage(ERROR_INVALID_SORTING_INDICATOR);
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
+		
 
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
@@ -208,14 +221,45 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
 		}
 	}
+	
 
-	private static void performSearchAction() {
-		// TODO Auto-generated method stub
+	private static void performSearchAction(ExecutableCommand command) {
+		String searchIndicator = command.getSearchIndicator();
+		String searchedKey = command.getSearchedKey();
+		boolean deadlineIndicator = false;
+		feedback = new Feedback(false);
+		
+		// pre-condition
+		assert !searchedKey.equals(""): "No key needed to search";
+		
+		// check which category user want to search key
+		switch (searchIndicator) {
+		case "name":
+		case "priority":
+		case "location":
+			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			break;
+		case "deadline":
+			deadlineIndicator = true;
+			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			break;
+		default:
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return;
+		}
+		
+		if (feedback.getResult()) {
+			feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		} else {
+			feedback.setErrorMessage(ERROR_FAIL_TO_SEARCH);
+		}
 	}
+	
 
 	private static void performUndoAction() {
 
 	}
+	
 
 	private static void performExitAction() {
 		feedback = new Feedback(false);
@@ -233,6 +277,7 @@ public class Executor {
 		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 		System.exit(0);
 	}
+	
 
 	public static Feedback getFeedback() {
 		return feedback;
