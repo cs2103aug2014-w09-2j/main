@@ -6,7 +6,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -14,19 +13,18 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-
 import org.eclipse.swt.SWT;
-
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class GUI extends Composite {
 	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
-    private Text inputField;
+    private StyledText inputField;
     private static Text outputField;
     private static String textInputData = "";
     private static Table table;
@@ -34,6 +32,7 @@ public class GUI extends Composite {
     private TableColumn tblclmnNo;
     private TableColumn tblclmnLocation;
     private TableColumn tblclmnPriority;
+    private StyledText styledText;
     
     /**
      * A getter method for the controller to obtain the user's input
@@ -117,6 +116,7 @@ public class GUI extends Composite {
         setLayout(new GridLayout(1, false));
         
         table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
+        table.setToolTipText("View your tasks here");
         GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_table.heightHint = 248;
         table.setLayoutData(gd_table);
@@ -130,7 +130,7 @@ public class GUI extends Composite {
         tblclmnNo.setText("No.");
         
         TableColumn tblclmnDate = new TableColumn(table, SWT.NONE);
-        tblclmnDate.setWidth(82);
+        tblclmnDate.setWidth(92);
         tblclmnDate.setText("Deadline");
         
         TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
@@ -149,7 +149,11 @@ public class GUI extends Composite {
         tblclmnPriority.setWidth(100);
         tblclmnPriority.setText("Priority");
         
-        outputField = new Text(this, SWT.FILL | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+        outputField = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+        outputField.setToolTipText("See status messages here");
+        outputField.setText("Commands: \nadd~task name~description~dd/mm/yyyy~location~priority\r\n" +
+        					"delete~index number \n" + "update~index number~attribute~new data\n" + 
+        					"clear\n" + "exit");
         GridData gd_outputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_outputField.widthHint = 370;
         gd_outputField.heightHint = 73;
@@ -157,17 +161,19 @@ public class GUI extends Composite {
         outputField.setEditable(false);
         toolkit.adapt(outputField, true, true);
         
-        inputField = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-        GridData gd_inputField = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-        gd_inputField.widthHint = 367;
-        gd_inputField.heightHint = 53;
+        inputField = new StyledText(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+        inputField.setToolTipText("Enter your commands here");
+        inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+        GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gd_inputField.heightHint = 50;
         inputField.setLayoutData(gd_inputField);
-        toolkit.adapt(inputField, true, true);
+        toolkit.adapt(inputField);
+        toolkit.paintBordersFor(inputField);
         
         // We call the controller to process the user's 
         // input once the user presses "enter"
         inputField.addKeyListener(new KeyAdapter() {
-            @Override
+           // @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {
                     textInputData = inputField.getText();
@@ -181,7 +187,7 @@ public class GUI extends Composite {
     
     public static void main(String[] args) {
         Display display = new Display();
-        Shell shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN );
+        Shell shell = new Shell(display);//, SWT.CLOSE | SWT.TITLE | SWT.MIN );
            
         GUI gui = new GUI(shell, SWT.NONE);
         shell.setText("JOYTZ");
