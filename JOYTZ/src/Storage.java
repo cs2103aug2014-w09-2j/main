@@ -19,6 +19,7 @@ public class Storage {
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
+	private static final String ERROR_INVALID_SORT_KEY = "Invalid Sort Key. Key: %s\n";
 
 	// this is the two list of tasks.
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -50,6 +51,7 @@ public class Storage {
 	private static String taskStringFormat = "%s-%s-%s-%s-%s\n";
 	private static DateFormat taskDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	private static String messageStringInFile = "User saved at %s.\n";
+	
 
 	/**
 	 * addTask() method add in task passed by Executor.
@@ -99,9 +101,9 @@ public class Storage {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
 		}
-		if (ASSERTION){
-			assert taskId > 0 : "taskId :" + taskId;
-		}
+		
+		assert taskId > 0 : "taskId :" + taskId;
+		
 		Task removedTask = taskList.remove(taskId - 1);
 		
 		LOGGER.info("==============\n" +
@@ -131,7 +133,7 @@ public class Storage {
 	 */
 
 	public static boolean update(int taskId, String updateIndicator,
-			String newInfo){
+			String newInfo) throws Exception{
 		if (taskId <= 0 || taskId > getTaskListSize()) {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
@@ -141,40 +143,45 @@ public class Storage {
 
 		switch (updateIndicator) {
 		case "name":
-			if (ASSERTION)
-				assert newInfo instanceof String : "name: " + newInfo;
+			assert newInfo instanceof String : "name: " + newInfo;
+		
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
-			if(ASSERTION)
-				assert newInfo instanceof String : "description: " + newInfo;
+			assert newInfo instanceof String : "description: " + newInfo;
+		
 			targetTask.setTaskDescription(newInfo);
 			break;
 		case "deadline":
-			if(ASSERTION){
-				assert newInfo instanceof String : "deadline: " + newInfo;
-				assert newInfo.contains("%s-%s-%s");
-			}
+			assert newInfo instanceof String : "deadline: " + newInfo;
+			assert newInfo.contains("%s-%s-%s");
+			
 			Date newDate = new Date(Long.parseLong(newInfo));
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
-			if(ASSERTION){
-				assert newInfo instanceof String : "location: " + newInfo;
-			}
+			assert newInfo instanceof String : "location: " + newInfo;
+			
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
-			if (ASSERTION){
-				assert newInfo instanceof String : "priority: " + newInfo;
-			}
+			assert newInfo instanceof String : "priority: " + newInfo;
+			
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
+<<<<<<< HEAD
+			assert false : updateIndicator;
+			throw new Exception(ERROR_INVALID_INDICATOR);
+=======
+			
+			assert false : updateIndicator;
+			
 			if(ASSERTION){
 				assert false : updateIndicator;
 			}
 			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
+>>>>>>> 96c8fa7784b98cd6100c62943d7af33a82e35dac
 		}
 		
 		LOGGER.info("==============\n" +
@@ -228,13 +235,23 @@ public class Storage {
 	
 	/**
 	 * Sort the task in taskList corresponding to parameter key.
+	 * if the key is not valid, tasks are sorted by name;
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean sort(String key, boolean deadlineIndicator) {
+<<<<<<< HEAD
+	public static boolean sort(String key) throws Exception {
+		String keyValueString = "name-description-deadline-location-priority";
+=======
+	public static boolean sort(String key) {
+>>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
 		if (isEmpty()){
-			throw new NoSuchElementException("There is no task to sort.");
+			throw new Exception("There is no task to sort.");
 		}
+		if (!keyValueString.contains(key)){
+			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
+		}
+		Task.setSortKey(key);
 		Collections.sort(taskList);
 		return true;
 	}
@@ -244,7 +261,7 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean search(String key, boolean deadlineIndicator){
+	public static boolean search(String key){
 		return true;
 	}
 
@@ -316,10 +333,10 @@ public class Storage {
 		taskListWriter = new FileWriter(taskListFile);
 		historyWriter = new FileWriter(historyFile);
 		
-		if(ASSERTION){
-			assert taskListFile.canWrite() : "taskListFile cannot write.";
-			assert historyFile.canWrite() : "historyFile cannot write.";
-		}
+		
+		assert taskListFile.canWrite() : "taskListFile cannot write.";
+		assert historyFile.canWrite() : "historyFile cannot write.";
+		
 		
 		Date date = new Date();
 		String dateString = format.format(date);

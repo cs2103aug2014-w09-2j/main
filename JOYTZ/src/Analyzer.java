@@ -11,12 +11,14 @@ public class Analyzer {
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
 	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
 	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
+	private static final String ERROR_NULL_SEARCH_INDICATOR = "Search indicator is not mentioned.\n";
 	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.\n";
 	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
-	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Item to be updated is invalid.\n";
+	private static final String ERROR_INVALID_UPDATE_INDICATOR = "Update indicator is invalid.\n";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	private static final String ERROR_INVALID_SEARCH_INDICATOR = "Search indicator is invalid.\n";
 
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -203,15 +205,32 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("search");
 
 		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_SEARCH_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_SEARCH);
 
 			return tempCommand;
 		}
 
-		if (isInteger(arg[0])) {
-			tempCommand.setTaskId(Integer.parseInt(arg[0]));
-		} else {
-			tempCommand.setTaskName(arg[0]);
+		tempCommand.setSearchIndicator(arg[0]);
+
+		switch (arg[0]) {
+		case "name":
+			tempCommand.setTaskName(arg[1]);
+			break;
+		case "priority":
+			tempCommand.setTaskPriority(arg[1]);
+			break;
+		case "location":
+			tempCommand.setTaskLocation(arg[1]);
+			break;
+		case "id":
+			tempCommand.setTaskId(Integer.parseInt(arg[1]));
+			break;
+		default:
+			tempCommand.setErrorMessage(ERROR_INVALID_SEARCH_INDICATOR);
 		}
 
 		return tempCommand;
