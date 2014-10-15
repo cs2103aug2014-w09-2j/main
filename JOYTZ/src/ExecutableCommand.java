@@ -19,6 +19,9 @@ public class ExecutableCommand {
 	// these are for update method.
 	private String updateIndicator;
 	private String updatedTaskName;
+	
+	// these are for sort method
+	private String sortIndicator;
 
 	/**
 	 * Constructor
@@ -35,6 +38,7 @@ public class ExecutableCommand {
 		this.errorMessage = "";
 		this.updateIndicator = "";
 		this.updatedTaskName = "";
+		this.sortIndicator = "";
 	}
 
 	ExecutableCommand(String action) {
@@ -48,6 +52,7 @@ public class ExecutableCommand {
 		this.errorMessage = "";
 		this.updateIndicator = "";
 		this.updatedTaskName = "";
+		this.sortIndicator = "";
 	}
 
 	/**
@@ -93,6 +98,10 @@ public class ExecutableCommand {
 	public void setUpdatedTaskName(String name) {
 		this.updatedTaskName = name;
 	}
+	
+	public void setSortIndicator(String category){
+		this.sortIndicator = category;
+	}
 
 	/**
 	 * get methods
@@ -136,5 +145,9 @@ public class ExecutableCommand {
 
 	public String getUpdatedTaskName() {
 		return updatedTaskName;
+	}
+	
+	public String getSortIndicator(){
+		return sortIndicator;
 	}
 }
