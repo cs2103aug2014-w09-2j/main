@@ -15,59 +15,91 @@ public class Controller {
     private static String outputString;
     private static ExecutableCommand parsedCommand;
     
+    /**
+     * A getter method to obtain the user's input from the GUI
+     *
+     * @return	The user's input string
+     * 
+     * @author Joel
+	 */
 	private static String getInput() {
         return GUI.getUserInput();
     }
     
-    private static void displayUserOutput(String outputCommand, ExecutableCommand command) {
-    	assert outputCommand != null;
+	/**
+     * Called at the end of controller runtime to process 
+     * feedback data for display.
+     *
+     * @param outputFeedbackString		Feedback string that is shown to the user
+     * 									after each command
+     * @param command					ExecutableCommand object containing the
+     * 									user's action and taskId
+     * 
+     * @author Joel
+	 */
+    private static void displayUserOutput(String outputFeedbackString, ExecutableCommand command) {
+    	assert outputFeedbackString != null;
     	assert command != null;
-    	assert outputCommand.length() != 0;
+    	assert outputFeedbackString.length() != 0;
     	
-        GUI.displayOutput(outputCommand);
+        GUI.displayOutput(outputFeedbackString);
         
 		// If there is no error message
         if (command.getErrorMessage().length() == 0) {
         	String action = command.getAction();
-        	//String date = command.getTaskDeadline().toString();
-			//String name = command.getTaskName();
-			//String location = command.getTaskLocation();
-			//String description = command.getTaskDescription();
-			int taskId = command.getTaskId();
 
-        	parseDisplayTasks(action, taskId);
+        	parseDisplayTasks(action);
 		}
     }
     
-    // Preconditions:
-    // getTaskList() strings MUST HAVE: Name~ date~ location~ description~ priority
-	// If something is empty: Name~date~~~priority
-	// If not, I don't know what the string belongs to after I split it.
-    private static void parseDisplayTasks(String action, int taskId) {
-    	if (feedback.getTaskList().size() == 0) { // happens after "clear" command
+    /**
+     * Parses the feedback data string from the Executor
+     * 
+     * Precondition: getTaskList() returns a string in the form
+     * of "name~ date~ location~ description~ priority". If there are
+     * empty values, leave it blank. For example: "name~date~~~priority"
+     * to leave the description and location empty.
+     * 
+     * @param action	The user's input action (add, delete, etc.)
+     * 
+     * @author Joel
+	 */
+    private static void parseDisplayTasks(String action) {
+    	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
     		GUI.updateTable(0, "", "", "", "", action, "");
-    	} else {
-			for(int i = 0; i < feedback.getTaskList().size(); i++){
+    		
+    	} else {									// all other commands
+			for (int i = 0; i < feedback.getTaskList().size(); i++) {
 				System.out.println("===================\n" +
 									"Display string from feedback object: \n" + 
 									"	" + feedback.getTaskList().get(i) + "\n" +
 									"===================\n");
 				
-				String[] arr = feedback.getTaskList().get(i).trim().split("~");
-				int arrayLength = arr.length;
+				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+				int arrayLength = parameterArr.length;
 				
-				String[] dateArr = arr[2].trim().split(" ");
+				String[] dateArr = parameterArr[2].trim().split(" ");
 				
-				// updateTable(Table index number, date, name, location, description, action, priority)
+				// Parameters: updateTable(Table index number, date, name, location,
+				//					   description, action, priority);
 				if (arrayLength == 4) {
-					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], arr[0], arr[3], arr[1], action, "");
+					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2],
+									parameterArr[0], parameterArr[3], parameterArr[1], action, "");
 				} else if (arrayLength == 5) {
-					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], arr[0], arr[3], arr[1], action, arr[4]);
+					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], 
+									parameterArr[0], parameterArr[3], parameterArr[1], action, parameterArr[4]);
 				}
 			}
     	}
 	}
 
+    /**
+     * Starts the controller, and consequently the execution of 
+     * the whole data flow. It is called when the user presses "enter"
+     * after input in the GUI.
+     * 
+     * @author Joel
+	 */
 	public static void startController() {
     	inputCommandString = getInput();
     	assert inputCommandString != null;
@@ -104,10 +136,10 @@ public class Controller {
 						"	Updated task name = " + parsedCommand.getUpdatedTaskName() + "\n" + 
 						"====================\n");
 			
-			if (parsedCommand.getErrorMessage().length() != 0) {
-				// There is an error. 
-				 displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
+			if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
+				displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
 			} else {	
+				
 				if(parsedCommand != null){
 					feedback = startExecutor(parsedCommand);
 					assert feedback != null;
@@ -117,7 +149,7 @@ public class Controller {
 					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 				}
 
-				outputString = proceedFeedback(feedback, parsedCommand);
+				outputString = proceedFeedback(feedback);
 				assert outputString != null;
 				
 				displayUserOutput(outputString, parsedCommand);
@@ -129,34 +161,61 @@ public class Controller {
 		 
     }
     
+	/**
+     * Converts the user's input string into a Command object.
+     * 
+     * @param inputCommandString	the user's input
+     * 
+     * @return						Command object containing the user's input 
+     * 
+     * @author Joel
+	 */
     private static Command convertStringToCommand(String inputCommandString) {
     	inputCommandObject = new Command(inputCommandString);
     	
     	return inputCommandObject;
     }
     
+    /**
+     * Starts the analyzer, and passes the Command object to it
+     * 
+     * @param inputCommandObject	Command object containing the user's input
+     * 
+     * @return						ExecutableCommand object with parsed data
+     * 
+     * @author Joel
+	 */
     public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
         
     	return parsedCommand;
     }
     
-    private static String proceedFeedback(Feedback feedback, ExecutableCommand commandObj) {
-    	String outputString;
-    	
-    	if (commandObj == null) {
-    		outputString = feedback.getMessageShowToUser();
-    	} else if (feedback.getResult()) {
-    		outputString = feedback.getMessageShowToUser();  
-    	} else {
-    		outputString = feedback.getMessageShowToUser();  		
-    	}
+    /**
+     * Gets the feedback message to show to the user from the feedback object
+     * 
+     * @param feedback		Feedback object containing the feedback message
+     * 
+     * @return				String with feedback to show to user after each command
+     * 
+     * @author Joel
+	 */
+    private static String proceedFeedback(Feedback feedback) {
+    	String outputString = feedback.getMessageShowToUser();  		
     	
     	return outputString;	
     }
     
+    /**
+     * Starts the executor, and passes the ExecutableCommand object to it
+     * 
+     * @param command	ExecutableCommand object containing the parsed data
+     * 
+     * @return			Feedback object with data to display in GUI
+     * 
+     * @author Joel
+	 */
     public static Feedback startExecutor(ExecutableCommand command) {
         return Executor.proceedAnalyzedCommand(command);
     }
-    
 }

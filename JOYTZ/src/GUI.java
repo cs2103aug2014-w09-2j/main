@@ -6,17 +6,21 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+
+import org.eclipse.swt.SWT;
+
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class GUI extends Composite {
 	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
@@ -25,26 +29,47 @@ public class GUI extends Composite {
     private Text inputField;
     private static Text outputField;
     private static String textInputData = "";
-    //private static String textOutputData = "";
     private static Table table;
     private TableColumn tblclmnRemarks;
     private TableColumn tblclmnNo;
     private TableColumn tblclmnLocation;
     private TableColumn tblclmnPriority;
-
+    
+    /**
+     * A getter method for the controller to obtain the user's input
+     *
+     * @return	The user's input string
+     * 
+     * @author Joel
+	 */
     public static String getUserInput() {
         return textInputData;        
     }
     
+    /**
+     * Displays a feedback string in the GUI after each user command
+     *
+     * @param output	The string to be displayed
+     * 
+     * @author Joel
+	 */
     public static void displayOutput(String output) {
-        if (textInputData.isEmpty() == false) {
-            // textOutputData = outputField.getText();
-            // textOutputData = textOutputData.concat(output + "\n");
-            outputField.setText(output);
-        }
+    	outputField.setText(output);
     }
     
-    // Pass object in here
+    /**
+     * Updates the table in the GUI based on the given parameters
+     *
+     * @param taskNumber    	Index number of the task in the table
+     * @param date    			Deadline of the given task
+     * @param name 				Name of the given task
+     * @param location			Location of the given task
+     * @param description		Description for the given task
+     * @param action			Action input by the user (add, delete, etc.) 
+     * @param priority			Priority level of the given task
+     * 
+     * @author Joel
+	 */
     public static void updateTable(int taskNumber, String date, 
     							   String name, String location, 
     							   String description, String action, 
@@ -70,7 +95,8 @@ public class GUI extends Composite {
 			
 			// 1 row = 1 TableItem
 		    TableItem item = new TableItem(table, SWT.NONE);
-	        item.setText(new String[] { (taskNumber+1) + ".", date, name, location, description, priority });
+	        item.setText(new String[] { (taskNumber+1) + ".", date, name, location, 
+	        							description, priority });
 		}    
     } 
     
@@ -153,7 +179,7 @@ public class GUI extends Composite {
         });
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Display display = new Display();
         Shell shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN );
            
