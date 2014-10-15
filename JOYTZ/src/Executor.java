@@ -102,10 +102,6 @@ public class Executor {
 
 		// pre-condition
 		assert !name.equals("") : "No task name";
-		assert !description.equals("") : "No task description";
-		assert !date.equals(new Date()) : " No deadline";
-		assert !location.equals("") : "No task location";
-		assert !priority.equals("") : "No priority";
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
@@ -230,6 +226,7 @@ public class Executor {
 
 		// pre-condition
 		assert deadlineIndicator == false;
+		assert !sortCategory.equals(""): "Sort no category";
 
 		// check what category user want to sort
 		switch (sortCategory) {
@@ -269,6 +266,7 @@ public class Executor {
 
 		// pre-condition
 		assert !searchedKey.equals("") : "No key needed to search";
+		assert !searchIndicator.equals(""): "No search indicator";
 
 		// check which category user want to search key
 		switch (searchIndicator) {
