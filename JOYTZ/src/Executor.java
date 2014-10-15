@@ -230,10 +230,23 @@ public class Executor {
 		assert !keyString.equals(""): "Sort no category";
 		
 		// check what category user want to sort
+<<<<<<< HEAD
 		try{
 			feedback.setResult(Storage.sort(keyString));
 		}catch (Exception e){
 			feedback.setErrorMessage(e.getMessage());
+=======
+		switch (sortCategory) {
+		case "name":
+		case "priority":
+		case "location":
+		case "deadline":
+			feedback.setResult(Storage.sort(sortCategory));
+			break;
+		default:
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return;
+>>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
 		}
 
 		if (feedback.getResult()) {
@@ -251,7 +264,6 @@ public class Executor {
 	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getSearchIndicator();
 		String searchedKey = command.getSearchedKey();
-		boolean deadlineIndicator = false;
 		feedback = new Feedback(false);
 
 		// pre-condition
@@ -263,11 +275,8 @@ public class Executor {
 		case "name":
 		case "priority":
 		case "location":
-			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
-			break;
 		case "deadline":
-			deadlineIndicator = true;
-			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			feedback.setResult(Storage.search(searchedKey));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);

@@ -229,8 +229,12 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
+<<<<<<< HEAD
 	public static boolean sort(String key) throws Exception {
 		String keyValueString = "name-description-deadline-location-priority";
+=======
+	public static boolean sort(String key) {
+>>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
 		if (isEmpty()){
 			throw new Exception("There is no task to sort.");
 		}
@@ -247,7 +251,7 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean search(String key, boolean deadlineIndicator){
+	public static boolean search(String key){
 		return true;
 	}
 
