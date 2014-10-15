@@ -1,6 +1,5 @@
 //package V1;
 
-import static org.junit.Assert.*;
 import java.util.Date;
 
 public class Executor {
@@ -49,6 +48,9 @@ public class Executor {
 		case "search":
 			performSearchAction();
 			break;
+		case "undo":
+			performUndoAction();
+			break;
 		case "exit":
 			performExitAction();
 			break;
@@ -66,20 +68,14 @@ public class Executor {
 	}
 
 	private static void performAddAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getTaskName() == ""){
-			fail("Task name is empty");
-		}
-		
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
 		Date date = command.getTaskDeadline();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-
 		feedback = new Feedback(false);	
 			
-
+		
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
@@ -91,12 +87,7 @@ public class Executor {
 
 	}
 
-	private static void performDeleteAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getTaskId() == -1){
-			fail("Task index is empty");
-		}
-		
+	private static void performDeleteAction(ExecutableCommand command) {	
 		int taskId = command.getTaskId();
 		String taskName;
 		feedback = new Feedback(false);
@@ -115,20 +106,12 @@ public class Executor {
 	}
 
 	private static void performUpdateAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getUpdateIndicator() == ""){
-			fail("Update indicator is empty");
-		}
-		if(command.getTaskId() == -1){
-			fail("Task index is -1");
-		}
-		
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
 		String taskName;
 		String newInfo;
-
 		feedback = new Feedback(false);
+		
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
@@ -182,6 +165,10 @@ public class Executor {
 
 	private static void performSearchAction() {
 		// TODO Auto-generated method stub
+	}
+	
+	private static void performUndoAction(){
+		
 	}
 
 	private static void performExitAction() {
