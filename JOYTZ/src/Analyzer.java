@@ -52,7 +52,7 @@ public class Analyzer {
 			outputCommand = handleClearCommand();
 			break;
 		case "sort":
-			outputCommand = handleSortCommand();
+			outputCommand = handleSortCommand(commandArgument);
 			break;
 		case "search":
 			outputCommand = handleSearchCommand(commandArgument);
@@ -164,11 +164,11 @@ public class Analyzer {
 		String updateIndicator = arg[1];
 		String updatedItem = arg[2];
 
-		tempCommand.setUpdateIndicator(updateIndicator);
+		tempCommand.setIndicator(updateIndicator);
 
 		switch (updateIndicator) {
 		case "name":
-			tempCommand.setUpdatedTaskName(updatedItem);
+			tempCommand.setTaskName(updatedItem);
 			break;
 		case "description":
 			tempCommand.setTaskDescription(updatedItem);
@@ -195,8 +195,18 @@ public class Analyzer {
 		return new ExecutableCommand("clear");
 	}
 
-	private static ExecutableCommand handleSortCommand() {
-		return new ExecutableCommand("sort");
+	private static ExecutableCommand handleSortCommand(String[] arg) {
+		ExecutableCommand tempCommand = new ExecutableCommand("search");
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_SEARCH_INDICATOR);
+
+			return tempCommand;
+		}
+		
+		tempCommand.setIndicator(arg[0].toLowerCase());
+		
+		return tempCommand;
 	}
 
 	private static ExecutableCommand handleSearchCommand(String[] arg) {
@@ -214,7 +224,7 @@ public class Analyzer {
 			return tempCommand;
 		}
 
-		tempCommand.setSearchIndicator(arg[0]);
+		tempCommand.setIndicator(arg[0]);
 
 		switch (arg[0]) {
 		case "name":

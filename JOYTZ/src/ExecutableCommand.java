@@ -16,15 +16,8 @@ public class ExecutableCommand {
 	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
 
-	// these are for update method.
-	private String updateIndicator;
-	private String updatedTaskName;
-	
-	// these are for sort method
-	private String sortIndicator;
-	
-	// these are for search method
-	private String searchIndicator;
+	// these are for update,sort or search method.
+	private String indicator;
 
 	/**
 	 * Constructor
@@ -39,10 +32,7 @@ public class ExecutableCommand {
 		this.taskPriority = "";
 		this.taskId = -1;
 		this.errorMessage = "";
-		this.updateIndicator = "";
-		this.updatedTaskName = "";
-		this.sortIndicator = "";
-		this.searchIndicator = "";
+		this.indicator = "";
 	}
 
 	ExecutableCommand(String action) {
@@ -54,10 +44,7 @@ public class ExecutableCommand {
 		this.taskPriority = "";
 		this.taskId = -1;
 		this.errorMessage = "";
-		this.updateIndicator = "";
-		this.updatedTaskName = "";
-		this.sortIndicator = "";
-		this.searchIndicator = "";
+		this.indicator = "";
 	}
 
 	/**
@@ -96,20 +83,8 @@ public class ExecutableCommand {
 		this.errorMessage = message;
 	}
 
-	public void setUpdateIndicator(String indicator) {
-		this.updateIndicator = indicator;
-	}
-
-	public void setUpdatedTaskName(String name) {
-		this.updatedTaskName = name;
-	}
-	
-	public void setSortIndicator(String category){
-		this.sortIndicator = category;
-	}
-	
-	public void setSearchIndicator(String indicator){
-		this.searchIndicator = indicator;
+	public void setIndicator(String indicator) {
+		this.indicator = indicator;
 	}
 
 	/**
@@ -148,20 +123,8 @@ public class ExecutableCommand {
 		return errorMessage;
 	}
 
-	public String getUpdateIndicator() {
-		return updateIndicator;
-	}
-
-	public String getUpdatedTaskName() {
-		return updatedTaskName;
-	}
-	
-	public String getSortIndicator(){
-		return sortIndicator;
-	}
-	
-	public String getSearchIndicator(){
-		return searchIndicator;
+	public String getIndicator() {
+		return indicator;
 	}
 	
 }
