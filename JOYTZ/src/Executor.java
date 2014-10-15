@@ -223,34 +223,30 @@ public class Executor {
 	 * 
 	 */
 	private static void performSortAction(ExecutableCommand command) {
-		String keyString = command.getSortIndicator();
+		String sortKey = command.getSortIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !keyString.equals(""): "Sort no category";
+		assert !sortKey.equals(""): "Sort no category";
 		
 		// check what category user want to sort
-<<<<<<< HEAD
-		try{
-			feedback.setResult(Storage.sort(keyString));
-		}catch (Exception e){
-			feedback.setErrorMessage(e.getMessage());
-=======
-		switch (sortCategory) {
+		switch (sortKey) {
 		case "name":
 		case "priority":
 		case "location":
 		case "deadline":
-			feedback.setResult(Storage.sort(sortCategory));
+			feedback.setResult(Storage.sort(sortKey));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
->>>>>>> 952cbd73d94081683a36a9dbd4111f152e5199da
 		}
 
 		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
+			feedback.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL, sortKey));
+		}
+		else{
+			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
 		}
 	}
 
