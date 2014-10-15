@@ -171,17 +171,13 @@ public class Storage {
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
-<<<<<<< HEAD
 			
 			assert false : updateIndicator;
 			
-			throw new Exception(ERROR_INVALID_INDICATOR);
-=======
 			if(ASSERTION){
 				assert false : updateIndicator;
 			}
 			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
->>>>>>> 6052d243a7867a0e2db902ae5b5dcd7e8e16d6d6
 		}
 		
 		LOGGER.info("==============\n" +
