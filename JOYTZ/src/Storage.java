@@ -62,13 +62,12 @@ public class Storage {
 		if (t == null) {
 			throw new InvalidParameterException(ERROR_NULL_OBJECT);
 		}
-		if (ASSERTION){
-			assert !t.getTaskName().equals("") : "No task name.";
-			assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
-			assert !t.getTaskDescription().equals("") : "No task description.";
-			assert !t.getTaskLocation().equals("") : "No task location.";
-			assert !t.getTaskPriority().equals("") : "No task priority.";
-		}
+		assert !t.getTaskName().equals("") : "No task name.";
+		assert t.getTaskDeadline().before(new Date()) : "Invalid task deadline.";
+		assert !t.getTaskDescription().equals("") : "No task description.";
+		assert !t.getTaskLocation().equals("") : "No task location.";
+		assert !t.getTaskPriority().equals("") : "No task priority.";
+		
 		
 		LOGGER.info("==============\n" +
 				"Storage add task: \n" + 
@@ -236,7 +235,7 @@ public class Storage {
 			throw new Exception("There is no task to sort.");
 		}
 		Task.setSortKey(key);
-		taskList.sort(null);
+		Collections.sort(taskList);
 	}
 
 	public static ArrayList<String> getTaskList() {
