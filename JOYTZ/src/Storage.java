@@ -190,11 +190,12 @@ public class Storage {
 	 * 
 	 * @param taskId
 	 * @return
+	 * @throws Exception 
 	 */
 
-	public static Task get(int taskId) {
+	public static Task get(int taskId) throws Exception {
 		if (taskId <= 0 || taskId > getTaskListSize()) {
-			throw new IndexOutOfBoundsException();
+			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
 		}
 		return taskList.get(taskId - 1);
 	}
