@@ -1,6 +1,5 @@
 //package V1;
 
-import java.util.Comparator;
 import java.util.Date;
 
 public class Task implements Comparable<Task>{
@@ -12,7 +11,7 @@ public class Task implements Comparable<Task>{
 	public String taskLocation;
 	public String taskPriority;
 	
-	public static String sortKey = "name";
+	private static String sortKey = "name";
 
 	/**
 	 * Constructor

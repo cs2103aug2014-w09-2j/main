@@ -186,14 +186,17 @@ public class Executor {
 			return;
 		}
 
-		feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
+		try {
+			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
+		}
 
 		if (feedback.getResult()) {
 			taskName = Storage.get(taskId).getTaskName();
+			feedback.setResult(true);
 			feedback.setMessageShowToUser(String.format(
 					MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
-		} else {
-			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 	}
 
@@ -220,34 +223,21 @@ public class Executor {
 	 * 
 	 */
 	private static void performSortAction(ExecutableCommand command) {
-		String sortCategory = command.getSortIndicator();
-		boolean deadlineIndicator = false;
+		String keyString = command.getSortIndicator();
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert deadlineIndicator == false;
-		assert !sortCategory.equals(""): "Sort no category";
-
+		assert !keyString.equals(""): "Sort no category";
+		
 		// check what category user want to sort
-		switch (sortCategory) {
-		case "name":
-		case "priority":
-		case "location":
-			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
-			break;
-		case "deadline":
-			deadlineIndicator = true;
-			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
-			break;
-		default:
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
+		try{
+			feedback.setResult(Storage.sort(keyString));
+		}catch (Exception e){
+			feedback.setErrorMessage(e.getMessage());
 		}
 
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
-		} else {
-			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
 		}
 	}
 

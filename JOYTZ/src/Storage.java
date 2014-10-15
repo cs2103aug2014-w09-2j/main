@@ -19,6 +19,7 @@ public class Storage {
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
+	private static final String ERROR_INVALID_SORT_KEY = "Invalid Sort Key. Key: %s\n";
 
 	// this is the two list of tasks.
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -50,6 +51,7 @@ public class Storage {
 	private static String taskStringFormat = "%s-%s-%s-%s-%s\n";
 	private static DateFormat taskDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	private static String messageStringInFile = "User saved at %s.\n";
+	
 
 	/**
 	 * addTask() method add in task passed by Executor.
@@ -131,7 +133,7 @@ public class Storage {
 	 */
 
 	public static boolean update(int taskId, String updateIndicator,
-			String newInfo){
+			String newInfo) throws Exception{
 		if (taskId <= 0 || taskId > getTaskListSize()) {
 			throw new NullPointerException(String.format(ERROR_INVALID_TASKID,
 					taskId));
@@ -141,15 +143,14 @@ public class Storage {
 
 		switch (updateIndicator) {
 		case "name":
-			
 			assert newInfo instanceof String : "name: " + newInfo;
 		
 			targetTask.setTaskName(newInfo);
 			break;
 		case "description":
-
 			assert newInfo instanceof String : "description: " + newInfo;
 		
+			targetTask.setTaskDescription(newInfo);
 			break;
 		case "deadline":
 			assert newInfo instanceof String : "deadline: " + newInfo;
@@ -159,29 +160,18 @@ public class Storage {
 			targetTask.setTaskDeadline(newDate);
 			break;
 		case "location":
-			
 			assert newInfo instanceof String : "location: " + newInfo;
 			
 			targetTask.setTaskLocation(newInfo);
 			break;
 		case "priority":
-			
 			assert newInfo instanceof String : "priority: " + newInfo;
 			
 			targetTask.setTaskPriority(newInfo);
 			break;
 		default:
-<<<<<<< HEAD
-			
 			assert false : updateIndicator;
-			
 			throw new Exception(ERROR_INVALID_INDICATOR);
-=======
-			if(ASSERTION){
-				assert false : updateIndicator;
-			}
-			throw new NoSuchElementException(ERROR_INVALID_INDICATOR);
->>>>>>> 6052d243a7867a0e2db902ae5b5dcd7e8e16d6d6
 		}
 		
 		LOGGER.info("==============\n" +
@@ -235,13 +225,19 @@ public class Storage {
 	
 	/**
 	 * Sort the task in taskList corresponding to parameter key.
+	 * if the key is not valid, tasks are sorted by name;
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean sort(String key, boolean deadlineIndicator) {
+	public static boolean sort(String key) throws Exception {
+		String keyValueString = "name-description-deadline-location-priority";
 		if (isEmpty()){
-			throw new NoSuchElementException("There is no task to sort.");
+			throw new Exception("There is no task to sort.");
 		}
+		if (!keyValueString.contains(key)){
+			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
+		}
+		Task.setSortKey(key);
 		Collections.sort(taskList);
 		return true;
 	}
