@@ -65,6 +65,9 @@ public class Controller {
      * @author Joel
 	 */
     private static void parseDisplayTasks(String action) {
+    	boolean isDateEmpty = false;
+    	String[] dateArr = null;
+    	
     	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
     		GUI.updateTable(0, "", "", "", "", action, "");
     		
@@ -76,18 +79,28 @@ public class Controller {
 									"===================\n");
 				
 				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
-				int arrayLength = parameterArr.length;
 				
-				String[] dateArr = parameterArr[2].trim().split(" ");
+				if (parameterArr[2].trim().length() == 0) {
+					isDateEmpty = true;
+				}
+				else {
+					dateArr = parameterArr[2].trim().split(" ");
+				}
 				
 				// Parameters: updateTable(Table index number, date, name, location,
-				//					   description, action, priority);
-				if (arrayLength == 4) {
+				//					  	   description, action, priority);
+				if (parameterArr.length == 4 && isDateEmpty == false) {
 					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2],
 									parameterArr[0], parameterArr[3], parameterArr[1], action, "");
-				} else if (arrayLength == 5) {
+				} else if (parameterArr.length == 5 && isDateEmpty == false) {
 					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], 
 									parameterArr[0], parameterArr[3], parameterArr[1], action, parameterArr[4]);
+				} else if (parameterArr.length == 4 && isDateEmpty == true) {
+					GUI.updateTable(i, parameterArr[2],	parameterArr[0], parameterArr[3], 
+									parameterArr[1], action, "");
+				} else if (parameterArr.length == 5 && isDateEmpty == true) {
+					GUI.updateTable(i, parameterArr[2], parameterArr[0], parameterArr[3], 
+									parameterArr[1], action, parameterArr[4]);
 				}
 			}
     	}
