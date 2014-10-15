@@ -8,6 +8,7 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
+	private static final String ERROR_NULL_OBJECT = "Null object.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -27,6 +28,9 @@ public class Executor {
 	public static Feedback feedback;
 
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
+		if(command == null){
+			throw new NullPointerException(ERROR_NULL_OBJECT);
+		}
 		String action = command.getAction();
 
 		switch (action) {
@@ -74,13 +78,22 @@ public class Executor {
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
 		feedback = new Feedback(false);	
-			
+		
+		// pre-condition
+		assert !name.equals(""): "No task name";
+		assert !description.equals(""): "No task description";
+		assert !date.equals(new Date()): " No deadline";
+		assert !location.equals(""): "No task location";
+		assert !priority.equals(""): "no priority";
 		
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
 
 		// add the task into the storage.
 		feedback.setResult(Storage.add(t));
+		
+		//  post-condition
+		assert feedback.getResult(): "Unsuccessful to add task";
 
 		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
 				name));
@@ -91,7 +104,9 @@ public class Executor {
 		int taskId = command.getTaskId();
 		String taskName;
 		feedback = new Feedback(false);
-
+		
+		// pre-condition
+		assert taskId != -1: "No task index";
 
 		taskName = Storage.get(taskId).getTaskName();
 		feedback.setResult(Storage.delete(taskId));
@@ -112,6 +127,9 @@ public class Executor {
 		String newInfo;
 		feedback = new Feedback(false);
 		
+		// pre-condition
+		assert !updateIndicator.equals(""): "No update indicator";
+		assert taskId != -1: "No task index";
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
@@ -155,6 +173,9 @@ public class Executor {
 	private static void performClearAction() {
 		feedback = new Feedback(false);
 		feedback.setResult(Storage.clean());
+		
+		// post-condition
+		assert feedback.getResult(): "Nothing to clear";
 
 		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 	}
