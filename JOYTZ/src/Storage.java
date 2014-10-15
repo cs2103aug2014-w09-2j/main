@@ -231,7 +231,7 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean sort(String key, boolean deadlineIndicator) {
+	public static boolean sort(String key) {
 		if (isEmpty()){
 			throw new NoSuchElementException("There is no task to sort.");
 		}
@@ -244,7 +244,7 @@ public class Storage {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean search(String key, boolean deadlineIndicator){
+	public static boolean search(String key){
 		return true;
 	}
 
