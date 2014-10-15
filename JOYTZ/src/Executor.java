@@ -1,6 +1,5 @@
 //package V1;
 
-import static org.junit.Assert.*;
 import java.util.Date;
 
 public class Executor {
@@ -9,6 +8,7 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
+	private static final String ERROR_NULL_OBJECT = "Null object.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -18,8 +18,16 @@ public class Executor {
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	private static final String ERROR_INVALID_INDICATOR = "The update indicator is invalid.\n";
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"has been updated successfully.\n";
+	private static final String ERROR_INVALID_INDICATOR = "The indicator is invalid.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
+
+	// these are for Sort Method
+	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
+	private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
+
+	// these are for Search Method
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
+	private static final String ERROR_FAIL_TO_SEARCH = "Invalid key search.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -27,7 +35,16 @@ public class Executor {
 
 	public static Feedback feedback;
 
+	/**
+	 * Called by Controller to initialize Executor.
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
+		if (command == null) {
+			throw new NullPointerException(ERROR_NULL_OBJECT);
+		}
+
 		String action = command.getAction();
 
 		switch (action) {
@@ -44,10 +61,13 @@ public class Executor {
 			performClearAction();
 			break;
 		case "sort":
-			performSortAction();
+			performSortAction(command);
 			break;
 		case "search":
-			performSearchAction();
+			performSearchAction(command);
+			break;
+		case "undo":
+			performUndoAction();
 			break;
 		case "exit":
 			performExitAction();
@@ -65,20 +85,23 @@ public class Executor {
 		return feedback;
 	}
 
+	/**
+	 * Perform add action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performAddAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getTaskName() == ""){
-			fail("Task name is empty");
-		}
-		
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
 		Date date = command.getTaskDeadline();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
+		feedback = new Feedback(false);
 
-		feedback = new Feedback(false);	
-			
+		// pre-condition
+		assert !name.equals("") : "No task name";
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, date, description, location, priority);
@@ -86,49 +109,58 @@ public class Executor {
 		// add the task into the storage.
 		feedback.setResult(Storage.add(t));
 
+		// post-condition
+		assert feedback.getResult() : "Unsuccessful to add task";
+
 		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
 				name));
 
 	}
-
+	
+	/**
+	 * Perform delete action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performDeleteAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getTaskId() == -1){
-			fail("Task index is empty");
-		}
-		
 		int taskId = command.getTaskId();
 		String taskName;
 		feedback = new Feedback(false);
 
+		// pre-condition
+		assert taskId != -1 : "Task index " + taskId;
 
 		taskName = Storage.get(taskId).getTaskName();
 		feedback.setResult(Storage.delete(taskId));
-		
-		if (feedback.getResult()){
+
+		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(String.format(
 					MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-		}else {
+		} else {
 			feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 		}
 
 	}
 
+	/**
+	 * Perform update action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
 	private static void performUpdateAction(ExecutableCommand command) {
-		assertNotNull("Command is not null", command);
-		if(command.getUpdateIndicator() == ""){
-			fail("Update indicator is empty");
-		}
-		if(command.getTaskId() == -1){
-			fail("Task index is -1");
-		}
-		
 		String updateIndicator = command.getUpdateIndicator();
 		int taskId = command.getTaskId();
 		String taskName;
 		String newInfo;
-
 		feedback = new Feedback(false);
+
+		// pre-condition
+		assert !updateIndicator.equals("") : "No update indicator";
+		assert taskId != -1 : "Task index " + taskId;
 
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
@@ -154,11 +186,7 @@ public class Executor {
 			return;
 		}
 
-		try {
-			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
 
 		if (feedback.getResult()) {
 			taskName = Storage.get(taskId).getTaskName();
@@ -169,21 +197,114 @@ public class Executor {
 		}
 	}
 
+	/**
+	 * Perform clear action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
 	private static void performClearAction() {
 		feedback = new Feedback(false);
+
 		feedback.setResult(Storage.clean());
-
 		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+
+		// post-condition
+		assert feedback.getResult() : "Nothing to clear";
 	}
 
-	private static void performSortAction() {
-		// TODO Auto-generated method stubs
+	/**
+	 * Perform sort action wit command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
+	private static void performSortAction(ExecutableCommand command) {
+		String sortCategory = command.getSortIndicator();
+		boolean deadlineIndicator = false;
+		feedback = new Feedback(false);
+
+		// pre-condition
+		assert deadlineIndicator == false;
+		assert !sortCategory.equals(""): "Sort no category";
+
+		// check what category user want to sort
+		switch (sortCategory) {
+		case "name":
+		case "priority":
+		case "location":
+			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
+			break;
+		case "deadline":
+			deadlineIndicator = true;
+			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
+			break;
+		default:
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return;
+		}
+
+		if (feedback.getResult()) {
+			feedback.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
+		} else {
+			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
+		}
 	}
 
-	private static void performSearchAction() {
-		// TODO Auto-generated method stub
+	/**
+	 * Perform search action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command: ExecutableCommand object containing the user's action
+	 * 
+	 */
+	private static void performSearchAction(ExecutableCommand command) {
+		String searchIndicator = command.getSearchIndicator();
+		String searchedKey = command.getSearchedKey();
+		boolean deadlineIndicator = false;
+		feedback = new Feedback(false);
+
+		// pre-condition
+		assert !searchedKey.equals("") : "No key needed to search";
+		assert !searchIndicator.equals(""): "No search indicator";
+
+		// check which category user want to search key
+		switch (searchIndicator) {
+		case "name":
+		case "priority":
+		case "location":
+			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			break;
+		case "deadline":
+			deadlineIndicator = true;
+			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			break;
+		default:
+			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return;
+		}
+
+		if (feedback.getResult()) {
+			feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		} else {
+			feedback.setErrorMessage(ERROR_FAIL_TO_SEARCH);
+		}
 	}
 
+	/**
+	 * Perform undo action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
+	private static void performUndoAction() {
+
+	}
+
+	/**
+	 * Perform exit action with command object passed from 
+	 * proceedAnalyzedCommand method
+	 * 
+	 */
 	private static void performExitAction() {
 		feedback = new Feedback(false);
 
@@ -201,6 +322,10 @@ public class Executor {
 		System.exit(0);
 	}
 
+	/**
+	 * Return feedback to user
+	 * 
+	 */
 	public static Feedback getFeedback() {
 		return feedback;
 	}

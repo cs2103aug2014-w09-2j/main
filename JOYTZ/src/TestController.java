@@ -17,7 +17,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test1).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test1).getTaskName());	
 		assertEquals("Description is not filled", "discuss about CS2103T project", Controller.analyzeInput(test1).getTaskDescription());	
-		assertEquals("Deadline is not filled", "14/10/2014", Controller.analyzeInput(test1).getTaskDeadline());
+		assertEquals("Deadline is not filled", "Tue Oct 14 00:00:00 SGT 2014", Controller.analyzeInput(test1).getTaskDeadline().toString());
 		assertEquals("Location is not filled", "NUS", Controller.analyzeInput(test1).getTaskLocation());
 		assertEquals("Priority is not filled", "medium", Controller.analyzeInput(test1).getTaskPriority());
 	}

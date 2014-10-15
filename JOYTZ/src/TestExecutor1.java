@@ -9,7 +9,7 @@ import org.junit.Test;
 public class TestExecutor1 {
 
 	@Test
-	public void testInvalidComand() {
+	public void testInvalidComand() throws Exception {
 		ExecutableCommand obj = new ExecutableCommand();
 		Feedback fb = new Feedback(false);
 
@@ -25,14 +25,14 @@ public class TestExecutor1 {
 	}
 
 	@Test
-	public void testAddFunction() {
+	public void testAddFunction() throws Exception {
 		ExecutableCommand obj = new ExecutableCommand();
 		Feedback fb = new Feedback(false);
 
 		// test invalid add task cases.
 		obj.setAction("add");
 		obj.setTaskLocation("Europe");
-		//fb = Executor.proceedAnalyzedCommand(obj);
+		fb = Executor.proceedAnalyzedCommand(obj);
 
 		// valid input for add function
 		obj.setTaskName("travelling");
@@ -43,7 +43,7 @@ public class TestExecutor1 {
 	}
 
 	@Test
-	public void testDeleteFunction() {
+	public void testDeleteFunction() throws Exception {
 		ExecutableCommand obj3 = new ExecutableCommand();
 		Feedback fb3 = new Feedback(false);
 
@@ -67,13 +67,12 @@ public class TestExecutor1 {
 		fb3 = Executor.proceedAnalyzedCommand(obj3);
 		
 		assertEquals("there is 1 task in table", 1, fb3.getTaskList().size());
-		System.out.println(fb3.getTaskList());
 		assertEquals("a particular task in table",
 				"meeting~CS2103T project~ ~NUS~ ", fb3.getTaskList().get(0));
 	}	
 	
 	@Test
-	public void testUpdateFunction() {
+	public void testUpdateFunction() throws Exception {
 		ExecutableCommand obj3 = new ExecutableCommand();
 		Feedback fb3 = new Feedback(false);
 
@@ -95,10 +94,13 @@ public class TestExecutor1 {
 	}
 	
 	@Test
-	public void testCleanFunction(){
+	public void testCleanFunction() throws Exception{
 		// test clean function
 		ExecutableCommand obj3 = new ExecutableCommand();
 		Feedback fb3 = new Feedback(false);
+		//obj3 = null;
+		
+		//fb3 = Executor.proceedAnalyzedCommand(obj3);
 		
 		obj3.setAction("add");
 		obj3.setTaskName("studying");
