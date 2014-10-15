@@ -233,11 +233,8 @@ public class Executor {
 		case "name":
 		case "priority":
 		case "location":
-			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
-			break;
 		case "deadline":
-			deadlineIndicator = true;
-			feedback.setResult(Storage.sort(sortCategory, deadlineIndicator));
+			feedback.setResult(Storage.sort(sortCategory));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
@@ -261,7 +258,6 @@ public class Executor {
 	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getSearchIndicator();
 		String searchedKey = command.getSearchedKey();
-		boolean deadlineIndicator = false;
 		feedback = new Feedback(false);
 
 		// pre-condition
@@ -273,11 +269,8 @@ public class Executor {
 		case "name":
 		case "priority":
 		case "location":
-			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
-			break;
 		case "deadline":
-			deadlineIndicator = true;
-			feedback.setResult(Storage.search(searchedKey, deadlineIndicator));
+			feedback.setResult(Storage.search(searchedKey));
 			break;
 		default:
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
