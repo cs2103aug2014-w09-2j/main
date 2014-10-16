@@ -49,6 +49,9 @@ public class Analyzer {
 		case "display":
 			outputCommand = handlDisplayCommand(commandArgument);
 			break;
+		case "undo":
+			outputCommand = handleUndoCommand();
+			break;
 		case "clear":
 			outputCommand = handleClearCommand();
 			break;
@@ -199,7 +202,11 @@ public class Analyzer {
 	private static ExecutableCommand handlDisplayCommand(String[] arg) {
 		return new ExecutableCommand("display");
 	}
-
+	
+	private static ExecutableCommand handleUndoCommand() {
+		return new ExecutableCommand("undo");
+	}
+	
 	private static ExecutableCommand handleClearCommand() {
 		return new ExecutableCommand("clear");
 	}
