@@ -4,6 +4,8 @@ public class ExecutableCommand {
 
 	// attributes in this object.
 	private String action;
+	
+	// Task Class attributes for (add and update)
 	private String taskName;
 	private String taskDescription;
 	private String taskStartTiming;
