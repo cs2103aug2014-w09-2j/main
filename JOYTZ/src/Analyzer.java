@@ -18,8 +18,6 @@ public class Analyzer {
 	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 
-	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
 		assertNotNull("User input is null", userInput);
@@ -90,21 +88,19 @@ public class Analyzer {
 		}
 
 		if (arg.length >= 3) {
-			if (arg[2].equals("")) {
-				tempCommand.setTaskDeadline(new Date(0, 0, 0));
-			} else {
-				Date deadline = (Date) df.parse(arg[2]);
-
-				tempCommand.setTaskDeadline(deadline);
-			}
+			tempCommand.setTaskStartTiming(arg[2]);
 		}
 
 		if (arg.length >= 4) {
-			tempCommand.setTaskLocation(arg[3]);
+			tempCommand.setTaskEndTiming(arg[3]);
 		}
 
 		if (arg.length >= 5) {
-			tempCommand.setTaskPriority(arg[4]);
+			tempCommand.setTaskLocation(arg[4]);
+		}
+
+		if (arg.length >= 6) {
+			tempCommand.setTaskPriority(arg[5]);
 		}
 
 		return tempCommand;
@@ -181,10 +177,11 @@ public class Analyzer {
 		case "description":
 			tempCommand.setTaskDescription(updatedItem);
 			break;
-		case "deadline":
-			Date updatedDeadline = (Date) df.parse(updatedItem);
-
-			tempCommand.setTaskDeadline(updatedDeadline);
+		case "startTiming":
+			tempCommand.setTaskStartTiming(updatedItem);
+			break;
+		case "endTiming":
+			tempCommand.setTaskEndTiming(updatedItem);
 			break;
 		case "location":
 			tempCommand.setTaskLocation(updatedItem);
@@ -202,11 +199,11 @@ public class Analyzer {
 	private static ExecutableCommand handlDisplayCommand(String[] arg) {
 		return new ExecutableCommand("display");
 	}
-	
+
 	private static ExecutableCommand handleUndoCommand() {
 		return new ExecutableCommand("undo");
 	}
-	
+
 	private static ExecutableCommand handleClearCommand() {
 		return new ExecutableCommand("clear");
 	}
@@ -252,9 +249,11 @@ public class Analyzer {
 		case "name":
 			tempCommand.setTaskName(searchKey);
 			break;
-		case "deadline":
-			Date searchDeadline = (Date) df.parse(searchKey);
-			tempCommand.setTaskDeadline(searchDeadline);
+		case "startTiming":
+			tempCommand.setTaskStartTiming(searchKey);
+			break;
+		case "endTiming":
+			tempCommand.setTaskEndTiming(searchKey);
 			break;
 		case "priority":
 			tempCommand.setTaskPriority(searchKey);

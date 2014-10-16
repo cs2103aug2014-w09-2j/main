@@ -1,14 +1,13 @@
 //package V1;
 
-import java.util.Date;
-
 public class ExecutableCommand {
 
 	// attributes in this object.
 	private String action;
 	private String taskName;
 	private String taskDescription;
-	private Date taskDeadline;
+	private String taskStartTiming;
+	private String taskEndTiming;
 	private String taskLocation;
 	private int taskId;
 	private String taskPriority;
@@ -27,7 +26,8 @@ public class ExecutableCommand {
 		this.action = "";
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = new Date(0, 0, 0);
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 		this.taskId = -1;
@@ -39,7 +39,8 @@ public class ExecutableCommand {
 		this.action = action;
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskDeadline = new Date(0, 0, 0);
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 		this.taskId = -1;
@@ -63,8 +64,12 @@ public class ExecutableCommand {
 		this.taskDescription = description;
 	}
 
-	public void setTaskDeadline(Date date) {
-		this.taskDeadline = date;
+	public void setTaskStartTiming(String date) {
+		this.taskStartTiming = date;
+	}
+
+	public void setTaskEndTiming(String date) {
+		this.taskEndTiming = date;
 	}
 
 	public void setTaskLocation(String location) {
@@ -103,8 +108,12 @@ public class ExecutableCommand {
 		return taskDescription;
 	}
 
-	public Date getTaskDeadline() {
-		return taskDeadline;
+	public String getTaskStartDate() {
+		return taskStartTiming;
+	}
+
+	public String getTaskEndDate() {
+		return taskEndTiming;
 	}
 
 	public String getTaskLocation() {
@@ -126,5 +135,5 @@ public class ExecutableCommand {
 	public String getIndicator() {
 		return indicator;
 	}
-	
+
 }
