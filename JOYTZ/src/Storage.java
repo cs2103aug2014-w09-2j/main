@@ -1,19 +1,17 @@
 //package V1;
 
 import java.io.*;
-import java.security.InvalidParameterException;
 import java.text.*;
 import java.util.*;
 import java.util.logging.Logger;
 
 public class Storage {
 
-	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
 			.getName());
-	private static final boolean ASSERTION = false;
 
 	// Exception messages and error
+	private static final String MESSAGE_NO_TASK_IN_LIST = "There is no task in the task list.";
 	private static final String MESSAGE_NO_TASK_MEET_REQUIREMENTS = "No task meet requirements.";
 	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
 	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
@@ -24,6 +22,7 @@ public class Storage {
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
 	private static final String ERROR_INVALID_SORT_KEY = "Invalid Sort Key. Key: %s\n";
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
+	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
 
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -212,7 +211,19 @@ public class Storage {
 		if (taskId <= 0 || taskId > getTaskListSize()) {
 			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
 		}
-		return taskList.get(taskId - 1);
+		Task task = taskList.get(taskId - 1);
+		
+		LOGGER.info("==============\n" + "Storage get task. \n "
+				+ "taskId: " + taskId + "\n" + "task name: "
+				+ task.getTaskName() + "\n" + "task start time: "
+				+ task.getTaskStartTime() + "\n" + "task end time: "
+				+ task.getTaskEndTime() + "\n" + "task description: "
+				+ task.getTaskDescription() + "\n" + "task location: "
+				+ task.getTaskLocation() + "\n" + "task priority: "
+				+ task.getTaskPriority() + "\n"
+				+ "====================\n");
+		
+		return task;
 	}
 
 	/**
@@ -230,6 +241,9 @@ public class Storage {
 			taskList.clear();
 		}
 		assert taskList.isEmpty() : "Size of list :" + taskList.size();
+		
+		LOGGER.info("==============\n" + "Storage clean taskList. \n "
+				+ "====================\n");
 		return true;
 	}
 
@@ -247,14 +261,13 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean sort(String key) {
-		String keyValueString = "name-description-deadline-location-priority";
+	public static boolean sort(String key) throws Exception {
+		String keyValueString = "name-description-start time-end time-location-priority";
 		if (isEmpty()) {
-			throw new NoSuchElementException("There is no task to sort.");
+			throw new NoSuchElementException(MESSAGE_NO_TASK_IN_LIST);
 		}
 		if (!keyValueString.contains(key)) {
-			throw new NoSuchElementException(String.format(
-					ERROR_INVALID_SORT_KEY, key));
+			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
 		}
 		Task.setSortKey(key);
 		Collections.sort(taskList);
@@ -274,7 +287,7 @@ public class Storage {
 		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
 
 		if (isEmpty()) {
-			throw new Exception("There is no task to sort.");
+			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
 		if (!keyValueString.contains(indicator)) {
 			throw new Exception(
@@ -304,6 +317,12 @@ public class Storage {
 	public static ArrayList<String> getTaskList() {
 		return getTaskList(taskList);
 	}
+	
+	/**
+	 * Return a list of tasks in String format.
+	 * @param list
+	 * @return
+	 */
 
 	private static ArrayList<String> getTaskList(ArrayList<Task> list) {
 		ArrayList<String> displayList = new ArrayList<String>();
@@ -432,14 +451,24 @@ public class Storage {
 			cleanUpEveryThing();
 		}
 
-		String s = taskListBufferedReader.readLine();
-		System.out.println(String.format(MESSAGE_RELOADING_FILE, s));
+		String taskString = taskListBufferedReader.readLine();
+		System.out.println(String.format(MESSAGE_RELOADING_FILE, taskString));
 
-		s = taskListBufferedReader.readLine();
-		while (s != null) {
-			Task task = convertStringToTask(s);
+		taskString = taskListBufferedReader.readLine();
+		while (taskString != null) {
+			Task task = convertStringToTask(taskString);
 			taskList.add(task);
-			s = taskListBufferedReader.readLine();
+			taskString = taskListBufferedReader.readLine();
+		}
+		
+		taskString = historyBufferedReader.readLine();
+		System.out.println(String.format(MESSAGE_RELOADING_FILE, taskString));
+		
+		taskString = historyBufferedReader.readLine();
+		while(taskString != null){
+			Task task = convertStringToTask(taskString);
+			history.add(task);
+			taskString = historyBufferedReader.readLine();
 		}
 
 		return;

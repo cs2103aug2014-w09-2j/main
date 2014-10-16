@@ -246,24 +246,16 @@ public class Executor {
 		assert !sortKey.equals(""): "Sort no category";
 		
 		// check what category user want to sort
-		switch (sortKey) {
-		case "name":
-		case "priority":
-		case "location":
-		case "deadline":
+		try {
 			feedback.setResult(Storage.sort(sortKey));
-			break;
-		default:
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
 		}
-
+		
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL, sortKey));
 		}
-		else{
-			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
-		}
+		
 		return;
 	}
 
@@ -274,36 +266,12 @@ public class Executor {
 	 * @param command: ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performSearchAction(ExecutableCommand command) {	
+	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
-		String searchValue;
+		String searchValue = command.getKeyValue();
 		ArrayList<String> resultList = new ArrayList<String>();
-		feedback = new Feedback(false);
-
-		// pre-condition
-		assert !searchIndicator.equals(""): "No search indicator";
-
-		// check which category user want to search key
-		switch (searchIndicator) {
-		case "name":
-			searchValue = command.getTaskName();
-			break;
-		case "priority":
-			searchValue = command.getTaskPriority();
-			break;
-		case "location":
-			searchValue = command.getTaskLocation();
-			break;
-		case "id":
-			searchValue = command.getTaskId() + "";
-			break;
-		default:
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
-		}
 		
-		// post-condition
-		assert !searchValue.equals(null): "No given search value";
+		feedback = new Feedback(false);
 		
 		// check whether Storage can search the result or not
 		try {
@@ -320,6 +288,7 @@ public class Executor {
 
 		feedback.setResult(true);
 		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		
 		return;
 	}
 
