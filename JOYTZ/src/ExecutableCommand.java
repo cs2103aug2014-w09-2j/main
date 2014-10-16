@@ -5,20 +5,23 @@ public class ExecutableCommand {
 	// attributes in this object.
 	private String action;
 	
-	// Task Class attributes for (add and update)
+	// Task Class attributes for (add and update).
 	private String taskName;
 	private String taskDescription;
 	private String taskStartTiming;
 	private String taskEndTiming;
 	private String taskLocation;
-	private int taskId;
 	private String taskPriority;
+	
+	// this is for identification of task.
+	private int taskId;
 
 	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
 
-	// these are for update,sort or search method.
+	// these are for update, sort or search method.
 	private String indicator;
+	private String KeyValue;
 
 	/**
 	 * Constructor
@@ -26,28 +29,36 @@ public class ExecutableCommand {
 
 	ExecutableCommand() {
 		this.action = "";
+		
 		this.taskName = "";
 		this.taskDescription = "";
 		this.taskStartTiming = "";
 		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
+		
 		this.taskId = -1;
 		this.errorMessage = "";
+		
 		this.indicator = "";
+		this.KeyValue = "";
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
+		
 		this.taskName = "";
 		this.taskDescription = "";
 		this.taskStartTiming = "";
 		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
+		
 		this.taskId = -1;
 		this.errorMessage = "";
+		
 		this.indicator = "";
+		this.KeyValue = "";
 	}
 
 	/**
@@ -93,6 +104,11 @@ public class ExecutableCommand {
 	public void setIndicator(String indicator) {
 		this.indicator = indicator;
 	}
+	
+	public void setKeyValue(String key){
+		this.KeyValue = key;
+	}
+	
 
 	/**
 	 * get methods
@@ -137,5 +153,10 @@ public class ExecutableCommand {
 	public String getIndicator() {
 		return indicator;
 	}
+	
+	public String getKeyValue(){
+		return KeyValue;
+	}
+	
 
 }

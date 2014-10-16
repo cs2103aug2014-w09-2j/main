@@ -27,7 +27,6 @@ public class Analyzer {
 
 		if (userCommand == "") {
 			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
-
 			return outputCommand;
 		}
 
@@ -139,19 +138,15 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
-
 			return tempCommand;
 		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
-
 			return tempCommand;
 		} else if (!isInteger(arg[0])) {
 			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
-
 			return tempCommand;
 		} else if (Integer.parseInt(arg[0]) < 1) {
 			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-
 			return tempCommand;
 		}
 
@@ -169,7 +164,8 @@ public class Analyzer {
 		String updatedItem = arg[2];
 
 		tempCommand.setIndicator(updateIndicator);
-
+		tempCommand.setKeyValue(updatedItem);
+		/*
 		switch (updateIndicator) {
 		case "name":
 			tempCommand.setTaskName(updatedItem);
@@ -192,6 +188,7 @@ public class Analyzer {
 		default:
 			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 		}
+		*/
 
 		return tempCommand;
 	}

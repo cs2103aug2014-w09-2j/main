@@ -1,16 +1,18 @@
 //package V1;
 
-import java.util.Date;
+
 
 public class Task implements Comparable<Task>{
 
 	// task attributes.
-	public String taskName;
-	public Long taskStartTime;
-	public Long taskEndTime;
-	public String taskDescription;
-	public String taskLocation;
-	public String taskPriority;
+	private String taskName;
+	private Long taskStartTime;
+	private Long taskEndTime;
+	private String taskDescription;
+	private String taskLocation;
+	private String taskPriority;
+	
+	private long taskDuration;
 	
 	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
@@ -20,14 +22,19 @@ public class Task implements Comparable<Task>{
 	 */
 	Task() {
 		this.taskName = "";
-		this.taskStartTime = System.currentTimeMillis();
-		this.taskEndTime = System.currentTimeMillis();
+		this.taskStartTime = (long) 0;
+		this.taskEndTime = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
 	Task (String name){
 		this.taskName = name;
+		this.taskStartTime = (long) 0;
+		this.taskEndTime = (long) 0;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
 	}
 	Task(String name, Long startTimeLong, Long endTimeLong, String description, String location,
 			String priority) {
