@@ -28,7 +28,6 @@ public class Executor {
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
-	private static final String ERROR_FAIL_TO_SEARCH = "Invalid key search.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -141,11 +140,12 @@ public class Executor {
 				feedback.setMessageShowToUser(String.format(
 						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
 			}
-			
+			else{
+				feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+			}
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
-
 	}
 
 	/**
@@ -259,16 +259,11 @@ public class Executor {
 	 * @param command: ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performSearchAction(ExecutableCommand command) {
-		feedback = new Feedback(false);
-		
+	private static void performSearchAction(ExecutableCommand command) {	
 		String searchIndicator = command.getIndicator();
 		String searchValue;
-		ArrayList<String> resultList;
-		
-		if (searchIndicator == null){
-			//
-		}
+		ArrayList<String> resultList = new ArrayList<String>();
+		feedback = new Feedback(false);
 
 		// pre-condition
 		assert !searchIndicator.equals(""): "No search indicator";
@@ -292,10 +287,10 @@ public class Executor {
 			return;
 		}
 		
-		if (searchValue == null){
-			//
-		}
+		// post-condition
+		assert !searchValue.equals(null): "No given search value";
 		
+		// check whether Storage can search the result or not
 		try {
 			resultList = Storage.search(searchIndicator, searchValue);
 			feedback.setTaskList(resultList);
@@ -303,6 +298,10 @@ public class Executor {
 			feedback.setErrorMessage(e.getMessage());
 			return;
 		}
+		
+		// post-condition
+		assert !searchValue.equals(null): "No given search value";
+		assert !resultList.equals(null): "No result is found";
 
 		feedback.setResult(true);
 		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
