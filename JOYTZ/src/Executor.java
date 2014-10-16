@@ -95,7 +95,8 @@ public class Executor {
 	private static void performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
-		Date date = command.getTaskDeadline();
+		Long startTime = Long.parseLong(command.getTaskStartDate());
+		Long endTime = Long.parseLong(command.getTaskEndDate());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
 		feedback = new Feedback(false);
@@ -104,17 +105,21 @@ public class Executor {
 		assert !name.equals("") : "No task name";
 
 		// create a task object with all the attributes.
-		Task t = new Task(name, date, description, location, priority);
+		Task t = new Task(name, startTime, endTime, description, location, priority);
 
 		// add the task into the storage.
-		feedback.setResult(Storage.add(t));
-
-		// post-condition
-		assert feedback.getResult() : "Unsuccessful to add task";
-
+		try {
+			feedback.setResult(Storage.add(t));
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
+		}
+		
+		if (feedback.getResult()){
 		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
 				name));
-
+		}
+		
+		return;
 	}
 	
 	/**
@@ -146,6 +151,8 @@ public class Executor {
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
+		
+		return;
 	}
 
 	/**
@@ -156,16 +163,19 @@ public class Executor {
 	 * 
 	 */
 	private static void performUpdateAction(ExecutableCommand command) {
-		String updateIndicator = command.getIndicator();
 		int taskId = command.getTaskId();
+		String updateIndicator = command.getIndicator();
+		String updateKeyValue = command.getKeyValue();
+		
+		// currently not in use.
 		String taskName;
-		String newInfo;
+		
 		feedback = new Feedback(false);
-
-		// pre-condition
-		assert !updateIndicator.equals("") : "No update indicator";
-		assert taskId != -1 : "Task index " + taskId;
-
+		
+		// check updateIndicator
+		//##################### your code.
+		
+		/*
 		// check whether the task is out of range, catch the exception, and end
 		// the function.
 		switch (updateIndicator) {
@@ -189,9 +199,10 @@ public class Executor {
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
+		*/
 
 		try {
-			feedback.setResult(Storage.update(taskId, updateIndicator, newInfo));
+			feedback.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
 			if (feedback.getResult()) {
 				taskName = Storage.get(taskId).getTaskName();
 				feedback.setMessageShowToUser(String.format(
@@ -200,6 +211,7 @@ public class Executor {
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
+		return;
 	}
 
 	/**
@@ -215,6 +227,8 @@ public class Executor {
 
 		// post-condition
 		assert feedback.getResult() : "Nothing to clear";
+		
+		return;
 	}
 
 	/**
@@ -232,24 +246,17 @@ public class Executor {
 		assert !sortKey.equals(""): "Sort no category";
 		
 		// check what category user want to sort
-		switch (sortKey) {
-		case "name":
-		case "priority":
-		case "location":
-		case "deadline":
+		try {
 			feedback.setResult(Storage.sort(sortKey));
-			break;
-		default:
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
+		} catch (Exception e) {
+			feedback.setErrorMessage(e.getMessage());
 		}
-
+		
 		if (feedback.getResult()) {
 			feedback.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL, sortKey));
 		}
-		else{
-			feedback.setErrorMessage(ERROR_FAIL_TO_SORT);
-		}
+		
+		return;
 	}
 
 	/**
@@ -259,36 +266,12 @@ public class Executor {
 	 * @param command: ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performSearchAction(ExecutableCommand command) {	
+	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
-		String searchValue;
+		String searchValue = command.getKeyValue();
 		ArrayList<String> resultList = new ArrayList<String>();
-		feedback = new Feedback(false);
-
-		// pre-condition
-		assert !searchIndicator.equals(""): "No search indicator";
-
-		// check which category user want to search key
-		switch (searchIndicator) {
-		case "name":
-			searchValue = command.getTaskName();
-			break;
-		case "priority":
-			searchValue = command.getTaskPriority();
-			break;
-		case "location":
-			searchValue = command.getTaskLocation();
-			break;
-		case "id":
-			searchValue = command.getTaskId() + "";
-			break;
-		default:
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
-		}
 		
-		// post-condition
-		assert !searchValue.equals(null): "No given search value";
+		feedback = new Feedback(false);
 		
 		// check whether Storage can search the result or not
 		try {
@@ -305,6 +288,7 @@ public class Executor {
 
 		feedback.setResult(true);
 		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		
 		return;
 	}
 

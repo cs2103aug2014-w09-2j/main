@@ -1,16 +1,20 @@
 //package V1;
 
-import java.util.Date;
+
 
 public class Task implements Comparable<Task>{
 
 	// task attributes.
-	public String taskName;
-	public Date taskDeadline;
-	public String taskDescription;
-	public String taskLocation;
-	public String taskPriority;
+	private String taskName;
+	private Long taskStartTime;
+	private Long taskEndTime;
+	private String taskDescription;
+	private String taskLocation;
+	private String taskPriority;
 	
+	private long taskDuration;
+	
+	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
 
 	/**
@@ -18,16 +22,25 @@ public class Task implements Comparable<Task>{
 	 */
 	Task() {
 		this.taskName = "";
-		this.taskDeadline = new Date(0, 0, 0);
+		this.taskStartTime = (long) 0;
+		this.taskEndTime = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
-
-	Task(String name, Date deadline, String description, String location,
+	Task (String name){
+		this.taskName = name;
+		this.taskStartTime = (long) 0;
+		this.taskEndTime = (long) 0;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+	}
+	Task(String name, Long startTimeLong, Long endTimeLong, String description, String location,
 			String priority) {
 		this.taskName = name;
-		this.taskDeadline = deadline;
+		this.taskStartTime = startTimeLong;
+		this.taskEndTime = endTimeLong;
 		this.taskDescription = description;
 		this.taskLocation = location;
 		this.taskPriority = priority;
@@ -41,8 +54,12 @@ public class Task implements Comparable<Task>{
 		this.taskName = name;
 	}
 
-	public void setTaskDeadline(Date d) {
-		this.taskDeadline = d;
+	public void setTaskStartTime(Long startTimeLong) {
+		this.taskStartTime = startTimeLong;
+	}
+	
+	public void setTaskEndTime(Long endTimeLong){
+		this.taskEndTime = endTimeLong;
 	}
 
 	public void setTaskDescription(String des) {
@@ -65,8 +82,12 @@ public class Task implements Comparable<Task>{
 		return this.taskName;
 	}
 
-	public Date getTaskDeadline() {
-		return this.taskDeadline;
+	public Long getTaskStartTime() {
+		return this.taskStartTime;
+	}
+	
+	public Long getTaskEndTime(){
+		return this.taskEndTime;
 	}
 
 	public String getTaskDescription() {
@@ -87,8 +108,10 @@ public class Task implements Comparable<Task>{
 			return taskName;
 		case "descritption":
 			return taskDescription;
-		case "deadline":
-			return taskDeadline.getTime() + "";
+		case "startTime":
+			return taskStartTime + "";
+		case "endTime":
+			return taskEndTime + "";
 		case "location":
 			return taskLocation;
 		case "priority":
@@ -110,12 +133,15 @@ public class Task implements Comparable<Task>{
 		
 		return thisString.compareToIgnoreCase(thatString);
 	}
-	
+
+	@Override
 	public boolean equals(Object o){
 		Task that = (Task) o;
 		if (!that.getTaskName().equals(taskName)){
 			return false;
-		}else if(!that.getTaskDeadline().equals(taskDeadline)){
+		}else if(!that.getTaskStartTime().equals(taskStartTime)){
+			return false;
+		}else if(!that.getTaskEndTime().equals(taskEndTime)){
 			return false;
 		}else if(!that.getTaskDescription().equals(taskDescription)){
 			return false;

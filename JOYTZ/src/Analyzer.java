@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.eclipse.ui.internal.services.INestable;
+
 public class Analyzer {
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
 	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
@@ -27,7 +29,6 @@ public class Analyzer {
 
 		if (userCommand == "") {
 			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
-
 			return outputCommand;
 		}
 
@@ -77,7 +78,6 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
-
 			return tempCommand;
 		}
 
@@ -86,19 +86,15 @@ public class Analyzer {
 		if (arg.length >= 2) {
 			tempCommand.setTaskDescription(arg[1]);
 		}
-
 		if (arg.length >= 3) {
 			tempCommand.setTaskStartTiming(arg[2]);
 		}
-
 		if (arg.length >= 4) {
 			tempCommand.setTaskEndTiming(arg[3]);
 		}
-
 		if (arg.length >= 5) {
 			tempCommand.setTaskLocation(arg[4]);
 		}
-
 		if (arg.length >= 6) {
 			tempCommand.setTaskPriority(arg[5]);
 		}
@@ -139,19 +135,15 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
-
 			return tempCommand;
 		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
-
 			return tempCommand;
 		} else if (!isInteger(arg[0])) {
 			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
-
 			return tempCommand;
 		} else if (Integer.parseInt(arg[0]) < 1) {
 			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-
 			return tempCommand;
 		}
 
@@ -169,7 +161,8 @@ public class Analyzer {
 		String updatedItem = arg[2];
 
 		tempCommand.setIndicator(updateIndicator);
-
+		tempCommand.setKeyValue(updatedItem);
+		/*
 		switch (updateIndicator) {
 		case "name":
 			tempCommand.setTaskName(updatedItem);
@@ -192,6 +185,7 @@ public class Analyzer {
 		default:
 			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 		}
+		*/
 
 		return tempCommand;
 	}
@@ -277,7 +271,6 @@ public class Analyzer {
 
 	private static String getUserAction(String userCommand) {
 		String[] cmd = convertStrToArr(userCommand);
-
 		return cmd[0].toLowerCase();
 	}
 
@@ -296,10 +289,9 @@ public class Analyzer {
 
 	private static String[] convertStrToArr(String str) {
 		String[] arr = str.trim().split("~");
-
 		return arr;
 	}
-
+	
 	private static boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -308,4 +300,61 @@ public class Analyzer {
 			return false;
 		}
 	}
+	
+	private static Long analyzeUserInputDateString(String userInputDate){
+		String[] date = userInputDate.trim().split(" ");
+		String dateString;
+		String timeString;
+		
+		// distinguish date (dd/mm/yy) and time (hh:mm:ss)
+		if (date[0].contains("/")){
+			dateString = date[0];
+			timeString = date[1];
+		}else {
+			dateString = date[1];
+			timeString = date[0];
+		}
+		
+		// current date and time
+		Date now = new Date(System.currentTimeMillis());
+		
+		int day = 0;
+		int month = 0;
+		int year  = 0;
+		String[] dateArg = dateString.trim().split("/");
+		
+		if (dateArg.length == 1){
+			day = Integer.parseInt(dateArg[0]);
+			month = now.getMonth();
+			year = now.getYear();
+		}else if (dateArg.length == 2){
+			day = Integer.parseInt(dateArg[0]);
+			month = Integer.parseInt(dateArg[1]);
+			year = now.getYear();
+		}else if (dateArg.length == 3){
+			day = Integer.parseInt(dateArg[0]);
+			month = Integer.parseInt(dateArg[1]);
+			year = Integer.parseInt(dateArg[2]);
+		}
+		
+		int minute = 0;
+		int hour = 0;
+		String[] timeArg = timeString.trim().split(":");
+		
+		if (timeArg.length == 1){
+			hour = Integer.parseInt(dateArg[0]);
+			minute = 0;
+		}else if (timeArg.length == 2){
+			hour = Integer.parseInt(dateArg[0]);
+			minute = Integer.parseInt(dateArg[1]);
+		}
+		
+		Date convertedDate = new Date(year, month, day, hour, minute);
+		return convertedDate.getTime();
+	}
+	
+	
+	
+	
+	
 }
