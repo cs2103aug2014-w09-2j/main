@@ -204,6 +204,8 @@ public class GUI {
                     Controller.startController();
                     
                     inputField.setText("");
+
+                    NotifierDialog.notify("Hi There! I'm a notification widget!", "Today we are creating a widget that allows us to show notifications that fade in and out!");
                 }
             }
         });
