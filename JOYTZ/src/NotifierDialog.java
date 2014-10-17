@@ -65,7 +65,7 @@ public class NotifierDialog {
      * @param type
      */
     public static void notify(String title, String message) {
-        _shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
+        _shell = new Shell(Display.getDefault().getActiveShell(), SWT.ON_TOP | SWT.NO_TRIM);
         _shell.setLayout(new FillLayout());
         _shell.setForeground(_fgColor);
         _shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
