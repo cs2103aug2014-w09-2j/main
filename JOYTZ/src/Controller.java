@@ -37,7 +37,7 @@ public class Controller {
      * 
      * @author Joel
 	 */
-    private static void displayUserOutput(String outputFeedbackString, ExecutableCommand command) {
+    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
     	assert outputFeedbackString != null;
     	assert command != null;
     	assert outputFeedbackString.length() != 0;
@@ -149,7 +149,7 @@ public class Controller {
 						"====================\n");
 			
 			if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
-				displayUserOutput(parsedCommand.getErrorMessage(), parsedCommand);
+				displayInGUI(parsedCommand.getErrorMessage(), parsedCommand);
 			} else {	
 				
 				if(parsedCommand != null){
@@ -164,10 +164,10 @@ public class Controller {
 				outputString = proceedFeedback(feedback);
 				assert outputString != null;
 				
-				displayUserOutput(outputString, parsedCommand);
+				displayInGUI(outputString, parsedCommand);
 	        }
 		} catch (ParseException e) {
-			displayUserOutput(ERROR_INVALID_PARAMETER, parsedCommand);
+			displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
 			e.printStackTrace();
 		}   
 		 

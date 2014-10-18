@@ -7,12 +7,16 @@ Current functions and how to use them
 --------------
 
 1. Add
-	- add~task name~description~deadline~location~priority
- 	- Deadline format: DD/MM/YYYY  
+	- add ~ task name ~ description ~ start deadline ~ end deadline ~ location ~ priority
+ 	- Deadline format: 
+		- DD/MM/YYYY HH:MMam
+		- DD/MM/YYYY HH:MMpm
+		- HH:MMam DD/MM/YYYY
+		- HH:MMpm DD/MM/YYYY
 	- Not all arguments have to be used. For example:
 	   	- add~task
 	- To skip an argument, leave it blank. For example:
-		- add~task name~~deadline~~priority
+		- add~task name~~~end deadline~~priority
 	- The order must be strictly followed
   
 
@@ -51,3 +55,9 @@ Current functions and how to use them
 7. Exit
   	- exit
   	- This exits the program
+
+To do 
+--------------
+1. Undo
+2. Help
+3. 

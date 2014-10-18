@@ -4,25 +4,26 @@ public class ExecutableCommand {
 
 	// attributes in this object.
 	private String action;
-	
+
 	// Task Class attributes for (add and update).
 	private String taskName;
 	private String taskDescription;
-	private String taskStartTiming;
-	private String taskEndTiming;
+	private String taskStartDate;
+	private String taskStartTime;
+	private String taskEndDate;
+	private String taskEndTime;
 	private String taskLocation;
 	private String taskPriority;
-	
+
 	// this is for identification of task.
 	private int taskId;
 
 	// errorMessage is used for Analyzer to report error to controller.
-	private boolean containError;
 	private String errorMessage;
 
 	// these are for update, sort or search method.
 	private String indicator;
-	private String keyValue;
+	private String key;
 
 	/**
 	 * Constructor
@@ -30,38 +31,40 @@ public class ExecutableCommand {
 
 	ExecutableCommand() {
 		this.action = "";
-		
+
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStartTiming = "";
-		this.taskEndTiming = "";
+		this.taskStartDate = "";
+		this.taskStartTime = "";
+		this.taskEndDate = "";
+		this.taskEndTime = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
-		
+
 		this.taskId = -1;
 		this.errorMessage = "";
-		this.containError = false;
-		
+
 		this.indicator = "";
-		this.keyValue = "";
+		this.key = "";
 	}
 
 	ExecutableCommand(String action) {
 		this.action = action;
-		
+
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStartTiming = "";
-		this.taskEndTiming = "";
+		this.taskStartDate = "";
+		this.taskStartTime = "";
+		this.taskEndDate = "";
+		this.taskEndTime = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
-		
+
 		this.taskId = -1;
 		this.errorMessage = "";
-		this.containError = false;
-		
+
 		this.indicator = "";
-		this.keyValue = "";
+		this.key = "";
 	}
 
 	/**
@@ -80,12 +83,20 @@ public class ExecutableCommand {
 		this.taskDescription = description;
 	}
 
-	public void setTaskStartTiming(String date) {
-		this.taskStartTiming = date;
+	public void setTaskStartDate(String date) {
+		this.taskStartDate = date;
 	}
 
-	public void setTaskEndTiming(String date) {
-		this.taskEndTiming = date;
+	public void setTaskStartTime(String time) {
+		this.taskStartTime = time;
+	}
+
+	public void setTaskEndDate(String date) {
+		this.taskEndDate = date;
+	}
+
+	public void setTaskEndTime(String time) {
+		this.taskEndTime = time;
 	}
 
 	public void setTaskLocation(String location) {
@@ -99,10 +110,6 @@ public class ExecutableCommand {
 	public void setTaskId(int id) {
 		this.taskId = id;
 	}
-	
-	public void setContainError(boolean e){
-		this.containError = e;
-	}
 
 	public void setErrorMessage(String message) {
 		this.errorMessage = message;
@@ -111,11 +118,10 @@ public class ExecutableCommand {
 	public void setIndicator(String indicator) {
 		this.indicator = indicator;
 	}
-	
-	public void setKeyValue(String key){
-		this.keyValue = key;
+
+	public void setKey(String key) {
+		this.key = key;
 	}
-	
 
 	/**
 	 * get methods
@@ -134,11 +140,19 @@ public class ExecutableCommand {
 	}
 
 	public String getTaskStartDate() {
-		return taskStartTiming;
+		return taskStartDate;
+	}
+
+	public String getTaskStartTime() {
+		return taskStartTime;
 	}
 
 	public String getTaskEndDate() {
-		return taskEndTiming;
+		return taskEndDate;
+	}
+
+	public String getTaskEndTime() {
+		return taskEndTime;
 	}
 
 	public String getTaskLocation() {
@@ -152,10 +166,6 @@ public class ExecutableCommand {
 	public int getTaskId() {
 		return taskId;
 	}
-	
-	public boolean getContainError(){
-		return containError;
-	}
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -164,10 +174,9 @@ public class ExecutableCommand {
 	public String getIndicator() {
 		return indicator;
 	}
-	
-	public String getKeyValue(){
-		return keyValue;
+
+	public String getKey() {
+		return key;
 	}
-	
 
 }
