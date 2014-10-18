@@ -137,29 +137,28 @@ public class Executor {
 	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performDeleteAction(ExecutableCommand command) {
+	private static Feedback performDeleteAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(false);
+		
 		int taskId = command.getTaskId();
 		String taskName;
-		feedback = new Feedback(false);
 
 		// pre-condition
-		assert taskId != -1 : "Task index " + taskId;
+		//assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
 			feedback.setResult(Storage.delete(taskId));
-
-			if (feedback.getResult()) {
-				feedback.setMessageShowToUser(String.format(
-						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-			} else {
-				feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-			}
+			
 		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
+			feedback.setMessageShowToUser(e.getMessage());
+		}
+		
+		if (fb.getResult()){
+			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, taskName));
 		}
 
-		return;
+		return fb;
 	}
 
 	/**
