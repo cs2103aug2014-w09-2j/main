@@ -1,11 +1,15 @@
 //package V1;
 
 import java.text.SimpleDateFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -47,6 +51,7 @@ public class GUI {
     private static TableColumn tblclmnLocation;
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
+    private static boolean hasNotified = false;
     
     /**
      * A getter method for the controller to obtain the user's input
@@ -298,20 +303,39 @@ public class GUI {
                 }
             }
         });
+        
+        // We call the controller with an input "exit" so
+        // that the current state of the task list can be saved.
+        shell.addListener(SWT.Close, new Listener() {
+            public void handleEvent(Event event) {
+            	textInputData = "exit";
+            	Controller.startController();
+            }
+        });
       
         shell.open();
 		shell.layout();
-		boolean hasNotified = false;
+
         while(!shell.isDisposed()) {
         	
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         	//System.out.println(timeStamp );
         	
-        	if (timeStamp.trim().equals("20141018_192120") && hasNotified == false) {
+        	if (timeStamp.trim().equals("20141018_200700") && hasNotified == false) {
         		hasNotified = true;
         		NotifierDialog.notify("Hi There! I'm a notification widget!", 
-  					  "Today we are creating a widget that allows us" +
-  					  "to show notifications that fade in and out!");
+				  					  "Today we are creating a widget that allows us" +
+				  					  "to show notifications that fade in and out!");
+        		
+        		// We only toggle the boolean after a delay, 
+        		// or multiple notifications will popup.
+        		Timer setHasNotifiedToFalse = new Timer();
+        		setHasNotifiedToFalse.schedule(new TimerTask() {
+        			public void run() {
+        				hasNotified = false;
+        			}
+        		}, 
+        		1000);
         	}
         	
         	display.readAndDispatch();
@@ -322,5 +346,6 @@ public class GUI {
             //    display.sleep();
             // }
         }
+        display.dispose();
     }
 }
