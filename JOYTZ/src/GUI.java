@@ -137,7 +137,7 @@ public class GUI {
     public static void main(String[] args) {
         Display display = Display.getDefault();
         Shell shell = new Shell();
-        shell.setMinimumSize(new Point(400, 400));
+        shell.setMinimumSize(new Point(400, 450));
 		shell.setToolTipText("To-do list app of the year");
 		shell.setSize(641, 497);
 		shell.setLayout(new GridLayout(1, false));
