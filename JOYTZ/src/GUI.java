@@ -1,5 +1,6 @@
 //package V1;
 
+import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.events.KeyAdapter;
@@ -16,6 +17,8 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Point;
+
+import com.ibm.icu.util.Calendar;
 
 public class GUI {
 	private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
@@ -298,10 +301,26 @@ public class GUI {
       
         shell.open();
 		shell.layout();
+		boolean hasNotified = false;
         while(!shell.isDisposed()) {
-            if(!display.readAndDispatch()) {
-                display.sleep();
-            }
+        	
+        	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        	System.out.println(timeStamp );
+        	
+        	if (timeStamp.trim().equals("20141018_191020") && hasNotified == false) {
+        		hasNotified = true;
+        		NotifierDialog.notify("Hi There! I'm a notification widget!", 
+  					  "Today we are creating a widget that allows us" +
+  					  "to show notifications that fade in and out!");
+        	}
+        	
+        	display.readAndDispatch();
+        	
+        	// Uncomment this and comment the line above if you
+        	// want the program to sleep if not in focus
+            // if(!display.readAndDispatch()) {
+            //    display.sleep();
+            // }
         }
     }
 }
