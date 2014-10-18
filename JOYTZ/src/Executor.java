@@ -8,7 +8,7 @@ public class Executor {
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
 	// these are for Add Method.
-	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
+	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
 	private static final String ERROR_NULL_OBJECT = "Null object.\n";
 
 	// these are for Delete Method.
@@ -149,13 +149,11 @@ public class Executor {
 		try {
 			taskName = Storage.get(taskId).getTaskName();
 			feedback.setResult(Storage.delete(taskId));
-			
+			if (fb.getResult()){
+				fb.setMessageShowToUser(String.format(MESSAGE_DELETE_SUCCESSFUL,taskId, taskName));
+			}
 		} catch (Exception e) {
 			feedback.setMessageShowToUser(e.getMessage());
-		}
-		
-		if (fb.getResult()){
-			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, taskName));
 		}
 
 		return fb;
@@ -168,50 +166,31 @@ public class Executor {
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
 	 * 
-	 * @author: Thang
 	 */
-	private static void performUpdateAction(ExecutableCommand command) {
+	private static Feedback performUpdateAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(false);
+		
 		int taskId = command.getTaskId();
 		String updateIndicator = command.getIndicator();
 		String updateKeyValue = command.getKey();
-		feedback = new Feedback(false);
 		String taskName;
 
 		// pre-condition
-		assert !updateIndicator.equals("") : "No update indicator";
-		assert !updateKeyValue.equals("") : "No update key";
+		//assert !updateIndicator.equals("") : "No update indicator";
+		//assert !updateKeyValue.equals("") : "No update key";
 
-		// indicators contains all possible indicators
-		ArrayList<String> indicators = new ArrayList<String>();
-		indicators.add("name");
-		indicators.add("description");
-		indicators.add("startTime");
-		indicators.add("endTime");
-		indicators.add("location");
-		indicators.add("priority");
-
-		if (indicators.contains(updateIndicator)) {
-			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
-			return;
-		}
-
-		// post-condition
-		assert indicators.contains(updateIndicator);
-
-		// check whether updateIndicator is valid or not
 		try {
-			feedback.setResult(Storage.update(taskId, updateIndicator,
-					updateKeyValue));
+			feedback.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
 			if (feedback.getResult()) {
 				taskName = Storage.get(taskId).getTaskName();
 				feedback.setMessageShowToUser(String.format(
 						MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
 			}
 		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
+			feedback.setMessageShowToUser(e.getMessage());
 		}
 
-		return;
+		return fb;
 	}
 
 	/**
@@ -219,16 +198,15 @@ public class Executor {
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
-	private static void performClearAction() {
-		feedback = new Feedback(false);
+	private static Feedback performClearAction() {
+		Feedback fb = new Feedback(false);
 
-		feedback.setResult(Storage.clean());
-		feedback.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+		fb.setResult(Storage.clean());
+		if (fb.getResult()){
+			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+		}
 
-		// post-condition
-		assert feedback.getResult() : "Nothing to clear";
-
-		return;
+		return fb;
 	}
 
 	/**
