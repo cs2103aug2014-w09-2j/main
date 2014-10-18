@@ -1,7 +1,6 @@
 //package V1;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Executor {
 
@@ -24,7 +23,7 @@ public class Executor {
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
-	private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
+	// private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
@@ -38,7 +37,8 @@ public class Executor {
 	/**
 	 * Called by Controller to initialize Executor.
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		if (command == null) {
@@ -86,10 +86,11 @@ public class Executor {
 	}
 
 	/**
-	 * Perform add action with command object passed from 
-	 * proceedAnalyzedCommand method
+	 * Perform add action with command object passed from proceedAnalyzedCommand
+	 * method
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
 	private static void performAddAction(ExecutableCommand command) {
@@ -100,12 +101,13 @@ public class Executor {
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
 		feedback = new Feedback(false);
-
+		// create a task object with all the attributes.
+		Task t = new Task(name, startTime, endTime, description, location,
+				priority);
+		
 		// pre-condition
 		assert !name.equals("") : "No task name";
-
-		// create a task object with all the attributes.
-		Task t = new Task(name, startTime, endTime, description, location, priority);
+		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -113,20 +115,21 @@ public class Executor {
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
-		
-		if (feedback.getResult()){
-		feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
-				name));
+
+		if (feedback.getResult()) {
+			feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
+					name));
 		}
-		
+
 		return;
 	}
-	
+
 	/**
-	 * Perform delete action with command object passed from 
+	 * Perform delete action with command object passed from
 	 * proceedAnalyzedCommand method
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
 	private static void performDeleteAction(ExecutableCommand command) {
@@ -140,69 +143,61 @@ public class Executor {
 		try {
 			taskName = Storage.get(taskId).getTaskName();
 			feedback.setResult(Storage.delete(taskId));
-			
+
 			if (feedback.getResult()) {
 				feedback.setMessageShowToUser(String.format(
 						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-			}
-			else{
+			} else {
 				feedback.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 			}
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
-		
+
 		return;
 	}
 
 	/**
-	 * Perform update action with command object passed from 
+	 * Perform update action with command object passed from
 	 * proceedAnalyzedCommand method
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 * 
+	 * @author: Thang
 	 */
 	private static void performUpdateAction(ExecutableCommand command) {
 		int taskId = command.getTaskId();
 		String updateIndicator = command.getIndicator();
-		String updateKeyValue = command.getKeyValue();
-		
-		// currently not in use.
-		String taskName;
-		
+		String updateKeyValue = command.getKey();
 		feedback = new Feedback(false);
-		
-		// check updateIndicator
-		//##################### your code.
-		
-		/*
-		// check whether the task is out of range, catch the exception, and end
-		// the function.
-		switch (updateIndicator) {
-		case "name":
-			newInfo = command.getTaskName();
-			break;
-		case "description":
-			newInfo = command.getTaskDescription();
-			break;
-		case "deadline":
-			String newDate = command.getTaskDeadline().getTime() + "";
-			newInfo = newDate;
-			break;
-		case "location":
-			newInfo = command.getTaskLocation();
-			break;
-		case "priority":
-			newInfo = command.getTaskPriority();
-			break;
-		default:
+		String taskName;
+
+		// pre-condition
+		assert !updateIndicator.equals("") : "No update indicator";
+		assert !updateKeyValue.equals("") : "No update key";
+
+		// indicators contains all possible indicators
+		ArrayList<String> indicators = new ArrayList<String>();
+		indicators.add("name");
+		indicators.add("description");
+		indicators.add("startTime");
+		indicators.add("endTime");
+		indicators.add("location");
+		indicators.add("priority");
+
+		if (indicators.contains(updateIndicator)) {
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
-		*/
 
+		// post-condition
+		assert indicators.contains(updateIndicator);
+
+		// check whether updateIndicator is valid or not
 		try {
-			feedback.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
+			feedback.setResult(Storage.update(taskId, updateIndicator,
+					updateKeyValue));
 			if (feedback.getResult()) {
 				taskName = Storage.get(taskId).getTaskName();
 				feedback.setMessageShowToUser(String.format(
@@ -211,11 +206,12 @@ public class Executor {
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
+
 		return;
 	}
 
 	/**
-	 * Perform clear action with command object passed from 
+	 * Perform clear action with command object passed from
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
@@ -227,15 +223,16 @@ public class Executor {
 
 		// post-condition
 		assert feedback.getResult() : "Nothing to clear";
-		
+
 		return;
 	}
 
 	/**
-	 * Perform sort action wit command object passed from 
-	 * proceedAnalyzedCommand method
+	 * Perform sort action with command object passed from proceedAnalyzedCommand
+	 * method
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
 	private static void performSortAction(ExecutableCommand command) {
@@ -243,36 +240,41 @@ public class Executor {
 		feedback = new Feedback(false);
 
 		// pre-condition
-		assert !sortKey.equals(""): "Sort no category";
-		
+		assert !sortKey.equals("") : "Sort no category";
+
 		// check what category user want to sort
 		try {
 			feedback.setResult(Storage.sort(sortKey));
 		} catch (Exception e) {
 			feedback.setErrorMessage(e.getMessage());
 		}
-		
+
 		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL, sortKey));
+			feedback.setMessageShowToUser(String.format(
+					MESSAGE_SORT_SUCCESSFUL, sortKey));
 		}
-		
+
 		return;
 	}
 
 	/**
-	 * Perform search action with command object passed from 
+	 * Perform search action with command object passed from
 	 * proceedAnalyzedCommand method
 	 *
-	 * @param command: ExecutableCommand object containing the user's action
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
 	private static void performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
-		String searchValue = command.getKeyValue();
+		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
-		
 		feedback = new Feedback(false);
 		
+		// pre-condition
+		assert !searchIndicator.equals(""): "No search indicator";
+		assert !searchValue.equals(""): "No search value";
+
 		// check whether Storage can search the result or not
 		try {
 			resultList = Storage.search(searchIndicator, searchValue);
@@ -281,28 +283,28 @@ public class Executor {
 			feedback.setErrorMessage(e.getMessage());
 			return;
 		}
-		
+
 		// post-condition
-		assert !searchValue.equals(null): "No given search value";
-		assert !resultList.equals(null): "No result is found";
+		assert !searchValue.equals("") : "No given search value";
+		assert !resultList.equals(null) : "No result is found";
 
 		feedback.setResult(true);
 		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
-		
+
 		return;
 	}
 
 	/**
-	 * Perform undo action with command object passed from 
+	 * Perform undo action with command object passed from
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
 	private static void performUndoAction() {
-
+		return;
 	}
 
 	/**
-	 * Perform exit action with command object passed from 
+	 * Perform exit action with command object passed from
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
