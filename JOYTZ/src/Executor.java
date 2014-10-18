@@ -1,7 +1,6 @@
 //package V1;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Executor {
 
@@ -24,7 +23,7 @@ public class Executor {
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
-	private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
+	// private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
@@ -102,13 +101,13 @@ public class Executor {
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
 		feedback = new Feedback(false);
-
-		// pre-condition
-		assert !name.equals("") : "No task name";
-
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
+		
+		// pre-condition
+		assert !name.equals("") : "No task name";
+		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -173,9 +172,9 @@ public class Executor {
 		String updateKeyValue = command.getKey();
 		feedback = new Feedback(false);
 		String taskName;
-		
+
 		// pre-condition
-		assert !updateIndicator.equals(""): "No update indicator";
+		assert !updateIndicator.equals("") : "No update indicator";
 		assert !updateKeyValue.equals("") : "No update key";
 
 		// indicators contains all possible indicators
@@ -187,14 +186,13 @@ public class Executor {
 		indicators.add("location");
 		indicators.add("priority");
 
-		if(indicators.contains(updateIndicator)){
+		if (indicators.contains(updateIndicator)) {
 			feedback.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return;
 		}
-		
+
 		// post-condition
 		assert indicators.contains(updateIndicator);
-		
 
 		// check whether updateIndicator is valid or not
 		try {
@@ -230,7 +228,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform sort action wit command object passed from proceedAnalyzedCommand
+	 * Perform sort action with command object passed from proceedAnalyzedCommand
 	 * method
 	 *
 	 * @param command
@@ -271,8 +269,11 @@ public class Executor {
 		String searchIndicator = command.getIndicator();
 		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
-
 		feedback = new Feedback(false);
+		
+		// pre-condition
+		assert !searchIndicator.equals(""): "No search indicator";
+		assert !searchValue.equals(""): "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -284,7 +285,7 @@ public class Executor {
 		}
 
 		// post-condition
-		assert !searchValue.equals(null) : "No given search value";
+		assert !searchValue.equals("") : "No given search value";
 		assert !resultList.equals(null) : "No result is found";
 
 		feedback.setResult(true);
