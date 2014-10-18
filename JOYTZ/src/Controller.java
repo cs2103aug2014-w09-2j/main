@@ -139,7 +139,8 @@ public class Controller {
 						"After analyzer: \n" + 
 						"	Action = " + parsedCommand.getAction() + "\n" + 
 						"	Name = " + parsedCommand.getTaskName() + "\n" +
-						"	Deadline = " + parsedCommand.getTaskStartDate().toString() + "\n" + 
+						"	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
+						"	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
 						"	Description = " + parsedCommand.getTaskDescription() + "\n" +
 						"	Location = " + parsedCommand.getTaskLocation() + "\n" +
 						"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
@@ -198,7 +199,7 @@ public class Controller {
      * @author Joel
 	 */
     public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
-        ExecutableCommand parsedCommand = Analyzer.analyzeCommand(inputCommandObject);
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
         
     	return parsedCommand;
     }
