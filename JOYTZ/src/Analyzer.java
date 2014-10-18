@@ -87,16 +87,14 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			String[] dateTime = dateTimeSeparator(arg[2]);
+			String timing = dateTimeSeparator(arg[2]);
 
-			tempCommand.setTaskStartDate(dateTime[0]);
-			tempCommand.setTaskStartTime(dateTime[1]);
+			tempCommand.setTaskStartTiming(timing);
 		}
 		if (arg.length >= 4) {
-			String[] dateTime = dateTimeSeparator(arg[3]);
+			String timing = dateTimeSeparator(arg[2]);
 
-			tempCommand.setTaskEndDate(dateTime[0]);
-			tempCommand.setTaskEndTime(dateTime[1]);
+			tempCommand.setTaskStartTiming(timing);
 		}
 		if (arg.length >= 5) {
 			tempCommand.setTaskLocation(arg[4]);
@@ -163,21 +161,21 @@ public class Analyzer {
 			return tempCommand;
 		}
 
-		String updateIndicator = arg[1];
-		String updatedItem = arg[2];
+		String updateIndicator = arg[1].toLowerCase();
+		String updatedItem;
 
 		tempCommand.setIndicator(updateIndicator);
+
+		if (updateIndicator.equals("start date")
+				|| updateIndicator.equals("start time")
+				|| updateIndicator.equals("end date")
+				|| updateIndicator.equals("end time")) {
+			updatedItem = dateTimeSeparator(arg[2]);
+		} else {
+			updatedItem = arg[2];
+		}
+
 		tempCommand.setKey(updatedItem);
-		/*
-		 * switch (updateIndicator) { case "name":
-		 * tempCommand.setTaskName(updatedItem); break; case "description":
-		 * tempCommand.setTaskDescription(updatedItem); break; case
-		 * "startTiming": tempCommand.setTaskStartTiming(updatedItem); break;
-		 * case "endTiming": tempCommand.setTaskEndTiming(updatedItem); break;
-		 * case "location": tempCommand.setTaskLocation(updatedItem); break;
-		 * case "priority": tempCommand.setTaskPriority(updatedItem); break;
-		 * default: tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR); }
-		 */
 
 		return tempCommand;
 	}
@@ -223,9 +221,19 @@ public class Analyzer {
 		}
 
 		String searchIndicator = arg[0].toLowerCase();
-		String searchKey = arg[1];
+		String searchKey;
 
 		tempCommand.setIndicator(searchIndicator);
+
+		if (searchIndicator.equals("start date")
+				|| searchIndicator.equals("start time")
+				|| searchIndicator.equals("end date")
+				|| searchIndicator.equals("end time")) {
+			searchKey = dateTimeSeparator(arg[1]);
+		} else {
+			searchKey = arg[1];
+		}
+
 		tempCommand.setKey(searchKey);
 
 		/*
@@ -278,8 +286,58 @@ public class Analyzer {
 		}
 	}
 
-	private static String[] dateTimeSeparator(String timing) {
-		return timing.trim().split(" ");
+	private static String dateTimeSeparator(String timing) {
+		String[] dateTime = timing.trim().split(" ");
+		String[] temp;
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int hour = 0;
+		int minute = 0;
+		String indicator;
+		Date convertedDate;
+
+		if (dateTime.length >= 1) {
+			if (dateTime[0].contains("\"")) {
+				temp = dateTime[0].trim().split("\"");
+				day = Integer.parseInt(temp[0]);
+				month = Integer.parseInt(temp[1]);
+				year = Integer.parseInt(temp[2]);
+			} else if (dateTime[0].contains(":")) {
+				if (dateTime[0].length() == 7) {
+					hour = Integer.parseInt(dateTime[0].substring(0, 2));
+					minute = Integer.parseInt(dateTime[0].substring(3, 5));
+					indicator = dateTime[0].substring(5).toLowerCase();
+
+					if (indicator.equals("pm")) {
+						hour = hour + 12;
+					}
+				}
+			}
+		}
+
+		if (dateTime.length == 2) {
+			if (dateTime[1].contains("\"")) {
+				temp = dateTime[1].trim().split("\"");
+				day = Integer.parseInt(temp[0]);
+				month = Integer.parseInt(temp[1]);
+				year = Integer.parseInt(temp[2]);
+			} else if (dateTime[1].contains(":")) {
+				if (dateTime[1].length() == 7) {
+					hour = Integer.parseInt(dateTime[1].substring(0, 2));
+					minute = Integer.parseInt(dateTime[1].substring(3, 5));
+					indicator = dateTime[0].substring(5).toLowerCase();
+
+					if (indicator.equals("pm")) {
+						hour = hour + 12;
+					}
+				}
+			}
+		}
+
+		convertedDate = new Date(year, month, day, hour, minute);
+
+		return String.valueOf(convertedDate.getTime());
 	}
 
 	/*
@@ -313,4 +371,5 @@ public class Analyzer {
 	 * Date convertedDate = new Date(year, month, day, hour, minute); return
 	 * convertedDate.getTime(); }
 	 */
+
 }

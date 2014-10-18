@@ -8,10 +8,8 @@ public class ExecutableCommand {
 	// Task Class attributes for (add and update).
 	private String taskName;
 	private String taskDescription;
-	private String taskStartDate;
-	private String taskStartTime;
-	private String taskEndDate;
-	private String taskEndTime;
+	private String taskStartTiming;
+	private String taskEndTiming;
 	private String taskLocation;
 	private String taskPriority;
 
@@ -34,10 +32,8 @@ public class ExecutableCommand {
 
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStartDate = "";
-		this.taskStartTime = "";
-		this.taskEndDate = "";
-		this.taskEndTime = "";
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 
@@ -53,10 +49,8 @@ public class ExecutableCommand {
 
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStartDate = "";
-		this.taskStartTime = "";
-		this.taskEndDate = "";
-		this.taskEndTime = "";
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 
@@ -83,20 +77,12 @@ public class ExecutableCommand {
 		this.taskDescription = description;
 	}
 
-	public void setTaskStartDate(String date) {
-		this.taskStartDate = date;
+	public void setTaskStartTiming(String timing) {
+		this.taskStartTiming = timing;
 	}
 
-	public void setTaskStartTime(String time) {
-		this.taskStartTime = time;
-	}
-
-	public void setTaskEndDate(String date) {
-		this.taskEndDate = date;
-	}
-
-	public void setTaskEndTime(String time) {
-		this.taskEndTime = time;
+	public void setTaskEndDate(String timing) {
+		this.taskEndTiming = timing;
 	}
 
 	public void setTaskLocation(String location) {
@@ -139,20 +125,12 @@ public class ExecutableCommand {
 		return taskDescription;
 	}
 
-	public String getTaskStartDate() {
-		return taskStartDate;
+	public String getTaskStartTiming() {
+		return taskStartTiming;
 	}
 
-	public String getTaskStartTime() {
-		return taskStartTime;
-	}
-
-	public String getTaskEndDate() {
-		return taskEndDate;
-	}
-
-	public String getTaskEndTime() {
-		return taskEndTime;
+	public String getTaskEndTiming() {
+		return taskEndTiming;
 	}
 
 	public String getTaskLocation() {
