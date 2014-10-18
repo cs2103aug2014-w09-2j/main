@@ -198,7 +198,7 @@ public class Controller {
      * @author Joel
 	 */
     public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
-        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+        ExecutableCommand parsedCommand = Analyzer.analyzeCommand(inputCommandObject);
         
     	return parsedCommand;
     }

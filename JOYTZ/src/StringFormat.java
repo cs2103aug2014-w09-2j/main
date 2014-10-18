@@ -11,18 +11,6 @@ public class StringFormat {
 	public static int splitLimits = 3;
 	
 	
-	
-	/**
-	 * ###################################################
-	 * ##Storage : String in Exception					##
-	 * ###################################################
-	 */
-	
-	// String format for Exception in Storage.
-	public static final String EXCPTION_NULL_TASK_OBJECT= "Task Object is null.";
-	public static final String EXCEPTION_TASK_OUT_OF_RANGE = "Task index %d indicated is out of range.\n";
-	
-	
 	/**
 	 * ###################################################
 	 * ##action Name									##
@@ -34,20 +22,12 @@ public class StringFormat {
 	public static final String DISPLAY = "display";
 	public static final String UPDATE = "update";	
 	
-	
 	/**
 	 * ###################################################
-	 * ##Task Attribute Name							##
+	 * ##update search indicator						##
 	 * ###################################################
 	 */
 	
-	// update indicater.
-	public static final String NAME = "name";
-	public static final String DESCRIPTION = "description";
-	public static final String DEADLINE = "deadline";
-	public static final String LOCATION = "location";
-	public static final String PRIORITY = "priority";
-	
-	
+	public static final String 
 	
 }

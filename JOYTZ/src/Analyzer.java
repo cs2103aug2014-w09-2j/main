@@ -11,95 +11,127 @@ import org.eclipse.ui.internal.services.INestable;
 
 public class Analyzer {
 	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
-	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
 	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
 	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.\n";
 	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
 	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
-	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	
+	private static final String ERROR_NULL_TASKNAME = "No task name";
+	
+	private static final String ERROR_INVALID_COMMAND_ARGUMENT = "Invalid command argument.\n";
+	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action.\n";
+	private static final String ERROR_INVALID_COMMANDSTRING = "Invalid command String.\n";
+	private static final String ERROR_INVALID_COMMAND_OBJECT= "Invalid command object.\n";
+	
+	enum COMMAND_ACTION{ADD, DELETE, UPDATE, UNDO, REDO, CLEAR, SORT, SEARCH, EXIT, INVALID};
 
-	public static ExecutableCommand runAnalyzer(Command userInput)
-			throws ParseException {
-		assertNotNull("User input is null", userInput);
-
-		String userCommand = userInput.getUserCommand();
-		ExecutableCommand outputCommand = new ExecutableCommand();
-
-		if (userCommand == "") {
-			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
-			return outputCommand;
+	public static ExecutableCommand analyzeCommand(Command commandObj){
+		// assertNotNull("User input is null", userInputCommandString);
+		
+		ExecutableCommand executableCmd = new ExecutableCommand();
+		
+		if (commandObj == null){
+			executableCmd.setContainError(true);
+			executableCmd.setErrorMessage(ERROR_INVALID_COMMAND_OBJECT);
+			return executableCmd;
+		}
+		
+		String commandString = commandObj.getUserCommand();
+		
+		if (commandString == null || commandString.equals("")) {
+			executableCmd.setContainError(true);
+			executableCmd.setErrorMessage(ERROR_INVALID_COMMANDSTRING);
+			return executableCmd;
+		}
+		
+		COMMAND_ACTION commandAction = determineCommandAction(commandString);
+		String[] command = analyzeCommandString(commandString);
+		
+		
+		switch (commandAction) {
+			case "add":
+				executableCmd = handleAddCommand(command);
+				break;
+			case "delete":
+				executableCmd = handleDeleteCommand(command);
+				break;
+			case "update":
+				executableCmd = handleUpdateCommand(command);
+				break;
+			case "display":
+				executableCmd = handlDisplayCommand(command);
+				break;
+			case "undo":
+				executableCmd = handleUndoCommand(command);
+				break;
+			case "redo":
+				executableCmd = handleRedoCommand(command);
+				break;
+			case "clear":
+				executableCmd = handleClearCommand();
+				break;
+			case "sort":
+				executableCmd = handleSortCommand(command);
+				break;
+			case "search":
+				executableCmd = handleSearchCommand(command);
+				break;
+			case "exit":
+				executableCmd = handleExitCommand();
+				break;
+			default:
+				executableCmd.setContainError(true);
+				executableCmd.setErrorMessage(ERROR_INVALID_COMMAND_ACTION);
 		}
 
-		String userAction = getUserAction(userCommand);
-		String[] commandArgument = getArgument(userCommand);
-
-		switch (userAction) {
-		case "add":
-			outputCommand = handleAddCommand(commandArgument);
-			break;
-		case "delete":
-			outputCommand = handleDeleteCommand(commandArgument);
-			break;
-		case "update":
-			outputCommand = handleUpdateCommand(commandArgument);
-			break;
-		case "display":
-			outputCommand = handlDisplayCommand(commandArgument);
-			break;
-		case "undo":
-			outputCommand = handleUndoCommand();
-			break;
-		case "clear":
-			outputCommand = handleClearCommand();
-			break;
-		case "sort":
-			outputCommand = handleSortCommand(commandArgument);
-			break;
-		case "search":
-			outputCommand = handleSearchCommand(commandArgument);
-			break;
-		case "exit":
-			outputCommand = handleExitCommand();
-			break;
-		default:
-			outputCommand.setErrorMessage(ERROR_INVALID_COMMAND);
-		}
-
-		return outputCommand;
+		return executableCmd;
 	}
+	
+	/**
+	 * Add 
+	 * @param args
+	 * @return
+	 * @throws ParseException
+	 */
 
-	private static ExecutableCommand handleAddCommand(String[] arg)
-			throws ParseException {
-		assertNotNull("User argument is null", arg);
+	private static ExecutableCommand handleAddCommand(String[] args){
+		// assertNotNull("User argument is null", arg);
 
-		ExecutableCommand tempCommand = new ExecutableCommand("add");
-
-		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
-			return tempCommand;
+		ExecutableCommand executableCmd = new ExecutableCommand("add");
+		
+		if (args.length == 0) {
+			executableCmd.setContainError(true);
+			executableCmd.setErrorMessage(ERROR_INVALID_COMMAND_ARGUMENT);
+			return executableCmd;
+		}
+		
+		// check task name;
+		if (args[0].equals("")){
+			executableCmd.setContainError(true);
+			executableCmd.setErrorMessage(ERROR_NULL_TASKNAME);
+			return executableCmd;
+		}
+		executableCmd.setTaskName(args[0]);
+		
+		// check
+		if (args.length >= 2) {
+			executableCmd.setTaskDescription(args[1]);
+		}
+		if (args.length >= 3) {
+			executableCmd.setTaskStartTiming(args[2]);
+		}
+		if (args.length >= 4) {
+			executableCmd.setTaskEndTiming(args[3]);
+		}
+		if (args.length >= 5) {
+			executableCmd.setTaskLocation(args[4]);
+		}
+		if (args.length >= 6) {
+			executableCmd.setTaskPriority(args[5]);
 		}
 
-		tempCommand.setTaskName(arg[0]);
-
-		if (arg.length >= 2) {
-			tempCommand.setTaskDescription(arg[1]);
-		}
-		if (arg.length >= 3) {
-			tempCommand.setTaskStartTiming(arg[2]);
-		}
-		if (arg.length >= 4) {
-			tempCommand.setTaskEndTiming(arg[3]);
-		}
-		if (arg.length >= 5) {
-			tempCommand.setTaskLocation(arg[4]);
-		}
-		if (arg.length >= 6) {
-			tempCommand.setTaskPriority(arg[5]);
-		}
-
-		return tempCommand;
+		return executableCmd;
 	}
 
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
@@ -268,13 +300,63 @@ public class Analyzer {
 	private static ExecutableCommand handleExitCommand() {
 		return new ExecutableCommand("exit");
 	}
-
-	private static String getUserAction(String userCommand) {
+	
+	private static COMMAND_ACTION determineCommandAction(String commandString){
+		String[] cmdString = commandString.trim().split(" ", 2);
+		String cmdActionString = cmdString[0].trim().toLowerCase();
+		COMMAND_ACTION cmdAction; 
+		
+		switch(cmdActionString){
+			case "add":
+				cmdAction = COMMAND_ACTION.ADD;
+				break;
+			case "delete":
+				cmdAction = COMMAND_ACTION.DELETE;
+				break;
+			case "update":
+				cmdAction = COMMAND_ACTION.UPDATE;
+				break;
+			case "undo":
+				cmdAction = COMMAND_ACTION.UNDO;
+				break;
+			case "redo":
+				cmdAction = COMMAND_ACTION.REDO;
+				break;
+			case "clear":
+				cmdAction = COMMAND_ACTION.CLEAR;
+				break;
+			case "sort":
+				cmdAction = COMMAND_ACTION.SORT;
+				break;
+			case "search":
+				cmdAction = COMMAND_ACTION.SEARCH;
+				break;
+			case "exit":
+				cmdAction = COMMAND_ACTION.EXIT;
+			default:
+				cmdAction = COMMAND_ACTION.INVALID;
+		}
+		
+		return cmdAction;
+	}
+	private static String[] analyzeCommandString(String commandString){
+		String[] result = {};
+		String[] cmdString = commandString.trim().split(" ", 2);
+		String cmdActionString = cmdString[0].trim().toLowerCase();
+		
+		switch(cmdActionString){
+		case "add":
+			result[0] = COMMAND_ACTION.ADD;
+		}
+	}
+	
+	/*
+	private static String getCommandAction(String userCommand) {
 		String[] cmd = convertStrToArr(userCommand);
 		return cmd[0].toLowerCase();
 	}
 
-	private static String[] getArgument(String userCommand) {
+	private static String[] getCommandArgument(String userCommand) {
 		assertNotNull("User command argument is null", userCommand);
 
 		String[] cmd = convertStrToArr(userCommand);
@@ -286,6 +368,7 @@ public class Analyzer {
 
 		return arg;
 	}
+	*/
 
 	private static String[] convertStrToArr(String str) {
 		String[] arr = str.trim().split("~");

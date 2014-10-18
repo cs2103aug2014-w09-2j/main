@@ -38,32 +38,32 @@ public class TestAnalyzer {
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("fail to get task name to be added",
-				expected.getTaskName(), Analyzer.runAnalyzer(test2)
+				expected.getTaskName(), Analyzer.analyzeCommand(test2)
 						.getTaskName());
 
 		// test case 3
 		assertEquals("fail to get task description to be added",
-				expected.getTaskDescription(), Analyzer.runAnalyzer(test3)
+				expected.getTaskDescription(), Analyzer.analyzeCommand(test3)
 						.getTaskDescription());
 
 		// test case 4
 		assertEquals("fail to get task deadline to be added",
-				expected.getTaskDeadline(), Analyzer.runAnalyzer(test4)
+				expected.getTaskDeadline(), Analyzer.analyzeCommand(test4)
 						.getTaskDeadline());
 
 		// test case 5
 		assertEquals("fail to get task location to be added",
-				expected.getTaskLocation(), Analyzer.runAnalyzer(test5)
+				expected.getTaskLocation(), Analyzer.analyzeCommand(test5)
 						.getTaskLocation());
 
 		// test case 6
 		assertEquals("fail to get task priority to be added",
-				expected.getTaskPriority(), Analyzer.runAnalyzer(test6)
+				expected.getTaskPriority(), Analyzer.analyzeCommand(test6)
 						.getTaskPriority());
 	}
 
@@ -85,17 +85,17 @@ public class TestAnalyzer {
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("invalid task index case is not handled",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+				expected2.getErrorMessage(), Analyzer.analyzeCommand(test2)
 						.getErrorMessage());
 
 		// test case 3
 		assertEquals("invalid input argument case is not handled",
-				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+				expected3.getErrorMessage(), Analyzer.analyzeCommand(test3)
 						.getErrorMessage());
 	}
 
@@ -131,41 +131,41 @@ public class TestAnalyzer {
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("null update indicator case is not handled",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+				expected2.getErrorMessage(), Analyzer.analyzeCommand(test2)
 						.getErrorMessage());
 
 		// test case 3
 		assertEquals("invalid input argument case is not handled",
-				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+				expected3.getErrorMessage(), Analyzer.analyzeCommand(test3)
 						.getErrorMessage());
 
 		// test case 4
 		assertEquals("fail to get task name to be updated",
-				expected4.getTaskName(), Analyzer.runAnalyzer(test4)
+				expected4.getTaskName(), Analyzer.analyzeCommand(test4)
 						.getTaskName());
 
 		// test case 5
 		assertEquals("fail to get task description to be updated",
-				expected.getTaskId(), Analyzer.runAnalyzer(test5).getTaskId());
+				expected.getTaskId(), Analyzer.analyzeCommand(test5).getTaskId());
 
 		// test case 6
 		assertEquals("fail to get task deadline to be updated",
-				expected.getTaskDeadline(), Analyzer.runAnalyzer(test6)
+				expected.getTaskDeadline(), Analyzer.analyzeCommand(test6)
 						.getTaskDeadline());
 
 		// test case 7
 		assertEquals("fail to get task location to be updated",
-				expected.getTaskLocation(), Analyzer.runAnalyzer(test7)
+				expected.getTaskLocation(), Analyzer.analyzeCommand(test7)
 						.getTaskLocation());
 
 		// test case 8
 		assertEquals("fail to get task priority to be updated",
-				expected.getTaskPriority(), Analyzer.runAnalyzer(test8)
+				expected.getTaskPriority(), Analyzer.analyzeCommand(test8)
 						.getTaskPriority());
 
 	}

@@ -17,11 +17,12 @@ public class ExecutableCommand {
 	private int taskId;
 
 	// errorMessage is used for Analyzer to report error to controller.
+	private boolean containError;
 	private String errorMessage;
 
 	// these are for update, sort or search method.
 	private String indicator;
-	private String KeyValue;
+	private String keyValue;
 
 	/**
 	 * Constructor
@@ -39,9 +40,10 @@ public class ExecutableCommand {
 		
 		this.taskId = -1;
 		this.errorMessage = "";
+		this.containError = false;
 		
 		this.indicator = "";
-		this.KeyValue = "";
+		this.keyValue = "";
 	}
 
 	ExecutableCommand(String action) {
@@ -56,9 +58,10 @@ public class ExecutableCommand {
 		
 		this.taskId = -1;
 		this.errorMessage = "";
+		this.containError = false;
 		
 		this.indicator = "";
-		this.KeyValue = "";
+		this.keyValue = "";
 	}
 
 	/**
@@ -96,6 +99,10 @@ public class ExecutableCommand {
 	public void setTaskId(int id) {
 		this.taskId = id;
 	}
+	
+	public void setContainError(boolean e){
+		this.containError = e;
+	}
 
 	public void setErrorMessage(String message) {
 		this.errorMessage = message;
@@ -106,7 +113,7 @@ public class ExecutableCommand {
 	}
 	
 	public void setKeyValue(String key){
-		this.KeyValue = key;
+		this.keyValue = key;
 	}
 	
 
@@ -145,6 +152,10 @@ public class ExecutableCommand {
 	public int getTaskId() {
 		return taskId;
 	}
+	
+	public boolean getContainError(){
+		return containError;
+	}
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -155,7 +166,7 @@ public class ExecutableCommand {
 	}
 	
 	public String getKeyValue(){
-		return KeyValue;
+		return keyValue;
 	}
 	
 
