@@ -46,7 +46,7 @@ public class Analyzer {
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
 		case "display":
-			outputCommand = handlDisplayCommand(commandArgument);
+			outputCommand = handlDisplayCommand();
 			break;
 		case "undo":
 			outputCommand = handleUndoCommand();
@@ -87,10 +87,16 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			tempCommand.setTaskStartTiming(arg[2]);
+			String[] dateTime = dateTimeSeparator(arg[2]);
+
+			tempCommand.setTaskStartDate(dateTime[0]);
+			tempCommand.setTaskStartTime(dateTime[1]);
 		}
 		if (arg.length >= 4) {
-			tempCommand.setTaskEndTiming(arg[3]);
+			String[] dateTime = dateTimeSeparator(arg[3]);
+
+			tempCommand.setTaskEndDate(dateTime[0]);
+			tempCommand.setTaskEndTime(dateTime[1]);
 		}
 		if (arg.length >= 5) {
 			tempCommand.setTaskLocation(arg[4]);
@@ -161,36 +167,22 @@ public class Analyzer {
 		String updatedItem = arg[2];
 
 		tempCommand.setIndicator(updateIndicator);
-		tempCommand.setKeyValue(updatedItem);
+		tempCommand.setKey(updatedItem);
 		/*
-		switch (updateIndicator) {
-		case "name":
-			tempCommand.setTaskName(updatedItem);
-			break;
-		case "description":
-			tempCommand.setTaskDescription(updatedItem);
-			break;
-		case "startTiming":
-			tempCommand.setTaskStartTiming(updatedItem);
-			break;
-		case "endTiming":
-			tempCommand.setTaskEndTiming(updatedItem);
-			break;
-		case "location":
-			tempCommand.setTaskLocation(updatedItem);
-			break;
-		case "priority":
-			tempCommand.setTaskPriority(updatedItem);
-			break;
-		default:
-			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
-		}
-		*/
+		 * switch (updateIndicator) { case "name":
+		 * tempCommand.setTaskName(updatedItem); break; case "description":
+		 * tempCommand.setTaskDescription(updatedItem); break; case
+		 * "startTiming": tempCommand.setTaskStartTiming(updatedItem); break;
+		 * case "endTiming": tempCommand.setTaskEndTiming(updatedItem); break;
+		 * case "location": tempCommand.setTaskLocation(updatedItem); break;
+		 * case "priority": tempCommand.setTaskPriority(updatedItem); break;
+		 * default: tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR); }
+		 */
 
 		return tempCommand;
 	}
 
-	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+	private static ExecutableCommand handlDisplayCommand() {
 		return new ExecutableCommand("display");
 	}
 
@@ -203,17 +195,13 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handleSortCommand(String[] arg) {
-		ExecutableCommand tempCommand = new ExecutableCommand("search");
+		ExecutableCommand tempCommand = new ExecutableCommand("sort");
 
-		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+		if (arg.length != 0) {
+			String sortIndicator = arg[0].toLowerCase();
 
-			return tempCommand;
+			tempCommand.setIndicator(sortIndicator);
 		}
-
-		String sortIndicator = arg[0].toLowerCase();
-
-		tempCommand.setIndicator(sortIndicator);
 
 		return tempCommand;
 	}
@@ -238,29 +226,18 @@ public class Analyzer {
 		String searchKey = arg[1];
 
 		tempCommand.setIndicator(searchIndicator);
+		tempCommand.setKey(searchKey);
 
-		switch (searchIndicator) {
-		case "name":
-			tempCommand.setTaskName(searchKey);
-			break;
-		case "startTiming":
-			tempCommand.setTaskStartTiming(searchKey);
-			break;
-		case "endTiming":
-			tempCommand.setTaskEndTiming(searchKey);
-			break;
-		case "priority":
-			tempCommand.setTaskPriority(searchKey);
-			break;
-		case "location":
-			tempCommand.setTaskLocation(searchKey);
-			break;
-		case "id":
-			tempCommand.setTaskId(Integer.parseInt(searchKey));
-			break;
-		default:
-			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
-		}
+		/*
+		 * switch (searchIndicator) { case "name":
+		 * tempCommand.setTaskName(searchKey); break; case "startTiming":
+		 * tempCommand.setTaskStartTiming(searchKey); break; case "endTiming":
+		 * tempCommand.setTaskEndTiming(searchKey); break; case "priority":
+		 * tempCommand.setTaskPriority(searchKey); break; case "location":
+		 * tempCommand.setTaskLocation(searchKey); break; case "id":
+		 * tempCommand.setTaskId(Integer.parseInt(searchKey)); break; default:
+		 * tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR); }
+		 */
 
 		return tempCommand;
 	}
@@ -291,7 +268,7 @@ public class Analyzer {
 		String[] arr = str.trim().split("~");
 		return arr;
 	}
-	
+
 	private static boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -300,61 +277,40 @@ public class Analyzer {
 			return false;
 		}
 	}
-	
-	private static Long analyzeUserInputDateString(String userInputDate){
-		String[] date = userInputDate.trim().split(" ");
-		String dateString;
-		String timeString;
-		
-		// distinguish date (dd/mm/yy) and time (hh:mm:ss)
-		if (date[0].contains("/")){
-			dateString = date[0];
-			timeString = date[1];
-		}else {
-			dateString = date[1];
-			timeString = date[0];
-		}
-		
-		// current date and time
-		Date now = new Date(System.currentTimeMillis());
-		
-		int day = 0;
-		int month = 0;
-		int year  = 0;
-		String[] dateArg = dateString.trim().split("/");
-		
-		if (dateArg.length == 1){
-			day = Integer.parseInt(dateArg[0]);
-			month = now.getMonth();
-			year = now.getYear();
-		}else if (dateArg.length == 2){
-			day = Integer.parseInt(dateArg[0]);
-			month = Integer.parseInt(dateArg[1]);
-			year = now.getYear();
-		}else if (dateArg.length == 3){
-			day = Integer.parseInt(dateArg[0]);
-			month = Integer.parseInt(dateArg[1]);
-			year = Integer.parseInt(dateArg[2]);
-		}
-		
-		int minute = 0;
-		int hour = 0;
-		String[] timeArg = timeString.trim().split(":");
-		
-		if (timeArg.length == 1){
-			hour = Integer.parseInt(dateArg[0]);
-			minute = 0;
-		}else if (timeArg.length == 2){
-			hour = Integer.parseInt(dateArg[0]);
-			minute = Integer.parseInt(dateArg[1]);
-		}
-		
-		Date convertedDate = new Date(year, month, day, hour, minute);
-		return convertedDate.getTime();
+
+	private static String[] dateTimeSeparator(String timing) {
+		return timing.trim().split(" ");
 	}
-	
-	
-	
-	
-	
+
+	/*
+	 * private static Long analyzeUserInputDateString(String userInputDate) {
+	 * String[] date = userInputDate.trim().split(" "); String dateString;
+	 * String timeString;
+	 * 
+	 * // distinguish date (dd/mm/yy) and time (hh:mm:ss) if
+	 * (date[0].contains("/")) { dateString = date[0]; timeString = date[1]; }
+	 * else { dateString = date[1]; timeString = date[0]; }
+	 * 
+	 * // current date and time Date now = new Date(System.currentTimeMillis());
+	 * 
+	 * int day = 0; int month = 0; int year = 0; String[] dateArg =
+	 * dateString.trim().split("/");
+	 * 
+	 * if (dateArg.length == 1) { day = Integer.parseInt(dateArg[0]); month =
+	 * now.getMonth(); year = now.getYear(); } else if (dateArg.length == 2) {
+	 * day = Integer.parseInt(dateArg[0]); month = Integer.parseInt(dateArg[1]);
+	 * year = now.getYear(); } else if (dateArg.length == 3) { day =
+	 * Integer.parseInt(dateArg[0]); month = Integer.parseInt(dateArg[1]); year
+	 * = Integer.parseInt(dateArg[2]); }
+	 * 
+	 * int minute = 0; int hour = 0; String[] timeArg =
+	 * timeString.trim().split(":");
+	 * 
+	 * if (timeArg.length == 1) { hour = Integer.parseInt(dateArg[0]); minute =
+	 * 0; } else if (timeArg.length == 2) { hour = Integer.parseInt(dateArg[0]);
+	 * minute = Integer.parseInt(dateArg[1]); }
+	 * 
+	 * Date convertedDate = new Date(year, month, day, hour, minute); return
+	 * convertedDate.getTime(); }
+	 */
 }
