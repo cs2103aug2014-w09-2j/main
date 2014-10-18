@@ -305,9 +305,9 @@ public class GUI {
         while(!shell.isDisposed()) {
         	
         	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-        	System.out.println(timeStamp );
+        	//System.out.println(timeStamp );
         	
-        	if (timeStamp.trim().equals("20141018_191020") && hasNotified == false) {
+        	if (timeStamp.trim().equals("20141018_192120") && hasNotified == false) {
         		hasNotified = true;
         		NotifierDialog.notify("Hi There! I'm a notification widget!", 
   					  "Today we are creating a widget that allows us" +
