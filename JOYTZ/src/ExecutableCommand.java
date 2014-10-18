@@ -23,7 +23,7 @@ public class ExecutableCommand {
 
 	// these are for update, sort or search method.
 	private String indicator;
-	private String KeyValue;
+	private String key;
 
 	/**
 	 * Constructor
@@ -45,7 +45,7 @@ public class ExecutableCommand {
 		this.errorMessage = "";
 
 		this.indicator = "";
-		this.KeyValue = "";
+		this.key = "";
 	}
 
 	ExecutableCommand(String action) {
@@ -64,7 +64,7 @@ public class ExecutableCommand {
 		this.errorMessage = "";
 
 		this.indicator = "";
-		this.KeyValue = "";
+		this.key = "";
 	}
 
 	/**
@@ -119,8 +119,8 @@ public class ExecutableCommand {
 		this.indicator = indicator;
 	}
 
-	public void setKeyValue(String key) {
-		this.KeyValue = key;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	/**
@@ -175,8 +175,8 @@ public class ExecutableCommand {
 		return indicator;
 	}
 
-	public String getKeyValue() {
-		return KeyValue;
+	public String getKey() {
+		return key;
 	}
 
 }
