@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Executor {
 
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
@@ -41,41 +42,42 @@ public class Executor {
 	 *            : ExecutableCommand object containing the user's action
 	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
+		feedback = new Feedback(false);
+		
+		// check the validity of command obj.
 		if (command == null) {
-			throw new NullPointerException(ERROR_NULL_OBJECT);
+			feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
+			return feedback;
 		}
 
-		String action = command.getAction();
-
-		switch (action) {
+		switch (command.getAction()) {
 		case "add":
-			performAddAction(command);
+			feedback = performAddAction(command);
 			break;
 		case "delete":
-			performDeleteAction(command);
+			feedback = performDeleteAction(command);
 			break;
 		case "update":
-			performUpdateAction(command);
+			feedback = performUpdateAction(command);
 			break;
 		case "clear":
-			performClearAction();
+			feedback = performClearAction();
 			break;
 		case "sort":
-			performSortAction(command);
+			feedback = performSortAction(command);
 			break;
 		case "search":
-			performSearchAction(command);
+			feedback = performSearchAction(command);
 			break;
 		case "undo":
-			performUndoAction();
+			feedback = performUndoAction();
 			break;
 		case "exit":
-			performExitAction();
+			feedback = performExitAction();
 			break;
 		default:
-			Feedback feedbackObject = new Feedback(false);
-			feedbackObject.setErrorMessage(ERROR_INVALID_COMMAND);
-			return feedbackObject;
+			feedback.setMessageShowToUser(String.format(ERROR_INVALID_COMMAND_ACTION, command.getAction()));
+			return feedback;
 		}
 
 		if (feedback.getResult()) {
@@ -93,35 +95,38 @@ public class Executor {
 	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performAddAction(ExecutableCommand command) {
+	private static Feedback performAddAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(false);
+		
+		// get the attribute form command.
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
 		Long startTime = Long.parseLong(command.getTaskStartDate());
 		Long endTime = Long.parseLong(command.getTaskEndDate());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-		feedback = new Feedback(false);
+		
+		
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
 		
 		// pre-condition
-		assert !name.equals("") : "No task name";
-		assert !t.equals(new Task()) : "No task created";
+		//assert !name.equals("") : "No task name";
+		//assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
-			feedback.setResult(Storage.add(t));
+			fb.setResult(Storage.add(t));
 		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
+			fb.setMessageShowToUser(e.getMessage());
 		}
 
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL,
-					name));
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
 		}
 
-		return;
+		return fb;
 	}
 
 	/**

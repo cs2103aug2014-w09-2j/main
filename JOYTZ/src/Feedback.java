@@ -7,7 +7,6 @@ public class Feedback {
 	// attributes
 	boolean result;
 	String messageShowToUser;
-	String errorMessage;
 
 	// ArrayList only for display method.
 	ArrayList<String> taskList = new ArrayList<String>();
@@ -32,10 +31,6 @@ public class Feedback {
 		this.messageShowToUser = message;
 	}
 
-	public void setErrorMessage(String message) {
-		this.errorMessage = message;
-	}
-
 	public void setTaskList(ArrayList<String> taskList) {
 		this.taskList = taskList;
 	}
@@ -50,10 +45,6 @@ public class Feedback {
 
 	public String getMessageShowToUser() {
 		return messageShowToUser;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
 	}
 
 	public ArrayList<String> getTaskList() {

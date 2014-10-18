@@ -65,7 +65,8 @@ public class Storage {
 		if (t == null) {
 			throw new Exception(ERROR_NULL_OBJECT);
 		}
-
+		
+		/*
 		assert !t.getTaskName().equals("") : "No task name.";
 		assert t.getTaskStartTime() < System.currentTimeMillis() : "Invalid taskStartTime. start time: "
 				+ t.getTaskStartTime();
@@ -76,7 +77,8 @@ public class Storage {
 		assert !t.getTaskDescription().equals("") : "No task description.";
 		assert !t.getTaskLocation().equals("") : "No task location.";
 		assert !t.getTaskPriority().equals("") : "No task priority.";
-
+		*/
+		
 		LOGGER.info("==============\n" + "Storage add task: \n" + "task name: "
 				+ t.getTaskName() + "\n" + "task description: "
 				+ t.getTaskDescription() + "\n" + "task location: "
