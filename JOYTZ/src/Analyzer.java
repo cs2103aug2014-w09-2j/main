@@ -194,7 +194,9 @@ public class Analyzer {
 
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("sort");
-
+		
+		
+		// have to check the indicator here.
 		if (arg.length != 0) {
 			String sortIndicator = arg[0].toLowerCase();
 

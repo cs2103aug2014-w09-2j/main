@@ -171,6 +171,43 @@ public class Storage {
 
 			Long newEndTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskEndTime(newEndTime);
+			break;
+		case "start date":
+			Long newStartDateLong = Long.parseLong(updateKeyValue);
+			Date newDatesd = new Date(newStartDateLong);
+			Date oldTimesd = new Date(targetTask.getTaskStartTime());
+			oldTimesd.setYear(newDatesd.getYear());
+			oldTimesd.setMonth(newDatesd.getMonth());
+			oldTimesd.setDate(newDatesd.getDate());
+			targetTask.setTaskStartTime(oldTimesd.getTime());
+			break;
+		case "start time":
+			Long newStartTimeLong = Long.parseLong(updateKeyValue);
+			Date newTimest = new Date(newStartTimeLong);
+			Date oldTimest = new Date(targetTask.getTaskStartTime());
+			oldTimest.setHours(newTimest.getHours());
+			oldTimest.setMinutes(newTimest.getMinutes());
+			oldTimest.setSeconds(newTimest.getSeconds());
+			targetTask.setTaskStartTime(oldTimest.getTime());
+			break;
+		case "end date":
+			Long newEndDateLong = Long.parseLong(updateKeyValue);
+			Date newDateed = new Date(newEndDateLong);
+			Date oldTimeed = new Date(targetTask.getTaskStartTime());
+			oldTimeed.setYear(newDateed.getYear());
+			oldTimeed.setMonth(newDateed.getMonth());
+			oldTimeed.setDate(newDateed.getDate());
+			targetTask.setTaskStartTime(oldTimeed.getTime());
+			break;
+		case "end time":
+			Long newEndTimeLong = Long.parseLong(updateKeyValue);
+			Date newTimeet = new Date(newEndTimeLong);
+			Date oldTimeet = new Date(targetTask.getTaskStartTime());
+			oldTimeet.setHours(newTimeet.getHours());
+			oldTimeet.setMinutes(newTimeet.getMinutes());
+			oldTimeet.setSeconds(newTimeet.getSeconds());
+			targetTask.setTaskStartTime(oldTimeet.getTime());
+			break;
 		case "location":
 			assert updateKeyValue instanceof String : "location: "
 					+ updateKeyValue;
@@ -284,7 +321,7 @@ public class Storage {
 	 */
 	public static ArrayList<String> search(String indicator, String searchValue)
 			throws Exception {
-		String keyValueString = "name-description-deadline-location-priority";
+		String keyValueString = "name-description-startTime-endTime-location-priority";
 		ArrayList<String> resultList = new ArrayList<String>();
 		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
 

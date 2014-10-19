@@ -77,7 +77,7 @@ public class Executor {
 			performUndoAction();
 			break;
 		case "exit":
-			performExitAction();
+			feedback = performExitAction();
 			break;
 		default:
 			feedback.setMessageShowToUser(String.format(
@@ -112,8 +112,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		try {
-			startTime = Long.valueOf(command.getTaskStartTiming());
-			endTime = Long.valueOf(command.getTaskEndTiming());
+			startTime = Long.parseLong(command.getTaskStartTiming());
+			endTime = Long.parseLong(command.getTaskEndTiming());
 		} catch (NumberFormatException e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
@@ -315,21 +315,22 @@ public class Executor {
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
-	private static void performExitAction() {
-		feedback = new Feedback(false);
+	private static Feedback performExitAction() {
+		Feedback fb = new Feedback(false);
 
 		// check whether the storage can store the information into a file.
 		try {
 			Storage.saveFile();
 		} catch (Exception e) {
-			feedback.setMessageShowToUser(String
+			fb.setMessageShowToUser(String
 					.format(ERROR_FAIL_SAVE_TO_FILE));
-			return;
+			return fb;
 		}
 
-		feedback.setResult(true);
-		feedback.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
-		System.exit(0);
+		fb.setResult(true);
+		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
+		
+		return fb;
 	}
 
 	/**
