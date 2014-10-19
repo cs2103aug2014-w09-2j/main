@@ -28,6 +28,4 @@ public class StringFormat {
 	 * ###################################################
 	 */
 	
-	public static final String 
-	
 }
