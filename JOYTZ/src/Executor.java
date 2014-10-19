@@ -104,12 +104,20 @@ public class Executor {
 	private static Feedback performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
-		Long startTime = Long.parseLong(command.getTaskStartTiming());
-		Long endTime = Long.parseLong(command.getTaskEndTiming());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-		
+		Long startTime = (long) 0;
+		Long endTime = (long) 0;
+
 		Feedback fb = new Feedback(false);
+
+		try {
+			startTime = Long.valueOf(command.getTaskStartTiming());
+			endTime = Long.valueOf(command.getTaskEndTiming());
+		} catch (NumberFormatException e) {
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
+		}
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
@@ -143,7 +151,7 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
-	 * @return           
+	 * @return
 	 * 
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
@@ -175,7 +183,7 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
-	 * @return          
+	 * @return
 	 * 
 	 */
 	private static Feedback performUpdateAction(ExecutableCommand command) {
@@ -233,7 +241,7 @@ public class Executor {
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
-		
+
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
@@ -268,7 +276,7 @@ public class Executor {
 		String searchIndicator = command.getIndicator();
 		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
-		
+
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
