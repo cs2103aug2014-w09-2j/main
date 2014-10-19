@@ -104,7 +104,7 @@ public class Executor {
 	private static Feedback performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
-		Long startTime = Long.parseLong(command.getTaskName());
+		Long startTime = Long.parseLong(command.getTaskStartTiming());
 		Long endTime = Long.parseLong(command.getTaskEndTiming());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
