@@ -1,6 +1,6 @@
 //package V1;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Executor {
 
@@ -9,17 +9,19 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
-	private static final String ERROR_NULL_OBJECT = "Null object.\n";
+	// private static final String ERROR_NULL_OBJECT = "Null object.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
-	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	// private static final String ERROR_INVALID_TASK_INDEX =
+	// "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	private static final String ERROR_INVALID_INDICATOR = "The indicator is invalid.\n";
+	// private static final String ERROR_INVALID_INDICATOR =
+	// "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
@@ -40,11 +42,13 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
+	 * 
+	 * 
 	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
-		
-		// check the validity of command obj.
+
 		if (command == null) {
 			feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 			return feedback;
@@ -70,13 +74,14 @@ public class Executor {
 			feedback = performSearchAction(command);
 			break;
 		case "undo":
-			feedback = performUndoAction();
+			performUndoAction();
 			break;
 		case "exit":
-			feedback = performExitAction();
+			performExitAction();
 			break;
 		default:
-			feedback.setMessageShowToUser(String.format(ERROR_INVALID_COMMAND_ACTION, command.getAction()));
+			feedback.setMessageShowToUser(String.format(
+					ERROR_INVALID_COMMAND_ACTION, command.getAction()));
 			return feedback;
 		}
 
@@ -93,34 +98,45 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performAddAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(false);
-		
-		// get the attribute form command.
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
-		Long startTime = Long.parseLong(command.getTaskStartDate());
-		Long endTime = Long.parseLong(command.getTaskEndDate());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-		
-		
+		Long startTime = (long) 0;
+		Long endTime = (long) 0;
+
+		Feedback fb = new Feedback(false);
+
+		try {
+			startTime = Long.valueOf(command.getTaskStartTiming());
+			endTime = Long.valueOf(command.getTaskEndTiming());
+		} catch (NumberFormatException e) {
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
+		}
+
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
-		
+
 		// pre-condition
-		//assert !name.equals("") : "No task name";
-		//assert !t.equals(new Task()) : "No task created";
+		assert !name.equals("") : "No task name";
+		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
 			fb.setResult(Storage.add(t));
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
+			return fb;
 		}
+
+		// post-condition
+		assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -135,25 +151,27 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(false);
-		
+
 		int taskId = command.getTaskId();
 		String taskName;
 
 		// pre-condition
-		//assert taskId != -1 : "Task index " + taskId;
+		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
-			feedback.setResult(Storage.delete(taskId));
-			if (fb.getResult()){
-				fb.setMessageShowToUser(String.format(MESSAGE_DELETE_SUCCESSFUL,taskId, taskName));
+			fb.setResult(Storage.delete(taskId));
+			if (fb.getResult()) {
+				fb.setMessageShowToUser(String.format(
+						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
 			}
 		} catch (Exception e) {
-			feedback.setMessageShowToUser(e.getMessage());
+			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		return fb;
@@ -165,29 +183,31 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(false);
-		
+
 		int taskId = command.getTaskId();
 		String updateIndicator = command.getIndicator();
 		String updateKeyValue = command.getKey();
 		String taskName;
 
 		// pre-condition
-		//assert !updateIndicator.equals("") : "No update indicator";
-		//assert !updateKeyValue.equals("") : "No update key";
+		assert !updateIndicator.equals("") : "No update indicator";
+		assert !updateKeyValue.equals("") : "No update key";
 
 		try {
-			feedback.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
-			if (feedback.getResult()) {
+			fb.setResult(Storage
+					.update(taskId, updateIndicator, updateKeyValue));
+			if (fb.getResult()) {
 				taskName = Storage.get(taskId).getTaskName();
-				feedback.setMessageShowToUser(String.format(
+				fb.setMessageShowToUser(String.format(
 						MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
 			}
 		} catch (Exception e) {
-			feedback.setMessageShowToUser(e.getMessage());
+			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		return fb;
@@ -197,12 +217,13 @@ public class Executor {
 	 * Perform clear action with command object passed from
 	 * proceedAnalyzedCommand method
 	 * 
+	 * @return
 	 */
 	private static Feedback performClearAction() {
 		Feedback fb = new Feedback(false);
 
 		fb.setResult(Storage.clean());
-		if (fb.getResult()){
+		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
 
@@ -210,14 +231,20 @@ public class Executor {
 	}
 
 	/**
-	 * Perform sort action with command object passed from proceedAnalyzedCommand
-	 * method
+	 * Perform sort action with command object passed from
+	 * proceedAnalyzedCommand method
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
+<<<<<<< HEAD
+=======
+		String sortKey = command.getIndicator();
+
+>>>>>>> 690f7e551323ce88aa650988f16825dfdc20fa24
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
@@ -225,17 +252,18 @@ public class Executor {
 
 		// check what category user want to sort
 		try {
-			feedback.setResult(Storage.sort(sortKey));
+			fb.setResult(Storage.sort(sortKey));
 		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
 		}
 
-		if (feedback.getResult()) {
-			feedback.setMessageShowToUser(String.format(
-					MESSAGE_SORT_SUCCESSFUL, sortKey));
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
+					sortKey));
 		}
 
-		return;
+		return fb;
 	}
 
 	/**
@@ -244,35 +272,36 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
-	private static void performSearchAction(ExecutableCommand command) {
+	private static Feedback performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
 		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
-		feedback = new Feedback(false);
-		
+
+		Feedback fb = new Feedback(false);
+
 		// pre-condition
-		assert !searchIndicator.equals(""): "No search indicator";
-		assert !searchValue.equals(""): "No search value";
+		assert !searchIndicator.equals("") : "No search indicator";
+		assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
 			resultList = Storage.search(searchIndicator, searchValue);
-			feedback.setTaskList(resultList);
+			fb.setTaskList(resultList);
 		} catch (Exception e) {
-			feedback.setErrorMessage(e.getMessage());
-			return;
+			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		// post-condition
 		assert !searchValue.equals("") : "No given search value";
 		assert !resultList.equals(null) : "No result is found";
 
-		feedback.setResult(true);
-		feedback.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
-		return;
+		return fb;
 	}
 
 	/**
@@ -296,8 +325,8 @@ public class Executor {
 		try {
 			Storage.saveFile();
 		} catch (Exception e) {
-			feedback.setErrorMessage(String.format(ERROR_FAIL_SAVE_TO_FILE));
-			e.printStackTrace();
+			feedback.setMessageShowToUser(String
+					.format(ERROR_FAIL_SAVE_TO_FILE));
 			return;
 		}
 

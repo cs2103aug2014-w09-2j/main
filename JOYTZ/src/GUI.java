@@ -1,27 +1,48 @@
 //package V1;
 
+import java.text.SimpleDateFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Point;
 
+import com.ibm.icu.util.Calendar;
+
 public class GUI {
-	private final static Logger LOGGER = Logger.getLogger(GUI.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
+	
+	private static final String HELP_TEXT = "Commands: \n" +
+											"	add~task name~description~start time " +
+											"~end time~location~priority\n" +
+											"	delete~index number\n" +
+											"	update~index number~attribute~new data\n" +
+											"	sort~attribute\n" +
+											"	undo\n" + 
+											"	display\n" +
+											"	clear\n" +
+											"	help\n" +
+											"	exit\n" +
+											"Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n" +
+											"Attributes: Refer to the headings on the table";
 
     private static StyledText inputField;
-    private static Text outputField;
+    private static StyledText outputField;
     private static String textInputData = "";
     private static Table table;
     private static TableColumn tblclmnNo;
@@ -30,6 +51,7 @@ public class GUI {
     private static TableColumn tblclmnLocation;
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
+    private static boolean hasNotified = false;
     
     /**
      * A getter method for the controller to obtain the user's input
@@ -51,6 +73,70 @@ public class GUI {
 	 */
     public static void displayOutput(String output) {
     	outputField.setText(output);
+    }
+    
+    /**
+     * Displays the help text in the middle GUI box, styling it
+     * such that the command words are bolded.
+     * 
+     * @author Joel
+	 */
+    private static void displayHelp() {
+    	outputField.setText(HELP_TEXT);
+    	
+    	StyleRange boldAdd = new StyleRange();
+    	boldAdd.start = 12;
+    	boldAdd.length = 3;
+    	boldAdd.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldAdd);
+    	
+    	StyleRange boldDelete = new StyleRange();
+    	boldDelete.start = 78;
+    	boldDelete.length = 6;
+    	boldDelete.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldDelete);
+    	
+    	StyleRange boldUpdate = new StyleRange();
+    	boldUpdate.start = 99;
+    	boldUpdate.length = 6;
+    	boldUpdate.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldUpdate);
+    	
+    	StyleRange boldSort = new StyleRange();
+    	boldSort.start = 139;
+    	boldSort.length = 4;
+    	boldSort.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldSort);
+    	
+    	StyleRange boldUndo = new StyleRange();
+    	boldUndo.start = 155;
+    	boldUndo.length = 4;
+    	boldUndo.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldUndo);
+    	
+    	StyleRange boldDisplay = new StyleRange();
+    	boldDisplay.start = 161;
+    	boldDisplay.length = 7;
+    	boldDisplay.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldDisplay);
+    	
+    	StyleRange boldClear = new StyleRange();
+    	boldClear.start = 170;
+    	boldClear.length = 5;
+    	boldClear.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldClear);
+    	
+    	StyleRange boldHelp = new StyleRange();
+    	boldHelp.start = 177;
+    	boldHelp.length = 4;
+    	boldHelp.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldHelp);
+    	
+    	StyleRange boldExit = new StyleRange();
+    	boldExit.start = 183;
+    	boldExit.length = 4;
+    	boldExit.fontStyle = SWT.BOLD;
+    	outputField.setStyleRange(boldExit);
     }
     
     /**
@@ -177,11 +263,10 @@ public class GUI {
         tblclmnPriority.setWidth(100);
         tblclmnPriority.setText("Priority");
         
-        outputField = new Text(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+        outputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+        outputField.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         outputField.setToolTipText("See status messages here");
-        outputField.setText("Commands: \nadd~task name~description~dd/mm/yyyy~location~priority\r\n" +
-        					"delete~index number \n" + "update~index number~attribute~new data\n" + 
-        					"clear\n" + "exit");
+        displayHelp();
         GridData gd_outputField = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
         gd_outputField.widthHint = 370;
         gd_outputField.heightHint = 154;
@@ -202,21 +287,65 @@ public class GUI {
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {
                     textInputData = inputField.getText();
-                    Controller.startController();
                     
-                    inputField.setText("");
-
-                    NotifierDialog.notify("Hi There! I'm a notification widget!", "Today we are creating a widget that allows us to show notifications that fade in and out!");
+                    if (textInputData.trim().equals("help")) {
+                    	displayHelp();
+                    	inputField.setText("");
+                    } else {
+	                    Controller.startController();
+	                    
+	                    inputField.setText("");
+	
+	                    NotifierDialog.notify("Hi There! I'm a notification widget!", 
+	                    					  "Today we are creating a widget that allows us" +
+	                    					  "to show notifications that fade in and out!");
+                    }
                 }
+            }
+        });
+        
+        // We call the controller with an input "exit" so
+        // that the current state of the task list can be saved.
+        shell.addListener(SWT.Close, new Listener() {
+            public void handleEvent(Event event) {
+            	textInputData = "exit";
+            	Controller.startController();
             }
         });
       
         shell.open();
 		shell.layout();
+
         while(!shell.isDisposed()) {
-            if(!display.readAndDispatch()) {
-                display.sleep();
-            }
+        	
+        	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        	//System.out.println(timeStamp );
+        	
+        	if (timeStamp.trim().equals("20141018_200700") && hasNotified == false) {
+        		hasNotified = true;
+        		NotifierDialog.notify("Hi There! I'm a notification widget!", 
+				  					  "Today we are creating a widget that allows us" +
+				  					  "to show notifications that fade in and out!");
+        		
+        		// We only toggle the boolean after a delay, 
+        		// or multiple notifications will popup.
+        		Timer setHasNotifiedToFalse = new Timer();
+        		setHasNotifiedToFalse.schedule(new TimerTask() {
+        			public void run() {
+        				hasNotified = false;
+        			}
+        		}, 
+        		1000);
+        	}
+        	
+        	display.readAndDispatch();
+        	
+        	// Uncomment this and comment the line above if you
+        	// want the program to sleep if not in focus
+            // if(!display.readAndDispatch()) {
+            //    display.sleep();
+            // }
         }
+        display.dispose();
     }
 }

@@ -51,13 +51,15 @@ Current functions and how to use them
 6. Clear
   	- clear
   	- Clears all data
+
+7. Help
+	- help
+	- Displays the commands available and how to use them
   
-7. Exit
+8. Exit
   	- exit
   	- This exits the program
 
 To do 
 --------------
 1. Undo
-2. Help
-3. 

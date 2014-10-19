@@ -65,7 +65,7 @@ public class NotifierDialog {
      * @param type
      */
     public static void notify(String title, String message) {
-        _shell = new Shell(Display.getDefault().getActiveShell(), SWT.ON_TOP | SWT.NO_TRIM);
+        _shell = new Shell(Display.getDefault(), SWT.ON_TOP | SWT.NO_TRIM);
         _shell.setLayout(new FillLayout());
         _shell.setForeground(_fgColor);
         _shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -173,9 +173,7 @@ public class NotifierDialog {
 
         _shell.setSize(350, minHeight);
 
-        if (Display.getDefault().getActiveShell() == null || Display.getDefault().getActiveShell().getMonitor() == null) { return; }
-
-        Rectangle clientArea = Display.getDefault().getActiveShell().getMonitor().getClientArea();
+        Rectangle clientArea = Display.getDefault().getClientArea();
 
         int startX = clientArea.x + clientArea.width - 352;
         int startY = clientArea.y + clientArea.height - 102;
