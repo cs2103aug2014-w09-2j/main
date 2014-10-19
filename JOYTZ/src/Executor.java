@@ -217,9 +217,8 @@ public class Executor {
 	 *            : ExecutableCommand object containing the user's action
 	 * 
 	 */
-	private static void performSortAction(ExecutableCommand command) {
-		String sortKey = command.getIndicator();
-		feedback = new Feedback(false);
+	private static Feedback performSortAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(false);
 
 		// pre-condition
 		assert !sortKey.equals("") : "Sort no category";
