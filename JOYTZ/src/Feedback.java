@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class Feedback {
 
 	// attributes
-	boolean result;
-	String messageShowToUser;
+	private boolean result;
+	private String messageShowToUser;
 
 	// ArrayList only for display method.
-	ArrayList<String> taskList = new ArrayList<String>();
+	private ArrayList<String> taskList = new ArrayList<String>();
+	
+	// boolean 
 
 	/**
 	 * Constructor

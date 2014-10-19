@@ -124,8 +124,8 @@ public class Executor {
 				priority);
 
 		// pre-condition
-		assert !name.equals("") : "No task name";
-		assert !t.equals(new Task()) : "No task created";
+		//assert !name.equals("") : "No task name";
+		//assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -136,7 +136,7 @@ public class Executor {
 		}
 
 		// post-condition
-		assert fb.getResult() : "Fail to add tasks";
+		//assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -161,7 +161,7 @@ public class Executor {
 		String taskName;
 
 		// pre-condition
-		assert taskId != -1 : "Task index " + taskId;
+		//assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
@@ -195,8 +195,8 @@ public class Executor {
 		String taskName;
 
 		// pre-condition
-		assert !updateIndicator.equals("") : "No update indicator";
-		assert !updateKeyValue.equals("") : "No update key";
+		//assert !updateIndicator.equals("") : "No update indicator";
+		//assert !updateKeyValue.equals("") : "No update key";
 
 		try {
 			fb.setResult(Storage
@@ -240,15 +240,12 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
-<<<<<<< HEAD
-=======
 		String sortKey = command.getIndicator();
 
->>>>>>> 690f7e551323ce88aa650988f16825dfdc20fa24
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		assert !sortKey.equals("") : "Sort no category";
+		//assert !sortKey.equals("") : "Sort no category";
 
 		// check what category user want to sort
 		try {
@@ -283,8 +280,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		assert !searchIndicator.equals("") : "No search indicator";
-		assert !searchValue.equals("") : "No search value";
+		//assert !searchIndicator.equals("") : "No search indicator";
+		//assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -295,8 +292,8 @@ public class Executor {
 		}
 
 		// post-condition
-		assert !searchValue.equals("") : "No given search value";
-		assert !resultList.equals(null) : "No result is found";
+		//assert !searchValue.equals("") : "No given search value";
+		//assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
