@@ -1,6 +1,6 @@
 //package V1;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Executor {
 
@@ -102,14 +102,14 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performAddAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(false);
-
 		String name = command.getTaskName();
 		String description = command.getTaskDescription();
 		Long startTime = Long.parseLong(command.getTaskName());
 		Long endTime = Long.parseLong(command.getTaskEndTiming());
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
+		
+		Feedback fb = new Feedback(false);
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
@@ -228,10 +228,12 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
+		
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
@@ -259,12 +261,14 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
+	 * @return
 	 * 
 	 */
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
 		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
+		
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
