@@ -337,7 +337,17 @@ public class Analyzer {
 				if (dateTime[1].length() == 7) {
 					hour = Integer.parseInt(dateTime[1].substring(0, 2));
 					minute = Integer.parseInt(dateTime[1].substring(3, 5));
-					indicator = dateTime[0].substring(5).toLowerCase();
+					indicator = dateTime[1].substring(5).toLowerCase();
+
+					if (indicator.equals("pm") && hour != 12) {
+						hour = hour + 12;
+					} else if (indicator.equals("am") && hour == 12) {
+						hour = 0;
+					}
+				} else {
+					hour = Integer.parseInt(dateTime[1].substring(0, 1));
+					minute = Integer.parseInt(dateTime[1].substring(2, 4));
+					indicator = dateTime[1].substring(4).toLowerCase();
 
 					if (indicator.equals("pm")) {
 						hour = hour + 12;
