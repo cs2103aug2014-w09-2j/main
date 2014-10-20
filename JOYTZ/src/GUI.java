@@ -51,8 +51,8 @@ public class GUI {
     private static TableColumn tblclmnLocation;
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
-    private static boolean hasNotified = false;
     private static TableColumn tblclmnDeadline;
+    private static boolean hasNotified = false;
     
     /**
      * A getter method for the controller to obtain the user's input

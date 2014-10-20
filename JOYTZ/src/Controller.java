@@ -79,6 +79,7 @@ public class Controller {
 									"===================\n");
 				
 				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+				
 				if (i == feedback.getTaskList().size() - 1) {
 					isLastItem = true;
 				}
