@@ -65,11 +65,11 @@ public class Controller {
      * @author Joel
 	 */
     private static void parseDisplayTasks(String action) {
-    	boolean isDateEmpty = false;
-    	String[] dateArr = null;
+    	boolean isLastItem = false;
     	
     	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
-    		GUI.updateTable(0, "", "", "", "", "", "",action);
+    		isLastItem = true;
+    		GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
     		
     	} else {									// all other commands
 			for (int i = 0; i < feedback.getTaskList().size(); i++) {
@@ -79,6 +79,9 @@ public class Controller {
 									"===================\n");
 				
 				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+				if (i == feedback.getTaskList().size() - 1) {
+					isLastItem = true;
+				}
 				
 				/* Commented because there's too much stuff in the console
 				LOGGER.info("==============\n" +
@@ -95,10 +98,10 @@ public class Controller {
 				
 				if (parameterArr.length == 5) {
 					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-									parameterArr[4], parameterArr[1], "", action);
+									parameterArr[4], parameterArr[1], "", action, isLastItem);
 				} else if (parameterArr.length == 6) {
 					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-									parameterArr[4], parameterArr[1], parameterArr[5], action);
+									parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
 				}
 				
 				/*

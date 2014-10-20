@@ -150,14 +150,15 @@ public class GUI {
      * @param location			Location of the given task
      * @param description		Description for the given task
      * @param priority			Priority level of the given task
-     * @param action			Action input by the user (add, delete, etc.) 
+     * @param action			Action input by the user (add, delete, etc.)
+     * @param isLastRow			Is this the last item 
      * 
      * @author Joel
 	 */
     public static void updateTable(int taskNumber, String startDate, String endDate,
     							   String name, String location, 
     							   String description, String priority,
-    							   String action) {
+    							   String action, boolean isLastRow) {
     	
     	action = action.trim();
 
@@ -185,7 +186,10 @@ public class GUI {
 	        item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
 	        							description, priority });
 		}
-		resizeTable();
+		
+		if (isLastRow == true) {
+			resizeTable();
+		}
     } 
     
     /**
@@ -205,11 +209,11 @@ public class GUI {
     	
     	// Resize all the columns to fit the data
     	// Note: Packing is extremely slow
-		// tblclmnNo.pack();
+		tblclmnNo.pack();
         tblclmnStartedOn.pack();
         tblclmnDeadline.pack();
         tblclmnName.pack();
-        // tblclmnPriority.pack();
+        tblclmnPriority.pack();
         tblclmnDescription.pack();
         tblclmnLocation.pack();
         
