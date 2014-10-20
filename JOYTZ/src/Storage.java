@@ -293,18 +293,6 @@ public class Storage {
 		taskList.clear();
 	}
 	
-	/**
-	 * Undo user operation t times.
-	 * 
-	 * @return
-	 */
-
-	public static boolean undo(int t){
-		
-		
-		return true;
-		
-	}
 	
 	/**
 	 * Sort the task in taskList corresponding to parameter key. if the key is

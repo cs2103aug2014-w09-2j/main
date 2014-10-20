@@ -2,6 +2,8 @@
 
 import java.util.*;
 
+import org.hamcrest.Condition.Step;
+
 public class Executor {
 
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
@@ -30,7 +32,9 @@ public class Executor {
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
-
+	
+	// these are for Undo Method
+	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
@@ -310,18 +314,52 @@ public class Executor {
 	}
 
 	/**
-	 * Perform undo action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Perform undo action 
 	 * 
+	 * @param int numOfStep
+	 * @return 
 	 */
+	
+	private static Feedback performUndoAction(int numOfStep){
+		Feedback fb = new Feedback(false);
+		
+		int limit = Integer.min(commandStack.size(), numOfStep);
+		
+		for (int step=0; step<=limit; step++){
+			Feedback feedback = performUndoAction();
+			if (!feedback.getResult()){
+				fb.setMessageShowToUser(feedback.getMessageShowToUser());
+				return fb;
+			}
+		}
+		
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
+		
+		return fb;
+	}
+	
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(false);
 		
 		try {
-			
+			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
+			commandStack.pop();
+			while (!commandStack.isEmpty()){
+				temp.push(commandStack.pop());
+			}
+			while (!temp.isEmpty()){
+				ExecutableCommand exeCommand = temp.pop();
+				proceedAnalyzedCommand(exeCommand);
+				commandStack.push(exeCommand);
+			}
 		}catch (Exception e){
 			fb.setMessageShowToUser(e.getMessage());
+			return fb;
 		}
+		
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
 		
 		return fb;
 	}
