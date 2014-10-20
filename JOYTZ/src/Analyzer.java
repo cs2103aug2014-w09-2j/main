@@ -92,7 +92,7 @@ public class Analyzer {
 			tempCommand.setTaskStartTiming(timing);
 		}
 		if (arg.length >= 4) {
-			String timing = dateTimeSeparator(arg[2]);
+			String timing = dateTimeSeparator(arg[3]);
 
 			tempCommand.setTaskEndTiming(timing);
 		}
@@ -288,6 +288,10 @@ public class Analyzer {
 	}
 
 	private static String dateTimeSeparator(String timing) {
+		if (timing.equals("")) {
+			return "";
+		}
+
 		String[] dateTime = timing.trim().split(" ");
 		String[] temp;
 		int day = 0;
@@ -355,6 +359,10 @@ public class Analyzer {
 				}
 			}
 		}
+
+		System.out.println(day);
+		System.out.println(month);
+		System.out.println(year);
 
 		convertedDate = new Date(year, month, day, hour, minute);
 

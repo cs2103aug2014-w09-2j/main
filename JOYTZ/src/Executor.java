@@ -32,7 +32,7 @@ public class Executor {
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
-	
+
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
 	// these are for Save and Reload.
@@ -40,10 +40,10 @@ public class Executor {
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 
 	public static Feedback feedback;
-	
+
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
-	
-	private static void storeCommand(ExecutableCommand command){
+
+	private static void storeCommand(ExecutableCommand command) {
 		commandStack.push(command);
 	}
 
@@ -56,7 +56,7 @@ public class Executor {
 	 * 
 	 * 
 	 */
-	
+
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -120,31 +120,30 @@ public class Executor {
 		String priority = command.getTaskPriority();
 		String startTiming = command.getTaskStartTiming();
 		String endTiming = command.getTaskEndTiming();
-		
+
 		Long startTime = (long) 0;
 		Long endTime = (long) 0;
 
 		Feedback fb = new Feedback(false);
-		
+
 		if (startTiming.equals("") && endTiming.equals("")) {
 			startTime = Long.valueOf(startTiming);
 			endTime = Long.valueOf(endTiming);
-		}else if (startTiming.equals("")){
+		} else if (startTiming.equals("")) {
 			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
-		}else {
-			startTime = System.currentTimeMillis();
-			endTime = Long.MAX_VALUE;
+		} else {
+			startTime = Long.valueOf(startTiming);
+			endTime = Long.valueOf(endTiming);
 		}
-		
-		
+
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
 
 		// pre-condition
-		//assert !name.equals("") : "No task name";
-		//assert !t.equals(new Task()) : "No task created";
+		// assert !name.equals("") : "No task name";
+		// assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -154,7 +153,7 @@ public class Executor {
 		}
 
 		// post-condition
-		//assert fb.getResult() : "Fail to add tasks";
+		// assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -320,53 +319,53 @@ public class Executor {
 	}
 
 	/**
-	 * Perform undo action 
+	 * Perform undo action
 	 * 
 	 * @param int numOfStep
-	 * @return 
+	 * @return
 	 */
-	
-	private static Feedback performUndoAction(int numOfStep){
+
+	private static Feedback performUndoAction(int numOfStep) {
 		Feedback fb = new Feedback(false);
-		
+
 		int limit = Integer.min(commandStack.size(), numOfStep);
-		
-		for (int step=0; step<=limit; step++){
+
+		for (int step = 0; step <= limit; step++) {
 			Feedback feedback = performUndoAction();
-			if (!feedback.getResult()){
+			if (!feedback.getResult()) {
 				fb.setMessageShowToUser(feedback.getMessageShowToUser());
 				return fb;
 			}
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
-		
+
 		return fb;
 	}
-	
+
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(false);
-		
+
 		try {
 			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
 			commandStack.pop();
-			while (!commandStack.isEmpty()){
+			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
-			while (!temp.isEmpty()){
+			while (!temp.isEmpty()) {
 				ExecutableCommand exeCommand = temp.pop();
 				proceedAnalyzedCommand(exeCommand);
 				commandStack.push(exeCommand);
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
-		
+
 		return fb;
 	}
 
