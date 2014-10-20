@@ -36,6 +36,12 @@ public class Executor {
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 
 	public static Feedback feedback;
+	
+	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
+	
+	private static void storeCommand(ExecutableCommand command){
+		commandStack.push(command);
+	}
 
 	/**
 	 * Called by Controller to initialize Executor.
@@ -46,6 +52,7 @@ public class Executor {
 	 * 
 	 * 
 	 */
+	
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -86,6 +93,7 @@ public class Executor {
 		}
 
 		if (feedback.getResult()) {
+			storeCommand(command);
 			feedback.setTaskList(Storage.getTaskList());
 		}
 
@@ -306,8 +314,16 @@ public class Executor {
 	 * proceedAnalyzedCommand method
 	 * 
 	 */
-	private static void performUndoAction() {
-		return;
+	private static Feedback performUndoAction() {
+		Feedback fb = new Feedback(false);
+		
+		try {
+			
+		}catch (Exception e){
+			fb.setMessageShowToUser(e.getMessage());
+		}
+		
+		return fb;
 	}
 
 	/**

@@ -36,6 +36,7 @@ public class Storage {
 	// the file that used to save current tasks when user exit the program.
 	private static String taskListFileName = "TaskList.txt";
 	private static String historyFileName = "Histroy.txt";
+	private static String logFileName = "Log.txt";
 
 	// these are for reading the user saved file.
 	private static FileReader taskListFileReader;
@@ -272,7 +273,6 @@ public class Storage {
 	 * 
 	 * @return
 	 */
-
 	public static boolean clean() {
 		if (!isEmpty()) {
 			for (int itemId = 0; itemId < taskList.size(); itemId++) {
@@ -292,7 +292,20 @@ public class Storage {
 		history.clear();
 		taskList.clear();
 	}
+	
+	/**
+	 * Undo user operation t times.
+	 * 
+	 * @return
+	 */
 
+	public static boolean undo(int t){
+		
+		
+		return true;
+		
+	}
+	
 	/**
 	 * Sort the task in taskList corresponding to parameter key. if the key is
 	 * not valid, tasks are sorted by name;
