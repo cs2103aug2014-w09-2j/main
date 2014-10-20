@@ -27,7 +27,8 @@ public class Storage {
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> history = new ArrayList<Task>();
-	public static int numberOfTask = 0;
+	private static ArrayList<Task> taskWithoutDate = new ArrayList<Task>();
+ 	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
 	public static Timer timer = new Timer();
@@ -310,6 +311,10 @@ public class Storage {
 		}
 		Task.setSortKey(key);
 		Collections.sort(taskList);
+		
+		LOGGER.info("==============\n" + "Storage sort taskList. \n "
+				+ "====================\n");
+		
 		return true;
 	}
 

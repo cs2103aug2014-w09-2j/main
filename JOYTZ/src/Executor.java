@@ -114,7 +114,7 @@ public class Executor {
 		try {
 			startTime = Long.parseLong(command.getTaskStartTiming());
 			endTime = Long.parseLong(command.getTaskEndTiming());
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
