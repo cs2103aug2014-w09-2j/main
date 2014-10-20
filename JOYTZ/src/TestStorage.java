@@ -9,16 +9,16 @@ import org.junit.Test;
 
 
 public class TestStorage {
-	private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
 	@Test
 	public void testAddTask() {
 		Storage.cleanUpEveryThing();
 		Task task1 = new Task("task1", new Date().getTime(), new Date().getTime(), "Exam", "NUS", "high");
-		Task task2; 
+		Task task2 = new Task("task2", new Date().getTime(), new Date().getTime(), "Exam2", "SOC", "high");
 		
 		try {
 			assertEquals(true, Storage.add(task1));
+			assertEquals(true, Storage.add(task2));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,6 +51,7 @@ public class TestStorage {
 		Task task2 = new Task("task2", new Date().getTime(), new Date().getTime(), "Exam2", "SOC", "high");
 		
 		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
 		
 		try {
 			Storage.add(task1);
@@ -60,12 +61,14 @@ public class TestStorage {
 			String expectedDescriptionString = "Exam3";
 			String expectedLocationString = "SOC";
 			String expectedPriorityString = "medium";
-			Date expectedStartDate = (Date)dateFormat.parse("11-11-2015");
+			Date expectedStartDate = (Date)df.parse("11-11-2015");
+			Date expectedStartTime = (Date)tf.parse("13:30");
 			
 			assertEquals(true, Storage.update(1, "name", expectedNameString));
 			assertEquals(true, Storage.update(1, "description", expectedDescriptionString));
 			assertEquals(true, Storage.update(1, "location", expectedLocationString));
 			assertEquals(true, Storage.update(1, "start date", expectedStartDate.getTime()+""));
+			assertEquals(true, Storage.update(1, "start time", expectedStartTime.getTime()+""));
 			assertEquals(true, Storage.update(1, "priority", expectedPriorityString));
 			
 			String nameString = Storage.get(1).getTaskName();
@@ -79,6 +82,7 @@ public class TestStorage {
 			assertEquals(expectedLocationString, locationString);
 			assertEquals(expectedPriorityString, priorityString);
 			assertEquals(df.format(expectedStartDate), df.format(date));
+			assertEquals(tf.format(expectedStartTime), tf.format(date));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,7 +127,15 @@ public class TestStorage {
 			Storage.cleanUpEveryThing();
 			Storage.reloadFile();
 			
+			String expectedName1 = "task1";
+			String expectedName2 = "task2";
+			
+			String name1 = Storage.get(1).getTaskName();
+			String name2 = Storage.get(2).getTaskName();
+			
 			assertEquals(2, Storage.getTaskListSize());
+			assertEquals(expectedName1, name1);
+			assertEquals(expectedName2, name2);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
