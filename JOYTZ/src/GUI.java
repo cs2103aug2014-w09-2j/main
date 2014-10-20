@@ -47,10 +47,11 @@ public class GUI {
     private static Table table;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
-    private static TableColumn tblclmnDate;
+    private static TableColumn tblclmnStartedOn;
     private static TableColumn tblclmnLocation;
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
+    private static TableColumn tblclmnDeadline;
     private static boolean hasNotified = false;
     
     /**
@@ -143,22 +144,26 @@ public class GUI {
      * Updates the table in the GUI based on the given parameters
      *
      * @param taskNumber    	Index number of the task in the table
-     * @param date    			Deadline of the given task
+     * @param startDate    		Starting time of the given task
+     * @param endDate    		Deadline of the given task
      * @param name 				Name of the given task
      * @param location			Location of the given task
      * @param description		Description for the given task
-     * @param action			Action input by the user (add, delete, etc.) 
      * @param priority			Priority level of the given task
+     * @param action			Action input by the user (add, delete, etc.)
+     * @param isLastRow			Is this the last item 
      * 
      * @author Joel
 	 */
-    public static void updateTable(int taskNumber, String date, 
+    public static void updateTable(int taskNumber, String startDate, String endDate,
     							   String name, String location, 
-    							   String description, String action, 
-    							   String priority) {
+    							   String description, String priority,
+    							   String action, boolean isLastRow) {
+    	
+    	action = action.trim();
 
     	// To prevent multiple of the same entries, we clear the whole table first
-		if (taskNumber == 0) {
+		if (taskNumber == 0 || action.equals("exit")) {
 			table.removeAll();
 			assert table.getItemCount() == 0;
 		}
@@ -169,7 +174,8 @@ public class GUI {
 						"Writing to table (GUI):  \n" + 
 						"	Action = " + action + "\n" + 
 						"	Name = " + name + "\n" +
-						"	Deadline = " + date + "\n" + 
+						"	Start time = " + startDate + "\n" + 
+						"	End time = " + endDate + "\n" + 
 						"	Description = " + description + "\n" +
 						"	Location = " + location + "\n" +
 						"	Priority = " + priority + "\n" +
@@ -177,10 +183,13 @@ public class GUI {
 			
 			// 1 row = 1 TableItem
 		    TableItem item = new TableItem(table, SWT.NONE);
-	        item.setText(new String[] { (taskNumber+1) + ".", date, name, location, 
+	        item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
 	        							description, priority });
 		}
-		resizeTable();
+		
+		if (isLastRow == true) {
+			resizeTable();
+		}
     } 
     
     /**
@@ -194,23 +203,25 @@ public class GUI {
     	int scrollbarWidth = table.getVerticalBar().getSize().x;
     	
     	int widthLeft = tableWidth - tblclmnNo.getWidth() - 
-    					tblclmnDate.getWidth() - scrollbarWidth;
-    	int widthPerColumn = widthLeft / 4;
+    					tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
+    					tblclmnPriority.getWidth() - scrollbarWidth;
+    	int widthPerColumn = widthLeft / 3;
     	
-    	// Resize all the columns to fit the data,
+    	// Resize all the columns to fit the data
+    	// Note: Packing is extremely slow
 		tblclmnNo.pack();
-        tblclmnDate.pack();
+        tblclmnStartedOn.pack();
+        tblclmnDeadline.pack();
         tblclmnName.pack();
         tblclmnPriority.pack();
         tblclmnDescription.pack();
         tblclmnLocation.pack();
         
-        // prevent it from being too big
+        // Prevent it from being too big.
+        // The other columns do not undergo this as they have a 
+        // fixed format and are unlikely to become too big.
 		if (tblclmnName.getWidth() >= widthPerColumn) {
 			tblclmnName.setWidth(widthPerColumn);
-		}
-		if (tblclmnPriority.getWidth() >= widthPerColumn) {
-			tblclmnPriority.setWidth(widthPerColumn);
 		}
 		if (tblclmnDescription.getWidth() >= widthPerColumn) {
 			tblclmnDescription.setWidth(widthPerColumn);
@@ -225,7 +236,7 @@ public class GUI {
         Shell shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
 		shell.setToolTipText("To-do list app of the year");
-		shell.setSize(641, 497);
+		shell.setSize(647, 497);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("JOYTZ");
         
@@ -243,12 +254,16 @@ public class GUI {
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
         
-        tblclmnDate = new TableColumn(table, SWT.CENTER);
-        tblclmnDate.setWidth(92);
-        tblclmnDate.setText("Deadline");
+        tblclmnStartedOn = new TableColumn(table, SWT.CENTER);
+        tblclmnStartedOn.setWidth(92);
+        tblclmnStartedOn.setText("Started On");
+        
+        tblclmnDeadline = new TableColumn(table, SWT.CENTER);
+        tblclmnDeadline.setWidth(100);
+        tblclmnDeadline.setText("Deadline");
         
         tblclmnName = new TableColumn(table, SWT.CENTER);
-        tblclmnName.setWidth(154);
+        tblclmnName.setWidth(100);
         tblclmnName.setText("Task Name");
         
         tblclmnLocation = new TableColumn(table, SWT.CENTER);
@@ -256,11 +271,11 @@ public class GUI {
         tblclmnLocation.setText("Location");
         
         tblclmnDescription = new TableColumn(table, SWT.CENTER);
-        tblclmnDescription.setWidth(118);
+        tblclmnDescription.setWidth(103);
         tblclmnDescription.setText("Description");
         
         tblclmnPriority = new TableColumn(table, SWT.CENTER);
-        tblclmnPriority.setWidth(100);
+        tblclmnPriority.setWidth(72);
         tblclmnPriority.setText("Priority");
         
         outputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
@@ -310,6 +325,7 @@ public class GUI {
             public void handleEvent(Event event) {
             	textInputData = "exit";
             	Controller.startController();
+            	System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
       

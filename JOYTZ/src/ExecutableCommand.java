@@ -81,7 +81,7 @@ public class ExecutableCommand {
 		this.taskStartTiming = timing;
 	}
 
-	public void setTaskEndDate(String timing) {
+	public void setTaskEndTiming(String timing) {
 		this.taskEndTiming = timing;
 	}
 

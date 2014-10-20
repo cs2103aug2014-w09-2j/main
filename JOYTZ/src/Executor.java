@@ -118,19 +118,25 @@ public class Executor {
 		String description = command.getTaskDescription();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
+		String startTiming = command.getTaskStartTiming();
+		String endTiming = command.getTaskEndTiming();
 		Long startTime = (long) 0;
 		Long endTime = (long) 0;
 
 		Feedback fb = new Feedback(false);
-
-		try {
-			startTime = Long.parseLong(command.getTaskStartTiming());
-			endTime = Long.parseLong(command.getTaskEndTiming());
-		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
-			return fb;
+		
+		if (isLongType(startTiming) && isLongType(endTiming)) {
+			startTime = Long.valueOf(startTiming);
+			endTime = Long.valueOf(endTiming);
 		}
-
+		if(isLongType(startTiming)){
+			startTime = Long.valueOf(startTiming);
+		}
+		if(isLongType(endTiming)){
+			endTime = Long.valueOf(endTiming);
+		}
+		
+		
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
@@ -144,7 +150,6 @@ public class Executor {
 			fb.setResult(Storage.add(t));
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
-			return fb;
 		}
 
 		// post-condition
@@ -173,7 +178,7 @@ public class Executor {
 		String taskName;
 
 		// pre-condition
-		//assert taskId != -1 : "Task index " + taskId;
+		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
@@ -207,8 +212,8 @@ public class Executor {
 		String taskName;
 
 		// pre-condition
-		//assert !updateIndicator.equals("") : "No update indicator";
-		//assert !updateKeyValue.equals("") : "No update key";
+		assert !updateIndicator.equals("") : "No update indicator";
+		assert !updateKeyValue.equals("") : "No update key";
 
 		try {
 			fb.setResult(Storage
@@ -257,7 +262,7 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		//assert !sortKey.equals("") : "Sort no category";
+		// assert !sortKey.equals("") : "Sort no category";
 
 		// check what category user want to sort
 		try {
@@ -292,8 +297,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		//assert !searchIndicator.equals("") : "No search indicator";
-		//assert !searchValue.equals("") : "No search value";
+		// assert !searchIndicator.equals("") : "No search indicator";
+		// assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -304,8 +309,8 @@ public class Executor {
 		}
 
 		// post-condition
-		//assert !searchValue.equals("") : "No given search value";
-		//assert !resultList.equals(null) : "No result is found";
+		// assert !searchValue.equals("") : "No given search value";
+		// assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
@@ -376,14 +381,13 @@ public class Executor {
 		try {
 			Storage.saveFile();
 		} catch (Exception e) {
-			fb.setMessageShowToUser(String
-					.format(ERROR_FAIL_SAVE_TO_FILE));
+			fb.setMessageShowToUser(String.format(ERROR_FAIL_SAVE_TO_FILE));
 			return fb;
 		}
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
-		
+
 		return fb;
 	}
 
@@ -393,5 +397,14 @@ public class Executor {
 	 */
 	public static Feedback getFeedback() {
 		return feedback;
+	}
+
+	private static boolean isLongType(String s) {
+		try {
+			Long.valueOf(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
 	}
 }

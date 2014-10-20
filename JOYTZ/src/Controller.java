@@ -65,11 +65,11 @@ public class Controller {
      * @author Joel
 	 */
     private static void parseDisplayTasks(String action) {
-    	boolean isDateEmpty = false;
-    	String[] dateArr = null;
+    	boolean isLastItem = false;
     	
     	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
-    		GUI.updateTable(0, "", "", "", "", action, "");
+    		isLastItem = true;
+    		GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
     		
     	} else {									// all other commands
 			for (int i = 0; i < feedback.getTaskList().size(); i++) {
@@ -80,28 +80,35 @@ public class Controller {
 				
 				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
 				
-				if (parameterArr[2].trim().length() == 0) {
-					isDateEmpty = true;
-				}
-				else {
-					dateArr = parameterArr[2].trim().split(" ");
+				if (i == feedback.getTaskList().size() - 1) {
+					isLastItem = true;
 				}
 				
-				// Parameters: updateTable(Table index number, date, name, location,
-				//					  	   description, action, priority);
-				if (parameterArr.length == 4 && isDateEmpty == false) {
-					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2],
-									parameterArr[0], parameterArr[3], parameterArr[1], action, "");
-				} else if (parameterArr.length == 5 && isDateEmpty == false) {
-					GUI.updateTable(i, dateArr[0] + " " + dateArr[1] + " " + dateArr[2], 
-									parameterArr[0], parameterArr[3], parameterArr[1], action, parameterArr[4]);
-				} else if (parameterArr.length == 4 && isDateEmpty == true) {
-					GUI.updateTable(i, parameterArr[2],	parameterArr[0], parameterArr[3], 
-									parameterArr[1], action, "");
-				} else if (parameterArr.length == 5 && isDateEmpty == true) {
-					GUI.updateTable(i, parameterArr[2], parameterArr[0], parameterArr[3], 
-									parameterArr[1], action, parameterArr[4]);
+				/* Commented because there's too much stuff in the console
+				LOGGER.info("==============\n" +
+						"After splitting: \n" + 
+						"	Action = " + action + "\n" + 
+						"	Name = " + parameterArr[0] + "\n" +
+						"	Start time = " + parameterArr[2] + "\n" + 
+						"	End time = " + parameterArr[3] + "\n" + 
+						"	Description = " + parameterArr[1] + "\n" +
+						"	Location = " + parameterArr[4] + "\n" +
+						"	Priority = " + parameterArr[5] + "\n" +
+						"====================\n");
+				*/
+				
+				if (parameterArr.length == 5) {
+					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+									parameterArr[4], parameterArr[1], "", action, isLastItem);
+				} else if (parameterArr.length == 6) {
+					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+									parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
 				}
+				
+				/*
+				 * Parameters: updateTable(Table index number, start time, end time, name, 
+				 *							location, description, priority, action);
+				 */ 
 			}
     	}
 	}
@@ -125,10 +132,12 @@ public class Controller {
         inputCommandObject = convertStringToCommand(inputCommandString);
         assert inputCommandObject != null;
         
+        /* Commented because there's too much stuff in the console.
         LOGGER.info("==============\n" +
 				"Command object: \n" + 
 				"	" + inputCommandObject.getUserCommand() + "\n" + 
 				"====================\n");
+		*/
         
     	try {
 			parsedCommand = analyzeInput(inputCommandObject);
