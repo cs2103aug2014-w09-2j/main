@@ -374,6 +374,7 @@ public class Storage {
 			Task task = list.get(i);
 			String taskString = task.getTaskName();
 			Long trivalDate = (long) 0;
+			Long maxDate = Long.MAX_VALUE;
 
 			// description
 			if (!task.getTaskDescription().equals("")) {
@@ -384,7 +385,7 @@ public class Storage {
 			}
 
 			// startTime
-			if (!task.getTaskStartTime().equals(trivalDate)) {
+			if (!task.getTaskStartTime().equals(trivalDate) && !task.getTaskStartTime().equals(maxDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(convertLongToDateFormat(
 						task.getTaskStartTime()).toString());
@@ -393,7 +394,7 @@ public class Storage {
 			}
 
 			// endTime
-			if (!task.getTaskEndTime().equals(trivalDate)) {
+			if (!task.getTaskEndTime().equals(trivalDate) && !task.getTaskEndTime().equals(maxDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(convertLongToDateFormat(
 						task.getTaskEndTime()).toString());

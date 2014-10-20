@@ -2,8 +2,6 @@
 
 import java.util.*;
 
-import org.hamcrest.Condition.Step;
-
 public class Executor {
 
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
