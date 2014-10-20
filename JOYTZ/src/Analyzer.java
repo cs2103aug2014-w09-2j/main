@@ -94,7 +94,7 @@ public class Analyzer {
 		if (arg.length >= 4) {
 			String timing = dateTimeSeparator(arg[2]);
 
-			tempCommand.setTaskStartTiming(timing);
+			tempCommand.setTaskEndTiming(timing);
 		}
 		if (arg.length >= 5) {
 			tempCommand.setTaskLocation(arg[4]);
@@ -194,8 +194,7 @@ public class Analyzer {
 
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("sort");
-		
-		
+
 		// have to check the indicator here.
 		if (arg.length != 0) {
 			String sortIndicator = arg[0].toLowerCase();
@@ -296,12 +295,12 @@ public class Analyzer {
 		int year = 0;
 		int hour = 0;
 		int minute = 0;
-		String indicator;
+		String indicator = "";
 		Date convertedDate;
 
 		if (dateTime.length >= 1) {
-			if (dateTime[0].contains("\"")) {
-				temp = dateTime[0].trim().split("\"");
+			if (dateTime[0].contains("/")) {
+				temp = dateTime[0].trim().split("/");
 				day = Integer.parseInt(temp[0]);
 				month = Integer.parseInt(temp[1]);
 				year = Integer.parseInt(temp[2]);
@@ -311,6 +310,16 @@ public class Analyzer {
 					minute = Integer.parseInt(dateTime[0].substring(3, 5));
 					indicator = dateTime[0].substring(5).toLowerCase();
 
+					if (indicator.equals("pm") && hour != 12) {
+						hour = hour + 12;
+					} else if (indicator.equals("am") && hour == 12) {
+						hour = 0;
+					}
+				} else {
+					hour = Integer.parseInt(dateTime[0].substring(0, 1));
+					minute = Integer.parseInt(dateTime[0].substring(2, 4));
+					indicator = dateTime[0].substring(4).toLowerCase();
+
 					if (indicator.equals("pm")) {
 						hour = hour + 12;
 					}
@@ -319,8 +328,8 @@ public class Analyzer {
 		}
 
 		if (dateTime.length == 2) {
-			if (dateTime[1].contains("\"")) {
-				temp = dateTime[1].trim().split("\"");
+			if (dateTime[1].contains("/")) {
+				temp = dateTime[1].trim().split("/");
 				day = Integer.parseInt(temp[0]);
 				month = Integer.parseInt(temp[1]);
 				year = Integer.parseInt(temp[2]);
