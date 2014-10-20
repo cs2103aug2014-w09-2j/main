@@ -16,7 +16,7 @@ public class Storage {
 	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
 	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
 	private static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
-
+	
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
@@ -27,7 +27,6 @@ public class Storage {
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> history = new ArrayList<Task>();
-	private static ArrayList<Task> taskWithoutDate = new ArrayList<Task>();
  	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
@@ -36,7 +35,6 @@ public class Storage {
 	// the file that used to save current tasks when user exit the program.
 	private static String taskListFileName = "TaskList.txt";
 	private static String historyFileName = "Histroy.txt";
-	private static String logFileName = "Log.txt";
 
 	// these are for reading the user saved file.
 	private static FileReader taskListFileReader;
@@ -57,7 +55,7 @@ public class Storage {
 	private static String messageStringInFile = "User saved at %s.\n";
 
 	/**
-	 * addTask() method add in task passed by Executor.
+	 * add() method add in task passed by Executor.
 	 * 
 	 * @param Task
 	 * @throws Exception

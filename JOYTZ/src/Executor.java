@@ -120,20 +120,21 @@ public class Executor {
 		String priority = command.getTaskPriority();
 		String startTiming = command.getTaskStartTiming();
 		String endTiming = command.getTaskEndTiming();
+		
 		Long startTime = (long) 0;
 		Long endTime = (long) 0;
 
 		Feedback fb = new Feedback(false);
 		
-		if (isLongType(startTiming) && isLongType(endTiming)) {
+		if (startTiming.equals("") && endTiming.equals("")) {
 			startTime = Long.valueOf(startTiming);
 			endTime = Long.valueOf(endTiming);
-		}
-		if(isLongType(startTiming)){
-			startTime = Long.valueOf(startTiming);
-		}
-		if(isLongType(endTiming)){
+		}else if (startTiming.equals("")){
+			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
+		}else {
+			startTime = System.currentTimeMillis();
+			endTime = Long.MAX_VALUE;
 		}
 		
 		
