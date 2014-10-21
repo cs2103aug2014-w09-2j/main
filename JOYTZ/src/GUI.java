@@ -44,7 +44,6 @@ public class GUI {
 
     private static StyledText inputField;
     private static StyledText outputField;
-    private static String textInputData = "";
     private static Table table;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
@@ -55,17 +54,6 @@ public class GUI {
     private static TableColumn tblclmnDeadline;
     private static boolean hasNotified = false;
     private static Display display;
-
-    /**
-     * A getter method for the controller to obtain the user's input
-     *
-     * @return	The user's input string
-     * 
-     * @author Joel
-     */
-    public static String getUserInput() {
-        return textInputData;        
-    }
 
     /**
      * Displays a feedback string in the GUI after each user command
@@ -320,19 +308,13 @@ public class GUI {
             // @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {
-                    textInputData = inputField.getText();
-
-                    if (textInputData.trim().equals("help")) {
+                    if (inputField.getText().trim().equals("help")) {
                         displayHelp();
                         inputField.setText("");
                     } else {
-                        Controller.startController();
+                        Controller.startController(inputField.getText());
 
                         inputField.setText("");
-
-                        NotifierDialog.notify("Hi There! I'm a notification widget!", 
-                                              "Today we are creating a widget that allows us" +
-                                              "to show notifications that fade in and out!");
                     }
                 }
             }
@@ -342,8 +324,7 @@ public class GUI {
         // that the current state of the task list can be saved.
         shell.addListener(SWT.Close, new Listener() {
             public void handleEvent(Event event) {
-                textInputData = "exit";
-                Controller.startController();
+                Controller.startController("exit");
                 System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
@@ -353,6 +334,7 @@ public class GUI {
 
         while(!shell.isDisposed()) {
 
+            
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
             //System.out.println(timeStamp );
 

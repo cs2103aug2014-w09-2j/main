@@ -9,22 +9,10 @@ public class Controller {
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
 
-    private static String inputCommandString;
     private static Command inputCommandObject;
     private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-
-    /**
-     * A getter method to obtain the user's input from the GUI
-     *
-     * @return	The user's input string
-     * 
-     * @author Joel
-     */
-    private static String getInput() {
-        return GUI.getUserInput();
-    }
 
     /**
      * Called at the end of controller runtime to process 
@@ -123,8 +111,7 @@ public class Controller {
      * 
      * @author Joel
      */
-    public static void startController() {
-        inputCommandString = getInput();
+    public static void startController(String inputCommandString) {
         assert inputCommandString != null;
 
         LOGGER.info("==============\n" +
