@@ -1,19 +1,22 @@
 import static org.junit.Assert.*;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Test;
 
 public class TestAnalyzer {
-	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
-	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
-	private static final String ERROR_INVALID_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_NULL_UPDATE_INDICATOR = "Item in task to be updated is not indicated.\n";
-	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
+	private static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
+	private static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
+	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
+	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
+	private static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
+	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 
-	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	private static Date d1 = new Date(114, 9, 15, -1, -1);
+	private static Date d2 = new Date(114, 9, 21, -1, -1);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -24,20 +27,18 @@ public class TestAnalyzer {
 		Command test4 = new Command(
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014");
 		Command test5 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014~NUS");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2014~~NUS");
 		Command test6 = new Command(
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
 		Command test7 = new Command(
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
 
 		ExecutableCommand expected = new ExecutableCommand("add");
-		expected.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
+		expected.setErrorMessage(ERROR_NULL_TASK);
 		expected.setTaskName("meeting with friends");
 		expected.setTaskDescription("discuss about CS2103T project");
-		expected.setTaskStartTiming(String.valueOf((java.util.Date) df
-				.parse("14/10/2014")));
-		expected.setTaskEndTiming(String.valueOf((java.util.Date) df
-				.parse("20/10/2014")));
+		expected.setTaskStartTiming(String.valueOf(d1.getTime()));
+		expected.setTaskEndTiming(String.valueOf(d2.getTime()));
 		expected.setTaskLocation("NUS");
 		expected.setTaskPriority("medium");
 
@@ -88,10 +89,10 @@ public class TestAnalyzer {
 		expected.setTaskName("meeting with friends");
 
 		ExecutableCommand expected2 = new ExecutableCommand("delete");
-		expected2.setErrorMessage(ERROR_INVALID_INDEX);
+		expected2.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
 		ExecutableCommand expected3 = new ExecutableCommand("delete");
-		expected3.setErrorMessage(ERROR_INVALID_ARGUMENT);
+		expected3.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
 		// test case 1
 		assertEquals("null argument case is not handled",
@@ -115,30 +116,18 @@ public class TestAnalyzer {
 		Command test2 = new Command("update~2");
 		Command test3 = new Command("update~meeting");
 		Command test4 = new Command("update~2~name~dating");
-		Command test5 = new Command(
-				"update~2~description~discussion about CS2103T");
-		Command test6 = new Command("update~2~deadline~27/10/2014");
-		Command test7 = new Command("update~2~location~NTU");
-		Command test8 = new Command("update~2~priority~high");
 
 		ExecutableCommand expected = new ExecutableCommand("update");
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
-		expected.setTaskName("meeting");
-		expected.setTaskDescription("discussion about CS2103T");
-		expected.setTaskStartTiming(String.valueOf((java.util.Date) df
-				.parse("27/10/2014")));
-		expected.setTaskLocation("NTU");
-		expected.setTaskPriority("high");
-		expected.setTaskId(2);
 
 		ExecutableCommand expected2 = new ExecutableCommand("update");
-		expected2.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
+		expected2.setErrorMessage(ERROR_NULL_INDICATOR);
 
 		ExecutableCommand expected3 = new ExecutableCommand("update");
-		expected3.setErrorMessage(ERROR_NULL_UPDATE_INDICATOR);
+		expected3.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
 		ExecutableCommand expected4 = new ExecutableCommand("update");
-		expected4.setTaskName("dating");
+		expected4.setKey("dating");
 
 		// test case 1
 		assertEquals("null argument case is not handled",
@@ -156,28 +145,8 @@ public class TestAnalyzer {
 						.getErrorMessage());
 
 		// test case 4
-		assertEquals("fail to get task name to be updated",
-				expected4.getTaskName(), Analyzer.runAnalyzer(test4)
-						.getTaskName());
-
-		// test case 5
-		assertEquals("fail to get task description to be updated",
-				expected.getTaskId(), Analyzer.runAnalyzer(test5).getTaskId());
-
-		// test case 6
-		assertEquals("fail to get task deadline to be updated",
-				expected.getTaskStartTiming(), Analyzer.runAnalyzer(test6)
-						.getTaskStartTiming());
-
-		// test case 7
-		assertEquals("fail to get task location to be updated",
-				expected.getTaskLocation(), Analyzer.runAnalyzer(test7)
-						.getTaskLocation());
-
-		// test case 8
-		assertEquals("fail to get task priority to be updated",
-				expected.getTaskPriority(), Analyzer.runAnalyzer(test8)
-						.getTaskPriority());
+		assertEquals("fail to get task name to be updated", expected4.getKey(),
+				Analyzer.runAnalyzer(test4).getKey());
 
 	}
 

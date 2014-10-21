@@ -3,22 +3,20 @@
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import org.eclipse.ui.internal.services.INestable;
 
 public class Analyzer {
-	private static final String ERROR_NULL_TASK_INDEX = "Task index is not indicated.\n";
-	private static final String ERROR_NULL_COMMAND = "Command is not indicated.\n";
-	private static final String ERROR_NULL_TASK_TO_ADD = "Task to be added is not indicated.\n";
-	private static final String ERROR_NULL_TASK_TO_SEARCH = "Task to be searched is not indicated.\n";
+	private static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
+	private static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
+	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
 	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
-	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_ARGUMENT = "The input argument is invalid.\n";
-	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
+	private static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
+	private static final String[] VALID_INDICATOR = new String[] { "name",
+			"description", "start date", "start time", "end date", "end time",
+			"location", "priority" };
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
@@ -77,7 +75,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand("add");
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
+			tempCommand.setErrorMessage(ERROR_NULL_TASK);
 			return tempCommand;
 		}
 
@@ -113,20 +111,13 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
-
+			return tempCommand;
+		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
+			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 			return tempCommand;
 		}
 
-		if (isInteger(arg[0])) {
-			int index = Integer.parseInt(arg[0]);
-			if (index < 1) {
-				tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-			} else {
-				tempCommand.setTaskId(Integer.parseInt(arg[0]));
-			}
-		} else {
-			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
-		}
+		tempCommand.setTaskId(Integer.parseInt(arg[0]));
 
 		return tempCommand;
 	}
@@ -140,26 +131,19 @@ public class Analyzer {
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
+		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
+			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+			return tempCommand;
 		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 			return tempCommand;
-		} else if (!isInteger(arg[0])) {
-			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
-			return tempCommand;
-		} else if (Integer.parseInt(arg[0]) < 1) {
-			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		} else if (!isValidIndicator(arg[1])) {
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return tempCommand;
 		}
 
 		String taskToBeUpdated = arg[0];
-
-		if (isInteger(taskToBeUpdated)) {
-			tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
-		} else {
-			tempCommand.setErrorMessage(ERROR_INVALID_ARGUMENT);
-
-			return tempCommand;
-		}
+		tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
 
 		String updateIndicator = arg[1].toLowerCase();
 		String updatedItem;
@@ -213,11 +197,9 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
-
 			return tempCommand;
 		} else if (arg.length == 1) {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK_TO_SEARCH);
-
+			tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
 			return tempCommand;
 		}
 
@@ -236,17 +218,6 @@ public class Analyzer {
 		}
 
 		tempCommand.setKey(searchKey);
-
-		/*
-		 * switch (searchIndicator) { case "name":
-		 * tempCommand.setTaskName(searchKey); break; case "startTiming":
-		 * tempCommand.setTaskStartTiming(searchKey); break; case "endTiming":
-		 * tempCommand.setTaskEndTiming(searchKey); break; case "priority":
-		 * tempCommand.setTaskPriority(searchKey); break; case "location":
-		 * tempCommand.setTaskLocation(searchKey); break; case "id":
-		 * tempCommand.setTaskId(Integer.parseInt(searchKey)); break; default:
-		 * tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR); }
-		 */
 
 		return tempCommand;
 	}
@@ -285,6 +256,15 @@ public class Analyzer {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	private static boolean isValidIndicator(String indicator) {
+		for (int i = 0; i < VALID_INDICATOR.length; i++) {
+			if (VALID_INDICATOR[i].equals(indicator)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static String inputTimingConvertor(String timing) {
