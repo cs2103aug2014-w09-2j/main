@@ -14,7 +14,7 @@ public class Controller {
     private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-    
+
     /**
      * A getter method to obtain the user's input from the GUI
      *
@@ -25,7 +25,7 @@ public class Controller {
     private static String getInput() {
         return GUI.getUserInput();
     }
-    
+
     /**
      * Called at the end of controller runtime to process 
      * feedback data for display.
@@ -38,20 +38,20 @@ public class Controller {
      * @author Joel
      */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
-    	assert outputFeedbackString != null;
-    	assert command != null;
-    	assert outputFeedbackString.length() != 0;
-    	
+        assert outputFeedbackString != null;
+        assert command != null;
+        assert outputFeedbackString.length() != 0;
+
         GUI.displayOutput(outputFeedbackString);
-        
+
         // If there is no error message
         if (command.getErrorMessage().length() == 0) {
-        	String action = command.getAction();
+            String action = command.getAction();
 
-        	parseDisplayTasks(action);
-		}
+            parseDisplayTasks(action);
+        }
     }
-    
+
     /**
      * Parses the feedback data string from the Executor
      * 
@@ -63,54 +63,54 @@ public class Controller {
      * @param action	The user's input action (add, delete, etc.)
      * 
      * @author Joel
-	 */
+     */
     public static void parseDisplayTasks(String action) {
-    	boolean isLastItem = false;
-    	
-    	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
-    		isLastItem = true;
-    		GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
-    		
-    	} else {									// all other commands
-			for (int i = 0; i < feedback.getTaskList().size(); i++) {
-				System.out.println("===================\n" +
-								   "Display string from feedback object: \n" + 
-								   "	" + feedback.getTaskList().get(i) + "\n" +
-								   "===================\n");
-				
-				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
-				
-				if (i == feedback.getTaskList().size() - 1) {
-					isLastItem = true;
-				}
-				
-				/* Commented because there's too much stuff in the console
+        boolean isLastItem = false;
+
+        if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
+            isLastItem = true;
+            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
+
+        } else {									// all other commands
+            for (int i = 0; i < feedback.getTaskList().size(); i++) {
+                System.out.println("===================\n" +
+                                   "Display string from feedback object: \n" + 
+                                   "	" + feedback.getTaskList().get(i) + "\n" +
+                                   "===================\n");
+
+                String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+
+                if (i == feedback.getTaskList().size() - 1) {
+                    isLastItem = true;
+                }
+
+                /* Commented because there's too much stuff in the console
 				LOGGER.info("==============\n" +
-						"After splitting: \n" + 
-						"	Action = " + action + "\n" + 
-						"	Name = " + parameterArr[0] + "\n" +
-						"	Start time = " + parameterArr[2] + "\n" + 
-						"	End time = " + parameterArr[3] + "\n" + 
-						"	Description = " + parameterArr[1] + "\n" +
-						"	Location = " + parameterArr[4] + "\n" +
-						"	Priority = " + parameterArr[5] + "\n" +
-						"====================\n");
-				*/
-				
-				/*
+    						"After splitting: \n" + 
+    						"	Action = " + action + "\n" + 
+    						"	Name = " + parameterArr[0] + "\n" +
+    						"	Start time = " + parameterArr[2] + "\n" + 
+    						"	End time = " + parameterArr[3] + "\n" + 
+    						"	Description = " + parameterArr[1] + "\n" +
+    						"	Location = " + parameterArr[4] + "\n" +
+    						"	Priority = " + parameterArr[5] + "\n" +
+    						"====================\n");
+                 */
+
+                /*
                  * Parameters: updateTable(Table index number, start time, end time, name, 
-                 *                          location, description, priority, action);
+                 *                         location, description, priority, action);
                  */ 
-				if (parameterArr.length == 5) {
-					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-									parameterArr[4], parameterArr[1], "", action, isLastItem);
-				} else if (parameterArr.length == 6) {
-					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-									parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
-				}
-			}
-    	}
-	}
+                if (parameterArr.length == 5) {
+                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+                                    parameterArr[4], parameterArr[1], "", action, isLastItem);
+                } else if (parameterArr.length == 6) {
+                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+                                    parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
+                }
+            }
+        }
+    }
 
     /**
      * Starts the controller, and consequently the execution of 
@@ -118,71 +118,71 @@ public class Controller {
      * after input in the GUI.
      * 
      * @author Joel
-	 */
-	public static void startController() {
-    	inputCommandString = getInput();
-    	assert inputCommandString != null;
-    	
-    	LOGGER.info("==============\n" +
-					"User Input: \n" + 
-					"	" + inputCommandString + "\n" + 
-					"====================\n");
-    	
+     */
+    public static void startController() {
+        inputCommandString = getInput();
+        assert inputCommandString != null;
+
+        LOGGER.info("==============\n" +
+                    "User Input: \n" + 
+                    "	" + inputCommandString + "\n" + 
+                    "====================\n");
+
         inputCommandObject = convertStringToCommand(inputCommandString);
         assert inputCommandObject != null;
-        
+
         /* Commented because there's too much stuff in the console.
         LOGGER.info("==============\n" +
-				"Command object: \n" + 
-				"	" + inputCommandObject.getUserCommand() + "\n" + 
-				"====================\n");
-		*/
-        
-    	try {
-			parsedCommand = analyzeInput(inputCommandObject);
-			assert parsedCommand != null;
-			
-			// Debugging code
-			LOGGER.info("==============\n" +
-						"After analyzer: \n" + 
-						"	Action = " + parsedCommand.getAction() + "\n" + 
-						"	Name = " + parsedCommand.getTaskName() + "\n" +
-						"	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
-						"	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
-						"	Description = " + parsedCommand.getTaskDescription() + "\n" +
-						"	Location = " + parsedCommand.getTaskLocation() + "\n" +
-						"	Priority = " + parsedCommand.getTaskPriority() + "\n" +
-						"	Task ID = " + parsedCommand.getTaskId() + "\n" +
-						"	Error message = " + parsedCommand.getErrorMessage() + "\n" +
-						"	Update indicator = " + parsedCommand.getIndicator() + "\n" +
-						"====================\n");
-			
-			if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
-				displayInGUI(parsedCommand.getErrorMessage(), parsedCommand);
-			} else {	
-				
-				if(parsedCommand != null){
-					feedback = startExecutor(parsedCommand);
-					assert feedback != null;
-					
-				} else{
-					feedback = new Feedback(false);
-					feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
-				}
+    				"Command object: \n" + 
+    				"	" + inputCommandObject.getUserCommand() + "\n" + 
+    				"====================\n");
+         */
 
-				outputString = proceedFeedback(feedback);
-				assert outputString != null;
-				
-				displayInGUI(outputString, parsedCommand);
-	        }
-		} catch (ParseException e) {
-			displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
-			e.printStackTrace();
-		}   
-		 
+        try {
+            parsedCommand = analyzeInput(inputCommandObject);
+            assert parsedCommand != null;
+
+            // Debugging code
+            LOGGER.info("==============\n" +
+                        "After analyzer: \n" + 
+                        "	Action = " + parsedCommand.getAction() + "\n" + 
+                        "	Name = " + parsedCommand.getTaskName() + "\n" +
+                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
+                        "	Description = " + parsedCommand.getTaskDescription() + "\n" +
+                        "	Location = " + parsedCommand.getTaskLocation() + "\n" +
+                        "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
+                        "	Task ID = " + parsedCommand.getTaskId() + "\n" +
+                        "	Error message = " + parsedCommand.getErrorMessage() + "\n" +
+                        "	Update indicator = " + parsedCommand.getIndicator() + "\n" +
+                        "====================\n");
+
+            if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
+                displayInGUI(parsedCommand.getErrorMessage(), parsedCommand);
+            } else {	
+
+                if(parsedCommand != null){
+                    feedback = startExecutor(parsedCommand);
+                    assert feedback != null;
+
+                } else{
+                    feedback = new Feedback(false);
+                    feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
+                }
+
+                outputString = proceedFeedback(feedback);
+                assert outputString != null;
+
+                displayInGUI(outputString, parsedCommand);
+            }
+        } catch (ParseException e) {
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
+            e.printStackTrace();
+        }   
+
     }
-    
-	/**
+
+    /**
      * Converts the user's input string into a Command object.
      * 
      * @param inputCommandString	The user's input
@@ -190,13 +190,13 @@ public class Controller {
      * @return						Command object containing the user's input 
      * 
      * @author Joel
-	 */
+     */
     private static Command convertStringToCommand(String inputCommandString) {
-    	inputCommandObject = new Command(inputCommandString);
-    	
-    	return inputCommandObject;
+        inputCommandObject = new Command(inputCommandString);
+
+        return inputCommandObject;
     }
-    
+
     /**
      * Starts the analyzer, and passes the Command object to it
      * 
@@ -205,13 +205,13 @@ public class Controller {
      * @return						ExecutableCommand object with parsed data
      * 
      * @author Joel
-	 */
+     */
     public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
-        
-    	return parsedCommand;
+
+        return parsedCommand;
     }
-    
+
     /**
      * Gets the feedback message to show to the user from the feedback object
      * 
@@ -220,13 +220,13 @@ public class Controller {
      * @return				String with feedback to show to user after each command
      * 
      * @author Joel
-	 */
+     */
     private static String proceedFeedback(Feedback feedback) {
-    	String outputString = feedback.getMessageShowToUser();  		
-    	
-    	return outputString;	
+        String outputString = feedback.getMessageShowToUser();  		
+
+        return outputString;	
     }
-    
+
     /**
      * Starts the executor, and passes the ExecutableCommand object to it
      * 
@@ -235,7 +235,7 @@ public class Controller {
      * @return			Feedback object with data to display in GUI
      * 
      * @author Joel
-	 */
+     */
     public static Feedback startExecutor(ExecutableCommand command) {
         return Executor.proceedAnalyzedCommand(command);
     }
