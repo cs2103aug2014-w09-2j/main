@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
 import com.ibm.icu.util.Calendar;
@@ -53,6 +54,7 @@ public class GUI {
     private static TableColumn tblclmnDescription;
     private static TableColumn tblclmnDeadline;
     private static boolean hasNotified = false;
+    private static Display display;
 
     /**
      * A getter method for the controller to obtain the user's input
@@ -158,7 +160,8 @@ public class GUI {
     public static void updateTable(int taskNumber, String startDate, String endDate,
                                    String name, String location, 
                                    String description, String priority,
-                                   String action, boolean isLastRow) {
+                                   String action, boolean isLastRow,
+                                   boolean isHighlighted) {
 
         action = action.trim();
 
@@ -185,12 +188,20 @@ public class GUI {
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
+            if (isHighlighted == true) {
+                colorRow(item);
+            }
         }
 
         if (isLastRow == true) {
             resizeTable();
         }
     } 
+    
+    private static void colorRow(TableItem item) {
+        Color red = display.getSystemColor(SWT.COLOR_RED);
+        item.setForeground(red);
+    }
 
     /**
      * Resizes the columns in the table based 
@@ -232,7 +243,7 @@ public class GUI {
     }
 
     public static void main(String[] args) {
-        Display display = Display.getDefault();
+        display = Display.getDefault();
         Shell shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
         shell.setToolTipText("To-do list app of the year");

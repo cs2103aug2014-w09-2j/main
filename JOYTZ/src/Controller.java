@@ -66,10 +66,11 @@ public class Controller {
      */
     public static void parseDisplayTasks(String action) {
         boolean isLastItem = false;
+        boolean isHighlighted = false;
 
         if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
             isLastItem = true;
-            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
+            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem, isHighlighted);
 
         } else {									// all other commands
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
@@ -79,6 +80,7 @@ public class Controller {
                                    "===================\n");
 
                 String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+                isHighlighted = false;//feedback.getBooleanList.get(i);
 
                 if (i == feedback.getTaskList().size() - 1) {
                     isLastItem = true;
@@ -103,10 +105,12 @@ public class Controller {
                  */ 
                 if (parameterArr.length == 5) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], "", action, isLastItem);
+                                    parameterArr[4], parameterArr[1], "", action, 
+                                    isLastItem, isHighlighted);
                 } else if (parameterArr.length == 6) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
+                                    parameterArr[4], parameterArr[1], parameterArr[5], action, 
+                                    isLastItem, isHighlighted);
                 }
             }
         }
