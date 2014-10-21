@@ -87,12 +87,12 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			String timing = dateTimeSeparator(arg[2]);
+			String timing = inputTimingConvertor(arg[2]);
 
 			tempCommand.setTaskStartTiming(timing);
 		}
 		if (arg.length >= 4) {
-			String timing = dateTimeSeparator(arg[3]);
+			String timing = inputTimingConvertor(arg[3]);
 
 			tempCommand.setTaskEndTiming(timing);
 		}
@@ -170,7 +170,7 @@ public class Analyzer {
 				|| updateIndicator.equals("start time")
 				|| updateIndicator.equals("end date")
 				|| updateIndicator.equals("end time")) {
-			updatedItem = dateTimeSeparator(arg[2]);
+			updatedItem = inputTimingConvertor(arg[2]);
 		} else {
 			updatedItem = arg[2];
 		}
@@ -230,7 +230,7 @@ public class Analyzer {
 				|| searchIndicator.equals("start time")
 				|| searchIndicator.equals("end date")
 				|| searchIndicator.equals("end time")) {
-			searchKey = dateTimeSeparator(arg[1]);
+			searchKey = inputTimingConvertor(arg[1]);
 		} else {
 			searchKey = arg[1];
 		}
@@ -287,118 +287,72 @@ public class Analyzer {
 		}
 	}
 
-	private static String dateTimeSeparator(String timing) {
+	private static String inputTimingConvertor(String timing) {
 		if (timing.equals("")) {
 			return "";
 		}
 
 		String[] dateTime = timing.trim().split(" ");
-		String[] temp;
-		int day = 0;
-		int month = 0;
-		int year = 0;
-		int hour = 0;
-		int minute = 0;
-		String indicator = "";
+		int[] result = { 0, 0, 0, 0, 0 };
+
 		Date convertedDate;
 
 		if (dateTime.length >= 1) {
-			if (dateTime[0].contains("/")) {
-				temp = dateTime[0].trim().split("/");
-				day = Integer.parseInt(temp[0]);
-				month = Integer.parseInt(temp[1]);
-				year = Integer.parseInt(temp[2]);
-			} else if (dateTime[0].contains(":")) {
-				if (dateTime[0].length() == 7) {
-					hour = Integer.parseInt(dateTime[0].substring(0, 2));
-					minute = Integer.parseInt(dateTime[0].substring(3, 5));
-					indicator = dateTime[0].substring(5).toLowerCase();
-
-					if (indicator.equals("pm") && hour != 12) {
-						hour = hour + 12;
-					} else if (indicator.equals("am") && hour == 12) {
-						hour = 0;
-					}
-				} else {
-					hour = Integer.parseInt(dateTime[0].substring(0, 1));
-					minute = Integer.parseInt(dateTime[0].substring(2, 4));
-					indicator = dateTime[0].substring(4).toLowerCase();
-
-					if (indicator.equals("pm")) {
-						hour = hour + 12;
-					}
-				}
-			}
+			result = dateTimeSeparator(dateTime[0], result);
 		}
 
 		if (dateTime.length == 2) {
-			if (dateTime[1].contains("/")) {
-				temp = dateTime[1].trim().split("/");
-				day = Integer.parseInt(temp[0]);
-				month = Integer.parseInt(temp[1]);
-				year = Integer.parseInt(temp[2]);
-			} else if (dateTime[1].contains(":")) {
-				if (dateTime[1].length() == 7) {
-					hour = Integer.parseInt(dateTime[1].substring(0, 2));
-					minute = Integer.parseInt(dateTime[1].substring(3, 5));
-					indicator = dateTime[1].substring(5).toLowerCase();
-
-					if (indicator.equals("pm") && hour != 12) {
-						hour = hour + 12;
-					} else if (indicator.equals("am") && hour == 12) {
-						hour = 0;
-					}
-				} else {
-					hour = Integer.parseInt(dateTime[1].substring(0, 1));
-					minute = Integer.parseInt(dateTime[1].substring(2, 4));
-					indicator = dateTime[1].substring(4).toLowerCase();
-
-					if (indicator.equals("pm")) {
-						hour = hour + 12;
-					}
-				}
-			}
+			result = dateTimeSeparator(dateTime[1], result);
 		}
 
-		System.out.println(day);
-		System.out.println(month);
-		System.out.println(year);
-
-		convertedDate = new Date(year, month, day, hour, minute);
+		convertedDate = new Date(result[0] - 1900, result[1] - 1,
+				result[2] + 1, result[3] - 1, result[4] - 1);
 
 		return String.valueOf(convertedDate.getTime());
 	}
 
-	/*
-	 * private static Long analyzeUserInputDateString(String userInputDate) {
-	 * String[] date = userInputDate.trim().split(" "); String dateString;
-	 * String timeString;
-	 * 
-	 * // distinguish date (dd/mm/yy) and time (hh:mm:ss) if
-	 * (date[0].contains("/")) { dateString = date[0]; timeString = date[1]; }
-	 * else { dateString = date[1]; timeString = date[0]; }
-	 * 
-	 * // current date and time Date now = new Date(System.currentTimeMillis());
-	 * 
-	 * int day = 0; int month = 0; int year = 0; String[] dateArg =
-	 * dateString.trim().split("/");
-	 * 
-	 * if (dateArg.length == 1) { day = Integer.parseInt(dateArg[0]); month =
-	 * now.getMonth(); year = now.getYear(); } else if (dateArg.length == 2) {
-	 * day = Integer.parseInt(dateArg[0]); month = Integer.parseInt(dateArg[1]);
-	 * year = now.getYear(); } else if (dateArg.length == 3) { day =
-	 * Integer.parseInt(dateArg[0]); month = Integer.parseInt(dateArg[1]); year
-	 * = Integer.parseInt(dateArg[2]); }
-	 * 
-	 * int minute = 0; int hour = 0; String[] timeArg =
-	 * timeString.trim().split(":");
-	 * 
-	 * if (timeArg.length == 1) { hour = Integer.parseInt(dateArg[0]); minute =
-	 * 0; } else if (timeArg.length == 2) { hour = Integer.parseInt(dateArg[0]);
-	 * minute = Integer.parseInt(dateArg[1]); }
-	 * 
-	 * Date convertedDate = new Date(year, month, day, hour, minute); return
-	 * convertedDate.getTime(); }
-	 */
+	private static int[] dateTimeSeparator(String dateTime, int[] result) {
+		String[] temp;
+		int year = result[0];
+		int month = result[1];
+		int day = result[2];
+		int hour = result[3];
+		int minute = result[4];
+		String indicator = "";
 
+		if (dateTime.contains("/")) {
+			temp = dateTime.trim().split("/");
+			day = Integer.parseInt(temp[0]);
+			month = Integer.parseInt(temp[1]);
+			year = Integer.parseInt(temp[2]);
+		} else if (dateTime.contains(":")) {
+			if (dateTime.length() == 7) {
+				hour = Integer.parseInt(dateTime.substring(0, 2));
+				minute = Integer.parseInt(dateTime.substring(3, 5));
+				indicator = dateTime.substring(5).toLowerCase();
+
+				if (indicator.equals("pm") && hour != 12) {
+					hour = hour + 12;
+				} else if (indicator.equals("am") && hour == 12) {
+					hour = 0;
+				}
+			} else {
+				hour = Integer.parseInt(dateTime.substring(0, 1));
+				minute = Integer.parseInt(dateTime.substring(2, 4));
+				indicator = dateTime.substring(4).toLowerCase();
+
+				if (indicator.equals("pm")) {
+					hour = hour + 12;
+				}
+			}
+		}
+
+		result[0] = year;
+		result[1] = month;
+		result[2] = day;
+		result[3] = hour;
+		result[4] = minute;
+
+		return result;
+	}
 }

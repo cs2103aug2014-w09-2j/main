@@ -26,45 +26,55 @@ public class TestAnalyzer {
 		Command test5 = new Command(
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014~NUS");
 		Command test6 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014~NUS~medium");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
+		Command test7 = new Command(
+				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
 
 		ExecutableCommand expected = new ExecutableCommand("add");
 		expected.setErrorMessage(ERROR_NULL_TASK_TO_ADD);
 		expected.setTaskName("meeting with friends");
 		expected.setTaskDescription("discuss about CS2103T project");
-		expected.setTaskDeadline((java.util.Date) df.parse("14/10/2014"));
+		expected.setTaskStartTiming(String.valueOf((java.util.Date) df
+				.parse("14/10/2014")));
+		expected.setTaskEndTiming(String.valueOf((java.util.Date) df
+				.parse("20/10/2014")));
 		expected.setTaskLocation("NUS");
 		expected.setTaskPriority("medium");
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("fail to get task name to be added",
-				expected.getTaskName(), Analyzer.analyzeCommand(test2)
+				expected.getTaskName(), Analyzer.runAnalyzer(test2)
 						.getTaskName());
 
 		// test case 3
 		assertEquals("fail to get task description to be added",
-				expected.getTaskDescription(), Analyzer.analyzeCommand(test3)
+				expected.getTaskDescription(), Analyzer.runAnalyzer(test3)
 						.getTaskDescription());
 
 		// test case 4
-		assertEquals("fail to get task deadline to be added",
-				expected.getTaskDeadline(), Analyzer.analyzeCommand(test4)
-						.getTaskDeadline());
+		assertEquals("fail to get task start timing to be added",
+				expected.getTaskStartTiming(), Analyzer.runAnalyzer(test4)
+						.getTaskStartTiming());
 
 		// test case 5
 		assertEquals("fail to get task location to be added",
-				expected.getTaskLocation(), Analyzer.analyzeCommand(test5)
+				expected.getTaskLocation(), Analyzer.runAnalyzer(test5)
 						.getTaskLocation());
 
 		// test case 6
 		assertEquals("fail to get task priority to be added",
-				expected.getTaskPriority(), Analyzer.analyzeCommand(test6)
+				expected.getTaskPriority(), Analyzer.runAnalyzer(test6)
 						.getTaskPriority());
+
+		// test case 7
+		assertEquals("fail to get task end timing to be added",
+				expected.getTaskEndTiming(), Analyzer.runAnalyzer(test7)
+						.getTaskEndTiming());
 	}
 
 	@Test
@@ -85,17 +95,17 @@ public class TestAnalyzer {
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("invalid task index case is not handled",
-				expected2.getErrorMessage(), Analyzer.analyzeCommand(test2)
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
 						.getErrorMessage());
 
 		// test case 3
 		assertEquals("invalid input argument case is not handled",
-				expected3.getErrorMessage(), Analyzer.analyzeCommand(test3)
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
 						.getErrorMessage());
 	}
 
@@ -115,7 +125,8 @@ public class TestAnalyzer {
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
 		expected.setTaskName("meeting");
 		expected.setTaskDescription("discussion about CS2103T");
-		expected.setTaskDeadline((java.util.Date) df.parse("27/10/2014"));
+		expected.setTaskStartTiming(String.valueOf((java.util.Date) df
+				.parse("27/10/2014")));
 		expected.setTaskLocation("NTU");
 		expected.setTaskPriority("high");
 		expected.setTaskId(2);
@@ -131,41 +142,41 @@ public class TestAnalyzer {
 
 		// test case 1
 		assertEquals("null argument case is not handled",
-				expected.getErrorMessage(), Analyzer.analyzeCommand(test1)
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
 						.getErrorMessage());
 
 		// test case 2
 		assertEquals("null update indicator case is not handled",
-				expected2.getErrorMessage(), Analyzer.analyzeCommand(test2)
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
 						.getErrorMessage());
 
 		// test case 3
 		assertEquals("invalid input argument case is not handled",
-				expected3.getErrorMessage(), Analyzer.analyzeCommand(test3)
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
 						.getErrorMessage());
 
 		// test case 4
 		assertEquals("fail to get task name to be updated",
-				expected4.getTaskName(), Analyzer.analyzeCommand(test4)
+				expected4.getTaskName(), Analyzer.runAnalyzer(test4)
 						.getTaskName());
 
 		// test case 5
 		assertEquals("fail to get task description to be updated",
-				expected.getTaskId(), Analyzer.analyzeCommand(test5).getTaskId());
+				expected.getTaskId(), Analyzer.runAnalyzer(test5).getTaskId());
 
 		// test case 6
 		assertEquals("fail to get task deadline to be updated",
-				expected.getTaskDeadline(), Analyzer.analyzeCommand(test6)
-						.getTaskDeadline());
+				expected.getTaskStartTiming(), Analyzer.runAnalyzer(test6)
+						.getTaskStartTiming());
 
 		// test case 7
 		assertEquals("fail to get task location to be updated",
-				expected.getTaskLocation(), Analyzer.analyzeCommand(test7)
+				expected.getTaskLocation(), Analyzer.runAnalyzer(test7)
 						.getTaskLocation());
 
 		// test case 8
 		assertEquals("fail to get task priority to be updated",
-				expected.getTaskPriority(), Analyzer.analyzeCommand(test8)
+				expected.getTaskPriority(), Analyzer.runAnalyzer(test8)
 						.getTaskPriority());
 
 	}
