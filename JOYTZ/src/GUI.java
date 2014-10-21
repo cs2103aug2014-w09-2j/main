@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
 import com.ibm.icu.util.Calendar;
@@ -43,7 +44,6 @@ public class GUI {
 
     private static StyledText inputField;
     private static StyledText outputField;
-    private static String textInputData = "";
     private static Table table;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
@@ -53,17 +53,7 @@ public class GUI {
     private static TableColumn tblclmnDescription;
     private static TableColumn tblclmnDeadline;
     private static boolean hasNotified = false;
-
-    /**
-     * A getter method for the controller to obtain the user's input
-     *
-     * @return	The user's input string
-     * 
-     * @author Joel
-     */
-    public static String getUserInput() {
-        return textInputData;        
-    }
+    private static Display display;
 
     /**
      * Displays a feedback string in the GUI after each user command
@@ -158,7 +148,8 @@ public class GUI {
     public static void updateTable(int taskNumber, String startDate, String endDate,
                                    String name, String location, 
                                    String description, String priority,
-                                   String action, boolean isLastRow) {
+                                   String action, boolean isLastRow,
+                                   boolean isHighlighted) {
 
         action = action.trim();
 
@@ -185,12 +176,21 @@ public class GUI {
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
+            if (isHighlighted == true) {
+                colorRow(item);
+                NotifierDialog.notify(name + " is overdue!", "");
+            }
         }
 
         if (isLastRow == true) {
             resizeTable();
         }
     } 
+    
+    private static void colorRow(TableItem item) {
+        Color red = display.getSystemColor(SWT.COLOR_RED);
+        item.setForeground(red);
+    }
 
     /**
      * Resizes the columns in the table based 
@@ -232,7 +232,7 @@ public class GUI {
     }
 
     public static void main(String[] args) {
-        Display display = Display.getDefault();
+        display = Display.getDefault();
         Shell shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
         shell.setToolTipText("To-do list app of the year");
@@ -308,19 +308,13 @@ public class GUI {
             // @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {
-                    textInputData = inputField.getText();
-
-                    if (textInputData.trim().equals("help")) {
+                    if (inputField.getText().trim().equals("help")) {
                         displayHelp();
                         inputField.setText("");
                     } else {
-                        Controller.startController();
+                        Controller.startController(inputField.getText());
 
                         inputField.setText("");
-
-                        NotifierDialog.notify("Hi There! I'm a notification widget!", 
-                                              "Today we are creating a widget that allows us" +
-                                              "to show notifications that fade in and out!");
                     }
                 }
             }
@@ -330,8 +324,7 @@ public class GUI {
         // that the current state of the task list can be saved.
         shell.addListener(SWT.Close, new Listener() {
             public void handleEvent(Event event) {
-                textInputData = "exit";
-                Controller.startController();
+                Controller.startController("exit");
                 System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
@@ -341,6 +334,7 @@ public class GUI {
 
         while(!shell.isDisposed()) {
 
+            
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
             //System.out.println(timeStamp );
 

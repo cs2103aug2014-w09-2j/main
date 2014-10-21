@@ -9,22 +9,10 @@ public class Controller {
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
 
-    private static String inputCommandString;
     private static Command inputCommandObject;
     private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
-
-    /**
-     * A getter method to obtain the user's input from the GUI
-     *
-     * @return	The user's input string
-     * 
-     * @author Joel
-     */
-    private static String getInput() {
-        return GUI.getUserInput();
-    }
 
     /**
      * Called at the end of controller runtime to process 
@@ -66,10 +54,11 @@ public class Controller {
      */
     public static void parseDisplayTasks(String action) {
         boolean isLastItem = false;
+        boolean isHighlighted = false;
 
         if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
             isLastItem = true;
-            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem);
+            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem, isHighlighted);
 
         } else {									// all other commands
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
@@ -79,6 +68,7 @@ public class Controller {
                                    "===================\n");
 
                 String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+                isHighlighted = false;//feedback.getBooleanList.get(i);
 
                 if (i == feedback.getTaskList().size() - 1) {
                     isLastItem = true;
@@ -103,10 +93,12 @@ public class Controller {
                  */ 
                 if (parameterArr.length == 5) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], "", action, isLastItem);
+                                    parameterArr[4], parameterArr[1], "", action, 
+                                    isLastItem, isHighlighted);
                 } else if (parameterArr.length == 6) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
+                                    parameterArr[4], parameterArr[1], parameterArr[5], action, 
+                                    isLastItem, isHighlighted);
                 }
             }
         }
@@ -119,8 +111,7 @@ public class Controller {
      * 
      * @author Joel
      */
-    public static void startController() {
-        inputCommandString = getInput();
+    public static void startController(String inputCommandString) {
         assert inputCommandString != null;
 
         LOGGER.info("==============\n" +
