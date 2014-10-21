@@ -2,10 +2,9 @@
 
 import java.util.*;
 
-import org.hamcrest.Condition.Step;
-
 public class Executor {
 
+	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
@@ -15,15 +14,13 @@ public class Executor {
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
-	// private static final String ERROR_INVALID_TASK_INDEX =
-	// "Task index indicated is invalid.\n";
+	// private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	// private static final String ERROR_INVALID_INDICATOR =
-	// "The indicator is invalid.\n";
+	// private static final String ERROR_INVALID_INDICATOR = "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
@@ -35,17 +32,12 @@ public class Executor {
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
+	
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 
 	public static Feedback feedback;
-
-	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
-
-	private static void storeCommand(ExecutableCommand command) {
-		commandStack.push(command);
-	}
 
 	/**
 	 * Called by Controller to initialize Executor.
@@ -60,7 +52,7 @@ public class Executor {
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
-		if (command == null) {
+		if (command.equals(new ExecutableCommand())) {
 			feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 			return feedback;
 		}
@@ -85,7 +77,7 @@ public class Executor {
 			feedback = performSearchAction(command);
 			break;
 		case "undo":
-			performUndoAction();
+			feedback = performUndoAction();
 			break;
 		case "exit":
 			feedback = performExitAction();
@@ -100,7 +92,7 @@ public class Executor {
 			storeCommand(command);
 			feedback.setTaskList(Storage.getTaskList());
 		}
-
+		
 		return feedback;
 	}
 
@@ -142,8 +134,8 @@ public class Executor {
 				priority);
 
 		// pre-condition
-		// assert !name.equals("") : "No task name";
-		// assert !t.equals(new Task()) : "No task created";
+		assert !name.equals("") : "No task name";
+		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -153,7 +145,7 @@ public class Executor {
 		}
 
 		// post-condition
-		// assert fb.getResult() : "Fail to add tasks";
+		assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -406,5 +398,9 @@ public class Executor {
 			return false;
 		}
 		return true;
+	}
+	
+	private static void storeCommand(ExecutableCommand command) {
+		commandStack.push(command);
 	}
 }
