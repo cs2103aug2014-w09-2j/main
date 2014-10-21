@@ -14,13 +14,15 @@ public class Executor {
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
-	// private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	// private static final String ERROR_INVALID_TASK_INDEX =
+	// "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	// private static final String ERROR_INVALID_INDICATOR = "The indicator is invalid.\n";
+	// private static final String ERROR_INVALID_INDICATOR =
+	// "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
@@ -32,7 +34,7 @@ public class Executor {
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
-	
+
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
@@ -52,7 +54,7 @@ public class Executor {
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
-		if (command.equals(new ExecutableCommand())) {
+		if (command.equals(new ExecutableCommand()) || command.equals(null)) {
 			feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 			return feedback;
 		}
@@ -92,7 +94,7 @@ public class Executor {
 			storeCommand(command);
 			feedback.setTaskList(Storage.getTaskList());
 		}
-		
+
 		return feedback;
 	}
 
@@ -118,15 +120,16 @@ public class Executor {
 
 		Feedback fb = new Feedback(false);
 
-		if (startTiming.equals("") && endTiming.equals("")) {
+		if (!startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.valueOf(startTiming);
 			endTime = Long.valueOf(endTiming);
-		} else if (startTiming.equals("")) {
+		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
-		} else {
-			startTime = Long.valueOf(startTiming);
-			endTime = Long.valueOf(endTiming);
+		} else if (!startTiming.equals("") && endTiming.equals("")) {
+			startTime = endTime = Long.valueOf(startTiming);
+		} else if (endTiming.equals("") && startTiming.equals("")) {
+			startTime = endTime = System.currentTimeMillis();
 		}
 
 		// create a task object with all the attributes.
@@ -391,15 +394,6 @@ public class Executor {
 		return feedback;
 	}
 
-	private static boolean isLongType(String s) {
-		try {
-			Long.valueOf(s);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		return true;
-	}
-	
 	private static void storeCommand(ExecutableCommand command) {
 		commandStack.push(command);
 	}
