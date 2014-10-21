@@ -190,6 +190,7 @@ public class GUI {
                                         description, priority });
             if (isHighlighted == true) {
                 colorRow(item);
+                NotifierDialog.notify(name + " is overdue!", "");
             }
         }
 
