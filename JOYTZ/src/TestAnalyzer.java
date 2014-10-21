@@ -17,6 +17,8 @@ public class TestAnalyzer {
 
 	private static Date d1 = new Date(114, 9, 15, -1, -1);
 	private static Date d2 = new Date(114, 9, 21, -1, -1);
+	private static Date d3 = new Date(114, 9, 15, 12, 55);
+	private static Date d4 = new Date(114, 9, 21, 1, 37);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -32,6 +34,12 @@ public class TestAnalyzer {
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
 		Command test7 = new Command(
 				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
+		Command test8 = new Command("add~~~14/10/2014~~NUS~medium");
+		Command test9 = new Command("add~~~~20/10/2014~NUS~medium");
+		Command test10 = new Command(
+				"add~~~14/10/2014 1:56PM~20/10/2014~NUS~medium");
+		Command test11 = new Command(
+				"add~~~14/10/2014~20/10/2014 2:38AM~NUS~medium");
 
 		ExecutableCommand expected = new ExecutableCommand("add");
 		expected.setErrorMessage(ERROR_NULL_TASK);
@@ -41,6 +49,10 @@ public class TestAnalyzer {
 		expected.setTaskEndTiming(String.valueOf(d2.getTime()));
 		expected.setTaskLocation("NUS");
 		expected.setTaskPriority("medium");
+
+		ExecutableCommand expected2 = new ExecutableCommand("add");
+		expected2.setTaskStartTiming(String.valueOf(d3.getTime()));
+		expected2.setTaskEndTiming(String.valueOf(d4.getTime()));
 
 		// test case 1
 		assertEquals("null argument case is not handled",
@@ -75,6 +87,26 @@ public class TestAnalyzer {
 		// test case 7
 		assertEquals("fail to get task end timing to be added",
 				expected.getTaskEndTiming(), Analyzer.runAnalyzer(test7)
+						.getTaskEndTiming());
+
+		// test case 8
+		assertEquals("fail to get only task start timing to be added",
+				expected.getTaskStartTiming(), Analyzer.runAnalyzer(test8)
+						.getTaskStartTiming());
+
+		// test case 9
+		assertEquals("fail to get only task end timing to be added",
+				expected.getTaskEndTiming(), Analyzer.runAnalyzer(test9)
+						.getTaskEndTiming());
+
+		// test case 10
+		assertEquals("fail to get task start timing (with time) to be added",
+				expected2.getTaskStartTiming(), Analyzer.runAnalyzer(test10)
+						.getTaskStartTiming());
+
+		// test case 11
+		assertEquals("fail to get task end timing (with time) to be added",
+				expected2.getTaskEndTiming(), Analyzer.runAnalyzer(test11)
 						.getTaskEndTiming());
 	}
 
