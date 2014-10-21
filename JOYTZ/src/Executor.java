@@ -137,7 +137,6 @@ public class Executor {
 				priority);
 
 		// pre-condition
-		assert !name.equals("") : "No task name";
 		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
@@ -209,6 +208,7 @@ public class Executor {
 		// pre-condition
 		assert !updateIndicator.equals("") : "No update indicator";
 		assert !updateKeyValue.equals("") : "No update key";
+		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			fb.setResult(Storage
@@ -235,6 +235,7 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		fb.setResult(Storage.clean());
+		
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
@@ -253,11 +254,8 @@ public class Executor {
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
-
+		
 		Feedback fb = new Feedback(false);
-
-		// pre-condition
-		// assert !sortKey.equals("") : "Sort no category";
 
 		// check what category user want to sort
 		try {
@@ -292,8 +290,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		// assert !searchIndicator.equals("") : "No search indicator";
-		// assert !searchValue.equals("") : "No search value";
+		assert !searchIndicator.equals("") : "No search indicator";
+		assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -304,8 +302,8 @@ public class Executor {
 		}
 
 		// post-condition
-		// assert !searchValue.equals("") : "No given search value";
-		// assert !resultList.equals(null) : "No result is found";
+		assert !searchValue.equals("") : "No given search value";
+		assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
