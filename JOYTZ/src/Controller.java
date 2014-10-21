@@ -56,15 +56,15 @@ public class Controller {
      * Parses the feedback data string from the Executor
      * 
      * Precondition: getTaskList() returns a string in the form
-     * of "name~ date~ location~ description~ priority". If there are
-     * empty values, leave it blank. For example: "name~date~~~priority"
+     * of "name~ description~ start date~ end date~ location~ priority". If there are
+     * empty values, leave it blank. For example: "name~~~end date~~priority"
      * to leave the description and location empty.
      * 
      * @param action	The user's input action (add, delete, etc.)
      * 
      * @author Joel
 	 */
-    private static void parseDisplayTasks(String action) {
+    public static void parseDisplayTasks(String action) {
     	boolean isLastItem = false;
     	
     	if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command

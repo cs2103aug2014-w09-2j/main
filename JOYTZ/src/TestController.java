@@ -17,7 +17,18 @@ public class TestController {
 	private static final String INPUT_NO_LOCATION_AND_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
 																 "24/02/2015 11:30am~25/02/2015 11:45am~~";
 	private static final String INPUT_ONLY_NAME = "add~meeting with friends~~~~~";
+	private static final String INPUT_INVALID = "sdfsf";
 
+	
+	
+	
+	/*
+	 *  The tests below test the analyzer and executor through the controller,
+	 *  so it is not really testing the controller itself. But it has already
+	 *  been done, so I'm just going to leave it here until it breaks.
+	 *  
+	 *  @author Joel
+	 */
 	@Test
 	public void checkAnalyzerAdd1() throws ParseException {
 		Command test = new Command(INPUT_ALL_FIELDS);
@@ -33,7 +44,7 @@ public class TestController {
 	}
 	
 	@Test
-	public void checkAnalyzerAdd() throws ParseException {	
+	public void checkAnalyzerAdd2() throws ParseException {	
 		Command test = new Command(INPUT_NO_PRIORITY);
 		// Check if the command has been properly broken up and filled
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
@@ -86,6 +97,13 @@ public class TestController {
 		//assertEquals("End time is not filled", "Tue Oct 14 00:00:00 SGT 2014", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "", Controller.analyzeInput(test).getTaskLocation());
 		assertEquals("Priority is not filled", "", Controller.analyzeInput(test).getTaskPriority());
+	}
+	
+	@Test
+	public void checkAnalyzerAdd6() throws ParseException {
+		Command test = new Command(INPUT_INVALID);
+		// Check if the command has been properly broken up and filled
+		assertEquals("Error message missing", "Invalid command.\n", Controller.analyzeInput(test).getErrorMessage());
 	}
 	
 	@Test

@@ -250,31 +250,38 @@ public class GUI {
         table.setLinesVisible(true);
         
         tblclmnNo = new TableColumn(table, SWT.CENTER);
+        tblclmnNo.setMoveable(true);
         tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
         
         tblclmnStartedOn = new TableColumn(table, SWT.CENTER);
+        tblclmnStartedOn.setMoveable(true);
         tblclmnStartedOn.setWidth(92);
         tblclmnStartedOn.setText("Started On");
         
         tblclmnDeadline = new TableColumn(table, SWT.CENTER);
+        tblclmnDeadline.setMoveable(true);
         tblclmnDeadline.setWidth(100);
         tblclmnDeadline.setText("Deadline");
         
         tblclmnName = new TableColumn(table, SWT.CENTER);
+        tblclmnName.setMoveable(true);
         tblclmnName.setWidth(100);
         tblclmnName.setText("Task Name");
         
         tblclmnLocation = new TableColumn(table, SWT.CENTER);
+        tblclmnLocation.setMoveable(true);
         tblclmnLocation.setWidth(100);
         tblclmnLocation.setText("Location");
         
         tblclmnDescription = new TableColumn(table, SWT.CENTER);
+        tblclmnDescription.setMoveable(true);
         tblclmnDescription.setWidth(103);
         tblclmnDescription.setText("Description");
         
         tblclmnPriority = new TableColumn(table, SWT.CENTER);
+        tblclmnPriority.setMoveable(true);
         tblclmnPriority.setWidth(72);
         tblclmnPriority.setText("Priority");
         
