@@ -12,6 +12,11 @@ public class TestStorage {
 	
 	@Test
 	public void testAddTask() {
+		
+		Long l = Long.valueOf("32880441600000");
+		System.out.print(new Date(l).getYear());
+		
+		
 		Storage.cleanUpEveryThing();
 		Task task1 = new Task("task1", new Date().getTime(), new Date().getTime(), "Exam", "NUS", "high");
 		Task task2 = new Task("task2", new Date().getTime(), new Date().getTime(), "Exam2", "SOC", "high");
