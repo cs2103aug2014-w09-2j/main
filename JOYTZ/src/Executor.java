@@ -317,10 +317,10 @@ public class Executor {
 	 * @return
 	 */
 
-	private static Feedback performUndoAction(int numOfStep) {
+	private static Feedback performUndoAction(int numberOfSteps) {
 		Feedback fb = new Feedback(false);
 
-		int limit = Integer.min(commandStack.size(), numOfStep);
+		int limit = Integer.min(commandStack.size(), numberOfSteps);
 
 		for (int step = 0; step <= limit; step++) {
 			Feedback feedback = performUndoAction();
