@@ -4,14 +4,14 @@ import java.text.ParseException;
 import java.util.logging.Logger;
 
 public class Controller {
-	private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
-	
-	private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
-	private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
-	
-	private static String inputCommandString;
-	private static Command inputCommandObject;
-	private static Feedback feedback;
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+
+    private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+
+    private static String inputCommandString;
+    private static Command inputCommandObject;
+    private static Feedback feedback;
     private static String outputString;
     private static ExecutableCommand parsedCommand;
     
@@ -21,22 +21,22 @@ public class Controller {
      * @return	The user's input string
      * 
      * @author Joel
-	 */
-	private static String getInput() {
+     */
+    private static String getInput() {
         return GUI.getUserInput();
     }
     
-	/**
+    /**
      * Called at the end of controller runtime to process 
      * feedback data for display.
      *
-     * @param outputFeedbackString		Feedback string that is shown to the user
-     * 									after each command
-     * @param command					ExecutableCommand object containing the
-     * 									user's action and taskId
+     * @param outputFeedbackString	    Feedback string that is shown to the user
+     * 					                after each command
+     * @param command			        ExecutableCommand object containing the
+     * 					                user's action and taskId
      * 
      * @author Joel
-	 */
+     */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
     	assert outputFeedbackString != null;
     	assert command != null;
@@ -44,7 +44,7 @@ public class Controller {
     	
         GUI.displayOutput(outputFeedbackString);
         
-		// If there is no error message
+        // If there is no error message
         if (command.getErrorMessage().length() == 0) {
         	String action = command.getAction();
 
@@ -74,9 +74,9 @@ public class Controller {
     	} else {									// all other commands
 			for (int i = 0; i < feedback.getTaskList().size(); i++) {
 				System.out.println("===================\n" +
-									"Display string from feedback object: \n" + 
-									"	" + feedback.getTaskList().get(i) + "\n" +
-									"===================\n");
+								   "Display string from feedback object: \n" + 
+								   "	" + feedback.getTaskList().get(i) + "\n" +
+								   "===================\n");
 				
 				String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
 				
@@ -97,6 +97,10 @@ public class Controller {
 						"====================\n");
 				*/
 				
+				/*
+                 * Parameters: updateTable(Table index number, start time, end time, name, 
+                 *                          location, description, priority, action);
+                 */ 
 				if (parameterArr.length == 5) {
 					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
 									parameterArr[4], parameterArr[1], "", action, isLastItem);
@@ -104,11 +108,6 @@ public class Controller {
 					GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
 									parameterArr[4], parameterArr[1], parameterArr[5], action, isLastItem);
 				}
-				
-				/*
-				 * Parameters: updateTable(Table index number, start time, end time, name, 
-				 *							location, description, priority, action);
-				 */ 
 			}
     	}
 	}
@@ -186,7 +185,7 @@ public class Controller {
 	/**
      * Converts the user's input string into a Command object.
      * 
-     * @param inputCommandString	the user's input
+     * @param inputCommandString	The user's input
      * 
      * @return						Command object containing the user's input 
      * 

@@ -9,13 +9,13 @@ import org.junit.Test;
 public class TestController {
 	
 	private static final String INPUT_ALL_FIELDS = "add~meeting with friends~discuss about CS2103T project~" +
-												   "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
+						                           "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
 	private static final String INPUT_NO_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
-													"24/02/2015 11:30am~25/02/2015 11:45am~NUS";
+							                        "24/02/2015 11:30am~25/02/2015 11:45am~NUS";
 	private static final String INPUT_NO_LOCATION = "add~meeting with friends~discuss about CS2103T project~" +
-													"24/02/2015 11:30am~25/02/2015 11:45am~~medium";
+							                        "24/02/2015 11:30am~25/02/2015 11:45am~~medium";
 	private static final String INPUT_NO_LOCATION_AND_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
-																 "24/02/2015 11:30am~25/02/2015 11:45am~~";
+	                                                             "24/02/2015 11:30am~25/02/2015 11:45am~~";
 	private static final String INPUT_ONLY_NAME = "add~meeting with friends~~~~~";
 	private static final String INPUT_INVALID = "sdfsf";
 
@@ -39,10 +39,11 @@ public class TestController {
 		assertEquals("Executor unsuccessful", true, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "meeting with friends is added successfully.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 		// Check if the display string to be used in the table GUI display is correct
-		assertEquals("Output string for table is wrong", "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~NUS~medium", 
-					 result.getTaskList().get(0));
+		assertEquals("Output string for table is wrong", 
+		             "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~NUS~medium", 
+		             result.getTaskList().get(0));
 	}
 	
 	/*
@@ -64,10 +65,11 @@ public class TestController {
 		assertEquals("Executor unsuccessful", true, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "meeting with friends is added successfully.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 		// Check if the display string to be used in the table GUI display is correct
-		assertEquals("Output string for table is wrong", "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~NUS~ ", 
-					 result.getTaskList().get(1));
+		assertEquals("Output string for table is wrong", 
+		             "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~NUS~ ", 
+		             result.getTaskList().get(1));
 	}
 
 	/*
@@ -88,10 +90,11 @@ public class TestController {
 		assertEquals("Executor unsuccessful", true, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "meeting with friends is added successfully.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 		// Check if the display string to be used in the table GUI display is correct
-		assertEquals("Output string for table is wrong", "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~ ~ ", 
-					 result.getTaskList().get(2));
+		assertEquals("Output string for table is wrong", 
+		             "meeting with friends~discuss about CS2103T project~25-02-2015~26-02-2015~ ~ ", 
+		             result.getTaskList().get(2));
 	}
 	
 	/*
@@ -109,10 +112,10 @@ public class TestController {
 		assertEquals("Executor unsuccessful", true, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "meeting with friends is added successfully.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 		// Check if the display string to be used in the table GUI display is correct
 		assertEquals("Output string for table is wrong", "meeting with friends~ ~ ~ ~ ~ ", 
-					 result.getTaskList().get(3));
+		             result.getTaskList().get(3));
 	}
 	
 	/*
@@ -132,10 +135,10 @@ public class TestController {
 		assertEquals("Executor unsuccessful", true, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "meeting with friends is added successfully.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 		// Check if the display string to be used in the table GUI display is correct
 		assertEquals("Output string for table is wrong", "meeting with friends~ ~ ~ ~ ~medium", 
-					 result.getTaskList().get(4));
+		             result.getTaskList().get(4));
 	}
 	
 	/*
@@ -152,7 +155,7 @@ public class TestController {
 		assertEquals("Executor unsuccessful", false, result.getResult());
 		// Check if the output feedback message is correct
 		assertEquals("Output feedback message wrong", "Invalid command action: ghfh.\n", 
-					 result.getMessageShowToUser());
+		             result.getMessageShowToUser());
 	}
 	
 	/*
@@ -172,7 +175,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test).getTaskName());	
 		assertEquals("Description is not filled", "discuss about CS2103T project",
-					 Controller.analyzeInput(test).getTaskDescription());	
+		             Controller.analyzeInput(test).getTaskDescription());	
 		assertEquals("Start time is not filled", "1424831340000", Controller.analyzeInput(test).getTaskStartTiming());
 		assertEquals("End time is not filled", "1424918640000", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "NUS", Controller.analyzeInput(test).getTaskLocation());
@@ -186,7 +189,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test).getTaskName());	
 		assertEquals("Description is not filled", "discuss about CS2103T project",
-					 Controller.analyzeInput(test).getTaskDescription());	
+		             Controller.analyzeInput(test).getTaskDescription());	
 		assertEquals("Start time is not filled", "1424831340000", Controller.analyzeInput(test).getTaskStartTiming());
 		assertEquals("End time is not filled", "1424918640000", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "NUS", Controller.analyzeInput(test).getTaskLocation());
@@ -200,7 +203,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test).getTaskName());	
 		assertEquals("Description is not filled", "discuss about CS2103T project",
-					 Controller.analyzeInput(test).getTaskDescription());	
+		             Controller.analyzeInput(test).getTaskDescription());	
 		assertEquals("Start time is not filled", "1424831340000", Controller.analyzeInput(test).getTaskStartTiming());
 		assertEquals("End time is not filled", "1424918640000", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "", Controller.analyzeInput(test).getTaskLocation());
@@ -214,7 +217,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test).getTaskName());	
 		assertEquals("Description is not filled", "discuss about CS2103T project",
-					 Controller.analyzeInput(test).getTaskDescription());	
+		             Controller.analyzeInput(test).getTaskDescription());	
 		assertEquals("Start time is not filled", "1424831340000", Controller.analyzeInput(test).getTaskStartTiming());
 		assertEquals("End time is not filled", "1424918640000", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "", Controller.analyzeInput(test).getTaskLocation());
@@ -228,7 +231,7 @@ public class TestController {
 		assertEquals("add command is not filled", "add", Controller.analyzeInput(test).getAction());
 		assertEquals("Name is not filled", "meeting with friends", Controller.analyzeInput(test).getTaskName());	
 		assertEquals("Description is not filled", "",
-					 Controller.analyzeInput(test).getTaskDescription());	
+		             Controller.analyzeInput(test).getTaskDescription());	
 		assertEquals("Start time is not filled", "", Controller.analyzeInput(test).getTaskStartTiming());
 		assertEquals("End time is not filled", "", Controller.analyzeInput(test).getTaskEndTiming());
 		assertEquals("Location is not filled", "", Controller.analyzeInput(test).getTaskLocation());
