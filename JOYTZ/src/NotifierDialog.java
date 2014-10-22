@@ -1,5 +1,5 @@
 
-
+//@author A0094558N-reused
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -280,7 +280,5 @@ public class NotifierDialog {
 
         };
         Display.getDefault().timerExec(FADE_TIMER, run);
-
     }
-
 }

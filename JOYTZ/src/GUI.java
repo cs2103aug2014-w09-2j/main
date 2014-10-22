@@ -1,5 +1,5 @@
 //package V1;
-
+//@author A0094558N 
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,17 +60,15 @@ public class GUI {
      *
      * @param output	The string to be displayed
      * 
-     * @author Joel
      */
     public static void displayOutput(String output) {
         outputField.setText(output);
     }
 
     /**
-     * Displays the help text in the middle GUI box, styling it
-     * such that the command words are bolded.
+     * Displays the help text in GUI box that is found in the middle,
+     * styling it such that the command words are in bold.
      * 
-     * @author Joel
      */
     private static void displayHelp() {
         outputField.setText(HELP_TEXT);
@@ -143,7 +141,6 @@ public class GUI {
      * @param action			Action input by the user (add, delete, etc.)
      * @param isLastRow			Is this the last item 
      * 
-     * @author Joel
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,
                                    String name, String location, 
@@ -187,6 +184,12 @@ public class GUI {
         }
     } 
     
+    /**
+     * Colors the words in a row red.
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
     private static void colorRow(TableItem item) {
         Color red = display.getSystemColor(SWT.COLOR_RED);
         item.setForeground(red);
@@ -196,7 +199,6 @@ public class GUI {
      * Resizes the columns in the table based 
      * on the width of the application.
      * 
-     * @author Joel
      */
     private static void resizeTable() {
         int tableWidth = table.getSize().x;
@@ -232,6 +234,7 @@ public class GUI {
     }
 
     public static void main(String[] args) {
+        //@author generated
         display = Display.getDefault();
         Shell shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
@@ -268,7 +271,7 @@ public class GUI {
         tblclmnName = new TableColumn(table, SWT.CENTER);
         tblclmnName.setMoveable(true);
         tblclmnName.setWidth(100);
-        tblclmnName.setText("Task Name");
+        tblclmnName.setText("Name");
 
         tblclmnLocation = new TableColumn(table, SWT.CENTER);
         tblclmnLocation.setMoveable(true);
@@ -288,7 +291,9 @@ public class GUI {
         outputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         outputField.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         outputField.setToolTipText("See status messages here");
+        //@author A0094558N
         displayHelp();
+        //@author generated
         GridData gd_outputField = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
         gd_outputField.widthHint = 370;
         gd_outputField.heightHint = 154;
@@ -302,10 +307,10 @@ public class GUI {
         gd_inputField.heightHint = 85;
         inputField.setLayoutData(gd_inputField);
 
+        //@author A0094558N
         // We call the controller to process the user's 
         // input once the user presses "enter"
         inputField.addKeyListener(new KeyAdapter() {
-            // @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {
                     if (inputField.getText().trim().equals("help")) {
@@ -328,13 +333,14 @@ public class GUI {
                 System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
-
+        
+        //@author generated
         shell.open();
         shell.layout();
 
         while(!shell.isDisposed()) {
 
-            
+            //@author A0094558N
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
             //System.out.println(timeStamp );
 

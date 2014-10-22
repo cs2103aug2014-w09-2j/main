@@ -1,4 +1,4 @@
-
+//@author A0094558N-reused
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,6 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Caching class for fonts. Also deals with re-creating fonts should they have been disposed when the 
  * caller asks for a font.
- * 
- * @author Emil
  *
  */
 public class FontCache {
@@ -35,8 +33,8 @@ public class FontCache {
     /**
      * Gets a font from existing FontData
      * 
-     * @param fd FontData
-     * @return Font or null on error
+     * @param fd        FontData
+     * @return Font     or null on error
      */
     public static Font getFont(FontData fd) {
         try {
@@ -74,8 +72,9 @@ public class FontCache {
     /**
      * Gets a font from an existing fonts data.
      * 
-     * @param font Font
-     * @return Font or null on error
+     * @param font      Font
+     * 
+     * @return Font     or null on error
      */
     public static Font getFont(Font font) {
         try {
@@ -94,10 +93,11 @@ public class FontCache {
     /**
      * Gets a font for a given font name and style.
      * 
-     * @param fontName Name of font
-     * @param height Height of font
-     * @param style Style of font
-     * @return Font or null on error
+     * @param fontName      Name of font
+     * @param height        Height of font
+     * @param style         Style of font
+     * 
+     * @return Font         or null on error
      */
     public static Font getFont(String fontName, int height, int style) {
         try {
@@ -179,7 +179,4 @@ class OneFont {
     public String toString() {
         return "Font: " + _name + " " + _height + " " + _style;
     }
-    
-    
-
 }

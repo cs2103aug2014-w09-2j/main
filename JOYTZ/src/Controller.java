@@ -1,5 +1,5 @@
 //package V1;
-
+//@author A0094558N
 import java.text.ParseException;
 import java.util.logging.Logger;
 
@@ -23,7 +23,6 @@ public class Controller {
      * @param command			        ExecutableCommand object containing the
      * 					                user's action and taskId
      * 
-     * @author Joel
      */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
         assert outputFeedbackString != null;
@@ -50,9 +49,8 @@ public class Controller {
      * 
      * @param action	The user's input action (add, delete, etc.)
      * 
-     * @author Joel
      */
-    public static void parseDisplayTasks(String action) {
+    private static void parseDisplayTasks(String action) {
         boolean isLastItem = false;
         boolean isHighlighted = false;
 
@@ -109,7 +107,6 @@ public class Controller {
      * the whole data flow. It is called when the user presses "enter"
      * after input in the GUI.
      * 
-     * @author Joel
      */
     public static void startController(String inputCommandString) {
         assert inputCommandString != null;
@@ -180,7 +177,6 @@ public class Controller {
      * 
      * @return						Command object containing the user's input 
      * 
-     * @author Joel
      */
     private static Command convertStringToCommand(String inputCommandString) {
         inputCommandObject = new Command(inputCommandString);
@@ -195,7 +191,6 @@ public class Controller {
      * 
      * @return						ExecutableCommand object with parsed data
      * 
-     * @author Joel
      */
     public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
         ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
@@ -210,7 +205,6 @@ public class Controller {
      * 
      * @return				String with feedback to show to user after each command
      * 
-     * @author Joel
      */
     private static String proceedFeedback(Feedback feedback) {
         String outputString = feedback.getMessageShowToUser();  		
@@ -225,7 +219,6 @@ public class Controller {
      * 
      * @return			Feedback object with data to display in GUI
      * 
-     * @author Joel
      */
     public static Feedback startExecutor(ExecutableCommand command) {
         return Executor.proceedAnalyzedCommand(command);

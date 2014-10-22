@@ -1,5 +1,5 @@
 
-
+//@author A0094558N-reused
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,8 +11,6 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Class for caching colors
  * 
- * @author Emil
- *
  */
 public final class ColorCache {
 
