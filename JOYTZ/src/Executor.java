@@ -127,9 +127,11 @@ public class Executor {
 			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
 		} else if (!startTiming.equals("") && endTiming.equals("")) {
-			startTime = endTime = Long.valueOf(startTiming);
-		} else if (endTiming.equals("") && startTiming.equals("")) {
-			startTime = endTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
+			endTime = Long.valueOf(startTiming);
+		} else {
+			startTime = System.currentTimeMillis();
+			endTime = Long.MAX_VALUE;
 		}
 
 		// create a task object with all the attributes.
