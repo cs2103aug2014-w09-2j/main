@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Executor {
 
+	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
@@ -33,17 +34,12 @@ public class Executor {
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
+
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 
 	public static Feedback feedback;
-
-	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
-
-	private static void storeCommand(ExecutableCommand command) {
-		commandStack.push(command);
-	}
 
 	/**
 	 * Called by Controller to initialize Executor.
@@ -58,7 +54,7 @@ public class Executor {
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
-		if (command == null) {
+		if (command.equals(new ExecutableCommand()) || command.equals(null)) {
 			feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
 			return feedback;
 		}
@@ -83,7 +79,7 @@ public class Executor {
 			feedback = performSearchAction(command);
 			break;
 		case "undo":
-			performUndoAction();
+			feedback = performUndoAction();
 			break;
 		case "exit":
 			feedback = performExitAction();
@@ -124,15 +120,16 @@ public class Executor {
 
 		Feedback fb = new Feedback(false);
 
-		if (startTiming.equals("") && endTiming.equals("")) {
+		if (!startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.valueOf(startTiming);
 			endTime = Long.valueOf(endTiming);
-		} else if (startTiming.equals("")) {
+		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
-		} else {
-			startTime = Long.valueOf(startTiming);
-			endTime = Long.valueOf(endTiming);
+		} else if (!startTiming.equals("") && endTiming.equals("")) {
+			startTime = endTime = Long.valueOf(startTiming);
+		} else if (endTiming.equals("") && startTiming.equals("")) {
+			startTime = endTime = System.currentTimeMillis();
 		}
 
 		// create a task object with all the attributes.
@@ -140,8 +137,7 @@ public class Executor {
 				priority);
 
 		// pre-condition
-		// assert !name.equals("") : "No task name";
-		// assert !t.equals(new Task()) : "No task created";
+		assert !t.equals(new Task()) : "No task created";
 
 		// add the task into the storage.
 		try {
@@ -151,7 +147,7 @@ public class Executor {
 		}
 
 		// post-condition
-		// assert fb.getResult() : "Fail to add tasks";
+		assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -212,6 +208,7 @@ public class Executor {
 		// pre-condition
 		assert !updateIndicator.equals("") : "No update indicator";
 		assert !updateKeyValue.equals("") : "No update key";
+		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			fb.setResult(Storage
@@ -238,6 +235,7 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		fb.setResult(Storage.clean());
+		
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
@@ -256,11 +254,8 @@ public class Executor {
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
-
+		
 		Feedback fb = new Feedback(false);
-
-		// pre-condition
-		// assert !sortKey.equals("") : "Sort no category";
 
 		// check what category user want to sort
 		try {
@@ -295,8 +290,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		// assert !searchIndicator.equals("") : "No search indicator";
-		// assert !searchValue.equals("") : "No search value";
+		assert !searchIndicator.equals("") : "No search indicator";
+		assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -307,8 +302,8 @@ public class Executor {
 		}
 
 		// post-condition
-		// assert !searchValue.equals("") : "No given search value";
-		// assert !resultList.equals(null) : "No result is found";
+		assert !searchValue.equals("") : "No given search value";
+		assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
@@ -323,10 +318,10 @@ public class Executor {
 	 * @return
 	 */
 
-	private static Feedback performUndoAction(int numOfStep) {
+	private static Feedback performUndoAction(int numberOfSteps) {
 		Feedback fb = new Feedback(false);
 
-		int limit = Integer.min(commandStack.size(), numOfStep);
+		int limit = Integer.min(commandStack.size(), numberOfSteps);
 
 		for (int step = 0; step <= limit; step++) {
 			Feedback feedback = performUndoAction();
@@ -397,12 +392,7 @@ public class Executor {
 		return feedback;
 	}
 
-	private static boolean isLongType(String s) {
-		try {
-			Long.valueOf(s);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		return true;
+	private static void storeCommand(ExecutableCommand command) {
+		commandStack.push(command);
 	}
 }
