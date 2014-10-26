@@ -56,7 +56,7 @@ public class Controller {
 
         if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
             isLastItem = true;
-            GUI.updateTable(0, "", "", "", "", "", "", action, isLastItem, isHighlighted);
+            GUI.updateTable(0, "null", "", "", "", "", "", action, isLastItem, isHighlighted);
 
         } else {									// all other commands
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
