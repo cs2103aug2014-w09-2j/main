@@ -83,8 +83,8 @@ public class Storage {
 				+ t.getTaskName() + "\n" + "task description: "
 				+ t.getTaskDescription() + "\n" + "task location: "
 				+ t.getTaskLocation() + "\n" + "task start time: "
-				+ t.getTaskStartTime() + "\n" + "task end time: "
-				+ t.getTaskEndTime() + "\n" + "task priority: "
+				+ convertLongToDateFormat(t.getTaskStartTime()) + "\n" + "task end time: "
+				+ convertLongToDateFormat(t.getTaskEndTime()) + "\n" + "task priority: "
 				+ t.getTaskPriority() + "\n" + "====================\n");
 
 		taskList.add(t);
@@ -112,8 +112,8 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage delete task. \n "
 				+ "taskId: " + taskId + "\n" + "task name: "
 				+ removedTask.getTaskName() + "\n" + "task start time: "
-				+ removedTask.getTaskStartTime() + "\n" + "task end time: "
-				+ removedTask.getTaskEndTime() + "\n" + "task description: "
+				+ convertLongToDateFormat(removedTask.getTaskStartTime()) + "\n" + "task end time: "
+				+ convertLongToDateFormat(removedTask.getTaskEndTime()) + "\n" + "task description: "
 				+ removedTask.getTaskDescription() + "\n" + "task location: "
 				+ removedTask.getTaskLocation() + "\n" + "task priority: "
 				+ removedTask.getTaskPriority() + "\n"
@@ -255,8 +255,8 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage get task. \n "
 				+ "taskId: " + taskId + "\n" + "task name: "
 				+ task.getTaskName() + "\n" + "task start time: "
-				+ task.getTaskStartTime() + "\n" + "task end time: "
-				+ task.getTaskEndTime() + "\n" + "task description: "
+				+ convertLongToDateFormat(task.getTaskStartTime()) + "\n" + "task end time: "
+				+ convertLongToDateFormat(task.getTaskEndTime()) + "\n" + "task description: "
 				+ task.getTaskDescription() + "\n" + "task location: "
 				+ task.getTaskLocation() + "\n" + "task priority: "
 				+ task.getTaskPriority() + "\n"
@@ -592,7 +592,7 @@ public class Storage {
 	 */
 	private static String convertLongToDateFormat(Long timeLong) {
 		Date date = new Date(timeLong);
-		String dateString = taskDateFormat.format(date);
+		String dateString = format.format(date);
 		return dateString;
 	}
 
