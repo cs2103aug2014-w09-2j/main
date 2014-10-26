@@ -1,6 +1,5 @@
 //package V1;
 //@author A0094558N 
-//import java.util.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -273,7 +272,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /** 
-     * Setup the listeners necessary for the program to work
+     * Setup the listeners necessary for the program to work.
+     * Listeners used:
      * 1. Key listener for keyboard commands
      * 2. Listener for when the application is closed without using "exit"
      * 3. Listener for when the feedback table is resized
@@ -322,6 +322,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         displayTimer = new Timer(delay, null);
         displayTimer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                // Ensure that the following code runs in the 
+                // same thread as the application itself
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
                         Controller.startController("display");
@@ -329,6 +331,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                 });
             }
         });
+        // The timer will continuously repeat with the given delay
         displayTimer.setRepeats(true);
     }
     
@@ -446,8 +449,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         if (aIdentifier == 1) {
            System.out.println("WINDOWS+A hotkey pressed");
            
-           // JIntellitype runs in a different thread, so we need
-           // to ensure that the following code runs in the 
+           // Ensure that the following code runs in the 
            // same thread as the application itself
            Display.getDefault().syncExec(new Runnable() {
                public void run() {
