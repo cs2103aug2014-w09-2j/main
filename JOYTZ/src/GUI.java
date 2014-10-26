@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
 import com.ibm.icu.util.Calendar;
+import org.eclipse.swt.widgets.Label;
 
 public class GUI {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
@@ -54,6 +55,7 @@ public class GUI {
     private static boolean hasNotified = false;
     private static Display display;
     private static Table feedbackTable;
+    private static TableColumn tblclmnFeedback;
 
     /**
      * Displays a feedback string in the GUI after each user command
@@ -75,41 +77,57 @@ public class GUI {
      * 
      */
     private static void displayHelp() {
+    	Color grey = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
+    	
     	TableItem itemCommands = new TableItem(feedbackTable, SWT.NONE);
     	itemCommands.setText(new String[] { HELP_TEXT_COMMANDS });
+    	itemCommands.setBackground(grey);
         
         TableItem itemAdd = new TableItem(feedbackTable, SWT.NONE);
         itemAdd.setText(new String[] { HELP_TEXT_ADD });
+        itemAdd.setBackground(grey);
         
         TableItem itemDelete = new TableItem(feedbackTable, SWT.NONE);
         itemDelete.setText(new String[] { HELP_TEXT_DELETE });
+        itemDelete.setBackground(grey);
         
         TableItem itemUpdate = new TableItem(feedbackTable, SWT.NONE);
         itemUpdate.setText(new String[] { HELP_TEXT_UPDATE });
+        itemUpdate.setBackground(grey);
         
         TableItem itemSort = new TableItem(feedbackTable, SWT.NONE);
         itemSort.setText(new String[] { HELP_TEXT_SORT });
+        itemSort.setBackground(grey);
         
         TableItem itemUndo = new TableItem(feedbackTable, SWT.NONE);
         itemUndo.setText(new String[] { HELP_TEXT_UNDO });
+        itemUndo.setBackground(grey);
         
         TableItem itemDisplay = new TableItem(feedbackTable, SWT.NONE);
         itemDisplay.setText(new String[] { HELP_TEXT_DISPLAY });
+        itemDisplay.setBackground(grey);
         
         TableItem itemHelp = new TableItem(feedbackTable, SWT.NONE);
         itemHelp.setText(new String[] { HELP_TEXT_HELP });
+        itemHelp.setBackground(grey);
         
         TableItem itemClear = new TableItem(feedbackTable, SWT.NONE);
         itemClear.setText(new String[] { HELP_TEXT_CLEAR });
+        itemClear.setBackground(grey);
         
         TableItem itemExit = new TableItem(feedbackTable, SWT.NONE);
         itemExit.setText(new String[] { HELP_TEXT_EXIT });
+        itemExit.setBackground(grey);
         
         TableItem itemTimeGuide = new TableItem(feedbackTable, SWT.NONE);
         itemTimeGuide.setText(new String[] { HELP_TEXT_TIME_GUIDE });
+        itemTimeGuide.setBackground(grey);
         
         TableItem itemAttributesGuide = new TableItem(feedbackTable, SWT.NONE);
         itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
+        itemAttributesGuide.setBackground(grey);
+        
+        
         
         /*
         StyleRange boldAdd = new StyleRange();
@@ -343,10 +361,20 @@ public class GUI {
         */
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1);
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_feedbackTable.heightHint = 140;
         feedbackTable.setLayoutData(gd_feedbackTable);
+        
+        tblclmnFeedback = new TableColumn(feedbackTable, SWT.NONE);
+        tblclmnFeedback.setWidth(100);
+        tblclmnFeedback.setText("Feedback");
+        
         displayHelp();
+        
+        Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+        gd_horizontalSeparator.widthHint = 550;
+        horizontalSeparator.setLayoutData(gd_horizontalSeparator);
 
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         inputField.setToolTipText("Enter your commands here");
@@ -379,6 +407,16 @@ public class GUI {
             public void handleEvent(Event event) {
                 Controller.startController("exit");
                 System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
+            }
+        });
+        
+        // To keep the width of the single column in the feedback table
+        // to be the same as the table itself.
+        feedbackTable.addListener(SWT.Resize, new Listener()
+        {
+            public void handleEvent(Event event)
+            {
+            	tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
             }
         });
         
