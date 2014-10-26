@@ -95,7 +95,8 @@ public class Executor {
 		}
 
 		if (feedback.getResult()) {
-			if (!command.getAction().equals("undo")) {
+			if (!command.getAction().equals("undo")
+					&& !command.getAction().equals("redo")) {
 				storeCommand(command);
 			}
 			feedback.setTaskList(Storage.getTaskList());
@@ -392,7 +393,7 @@ public class Executor {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
 
