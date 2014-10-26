@@ -20,10 +20,13 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.swt.widgets.Label;
 
-public class GUI {
+//import com.melloware.jintellitype.HotkeyListener;
+//import com.melloware.jintellitype.IntellitypeListener;
+//import com.melloware.jintellitype.JIntellitype;
+
+public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "Commands: \n";
@@ -53,6 +56,9 @@ public class GUI {
     private static Display display;
     private static Table feedbackTable;
     private static TableColumn tblclmnFeedback;
+    private static Shell shell;
+    
+    private static GUI mainFrame;
 
     /**
      * Displays a feedback string in the GUI after each user command
@@ -69,8 +75,10 @@ public class GUI {
     }
 
     /**
-     * Displays the help text in GUI box that is found in the middle,
-     * styling it such that the background is colored. 
+     * Displays the help text in text box that is found in the middle,
+     * styling it such that the background is colored. A table is used
+     * to display the output to make the coloring of each individual 
+     * sentence easier.
      * 
      */
     private static void displayHelp() {
@@ -123,62 +131,6 @@ public class GUI {
         TableItem itemAttributesGuide = new TableItem(feedbackTable, SWT.NONE);
         itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
         itemAttributesGuide.setBackground(grey);
-        
-        /*
-        StyleRange boldAdd = new StyleRange();
-        boldAdd.start = 12;
-        boldAdd.length = 3;
-        boldAdd.fontStyle = SWT.BOLD;
-        itemAdd.setStyleRange(boldAdd);
-
-        StyleRange boldDelete = new StyleRange();
-        boldDelete.start = 78;
-        boldDelete.length = 6;
-        boldDelete.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldDelete);
-
-        StyleRange boldUpdate = new StyleRange();
-        boldUpdate.start = 99;
-        boldUpdate.length = 6;
-        boldUpdate.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldUpdate);
-
-        StyleRange boldSort = new StyleRange();
-        boldSort.start = 139;
-        boldSort.length = 4;
-        boldSort.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldSort);
-
-        StyleRange boldUndo = new StyleRange();
-        boldUndo.start = 155;
-        boldUndo.length = 4;
-        boldUndo.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldUndo);
-
-        StyleRange boldDisplay = new StyleRange();
-        boldDisplay.start = 161;
-        boldDisplay.length = 7;
-        boldDisplay.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldDisplay);
-
-        StyleRange boldClear = new StyleRange();
-        boldClear.start = 170;
-        boldClear.length = 5;
-        boldClear.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldClear);
-
-        StyleRange boldHelp = new StyleRange();
-        boldHelp.start = 177;
-        boldHelp.length = 4;
-        boldHelp.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldHelp);
-
-        StyleRange boldExit = new StyleRange();
-        boldExit.start = 183;
-        boldExit.length = 4;
-        boldExit.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldExit);
-        */
     }
 
     /**
@@ -295,7 +247,7 @@ public class GUI {
     public static void main(String[] args) {
         //@author generated
         display = Display.getDefault();
-        Shell shell = new Shell();
+        shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
         shell.setToolTipText("To-do list app of the year");
         shell.setSize(647, 512);
@@ -368,16 +320,21 @@ public class GUI {
         gd_inputField.heightHint = 85;
         inputField.setLayoutData(gd_inputField);
         
-        // Load the current contents of the database
+        //@author A0094558N
+        /* Begin startup procedures
+         * 1. Initialize and start JIntellitype
+         * 2. Load the contents of the database
+         * 3. Display the help messages
+         */
+        //initJIntellitype();
         Controller.startController("reload");
         displayHelp();
 
-        //@author A0094558N
         // We call the controller to process the user's 
-        // input once the user presses "enter"
+        // keyboard commands
         inputField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.CR) {
+                if (e.character == SWT.CR) {    // "enter" key
                     if (inputField.getText().trim().equals("help")) {
                         displayHelp();
                         inputField.setText("");
@@ -387,7 +344,7 @@ public class GUI {
                         inputField.setText("");
                     }
                 }
-				if(e.stateMask == SWT.CTRL && e.keyCode == 'a'){     
+				if(e.stateMask == SWT.CTRL && e.keyCode == 'a') {   // Ctrl+A     
 					inputField.selectAll();
 			    }
             }
@@ -404,10 +361,8 @@ public class GUI {
         
         // To keep the width of the single column in the feedback table
         // to be the same as the table itself.
-        feedbackTable.addListener(SWT.Resize, new Listener()
-        {
-            public void handleEvent(Event event)
-            {
+        feedbackTable.addListener(SWT.Resize, new Listener() {
+            public void handleEvent(Event event) {
             	tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
             }
         });
@@ -433,13 +388,108 @@ public class GUI {
             }*/
 
             display.readAndDispatch();
-
-            // Uncomment this and comment the line above if you
-            // want the program to sleep if not in focus
-            // if(!display.readAndDispatch()) {
-            //    display.sleep();
-            // }
         }
         display.dispose();
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
+     
+    public void onHotKey(int aIdentifier) {
+        if (aIdentifier == 1) {
+           System.out.println("WINDOWS+A hotkey pressed");
+           
+           // JIntellitype runs in a different thread, so we need
+           // to ensure that the following code runs in the 
+           // same thread as the application itself
+           Display.getDefault().syncExec(new Runnable() {
+               public void run() {
+                   shell.forceActive();     // Bring application to front
+               }
+           });
+        }
+     }
+    
+    /**
+     * Initialize the JInitellitype library making sure the DLL is located.
+     
+    public static void initJIntellitype() {
+        mainFrame = new GUI();
+        
+        try {
+           // initialize JIntellitype with the frame so all windows commands can
+           // be attached to this window
+           JIntellitype.getInstance().addHotKeyListener(mainFrame);
+           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
+           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_WIN, (int)'A');    // WIN+A
+           System.out.println("JIntellitype initialized");
+        } catch (RuntimeException ex) {
+           System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+        }
+     }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
+     
+    public void onIntellitype(int aCommand) {
+
+       switch (aCommand) {
+       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
+           System.out.println("BROWSER_BACKWARD message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
+           System.out.println("BROWSER_FAVOURITES message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
+           System.out.println("BROWSER_FORWARD message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_HOME:
+           System.out.println("BROWSER_HOME message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
+           System.out.println("BROWSER_REFRESH message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
+           System.out.println("BROWSER_SEARCH message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_STOP:
+           System.out.println("BROWSER_STOP message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
+           System.out.println("LAUNCH_APP1 message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
+           System.out.println("LAUNCH_APP2 message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
+           System.out.println("LAUNCH_MAIL message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+           System.out.println("MEDIA_NEXTTRACK message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+           System.out.println("MEDIA_PLAY_PAUSE message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+           System.out.println("MEDIA_PREVIOUSTRACK message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_STOP:
+           System.out.println("MEDIA_STOP message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
+           System.out.println("VOLUME_DOWN message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_UP:
+           System.out.println("VOLUME_UP message received " + Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
+           System.out.println("VOLUME_MUTE message received " + Integer.toString(aCommand));
+          break;
+       default:
+           System.out.println("Undefined INTELLITYPE message caught " + Integer.toString(aCommand));
+          break;
+       }
+    }*/
 }
