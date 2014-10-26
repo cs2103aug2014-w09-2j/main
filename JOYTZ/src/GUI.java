@@ -42,6 +42,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_EXIT = "exit\n";
     private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
+	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 
     private static StyledText inputField;
     private static Table taskTable;
@@ -52,11 +53,13 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
     private static TableColumn tblclmnDeadline;
-    private static boolean isSortingOrSearching = false;
+    private static boolean isSortingOrSearching;
+    private static boolean isTimerRunning;
     private static Display display;
     private static Table feedbackTable;
     private static TableColumn tblclmnFeedback;
     private static Shell shell;
+    private static Timer callDisplay;
     
     private static GUI mainFrame;
 
@@ -68,7 +71,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     public static void displayOutput(String output) {
         TableItem item = new TableItem(feedbackTable, SWT.NONE);
-        item.setText(new String[] { output });
+        item.setText(output);
         
         // This ensures that the table is always scrolled to the bottom
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
@@ -157,6 +160,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         if (action.equals("sort") || action.equals("search")) {
         	isSortingOrSearching = true;
+        	isTimerRunning = false;
+        	callDisplay.cancel();
         } else {
         	isSortingOrSearching = false;
         }
@@ -186,7 +191,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                         description, priority });
             if (isHighlighted == true) {
                 colorRowRed(item);
-                NotifierDialog.notify(name + " is overdue!", "");
+                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
             }
         }
 
@@ -242,6 +247,85 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         if (tblclmnLocation.getWidth() >= widthPerColumn) {
             tblclmnLocation.setWidth(widthPerColumn);
         }  
+    }
+    
+    /** 
+     * Begin startup procedures
+     * 1. Initialize and start JIntellitype
+     * 2. Load the contents of the database
+     * 3. Display the help messages
+     * 
+     */
+    private static void startupProgram() {
+        // initJIntellitype();
+        Controller.startController("reload");
+        displayHelp();
+        resizeTable();
+        
+        isTimerRunning = false;
+        isSortingOrSearching = false;
+    }
+    
+    /** 
+     * Setup the listeners necessary for the program to work
+     * 1. Key listener for keyboard commands
+     * 2. Listener for when the application is closed without using "exit"
+     * 3. Listener for when the feedback table is resized
+     * 
+     */
+    private static void setupListeners() {
+        // We call the controller to process 
+        // the user's keyboard commands
+        inputField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.character == SWT.CR) {    // "enter" key
+                    if (inputField.getText().trim().equals("help")) {
+                        displayHelp();
+                        inputField.setText("");
+                    } else {
+                        Controller.startController(inputField.getText());
+
+                        inputField.setText("");
+                    }
+                }
+                if(e.stateMask == SWT.CTRL && e.keyCode == 'a') {   // Ctrl+A     
+                    inputField.selectAll();
+                }
+            }
+        });
+
+        // We call the controller with an input "exit" so
+        // that the current state of the task list can be saved.
+        shell.addListener(SWT.Close, new Listener() {
+            public void handleEvent(Event event) {
+                Controller.startController("exit");
+                System.exit(0);     // TODO: I shouldn't need to call this. "exit" is not being handled?
+            }
+        });
+        
+        // To keep the width of the single column in the feedback table
+        // to be the same as the table itself.
+        feedbackTable.addListener(SWT.Resize, new Listener() {
+            public void handleEvent(Event event) {
+                tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
+            }
+        });
+    }
+    
+    private static void refreshTable() {
+        if (isSortingOrSearching == false && isTimerRunning == false) {
+            isTimerRunning = true;
+
+            callDisplay = new Timer();
+            callDisplay.schedule(new TimerTask() {
+                public void run() {
+                    System.out.println("TICK");
+                    Controller.startController("display");
+                }
+            },
+            3000,       // 1st delay before running in milliseconds
+            3000);      // delay in milliseconds for subsequent executions
+        }
     }
 
     public static void main(String[] args) {
@@ -321,51 +405,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         inputField.setLayoutData(gd_inputField);
         
         //@author A0094558N
-        /* Begin startup procedures
-         * 1. Initialize and start JIntellitype
-         * 2. Load the contents of the database
-         * 3. Display the help messages
-         */
-        //initJIntellitype();
-        Controller.startController("reload");
-        displayHelp();
-
-        // We call the controller to process the user's 
-        // keyboard commands
-        inputField.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.CR) {    // "enter" key
-                    if (inputField.getText().trim().equals("help")) {
-                        displayHelp();
-                        inputField.setText("");
-                    } else {
-                        Controller.startController(inputField.getText());
-
-                        inputField.setText("");
-                    }
-                }
-				if(e.stateMask == SWT.CTRL && e.keyCode == 'a') {   // Ctrl+A     
-					inputField.selectAll();
-			    }
-            }
-        });
-
-        // We call the controller with an input "exit" so
-        // that the current state of the task list can be saved.
-        shell.addListener(SWT.Close, new Listener() {
-            public void handleEvent(Event event) {
-                Controller.startController("exit");
-                System.exit(0);		// TODO: I shouldn't need to call this. "exit" is not being handled?
-            }
-        });
-        
-        // To keep the width of the single column in the feedback table
-        // to be the same as the table itself.
-        feedbackTable.addListener(SWT.Resize, new Listener() {
-            public void handleEvent(Event event) {
-            	tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
-            }
-        });
+        startupProgram();
+        setupListeners();
       
         //@author generated
         shell.open();
@@ -374,24 +415,15 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         while(!shell.isDisposed()) {
 
             //@author A0094558N
-            /*if (isSortingOrSearching == false) {
-                // We only toggle the boolean after a delay, 
-                // or multiple notifications will popup.
-                Timer callDisplay = new Timer();
-                callDisplay.schedule(new TimerTask() {
-                    public void run() {
-                    	Controller.startController("display");
-                    }
-                },
-                3000,		// 1st delay before running in milliseconds
-                3000);		// delay in milliseconds for subsequent executions
-            }*/
-
+            //refreshTable();
+            
+            //@author generated
             display.readAndDispatch();
         }
         display.dispose();
     }
     
+    //@author A0094558N-reused
     /*
      * (non-Javadoc)
      * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)

@@ -9,6 +9,7 @@ public class Controller {
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
     public static final String EMPTY_LIST = "null";
+    private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -161,8 +162,12 @@ public class Controller {
 
                 outputString = proceedFeedback(feedback);
                 assert outputString != null;
-
-                displayInGUI(outputString, parsedCommand);
+                
+                if (outputString.equals(SAVE_SUCCESSFUL)) {
+                    System.exit(0);
+                } else {
+                    displayInGUI(outputString, parsedCommand);
+                }
             }
         } catch (ParseException e) {
             displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
