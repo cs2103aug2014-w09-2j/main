@@ -1,6 +1,5 @@
 //package V1;
 //@author A0094558N 
-import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -17,13 +16,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
-import com.ibm.icu.util.Calendar;
 import org.eclipse.swt.widgets.Label;
 
 public class GUI {
@@ -52,7 +49,7 @@ public class GUI {
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
     private static TableColumn tblclmnDeadline;
-    private static boolean hasNotified = false;
+    private static boolean isSortingOrSearching = false;
     private static Display display;
     private static Table feedbackTable;
     private static TableColumn tblclmnFeedback;
@@ -205,6 +202,12 @@ public class GUI {
                                    boolean isHighlighted) {
 
         action = action.trim();
+        
+        if (action.equals("sort") || action.equals("search")) {
+        	isSortingOrSearching = true;
+        } else {
+        	isSortingOrSearching = false;
+        }
 
         // To prevent multiple of the same entries, we clear the whole table first
         if (taskNumber == 0 || action.equals("null")) {
@@ -405,7 +408,7 @@ public class GUI {
             	tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
             }
         });
-        
+      
         //@author generated
         shell.open();
         shell.layout();
@@ -413,25 +416,18 @@ public class GUI {
         while(!shell.isDisposed()) {
 
             //@author A0094558N
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            //System.out.println(timeStamp );
-
-            if (timeStamp.trim().equals("20141018_200700") && hasNotified == false) {
-                hasNotified = true;
-                NotifierDialog.notify("Hi There! I'm a notification widget!", 
-                                      "Today we are creating a widget that allows us" +
-                                      "to show notifications that fade in and out!");
-
+            /*if (isSortingOrSearching == false) {
                 // We only toggle the boolean after a delay, 
                 // or multiple notifications will popup.
-                Timer setHasNotifiedToFalse = new Timer();
-                setHasNotifiedToFalse.schedule(new TimerTask() {
+                Timer callDisplay = new Timer();
+                callDisplay.schedule(new TimerTask() {
                     public void run() {
-                        hasNotified = false;
+                    	Controller.startController("display");
                     }
-                }, 
-                1000);	// delay in milliseconds
-            }
+                },
+                3000,		// 1st delay before running in milliseconds
+                3000);		// delay in milliseconds for subsequent executions
+            }*/
 
             display.readAndDispatch();
 
