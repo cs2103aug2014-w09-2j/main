@@ -48,7 +48,7 @@ public class Storage {
 
 	// these three are for recording current information in the file.
 	private static DateFormat format = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss.SSSSSS");
+			"yyyy-MM-dd HH:mm");
 	private static String taskStringFormat = "%s-%s-%s-%s-%s-%s\n";
 	private static DateFormat taskDateFormat = new SimpleDateFormat(
 			"dd-MM-yyyy");
