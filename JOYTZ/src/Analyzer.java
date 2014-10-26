@@ -14,9 +14,11 @@ public class Analyzer {
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
-	private static final String[] VALID_INDICATOR = new String[] { "name",
-			"description", "start date", "start time", "end date", "end time",
-			"location", "priority" };
+	private static final String[] VALID_INDICATOR = new String[] {
+			StringFormat.NAME, StringFormat.DESCRIPTION,
+			StringFormat.START_DATE, StringFormat.START_TIME,
+			StringFormat.END_DATE, StringFormat.END_TIME,
+			StringFormat.LOCATION, StringFormat.PRIORITY };
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
@@ -34,34 +36,34 @@ public class Analyzer {
 		String[] commandArgument = getArgument(userCommand);
 
 		switch (userAction) {
-		case "add":
+		case StringFormat.ADD:
 			outputCommand = handleAddCommand(commandArgument);
 			break;
-		case "delete":
+		case StringFormat.DELETE:
 			outputCommand = handleDeleteCommand(commandArgument);
 			break;
-		case "update":
+		case StringFormat.UPDATE:
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
-		case "display":
+		case StringFormat.DISPLAY:
 			outputCommand = handlDisplayCommand();
 			break;
-		case "undo":
+		case StringFormat.UNDO:
 			outputCommand = handleUndoCommand();
 			break;
-		case "redo":
+		case StringFormat.REDO:
 			outputCommand = handleRedoCommand();
 			break;
-		case "clear":
+		case StringFormat.CLEAR:
 			outputCommand = handleClearCommand();
 			break;
-		case "sort":
+		case StringFormat.SORT:
 			outputCommand = handleSortCommand(commandArgument);
 			break;
-		case "search":
+		case StringFormat.SEARCH:
 			outputCommand = handleSearchCommand(commandArgument);
 			break;
-		case "exit":
+		case StringFormat.EXIT:
 			outputCommand = handleExitCommand();
 			break;
 		default:
@@ -75,7 +77,7 @@ public class Analyzer {
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
 
-		ExecutableCommand tempCommand = new ExecutableCommand("add");
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.ADD);
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK);
@@ -110,7 +112,8 @@ public class Analyzer {
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
 
-		ExecutableCommand tempCommand = new ExecutableCommand("delete");
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.DELETE);
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
@@ -129,7 +132,8 @@ public class Analyzer {
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
 
-		ExecutableCommand tempCommand = new ExecutableCommand("update");
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.UPDATE);
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
@@ -168,30 +172,35 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handlDisplayCommand() {
-		return new ExecutableCommand("display");
+		return new ExecutableCommand(StringFormat.DISPLAY);
 	}
 
 	private static ExecutableCommand handleUndoCommand() {
-		return new ExecutableCommand("undo");
+		return new ExecutableCommand(StringFormat.UNDO);
 	}
 
 	private static ExecutableCommand handleRedoCommand() {
-		return new ExecutableCommand("redo");
+		return new ExecutableCommand(StringFormat.REDO);
 	}
 
 	private static ExecutableCommand handleClearCommand() {
-		return new ExecutableCommand("clear");
+		return new ExecutableCommand(StringFormat.CLEAR);
 	}
 
 	private static ExecutableCommand handleSortCommand(String[] arg) {
-		ExecutableCommand tempCommand = new ExecutableCommand("sort");
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
-		// have to check the indicator here.
-		if (arg.length != 0) {
-			String sortIndicator = arg[0].toLowerCase();
-
-			tempCommand.setIndicator(sortIndicator);
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+			return tempCommand;
+		} else if (!isValidIndicator(arg[0])) {
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return tempCommand;
 		}
+
+		String sortIndicator = arg[0].toLowerCase();
+
+		tempCommand.setIndicator(sortIndicator);
 
 		return tempCommand;
 	}
@@ -200,7 +209,8 @@ public class Analyzer {
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
 
-		ExecutableCommand tempCommand = new ExecutableCommand("search");
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.SEARCH);
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
@@ -230,7 +240,7 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handleExitCommand() {
-		return new ExecutableCommand("exit");
+		return new ExecutableCommand(StringFormat.EXIT);
 	}
 
 	private static String getUserAction(String userCommand) {
