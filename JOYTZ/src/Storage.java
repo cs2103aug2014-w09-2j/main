@@ -326,7 +326,7 @@ public class Storage {
 
 		for (int index = 0; index < taskList.size(); index++) {
 			Task task = taskList.get(index);
-			if (task.get(indicator).equals(searchValue)) {
+			if (task.get(indicator).trim().equals(searchValue.trim())) {
 				requiredTaskList.add(task);
 			}
 		}
@@ -336,6 +336,12 @@ public class Storage {
 		}
 
 		resultList = getTaskList(requiredTaskList);
+		
+
+		LOGGER.info("==============\n" + "Storage search. \n "
+				+ "result: " + resultList.get(0) + "\n"
+				+ resultList.size() + "\n"
+				+ "====================\n");
 		return resultList;
 	}
 
@@ -540,9 +546,9 @@ public class Storage {
 				task.getTaskName(),
 				task.getTaskStartTime(), 
 				task.getTaskEndTime(), 
-				task.getTaskDescription(),
-				task.getTaskLocation(), 
-				task.getTaskPriority());
+				task.getTaskDescription() + " ",
+				task.getTaskLocation() + " ", 
+				task.getTaskPriority() + " ");
 		
 		return result;
 	}
@@ -551,13 +557,14 @@ public class Storage {
 		System.out.println(taskString);
 		Task task = new Task();
 
-		assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+		//assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
 		
 		if (taskString == null) {
 			throw new Exception(ERROR_NULL_TASK_STRING);
 		} else {
 			String[] taskAttributes = taskString.split("-");
 			if (taskAttributes.length != 6) {
+				System.out.println(taskString);
 				throw new Exception(String.format(ERROR_INVALID_TASK_RECORD,
 						taskString));
 			} else {

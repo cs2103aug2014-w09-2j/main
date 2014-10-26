@@ -23,9 +23,6 @@ public class StringFormat {
 	 * task attribute sort and search indicator
 	 */
 
-	public static final String VALID_INDICATOR = "";
-	
-
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
 	public static final String START_TIMING = "start timing";

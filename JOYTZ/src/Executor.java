@@ -20,6 +20,10 @@ public class Executor {
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
+	// these are for Display method.
+	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
+	private static final String MESSAGE_EMPTY_DISPLAY = "The task list is empty.\n";
+
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
@@ -27,7 +31,7 @@ public class Executor {
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
 
 	// these are for Search Method
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "%s in %s is searched successfully.\n";
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
@@ -35,7 +39,7 @@ public class Executor {
 
 	// these are for Redo Method
 	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo";
-	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one strp successfully";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -75,6 +79,9 @@ public class Executor {
 		case "clear":
 			feedback = performClearAction();
 			break;
+		case "display":
+			feedback = performDisplayAction();
+			break;
 		case "sort":
 			feedback = performSortAction(command);
 			break;
@@ -101,10 +108,10 @@ public class Executor {
 
 		if (feedback.getResult()) {
 			if (!command.getAction().equals("undo")
-					&& !command.getAction().equals("redo")) {
+					&& !command.getAction().equals("redo")
+					&& !command.getAction().equals("reload")) {
 				storeCommand(command);
 			}
-			feedback.setTaskList(Storage.getTaskList());
 		}
 
 		return feedback;
@@ -121,9 +128,9 @@ public class Executor {
 	 */
 	private static Feedback performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
-		String description = command.getTaskDescription();
-		String location = command.getTaskLocation();
-		String priority = command.getTaskPriority();
+		String description = command.getTaskDescription() + " ";
+		String location = command.getTaskLocation() + " ";
+		String priority = command.getTaskPriority() + " ";
 		String startTiming = command.getTaskStartTiming();
 		String endTiming = command.getTaskEndTiming();
 
@@ -170,6 +177,7 @@ public class Executor {
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
+			fb.setTaskList(Storage.getTaskList());
 		}
 
 		return fb;
@@ -199,10 +207,13 @@ public class Executor {
 			if (fb.getResult()) {
 				fb.setMessageShowToUser(String.format(
 						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
+				fb.setTaskList(Storage.getTaskList());
 			}
+
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
+
 		return fb;
 	}
 
@@ -235,6 +246,7 @@ public class Executor {
 				taskName = Storage.get(taskId).getTaskName();
 				fb.setMessageShowToUser(String.format(
 						MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
+				fb.setTaskList(Storage.getTaskList());
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
@@ -257,6 +269,18 @@ public class Executor {
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
+
+		return fb;
+	}
+
+	private static Feedback performDisplayAction() {
+		Feedback fb = new Feedback(true);
+		fb.setTaskList(Storage.getTaskList());
+		if (fb.getTaskList().size() == 0) {
+			fb.setTaskList(Storage.getTaskList());
+			return fb;
+		}
+		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
 
 		return fb;
 	}
@@ -286,6 +310,7 @@ public class Executor {
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
 					sortKey));
+			fb.setTaskList(Storage.getTaskList());
 		}
 
 		return fb;
@@ -308,8 +333,8 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		// pre-condition
-		assert !searchIndicator.equals("") : "No search indicator";
-		assert !searchValue.equals("") : "No search value";
+		// assert !searchIndicator.equals("") : "No search indicator";
+		// assert !searchValue.equals("") : "No search value";
 
 		// check whether Storage can search the result or not
 		try {
@@ -320,11 +345,12 @@ public class Executor {
 		}
 
 		// post-condition
-		assert !searchValue.equals("") : "No given search value";
-		assert !resultList.equals(null) : "No result is found";
+		// assert !searchValue.equals("") : "No given search value";
+		// assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+				searchValue, searchIndicator));
 
 		return fb;
 	}
@@ -375,6 +401,7 @@ public class Executor {
 		}
 
 		fb.setResult(true);
+		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
 
 		return fb;
@@ -396,6 +423,7 @@ public class Executor {
 		}
 
 		fb.setResult(true);
+		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
 
 		return fb;
@@ -413,6 +441,7 @@ public class Executor {
 		}
 
 		fb.setResult(true);
+		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
 		return fb;
 	}

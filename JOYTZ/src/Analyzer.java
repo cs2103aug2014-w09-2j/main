@@ -18,8 +18,9 @@ public class Analyzer {
 
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
-			StringFormat.START_DATE, StringFormat.START_TIME,
-			StringFormat.END_DATE, StringFormat.END_TIME,
+			//StringFormat.START_DATE, StringFormat.START_TIME,
+			//StringFormat.END_DATE, StringFormat.END_TIME,
+			StringFormat.START_TIMING, StringFormat.END_TIMING,
 			StringFormat.LOCATION, StringFormat.PRIORITY };
 	private static final String[] VALID_PRIORITY = new String[] {
 			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
