@@ -353,10 +353,6 @@ public class GUI {
         tblclmnFeedback.setWidth(100);
         tblclmnFeedback.setText("Feedback");
         
-        //@author A0094558N
-        displayHelp();
-        
-        //@author generated
         Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
         GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         gd_horizontalSeparator.widthHint = 550;
@@ -368,6 +364,10 @@ public class GUI {
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_inputField.heightHint = 85;
         inputField.setLayoutData(gd_inputField);
+        
+        // Load the current contents of the database
+        Controller.startController("reload");
+        displayHelp();
 
         //@author A0094558N
         // We call the controller to process the user's 
