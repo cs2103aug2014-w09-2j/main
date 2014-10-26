@@ -131,13 +131,13 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		if (!startTiming.equals("") && !endTiming.equals("")) {
-			startTime = Long.valueOf(startTiming);
-			endTime = Long.valueOf(endTiming);
+			startTime = Long.parseLong(startTiming);
+			endTime = Long.parseLong(endTiming);
 		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = System.currentTimeMillis();
-			endTime = Long.valueOf(endTiming);
+			endTime = Long.parseLong(endTiming);
 		} else if (!startTiming.equals("") && endTiming.equals("")) {	
-			startTime = Long.valueOf(startTiming);
+			startTime = Long.parseLong(startTiming);
 			endTime = Long.MAX_VALUE;
 		} else {
 			startTime = System.currentTimeMillis();
