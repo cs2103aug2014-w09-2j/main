@@ -28,23 +28,22 @@ import com.ibm.icu.util.Calendar;
 public class GUI {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
-    private static final String HELP_TEXT = "Commands: \n" +
-                                            "	add~task name~description~start time " +
-                                            "~end time~location~priority\n" +
-                                            "	delete~index number\n" +
-                                            "	update~index number~attribute~new data\n" +
-                                            "	sort~attribute\n" +
-                                            "	undo\n" + 
-                                            "	display\n" +
-                                            "	clear\n" +
-                                            "	help\n" +
-                                            "	exit\n" +
-                                            "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n" +
-                                            "Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_COMMANDS = "Commands: \n";
+    private static final String HELP_TEXT_ADD = "add~task name~description~start time " +
+    											"~end time~location~priority\n";
+    private static final String HELP_TEXT_DELETE =  "delete~index number\n";
+    private static final String HELP_TEXT_UPDATE = "update~index number~attribute~new data\n";
+    private static final String HELP_TEXT_SORT = "sort~attribute\n";
+    private static final String HELP_TEXT_UNDO = "undo\n";
+    private static final String HELP_TEXT_DISPLAY ="display\n";
+    private static final String HELP_TEXT_CLEAR = "clear\n";
+    private static final String HELP_TEXT_HELP ="help\n";
+    private static final String HELP_TEXT_EXIT = "exit\n";
+    private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
 
     private static StyledText inputField;
-    private static StyledText outputField;
-    private static Table table;
+    private static Table taskTable;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
     private static TableColumn tblclmnStartedOn;
@@ -54,6 +53,7 @@ public class GUI {
     private static TableColumn tblclmnDeadline;
     private static boolean hasNotified = false;
     private static Display display;
+    private static Table feedbackTable;
 
     /**
      * Displays a feedback string in the GUI after each user command
@@ -62,7 +62,11 @@ public class GUI {
      * 
      */
     public static void displayOutput(String output) {
-        outputField.setText(output);
+        TableItem item = new TableItem(feedbackTable, SWT.NONE);
+        item.setText(new String[] { output });
+        
+        // This ensures that the table is always scrolled to the bottom
+        feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
     /**
@@ -71,13 +75,48 @@ public class GUI {
      * 
      */
     private static void displayHelp() {
-        outputField.setText(HELP_TEXT);
-
+    	TableItem itemCommands = new TableItem(feedbackTable, SWT.NONE);
+    	itemCommands.setText(new String[] { HELP_TEXT_COMMANDS });
+        
+        TableItem itemAdd = new TableItem(feedbackTable, SWT.NONE);
+        itemAdd.setText(new String[] { HELP_TEXT_ADD });
+        
+        TableItem itemDelete = new TableItem(feedbackTable, SWT.NONE);
+        itemDelete.setText(new String[] { HELP_TEXT_DELETE });
+        
+        TableItem itemUpdate = new TableItem(feedbackTable, SWT.NONE);
+        itemUpdate.setText(new String[] { HELP_TEXT_UPDATE });
+        
+        TableItem itemSort = new TableItem(feedbackTable, SWT.NONE);
+        itemSort.setText(new String[] { HELP_TEXT_SORT });
+        
+        TableItem itemUndo = new TableItem(feedbackTable, SWT.NONE);
+        itemUndo.setText(new String[] { HELP_TEXT_UNDO });
+        
+        TableItem itemDisplay = new TableItem(feedbackTable, SWT.NONE);
+        itemDisplay.setText(new String[] { HELP_TEXT_DISPLAY });
+        
+        TableItem itemHelp = new TableItem(feedbackTable, SWT.NONE);
+        itemHelp.setText(new String[] { HELP_TEXT_HELP });
+        
+        TableItem itemClear = new TableItem(feedbackTable, SWT.NONE);
+        itemClear.setText(new String[] { HELP_TEXT_CLEAR });
+        
+        TableItem itemExit = new TableItem(feedbackTable, SWT.NONE);
+        itemExit.setText(new String[] { HELP_TEXT_EXIT });
+        
+        TableItem itemTimeGuide = new TableItem(feedbackTable, SWT.NONE);
+        itemTimeGuide.setText(new String[] { HELP_TEXT_TIME_GUIDE });
+        
+        TableItem itemAttributesGuide = new TableItem(feedbackTable, SWT.NONE);
+        itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
+        
+        /*
         StyleRange boldAdd = new StyleRange();
         boldAdd.start = 12;
         boldAdd.length = 3;
         boldAdd.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldAdd);
+        itemAdd.setStyleRange(boldAdd);
 
         StyleRange boldDelete = new StyleRange();
         boldDelete.start = 78;
@@ -125,7 +164,7 @@ public class GUI {
         boldExit.start = 183;
         boldExit.length = 4;
         boldExit.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldExit);
+        outputField.setStyleRange(boldExit);*/
     }
 
     /**
@@ -151,11 +190,12 @@ public class GUI {
         action = action.trim();
 
         // To prevent multiple of the same entries, we clear the whole table first
-        if (taskNumber == 0 || action.equals("exit")) {
-            table.removeAll();
-            assert table.getItemCount() == 0;
+        if (taskNumber == 0 || action.equals("null")) {
+            taskTable.removeAll();
+            assert taskTable.getItemCount() == 0;
         }
 
+        // TODO: Don't hardcode !startDate.equals("null")
         if (!action.equals("clear") && !startDate.equals("null")) {
             // Debugging code
             LOGGER.info("==============\n" +
@@ -170,7 +210,7 @@ public class GUI {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = new TableItem(table, SWT.NONE);
+            TableItem item = new TableItem(taskTable, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
             if (isHighlighted == true) {
@@ -201,8 +241,8 @@ public class GUI {
      * 
      */
     private static void resizeTable() {
-        int tableWidth = table.getSize().x;
-        int scrollbarWidth = table.getVerticalBar().getSize().x;
+        int tableWidth = taskTable.getSize().x;
+        int scrollbarWidth = taskTable.getVerticalBar().getSize().x;
 
         int widthLeft = tableWidth - tblclmnNo.getWidth() - 
                         tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
@@ -239,66 +279,74 @@ public class GUI {
         Shell shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
         shell.setToolTipText("To-do list app of the year");
-        shell.setSize(647, 497);
+        shell.setSize(647, 512);
         shell.setLayout(new GridLayout(1, false));
         shell.setText("JOYTZ");
 
-        table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
-        table.setSize(new Point(400, 400));
-        table.setToolTipText("View your tasks here");
-        GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-        gd_table.heightHint = 248;
-        table.setLayoutData(gd_table);
+        taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        taskTable.setLinesVisible(true);
+        taskTable.setHeaderVisible(true);
+        taskTable.setSize(new Point(400, 400));
+        taskTable.setToolTipText("View your tasks here");
+        GridData gd_taskTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gd_taskTable.heightHint = 248;
+        taskTable.setLayoutData(gd_taskTable);
 
-        tblclmnNo = new TableColumn(table, SWT.CENTER);
+        tblclmnNo = new TableColumn(taskTable, SWT.CENTER);
         tblclmnNo.setMoveable(true);
         tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
 
-        tblclmnStartedOn = new TableColumn(table, SWT.CENTER);
+        tblclmnStartedOn = new TableColumn(taskTable, SWT.CENTER);
         tblclmnStartedOn.setMoveable(true);
         tblclmnStartedOn.setWidth(92);
         tblclmnStartedOn.setText("Started On");
 
-        tblclmnDeadline = new TableColumn(table, SWT.CENTER);
+        tblclmnDeadline = new TableColumn(taskTable, SWT.CENTER);
         tblclmnDeadline.setMoveable(true);
         tblclmnDeadline.setWidth(100);
         tblclmnDeadline.setText("Deadline");
 
-        tblclmnName = new TableColumn(table, SWT.CENTER);
+        tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);
         tblclmnName.setWidth(100);
         tblclmnName.setText("Name");
 
-        tblclmnLocation = new TableColumn(table, SWT.CENTER);
+        tblclmnLocation = new TableColumn(taskTable, SWT.CENTER);
         tblclmnLocation.setMoveable(true);
         tblclmnLocation.setWidth(100);
         tblclmnLocation.setText("Location");
 
-        tblclmnDescription = new TableColumn(table, SWT.CENTER);
+        tblclmnDescription = new TableColumn(taskTable, SWT.CENTER);
         tblclmnDescription.setMoveable(true);
         tblclmnDescription.setWidth(103);
         tblclmnDescription.setText("Description");
 
-        tblclmnPriority = new TableColumn(table, SWT.CENTER);
+        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
         tblclmnPriority.setMoveable(true);
         tblclmnPriority.setWidth(72);
         tblclmnPriority.setText("Priority");
 
+        /*
         outputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         outputField.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         outputField.setToolTipText("See status messages here");
         //@author A0094558N
-        displayHelp();
+        
         //@author generated
-        GridData gd_outputField = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
+        GridData gd_outputField = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
         gd_outputField.widthHint = 370;
         gd_outputField.heightHint = 154;
         outputField.setLayoutData(gd_outputField);
         outputField.setEditable(false);
+        */
+        
+        feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1);
+        gd_feedbackTable.heightHint = 140;
+        feedbackTable.setLayoutData(gd_feedbackTable);
+        displayHelp();
 
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         inputField.setToolTipText("Enter your commands here");
