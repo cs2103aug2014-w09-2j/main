@@ -387,6 +387,9 @@ public class GUI {
                         inputField.setText("");
                     }
                 }
+				if(e.stateMask == SWT.CTRL && e.keyCode == 'a'){     
+					inputField.selectAll();
+			    }
             }
         });
 
