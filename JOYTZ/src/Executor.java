@@ -5,6 +5,7 @@ import java.util.*;
 public class Executor {
 
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
+	//private static Stack<ExecutableCommand>
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
@@ -81,6 +82,9 @@ public class Executor {
 			break;
 		case "undo":
 			feedback = performUndoAction();
+			break;
+		case "redo":
+			feedback = performRedoAction();
 			break;
 		case "exit":
 			feedback = performExitAction();
@@ -374,6 +378,13 @@ public class Executor {
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
 
 		return fb;
+	}
+	
+	private static Feedback performRedoAction() {
+		Feedback fb = new Feedback(false);
+		
+		return fb;
+		
 	}
 
 	/**
