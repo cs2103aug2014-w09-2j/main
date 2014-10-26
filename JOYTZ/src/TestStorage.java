@@ -17,7 +17,7 @@ public class TestStorage {
 		
 		//Long l = Long.valueOf("-27079657260000");
 		//System.out.print(format.format(new Date(l)));
-		
+		System.out.print(" aaa".equals("aaa"));
 		
 		Storage.cleanUpEveryThing();
 		Task task1 = new Task("task1", new Date().getTime(), new Date().getTime(), "Exam", "NUS", "high");

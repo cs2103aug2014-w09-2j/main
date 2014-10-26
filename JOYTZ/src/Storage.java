@@ -326,7 +326,7 @@ public class Storage {
 
 		for (int index = 0; index < taskList.size(); index++) {
 			Task task = taskList.get(index);
-			if (task.get(indicator).equals(searchValue)) {
+			if (task.get(indicator).trim().equals(searchValue.trim())) {
 				requiredTaskList.add(task);
 			}
 		}
@@ -336,6 +336,12 @@ public class Storage {
 		}
 
 		resultList = getTaskList(requiredTaskList);
+		
+
+		LOGGER.info("==============\n" + "Storage search. \n "
+				+ "result: " + resultList.get(0) + "\n"
+				+ resultList.size() + "\n"
+				+ "====================\n");
 		return resultList;
 	}
 
