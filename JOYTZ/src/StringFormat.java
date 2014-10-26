@@ -24,8 +24,37 @@ public class StringFormat {
 	
 	/**
 	 * ###################################################
-	 * ##update search indicator						##
+	 * ##task attribute   		   						##
+	 * ##sort and search indicator						##
 	 * ###################################################
 	 */
+	
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
+	public static final String START_TIMING = "start timing";
+	public static final String END_TIMING = "end timing";
+	public static final String LOCATION = "location";
+	public static final String PRIORITY = "priority";
+	
+	/**
+	 * ###################################################
+	 * ##update indicator  		   						##
+	 * ###################################################
+	 */
+	
+	public static final String START_TIME = "start time";
+	public static final String END_TIME = "end time";
+	public static final String START_DATE = "start date";
+	public static final String END_DATE = "end date";
+	
+	/**
+	 * ###################################################
+	 * ##priority tag   		   						##
+	 * ###################################################
+	 */
+	
+	public static final String HIGH_PRIORITY = "high";
+	public static final String MEDIUM_PRIORITY = "medium";
+	public static final String LOW_PRIORITY = "low";
 	
 }
