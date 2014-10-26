@@ -66,6 +66,9 @@ public class Analyzer {
 		case StringFormat.EXIT:
 			outputCommand = handleExitCommand();
 			break;
+		case StringFormat.RELOAD:
+			outputCommand = handleReloadCommand();
+			break;
 		default:
 			outputCommand.setErrorMessage(ERROR_INVALID_COMMAND);
 		}
@@ -157,10 +160,10 @@ public class Analyzer {
 
 		tempCommand.setIndicator(updateIndicator);
 
-		if (updateIndicator.equals("start date")
-				|| updateIndicator.equals("start time")
-				|| updateIndicator.equals("end date")
-				|| updateIndicator.equals("end time")) {
+		if (updateIndicator.equals(StringFormat.START_DATE)
+				|| updateIndicator.equals(StringFormat.START_TIME)
+				|| updateIndicator.equals(StringFormat.END_DATE)
+				|| updateIndicator.equals(StringFormat.END_TIME)) {
 			updatedItem = inputTimingConvertor(arg[2]);
 		} else {
 			updatedItem = arg[2];
@@ -225,10 +228,10 @@ public class Analyzer {
 
 		tempCommand.setIndicator(searchIndicator);
 
-		if (searchIndicator.equals("start date")
-				|| searchIndicator.equals("start time")
-				|| searchIndicator.equals("end date")
-				|| searchIndicator.equals("end time")) {
+		if (searchIndicator.equals(StringFormat.START_DATE)
+				|| searchIndicator.equals(StringFormat.START_TIME)
+				|| searchIndicator.equals(StringFormat.END_DATE)
+				|| searchIndicator.equals(StringFormat.END_TIME)) {
 			searchKey = inputTimingConvertor(arg[1]);
 		} else {
 			searchKey = arg[1];
@@ -241,6 +244,10 @@ public class Analyzer {
 
 	private static ExecutableCommand handleExitCommand() {
 		return new ExecutableCommand(StringFormat.EXIT);
+	}
+
+	private static ExecutableCommand handleReloadCommand() {
+		return new ExecutableCommand(StringFormat.RELOAD);
 	}
 
 	private static String getUserAction(String userCommand) {
