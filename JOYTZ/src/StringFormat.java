@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 
 public class StringFormat {
 	
@@ -28,6 +30,7 @@ public class StringFormat {
 	 * ##sort and search indicator						##
 	 * ###################################################
 	 */
+	public static final String VALID_INDICATOR = "";
 	
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
