@@ -16,8 +16,9 @@ public class Analyzer {
 	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
-			StringFormat.START_DATE, StringFormat.START_TIME,
-			StringFormat.END_DATE, StringFormat.END_TIME,
+			//StringFormat.START_DATE, StringFormat.START_TIME,
+			//StringFormat.END_DATE, StringFormat.END_TIME,
+			StringFormat.START_TIMING, StringFormat.END_TIMING,
 			StringFormat.LOCATION, StringFormat.PRIORITY };
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
