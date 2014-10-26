@@ -10,7 +10,7 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
-	// private static final String ERROR_NULL_OBJECT = "Null object.\n";
+	private static final String ERROR_INVALID_TIMING = "Invalid start and end time\n"; 
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -134,6 +134,11 @@ public class Executor {
 		} else {
 			startTime = System.currentTimeMillis();
 			endTime = Long.MAX_VALUE;
+		}
+		
+		if(startTime > endTime){
+			fb.setMessageShowToUser(ERROR_INVALID_TIMING);
+			return fb;
 		}
 
 		// create a task object with all the attributes.
