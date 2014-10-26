@@ -108,9 +108,9 @@ public class Task implements Comparable<Task>{
 			return taskName;
 		case "descritption":
 			return taskDescription;
-		case "startTime":
+		case "start time":
 			return taskStartTime + "";
-		case "endTime":
+		case "end time":
 			return taskEndTime + "";
 		case "location":
 			return taskLocation;
@@ -121,6 +121,8 @@ public class Task implements Comparable<Task>{
 		}
 	}
 	
+	
+	// sort method
 	public static void setSortKey(String key){
 		sortKey = key;
 	}
