@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.Test;
@@ -151,13 +152,21 @@ public class TestStorage {
 	@Test
 	public void testSort(){
 		Storage.cleanUpEveryThing();
-		Task task1 = new Task("task1", new Date().getTime(), new Date().getTime(), "Exam", "NUS", "high");
-		Task task2 = new Task("task2", new Date().getTime(), new Date().getTime(), "Exam2", "SOC", "high");
+		Task task1 = new Task("task2", new Date().getTime(), new Date().getTime(), "Exam", "NUS", "high");
+		Task task2 = new Task("task1", new Date().getTime(), new Date().getTime(), "Exam1", "SOC", "high");
 		
 		try{
 			Storage.add(task1);
 			Storage.add(task2);
 			
+			assertEquals(2, Storage.getTaskListSize());
+			
+			Storage.sort("name");
+			
+			ArrayList<String> result = Storage.getTaskList();
+			
+			assertEquals("task1~Exam1~2014-10-26 15:57~2014-10-26 15:57~SOC~high", result.get(0));
+			assertEquals("task2~Exam~2014-10-26 15:56~2014-10-26 15:56~NUS~high", result.get(1));
 		}catch (Exception e){
 			e.printStackTrace();
 		}

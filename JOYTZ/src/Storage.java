@@ -20,7 +20,6 @@ public class Storage {
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
-	private static final String ERROR_INVALID_SORT_KEY = "Invalid Sort Key. Key: %s\n";
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
 
@@ -82,8 +81,8 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage add task: \n" + "task name: "
 				+ t.getTaskName() + "\n" + "task description: "
 				+ t.getTaskDescription() + "\n" + "task location: "
-				+ t.getTaskLocation() + "\n" + "task start time: "
-				+ convertLongToDateFormat(t.getTaskStartTime()) + "\n" + "task end time: "
+				+ t.getTaskLocation() + "\n" + "task start timing: "
+				+ convertLongToDateFormat(t.getTaskStartTime()) + "\n" + "task end timing: "
 				+ convertLongToDateFormat(t.getTaskEndTime()) + "\n" + "task priority: "
 				+ t.getTaskPriority() + "\n" + "====================\n");
 
@@ -111,8 +110,8 @@ public class Storage {
 
 		LOGGER.info("==============\n" + "Storage delete task. \n "
 				+ "taskId: " + taskId + "\n" + "task name: "
-				+ removedTask.getTaskName() + "\n" + "task start time: "
-				+ convertLongToDateFormat(removedTask.getTaskStartTime()) + "\n" + "task end time: "
+				+ removedTask.getTaskName() + "\n" + "task start timing: "
+				+ convertLongToDateFormat(removedTask.getTaskStartTime()) + "\n" + "task end timing: "
 				+ convertLongToDateFormat(removedTask.getTaskEndTime()) + "\n" + "task description: "
 				+ removedTask.getTaskDescription() + "\n" + "task location: "
 				+ removedTask.getTaskLocation() + "\n" + "task priority: "
@@ -249,8 +248,8 @@ public class Storage {
 		
 		LOGGER.info("==============\n" + "Storage get task. \n "
 				+ "taskId: " + taskId + "\n" + "task name: "
-				+ task.getTaskName() + "\n" + "task start time: "
-				+ convertLongToDateFormat(task.getTaskStartTime()) + "\n" + "task end time: "
+				+ task.getTaskName() + "\n" + "task start timing: "
+				+ convertLongToDateFormat(task.getTaskStartTime()) + "\n" + "task end timing: "
 				+ convertLongToDateFormat(task.getTaskEndTime()) + "\n" + "task description: "
 				+ task.getTaskDescription() + "\n" + "task location: "
 				+ task.getTaskLocation() + "\n" + "task priority: "
@@ -296,13 +295,11 @@ public class Storage {
 	 */
 
 	public static boolean sort(String key) throws Exception {
-		String keyValueString = "name-description-start timing-end timing-location-priority";
+		
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
-		if (!keyValueString.contains(key)) {
-			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
-		}
+		
 		Task.setSortKey(key);
 		Collections.sort(taskList);
 		
@@ -320,16 +317,11 @@ public class Storage {
 	 */
 	public static ArrayList<String> search(String indicator, String searchValue)
 			throws Exception {
-		String keyValueString = "name-description-start timing-end timing-location-priority";
 		ArrayList<String> resultList = new ArrayList<String>();
 		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
 
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
-		}
-		if (!keyValueString.contains(indicator)) {
-			throw new Exception(
-					String.format(ERROR_INVALID_SORT_KEY, indicator));
 		}
 
 		for (int index = 0; index < taskList.size(); index++) {

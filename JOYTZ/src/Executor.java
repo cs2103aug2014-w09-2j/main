@@ -4,31 +4,26 @@ import java.util.*;
 
 public class Executor {
 
-	private static Stack<ExecutableCommand> undoStack = new Stack<ExecutableCommand>();
+	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
-	private static final String ERROR_INVALID_TIMING = "Invalid start and end time\n"; 
+	private static final String ERROR_INVALID_TIMING = "Invalid start and end time\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
-	// private static final String ERROR_INVALID_TASK_INDEX =
-	// "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	// private static final String ERROR_INVALID_INDICATOR =
-	// "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
-	// private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
@@ -36,9 +31,10 @@ public class Executor {
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
 	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.";
-	
+
 	// these are for Redo Method
 	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one strp successfully";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -136,15 +132,15 @@ public class Executor {
 		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = System.currentTimeMillis();
 			endTime = Long.parseLong(endTiming);
-		} else if (!startTiming.equals("") && endTiming.equals("")) {	
+		} else if (!startTiming.equals("") && endTiming.equals("")) {
 			startTime = Long.parseLong(startTiming);
 			endTime = Long.MAX_VALUE;
 		} else {
 			startTime = System.currentTimeMillis();
 			endTime = Long.MAX_VALUE;
 		}
-		
-		if(startTime > endTime){
+
+		if (startTime > endTime) {
 			fb.setMessageShowToUser(ERROR_INVALID_TIMING);
 			return fb;
 		}
@@ -334,44 +330,39 @@ public class Executor {
 	 * @return
 	 */
 	/*
-	private static Feedback performUndoAction(int numberOfSteps) {
-		Feedback fb = new Feedback(false);
-
-		int limit = Integer.min(commandStack.size(), numberOfSteps);
-
-		for (int step = 0; step <= limit; step++) {
-			Feedback feedback = performUndoAction();
-			if (!feedback.getResult()) {
-				fb.setMessageShowToUser(feedback.getMessageShowToUser());
-				return fb;
-			}
-		}
-
-		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
-
-		return fb;
-	}
-	*/
+	 * private static Feedback performUndoAction(int numberOfSteps) { Feedback
+	 * fb = new Feedback(false);
+	 * 
+	 * int limit = Integer.min(commandStack.size(), numberOfSteps);
+	 * 
+	 * for (int step = 0; step <= limit; step++) { Feedback feedback =
+	 * performUndoAction(); if (!feedback.getResult()) {
+	 * fb.setMessageShowToUser(feedback.getMessageShowToUser()); return fb; } }
+	 * 
+	 * fb.setResult(true); fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
+	 * 
+	 * return fb; }
+	 */
 
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(false);
-		
-		if (undoStack.isEmpty()){
+
+		if (commandStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
 			return fb;
 		}
-		
+
 		try {
 			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
-			undoStack.pop();
-			while (!undoStack.isEmpty()) {
-				temp.push(undoStack.pop());
+			commandStack.pop();
+			redoStack = commandStack;
+
+			while (!commandStack.isEmpty()) {
+				temp.push(commandStack.pop());
 			}
 			Storage.cleanUpEveryThing();
 			while (!temp.isEmpty()) {
-				ExecutableCommand exeCommand = temp.pop();
-				proceedAnalyzedCommand(exeCommand);
+				proceedAnalyzedCommand(temp.pop());
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
@@ -383,16 +374,30 @@ public class Executor {
 
 		return fb;
 	}
-	
+
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(false);
-		
-		if(redoStack.isEmpty()){
+
+		if (redoStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_REDO);
 			return fb;
 		}
-		return fb;
+
+		try {
+			Storage.cleanUpEveryThing();
+			while (!redoStack.isEmpty()) {
+				proceedAnalyzedCommand(redoStack.pop());
+			}
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
+		}
 		
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
+
+		return fb;
+
 	}
 
 	/**
@@ -426,6 +431,6 @@ public class Executor {
 	}
 
 	private static void storeCommand(ExecutableCommand command) {
-		undoStack.push(command);
+		commandStack.push(command);
 	}
 }
