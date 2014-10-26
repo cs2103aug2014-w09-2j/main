@@ -292,8 +292,8 @@ public class Analyzer {
 			result = dateTimeSeparator(dateTime[1], result);
 		}
 
-		convertedDate = new Date(result[0] - 1900, result[1] - 1,
-				result[2] + 1, result[3], result[4] - 1);
+		convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2],
+				result[3], result[4]);
 
 		return String.valueOf(convertedDate.getTime());
 	}
