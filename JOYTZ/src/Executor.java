@@ -27,7 +27,7 @@ public class Executor {
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
 
 	// these are for Search Method
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "%s in %s is searched successfully.\n";
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
@@ -35,7 +35,7 @@ public class Executor {
 
 	// these are for Redo Method
 	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo";
-	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one strp successfully";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -324,7 +324,7 @@ public class Executor {
 		assert !resultList.equals(null) : "No result is found";
 
 		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL, searchValue, searchIndicator));
 
 		return fb;
 	}
