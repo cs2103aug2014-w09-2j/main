@@ -141,10 +141,10 @@ public class Executor {
 			endTime = Long.MAX_VALUE;
 		}
 		
-		/*if(startTime > endTime){
+		if(startTime > endTime){
 			fb.setMessageShowToUser(ERROR_INVALID_TIMING);
 			return fb;
-		}*/
+		}
 
 		// create a task object with all the attributes.
 		Task t = new Task(name, startTime, endTime, description, location,
