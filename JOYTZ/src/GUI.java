@@ -309,11 +309,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             }
         });
         
-        // To keep the width of the single column in the feedback table
-        // to be the same as the table itself.
+        // To scale the width of the columns in the tables with the window
         feedbackTable.addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
                 tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
+                resizeTable();
             }
         });
     }
