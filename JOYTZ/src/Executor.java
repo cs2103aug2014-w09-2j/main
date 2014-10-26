@@ -90,7 +90,7 @@ public class Executor {
 			return feedback;
 		}
 
-		if (feedback.getResult()) {
+		if (feedback.getResult() && !command.getAction().equals("undo")) {
 			storeCommand(command);
 			feedback.setTaskList(Storage.getTaskList());
 		}
