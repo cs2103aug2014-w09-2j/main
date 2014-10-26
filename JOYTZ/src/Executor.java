@@ -125,8 +125,8 @@ public class Executor {
 		String startTiming = command.getTaskStartTiming();
 		String endTiming = command.getTaskEndTiming();
 
-		Long startTime = (long) 0;
-		Long endTime = (long) 0;
+		Long startTime;
+		Long endTime;
 
 		Feedback fb = new Feedback(false);
 
