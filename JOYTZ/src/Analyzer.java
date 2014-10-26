@@ -186,12 +186,17 @@ public class Analyzer {
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand("sort");
 
-		// have to check the indicator here.
-		if (arg.length != 0) {
-			String sortIndicator = arg[0].toLowerCase();
-
-			tempCommand.setIndicator(sortIndicator);
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+			return tempCommand;
+		} else if (!isValidIndicator(arg[0])) {
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+			return tempCommand;
 		}
+
+		String sortIndicator = arg[0].toLowerCase();
+
+		tempCommand.setIndicator(sortIndicator);
 
 		return tempCommand;
 	}
