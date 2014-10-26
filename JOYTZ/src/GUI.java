@@ -73,7 +73,7 @@ public class GUI {
 
     /**
      * Displays the help text in GUI box that is found in the middle,
-     * styling it such that the command words are in bold.
+     * styling it such that the background is colored. 
      * 
      */
     private static void displayHelp() {
@@ -126,8 +126,6 @@ public class GUI {
         TableItem itemAttributesGuide = new TableItem(feedbackTable, SWT.NONE);
         itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
         itemAttributesGuide.setBackground(grey);
-        
-        
         
         /*
         StyleRange boldAdd = new StyleRange();
@@ -182,7 +180,8 @@ public class GUI {
         boldExit.start = 183;
         boldExit.length = 4;
         boldExit.fontStyle = SWT.BOLD;
-        outputField.setStyleRange(boldExit);*/
+        outputField.setStyleRange(boldExit);
+        */
     }
 
     /**
@@ -213,8 +212,7 @@ public class GUI {
             assert taskTable.getItemCount() == 0;
         }
 
-        // TODO: Don't hardcode !startDate.equals("null")
-        if (!action.equals("clear") && !startDate.equals("null")) {
+        if (!action.equals("clear") && !startDate.equals(Controller.EMPTY_LIST)) {
             // Debugging code
             LOGGER.info("==============\n" +
                         "Writing to table (GUI):  \n" + 
@@ -279,7 +277,7 @@ public class GUI {
 
         // Prevent it from being too big.
         // The other columns do not undergo this as they have a 
-        // fixed format and are unlikely to become too big.
+        // fixed and predictable length.
         if (tblclmnName.getWidth() >= widthPerColumn) {
             tblclmnName.setWidth(widthPerColumn);
         }
