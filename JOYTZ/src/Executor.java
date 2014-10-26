@@ -15,20 +15,15 @@ public class Executor {
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
-	// private static final String ERROR_INVALID_TASK_INDEX =
-	// "Task index indicated is invalid.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Update Method.
-	// private static final String ERROR_INVALID_INDICATOR =
-	// "The indicator is invalid.\n";
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
-	// private static final String ERROR_FAIL_TO_SORT = "Nothing to sort.\n";
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
