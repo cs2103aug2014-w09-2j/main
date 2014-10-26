@@ -10,11 +10,13 @@ import org.junit.Test;
 
 public class TestStorage {
 	
+	private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+	
 	@Test
 	public void testAddTask() {
 		
-		Long l = Long.valueOf("32880441600000");
-		System.out.print(new Date(l).getYear());
+		//Long l = Long.valueOf("-27079657260000");
+		//System.out.print(format.format(new Date(l)));
 		
 		
 		Storage.cleanUpEveryThing();
