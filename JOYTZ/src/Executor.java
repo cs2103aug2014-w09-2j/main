@@ -90,8 +90,10 @@ public class Executor {
 			return feedback;
 		}
 
-		if (feedback.getResult() && !command.getAction().equals("undo")) {
-			storeCommand(command);
+		if (feedback.getResult()) {
+			if (!command.getAction().equals("undo")) {
+				storeCommand(command);
+			}
 			feedback.setTaskList(Storage.getTaskList());
 		}
 
@@ -237,7 +239,7 @@ public class Executor {
 		Feedback fb = new Feedback(false);
 
 		fb.setResult(Storage.clean());
-		
+
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
@@ -256,7 +258,7 @@ public class Executor {
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
-		
+
 		Feedback fb = new Feedback(false);
 
 		// check what category user want to sort
@@ -352,7 +354,6 @@ public class Executor {
 			while (!temp.isEmpty()) {
 				ExecutableCommand exeCommand = temp.pop();
 				proceedAnalyzedCommand(exeCommand);
-				commandStack.push(exeCommand);
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
