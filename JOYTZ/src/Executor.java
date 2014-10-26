@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Executor {
 
-	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
-	//private static Stack<ExecutableCommand>
+	private static Stack<ExecutableCommand> undoStack = new Stack<ExecutableCommand>();
+	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
@@ -354,15 +354,15 @@ public class Executor {
 
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(false);
-		if (commandStack.isEmpty()){
+		if (undoStack.isEmpty()){
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
 			return fb;
 		}
 		try {
 			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
-			commandStack.pop();
-			while (!commandStack.isEmpty()) {
-				temp.push(commandStack.pop());
+			undoStack.pop();
+			while (!undoStack.isEmpty()) {
+				temp.push(undoStack.pop());
 			}
 			Storage.cleanUpEveryThing();
 			while (!temp.isEmpty()) {
@@ -418,6 +418,6 @@ public class Executor {
 	}
 
 	private static void storeCommand(ExecutableCommand command) {
-		commandStack.push(command);
+		undoStack.push(command);
 	}
 }
