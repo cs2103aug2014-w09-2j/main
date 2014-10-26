@@ -395,6 +395,7 @@ public class Executor {
 		}
 
 		fb.setResult(true);
+		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
 
 		return fb;
@@ -416,6 +417,7 @@ public class Executor {
 		}
 
 		fb.setResult(true);
+		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
 
 		return fb;
