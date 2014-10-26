@@ -230,7 +230,7 @@ public class GUI {
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
             if (isHighlighted == true) {
-                colorRow(item);
+                colorRowRed(item);
                 NotifierDialog.notify(name + " is overdue!", "");
             }
         }
@@ -246,7 +246,7 @@ public class GUI {
      * @param item      The table row to be colored
      * 
      */
-    private static void colorRow(TableItem item) {
+    private static void colorRowRed(TableItem item) {
         Color red = display.getSystemColor(SWT.COLOR_RED);
         item.setForeground(red);
     }
@@ -343,20 +343,6 @@ public class GUI {
         tblclmnPriority.setMoveable(true);
         tblclmnPriority.setWidth(72);
         tblclmnPriority.setText("Priority");
-
-        /*
-        outputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-        outputField.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-        outputField.setToolTipText("See status messages here");
-        //@author A0094558N
-        
-        //@author generated
-        GridData gd_outputField = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
-        gd_outputField.widthHint = 370;
-        gd_outputField.heightHint = 154;
-        outputField.setLayoutData(gd_outputField);
-        outputField.setEditable(false);
-        */
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -367,8 +353,10 @@ public class GUI {
         tblclmnFeedback.setWidth(100);
         tblclmnFeedback.setText("Feedback");
         
+        //@author A0094558N
         displayHelp();
         
+        //@author generated
         Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
         GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         gd_horizontalSeparator.widthHint = 550;
@@ -442,7 +430,7 @@ public class GUI {
                         hasNotified = false;
                     }
                 }, 
-                1000);
+                1000);	// delay in milliseconds
             }
 
             display.readAndDispatch();
