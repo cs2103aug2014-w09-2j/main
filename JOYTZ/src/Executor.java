@@ -133,9 +133,9 @@ public class Executor {
 		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = System.currentTimeMillis();
 			endTime = Long.valueOf(endTiming);
-		} else if (!startTiming.equals("") && endTiming.equals("")) {
-			startTime = System.currentTimeMillis();
-			endTime = Long.valueOf(startTiming);
+		} else if (!startTiming.equals("") && endTiming.equals("")) {	
+			startTime = Long.valueOf(startTiming);
+			endTime = Long.MAX_VALUE;
 		} else {
 			startTime = System.currentTimeMillis();
 			endTime = Long.MAX_VALUE;

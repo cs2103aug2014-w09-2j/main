@@ -156,7 +156,7 @@ public class GUI {
             assert table.getItemCount() == 0;
         }
 
-        if (!action.equals("clear")) {
+        if (!action.equals("clear") && !startDate.equals("null")) {
             // Debugging code
             LOGGER.info("==============\n" +
                         "Writing to table (GUI):  \n" + 
@@ -244,13 +244,13 @@ public class GUI {
         shell.setText("JOYTZ");
 
         table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
         table.setSize(new Point(400, 400));
         table.setToolTipText("View your tasks here");
         GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_table.heightHint = 248;
         table.setLayoutData(gd_table);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
 
         tblclmnNo = new TableColumn(table, SWT.CENTER);
         tblclmnNo.setMoveable(true);
