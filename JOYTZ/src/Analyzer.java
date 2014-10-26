@@ -49,6 +49,9 @@ public class Analyzer {
 		case "undo":
 			outputCommand = handleUndoCommand();
 			break;
+		case "redo":
+			outputCommand = handleRedoCommand();
+			break;
 		case "clear":
 			outputCommand = handleClearCommand();
 			break;
@@ -170,6 +173,10 @@ public class Analyzer {
 
 	private static ExecutableCommand handleUndoCommand() {
 		return new ExecutableCommand("undo");
+	}
+
+	private static ExecutableCommand handleRedoCommand() {
+		return new ExecutableCommand("redo");
 	}
 
 	private static ExecutableCommand handleClearCommand() {
