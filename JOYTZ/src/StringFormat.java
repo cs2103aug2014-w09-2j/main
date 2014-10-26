@@ -34,7 +34,7 @@ public class StringFormat {
 	public static final String PRIORITY = "priority";
 
 	/**
-	 * update indicator
+	 * extra indicator only exist in update command 
 	 */
 	public static final String START_TIME = "start time";
 	public static final String END_TIME = "end time";

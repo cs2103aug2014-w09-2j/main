@@ -13,12 +13,17 @@ public class Analyzer {
 	private static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_INDICATOR = "Indicator is invalid.\n";
+	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
+	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
+
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
 			StringFormat.START_DATE, StringFormat.START_TIME,
 			StringFormat.END_DATE, StringFormat.END_TIME,
 			StringFormat.LOCATION, StringFormat.PRIORITY };
+	private static final String[] VALID_PRIORITY = new String[] {
+			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
+			StringFormat.MEDIUM_PRIORITY };
 
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
@@ -106,7 +111,13 @@ public class Analyzer {
 			tempCommand.setTaskLocation(arg[4]);
 		}
 		if (arg.length >= 6) {
-			tempCommand.setTaskPriority(arg[5]);
+			String temp = arg[5].toLowerCase();
+
+			if (!isValidPriority(temp)) {
+				tempCommand.setErrorMessage(ERROR_INVALID_PRIORITY);
+			} else {
+				tempCommand.setTaskPriority(temp);
+			}
 		}
 
 		return tempCommand;
@@ -285,6 +296,15 @@ public class Analyzer {
 	private static boolean isValidIndicator(String indicator) {
 		for (int i = 0; i < VALID_INDICATOR.length; i++) {
 			if (VALID_INDICATOR[i].equals(indicator)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isValidPriority(String priority) {
+		for (int i = 0; i < VALID_PRIORITY.length; i++) {
+			if (VALID_PRIORITY[i].equals(priority)) {
 				return true;
 			}
 		}
