@@ -1,9 +1,7 @@
-<<<<<<< HEAD
+
 import java.util.HashSet;
 
 
-=======
->>>>>>> 94dd763f1741a50f151260af7b93c82bbec1668e
 public class StringFormat {
 
 	/**
@@ -23,11 +21,10 @@ public class StringFormat {
 	/**
 	 * task attribute sort and search indicator
 	 */
-<<<<<<< HEAD
+
 	public static final String VALID_INDICATOR = "";
 	
-=======
->>>>>>> 94dd763f1741a50f151260af7b93c82bbec1668e
+
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
 	public static final String START_TIMING = "start timing";
