@@ -46,9 +46,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
+	private static final int REFRESH_RATE = 600000;    // in milliseconds
 
     private static StyledText inputField;
     private static Table taskTable;
+    private static Table feedbackTable;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
     private static TableColumn tblclmnStartedOn;
@@ -56,13 +58,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDescription;
     private static TableColumn tblclmnDeadline;
-    private static boolean isSortingOrSearching;
-    private static boolean isTimerRunning;
-    private static Display display;
-    private static Table feedbackTable;
     private static TableColumn tblclmnFeedback;
+    private static boolean isSortingOrSearching;
+    private static Display display;
     private static Shell shell;
-    private static Timer callDisplay;
+    private static Timer displayTimer;
     
     private static GUI mainFrame;
 
@@ -160,16 +160,15 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                    boolean isHighlighted) {
 
         action = action.trim();
-        /*
+        
         if (action.equals("sort") || action.equals("search")) {
         	isSortingOrSearching = true;
-        	isTimerRunning = false;
-        	System.out.println("Stop timer");
-        	callDisplay.cancel();
+        	stopDisplayTimer();
         } else {
         	isSortingOrSearching = false;
+        	startDisplayTimer();
         }
-*/
+
         // To prevent multiple of the same entries, we clear the whole table first
         if (taskNumber == 0 || action.equals("null")) {
             taskTable.removeAll();
@@ -254,20 +253,23 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /** 
-     * Begin startup procedures
+     * Begin startup procedures. Things done:
      * 1. Initialize and start JIntellitype
-     * 2. Load the contents of the database
-     * 3. Display the help messages
+     * 2. Initialize booleans
+     * 3. Initialize the timer
+     * 4. Load the contents of the database
+     * 5. Display the help messages
+     * 6. Adjust the size of the table columns
      * 
      */
     private static void startupProgram() {
         // initJIntellitype();
+        isSortingOrSearching = false;
+        initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
+        
         Controller.startController("reload");
         displayHelp();
         resizeTable();
-        
-        isTimerRunning = false;
-        isSortingOrSearching = false;
     }
     
     /** 
@@ -316,27 +318,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         });
     }
     
-    /**
-     * Calls "display" every 10 minutes to refresh the table.
-     *
-     */
-    private static void refreshTable() {
-        if (isSortingOrSearching == false && isTimerRunning == false) {
-            isTimerRunning = true;
-
-            callDisplay = new Timer(600000, null);
-            callDisplay.addActionListener(new ActionListener(){
-                public void actionPerformed(ActionEvent e){
-                    Display.getDefault().syncExec(new Runnable() {
-                        public void run() {
-                            Controller.startController("display");
-                        }
-                    });
-                }
-           });
-            callDisplay.setRepeats(true);
-            callDisplay.start();
-        }
+    private static void initializeDisplayRefreshTimer(int delay) {
+        displayTimer = new Timer(delay, null);
+        displayTimer.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        Controller.startController("display");
+                    }
+                });
+            }
+        });
+        displayTimer.setRepeats(true);
+    }
+    
+    private static void startDisplayTimer() {
+        displayTimer.start();
+    }
+    
+    private static void stopDisplayTimer() {
+        displayTimer.stop();
     }
 
     public static void main(String[] args) {
@@ -426,7 +427,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         while(!shell.isDisposed()) {
 
             //@author A0094558N
-            refreshTable();
+            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
+                startDisplayTimer();
+            }
             
             //@author generated
             display.readAndDispatch();
