@@ -1,8 +1,11 @@
 //package V1;
 //@author A0094558N 
-import java.util.Timer;
-import java.util.TimerTask;
+//import java.util.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Logger;
+
+import javax.swing.Timer;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -157,15 +160,16 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                    boolean isHighlighted) {
 
         action = action.trim();
-        
+        /*
         if (action.equals("sort") || action.equals("search")) {
         	isSortingOrSearching = true;
         	isTimerRunning = false;
+        	System.out.println("Stop timer");
         	callDisplay.cancel();
         } else {
         	isSortingOrSearching = false;
         }
-
+*/
         // To prevent multiple of the same entries, we clear the whole table first
         if (taskNumber == 0 || action.equals("null")) {
             taskTable.removeAll();
@@ -312,19 +316,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         });
     }
     
+    /**
+     * Calls "display" every 10 minutes to refresh the table.
+     *
+     */
     private static void refreshTable() {
         if (isSortingOrSearching == false && isTimerRunning == false) {
             isTimerRunning = true;
 
-            callDisplay = new Timer();
-            callDisplay.schedule(new TimerTask() {
-                public void run() {
-                    System.out.println("TICK");
-                    Controller.startController("display");
+            callDisplay = new Timer(600000, null);
+            callDisplay.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    Display.getDefault().syncExec(new Runnable() {
+                        public void run() {
+                            Controller.startController("display");
+                        }
+                    });
                 }
-            },
-            3000,       // 1st delay before running in milliseconds
-            3000);      // delay in milliseconds for subsequent executions
+           });
+            callDisplay.setRepeats(true);
+            callDisplay.start();
         }
     }
 
@@ -334,7 +345,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));
         shell.setToolTipText("To-do list app of the year");
-        shell.setSize(647, 512);
+        shell.setSize(800, 512);
         shell.setLayout(new GridLayout(1, false));
         shell.setText("JOYTZ");
 
@@ -415,7 +426,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         while(!shell.isDisposed()) {
 
             //@author A0094558N
-            //refreshTable();
+            refreshTable();
             
             //@author generated
             display.readAndDispatch();
