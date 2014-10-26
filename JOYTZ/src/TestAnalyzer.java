@@ -11,10 +11,10 @@ public class TestAnalyzer {
 	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 
-	private static Date d1 = new Date(114, 9, 15, 0, -1);
-	private static Date d2 = new Date(114, 9, 21, 0, -1);
-	private static Date d3 = new Date(114, 9, 15, 13, 55);
-	private static Date d4 = new Date(114, 9, 21, 2, 37);
+	private static Date d1 = new Date(114, 9, 14, 0, 0);
+	private static Date d2 = new Date(114, 9, 20, 0, 0);
+	private static Date d3 = new Date(114, 9, 14, 13, 56);
+	private static Date d4 = new Date(114, 9, 20, 2, 38);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
