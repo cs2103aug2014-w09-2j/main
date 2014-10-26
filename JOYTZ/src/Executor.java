@@ -142,7 +142,7 @@ public class Executor {
 			startTime = Long.parseLong(startTiming);
 			endTime = Long.MAX_VALUE;
 		} else {
-			startTime = System.currentTimeMillis();
+			startTime = Long.MAX_VALUE;
 			endTime = Long.MAX_VALUE;
 		}
 
