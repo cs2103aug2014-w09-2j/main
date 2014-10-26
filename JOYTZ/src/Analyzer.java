@@ -286,7 +286,7 @@ public class Analyzer {
 		}
 
 		convertedDate = new Date(result[0] - 1900, result[1] - 1,
-				result[2] + 1, result[3] - 1, result[4] - 1);
+				result[2] + 1, result[3], result[4] - 1);
 
 		return String.valueOf(convertedDate.getTime());
 	}
