@@ -348,6 +348,7 @@ public class Executor {
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
+			Storage.cleanUpEveryThing();
 			while (!temp.isEmpty()) {
 				ExecutableCommand exeCommand = temp.pop();
 				proceedAnalyzedCommand(exeCommand);
