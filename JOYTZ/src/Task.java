@@ -6,8 +6,8 @@ public class Task implements Comparable<Task>{
 
 	// task attributes.
 	private String taskName;
-	private Long taskStartTime;
-	private Long taskEndTime;
+	private Long taskStartTiming;
+	private Long taskEndTiming;
 	private String taskDescription;
 	private String taskLocation;
 	private String taskPriority;
@@ -22,27 +22,27 @@ public class Task implements Comparable<Task>{
 	 */
 	Task() {
 		this.taskName = "";
-		this.taskStartTime = (long) 0;
-		this.taskEndTime = (long) 0;
+		this.taskStartTiming = (long) 0;
+		this.taskEndTiming = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
-	Task (String name){
-		this.taskName = name;
-		this.taskStartTime = (long) 0;
-		this.taskEndTime = (long) 0;
+	Task (String nameString){
+		this.taskName = nameString;
+		this.taskStartTiming = (long) 0;
+		this.taskEndTiming = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
-	Task(String name, Long startTimeLong, Long endTimeLong, String description, String location,
+	Task(String nameString, Long startTimeLong, Long endTimeLong, String descriptionString, String locationString,
 			String priority) {
-		this.taskName = name;
-		this.taskStartTime = startTimeLong;
-		this.taskEndTime = endTimeLong;
-		this.taskDescription = description;
-		this.taskLocation = location;
+		this.taskName = nameString;
+		this.taskStartTiming = startTimeLong;
+		this.taskEndTiming = endTimeLong;
+		this.taskDescription = descriptionString;
+		this.taskLocation = locationString;
 		this.taskPriority = priority;
 	}
 
@@ -55,11 +55,11 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setTaskStartTime(Long startTimeLong) {
-		this.taskStartTime = startTimeLong;
+		this.taskStartTiming = startTimeLong;
 	}
 	
 	public void setTaskEndTime(Long endTimeLong){
-		this.taskEndTime = endTimeLong;
+		this.taskEndTiming = endTimeLong;
 	}
 
 	public void setTaskDescription(String des) {
@@ -83,11 +83,11 @@ public class Task implements Comparable<Task>{
 	}
 
 	public Long getTaskStartTime() {
-		return this.taskStartTime;
+		return this.taskStartTiming;
 	}
 	
 	public Long getTaskEndTime(){
-		return this.taskEndTime;
+		return this.taskEndTiming;
 	}
 
 	public String getTaskDescription() {
@@ -104,20 +104,20 @@ public class Task implements Comparable<Task>{
 	
 	public String get(String attribute){
 		switch(attribute){
-		case "name": 
+		case StringFormat.NAME: 
 			return taskName;
-		case "descritption":
+		case StringFormat.DESCRIPTION:
 			return taskDescription;
-		case "start time":
-			return taskStartTime + "";
-		case "end time":
-			return taskEndTime + "";
-		case "location":
+		case StringFormat.START_TIMING:
+			return taskStartTiming + "";
+		case StringFormat.END_TIMING:
+			return taskEndTiming + "";
+		case StringFormat.LOCATION:
 			return taskLocation;
-		case "priority":
+		case StringFormat.PRIORITY:
 			return taskPriority;
 		default:
-			return "name";
+			return taskName;
 		}
 	}
 	
@@ -141,9 +141,9 @@ public class Task implements Comparable<Task>{
 		Task that = (Task) o;
 		if (!that.getTaskName().equals(taskName)){
 			return false;
-		}else if(!that.getTaskStartTime().equals(taskStartTime)){
+		}else if(!that.getTaskStartTime().equals(taskStartTiming)){
 			return false;
-		}else if(!that.getTaskEndTime().equals(taskEndTime)){
+		}else if(!that.getTaskEndTime().equals(taskEndTiming)){
 			return false;
 		}else if(!that.getTaskDescription().equals(taskDescription)){
 			return false;

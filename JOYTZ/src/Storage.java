@@ -147,32 +147,29 @@ public class Storage {
 		Task targetTask = get(taskId);
 
 		switch (updateIndicator) {
-		case "name":
-			assert updateKeyValue instanceof String : "name: " + updateKeyValue;
+		case StringFormat.NAME:
+			//assert updateKeyValue instanceof String : "name: " + updateKeyValue;
 
 			targetTask.setTaskName(updateKeyValue);
 			break;
-		case "description":
-			assert updateKeyValue instanceof String : "description: "
-					+ updateKeyValue;
+		case StringFormat.DESCRIPTION:
+			//assert updateKeyValue instanceof String : "description: " + updateKeyValue;
 
 			targetTask.setTaskDescription(updateKeyValue);
 			break;
-		case "startTime":
-			assert updateKeyValue instanceof String : "start time: "
-					+ updateKeyValue;
+		case StringFormat.START_TIMING:
+			//assert updateKeyValue instanceof String : "start time: " + updateKeyValue;
 
 			Long newStartTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskStartTime(newStartTime);
 			break;
-		case "endTime":
-			assert updateKeyValue instanceof String : "end time: "
-					+ updateKeyValue;
+		case StringFormat.END_TIMING:
+			//assert updateKeyValue instanceof String : "end time: " + updateKeyValue;
 
 			Long newEndTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskEndTime(newEndTime);
 			break;
-		case "start date":
+		case StringFormat.START_DATE:
 			Long newStartDateLong = Long.parseLong(updateKeyValue);
 			Date newDatesd = new Date(newStartDateLong);
 			Date oldTimesd = new Date(targetTask.getTaskStartTime());
@@ -181,7 +178,7 @@ public class Storage {
 			oldTimesd.setDate(newDatesd.getDate());
 			targetTask.setTaskStartTime(oldTimesd.getTime());
 			break;
-		case "start time":
+		case StringFormat.START_TIME:
 			Long newStartTimeLong = Long.parseLong(updateKeyValue);
 			Date newTimest = new Date(newStartTimeLong);
 			Date oldTimest = new Date(targetTask.getTaskStartTime());
@@ -190,7 +187,7 @@ public class Storage {
 			oldTimest.setSeconds(newTimest.getSeconds());
 			targetTask.setTaskStartTime(oldTimest.getTime());
 			break;
-		case "end date":
+		case StringFormat.END_DATE:
 			Long newEndDateLong = Long.parseLong(updateKeyValue);
 			Date newDateed = new Date(newEndDateLong);
 			Date oldTimeed = new Date(targetTask.getTaskStartTime());
@@ -199,7 +196,7 @@ public class Storage {
 			oldTimeed.setDate(newDateed.getDate());
 			targetTask.setTaskStartTime(oldTimeed.getTime());
 			break;
-		case "end time":
+		case StringFormat.END_TIME:
 			Long newEndTimeLong = Long.parseLong(updateKeyValue);
 			Date newTimeet = new Date(newEndTimeLong);
 			Date oldTimeet = new Date(targetTask.getTaskStartTime());
@@ -208,15 +205,13 @@ public class Storage {
 			oldTimeet.setSeconds(newTimeet.getSeconds());
 			targetTask.setTaskStartTime(oldTimeet.getTime());
 			break;
-		case "location":
-			assert updateKeyValue instanceof String : "location: "
-					+ updateKeyValue;
+		case StringFormat.LOCATION:
+			//assert updateKeyValue instanceof String : "location: " + updateKeyValue;
 
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
-		case "priority":
-			assert updateKeyValue instanceof String : "priority: "
-					+ updateKeyValue;
+		case StringFormat.PRIORITY:
+			//assert updateKeyValue instanceof String : "priority: " + updateKeyValue;
 
 			targetTask.setTaskPriority(updateKeyValue);
 			break;
@@ -301,9 +296,9 @@ public class Storage {
 	 */
 
 	public static boolean sort(String key) throws Exception {
-		String keyValueString = "name-description-start time-end time-location-priority";
+		String keyValueString = "name-description-start timing-end timing-location-priority";
 		if (isEmpty()) {
-			throw new NoSuchElementException(MESSAGE_NO_TASK_IN_LIST);
+			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
 		if (!keyValueString.contains(key)) {
 			throw new Exception(String.format(ERROR_INVALID_SORT_KEY, key));
@@ -325,7 +320,7 @@ public class Storage {
 	 */
 	public static ArrayList<String> search(String indicator, String searchValue)
 			throws Exception {
-		String keyValueString = "name-description-startTime-endTime-location-priority";
+		String keyValueString = "name-description-start timing-end timing-location-priority";
 		ArrayList<String> resultList = new ArrayList<String>();
 		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
 
