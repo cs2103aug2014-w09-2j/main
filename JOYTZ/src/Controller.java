@@ -8,6 +8,7 @@ public class Controller {
 
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+    public static final String EMPTY_LIST = "null";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -54,9 +55,9 @@ public class Controller {
         boolean isLastItem = false;
         boolean isHighlighted = false;
 
-        if (feedback.getTaskList().size() == 0) { 	// happens after "clear" command
+        if (feedback.getTaskList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, "null", "", "", "", "", "", action, isLastItem, isHighlighted);
+            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, isLastItem, isHighlighted);
 
         } else {									// all other commands
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
