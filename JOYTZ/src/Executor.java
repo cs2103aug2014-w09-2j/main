@@ -19,6 +19,10 @@ public class Executor {
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
+	
+	// these are for Display method.
+	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
+	private static final String MESSAGE_EMPTY_DISPLAY = "The task list is empty.\n";
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
@@ -75,6 +79,9 @@ public class Executor {
 		case "clear":
 			feedback = performClearAction();
 			break;
+		case "display":
+			feedback = performDisplayAction();
+			break;
 		case "sort":
 			feedback = performSortAction(command);
 			break;
@@ -121,9 +128,9 @@ public class Executor {
 	 */
 	private static Feedback performAddAction(ExecutableCommand command) {
 		String name = command.getTaskName();
-		String description = command.getTaskDescription();
-		String location = command.getTaskLocation();
-		String priority = command.getTaskPriority();
+		String description = command.getTaskDescription() + " ";
+		String location = command.getTaskLocation() + " ";
+		String priority = command.getTaskPriority() + " ";
 		String startTiming = command.getTaskStartTiming();
 		String endTiming = command.getTaskEndTiming();
 
@@ -258,6 +265,19 @@ public class Executor {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
 		}
 
+		return fb;
+	}
+	
+	private static Feedback performDisplayAction(){
+		Feedback fb = new Feedback(true);
+		fb.setTaskList(Storage.getTaskList());
+		if (fb.getTaskList().size() == 0){
+			fb.setTaskList(Storage.getTaskList());
+			return fb;
+		}
+		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
+		
+		
 		return fb;
 	}
 
