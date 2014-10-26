@@ -6,7 +6,7 @@ public class Executor {
 
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
-	
+
 	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
@@ -360,8 +360,7 @@ public class Executor {
 
 		try {
 			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
-			commandStack.pop();
-			redoStack = commandStack;
+			redoStack.add(commandStack.pop());
 
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
@@ -390,10 +389,7 @@ public class Executor {
 		}
 
 		try {
-			Storage.cleanUpEveryThing();
-			while (!redoStack.isEmpty()) {
-				proceedAnalyzedCommand(redoStack.pop());
-			}
+			proceedAnalyzedCommand(redoStack.pop());
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
@@ -405,17 +401,17 @@ public class Executor {
 		return fb;
 
 	}
-	
-	private static Feedback performReloadAction(){
+
+	private static Feedback performReloadAction() {
 		Feedback fb = new Feedback(false);
-		
+
 		try {
 			Storage.reloadFile();
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
 		return fb;
