@@ -36,6 +36,9 @@ public class Executor {
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
 	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.";
+	
+	// these are for Redo Method
+	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -198,7 +201,6 @@ public class Executor {
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
-
 		return fb;
 	}
 
@@ -354,10 +356,12 @@ public class Executor {
 
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(false);
+		
 		if (undoStack.isEmpty()){
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
 			return fb;
 		}
+		
 		try {
 			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
 			undoStack.pop();
@@ -383,6 +387,10 @@ public class Executor {
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(false);
 		
+		if(redoStack.isEmpty()){
+			fb.setMessageShowToUser(ERROR_NOTHING_TO_REDO);
+			return fb;
+		}
 		return fb;
 		
 	}
