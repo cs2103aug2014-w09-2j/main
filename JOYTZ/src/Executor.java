@@ -277,7 +277,7 @@ public class Executor {
 		Feedback fb = new Feedback(true);
 		fb.setTaskList(Storage.getTaskList());
 		if (fb.getTaskList().size() == 0) {
-			fb.setTaskList(Storage.getTaskList());
+			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);;
 			return fb;
 		}
 		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
