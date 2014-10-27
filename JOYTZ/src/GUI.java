@@ -63,9 +63,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Display display;
     private static Shell shell;
     private static Timer displayTimer;
-    
     private static GUI mainFrame;
 
+    public static Shell getShell(){
+        return shell;
+    }
+    
     /**
      * Displays a feedback string in the GUI after each user command
      *
