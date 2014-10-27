@@ -397,6 +397,7 @@ public class Executor {
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
+			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
@@ -419,6 +420,7 @@ public class Executor {
 			proceedAnalyzedCommand(redoStack.pop());
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
+			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
