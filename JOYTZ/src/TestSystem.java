@@ -7,8 +7,10 @@ import org.junit.Test;
 public class TestSystem {
     private static final String INPUT_ADD_ALL = "add~meeting with friends~discuss about CS2103T project~" +
                                                 "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
-    private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
-                                                              "24/02/2015 11:30am~25/02/2015 11:45am~NUS~high";
+    private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add~meeting with friends~" +
+                                                              "discuss about CS2103T project~" +
+                                                              "24/02/2015 11:30am~25/02/2015 11:45am~" +
+                                                              "NUS~high";
     
     private static final String INPUT_UPDATE_NAME = "update~1~name~chat with friends";
     private static final String INPUT_UPDATE_PRIORITY = "update~1~priority~low";
@@ -36,8 +38,8 @@ public class TestSystem {
                                                            "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~low";
     private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project ~" +
                                                            "2015-02-24 11:30 AM~2015-02-25 11:45 AM~UTown~low";
-    private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~2015-02-24 11:30 AM~" +
-                                                           "2015-02-25 11:45 AM~UTown~low";
+    private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
+                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~UTown~low";
     private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project ~" +
                                                            "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~high ";
     
