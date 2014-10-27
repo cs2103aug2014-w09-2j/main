@@ -29,7 +29,12 @@ public class Storage {
  	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
-	public static Timer timer = new Timer();
+	public static Timer startTimer = new Timer();
+	public static Timer endTimer = new Timer();
+	
+	// the tasks which pass the time.
+	public static boolean[] startTimeSchedule = {};
+	public static boolean[] endTimeSchedule = {};
 
 	// the file that used to save current tasks when user exit the program.
 	private static String taskListFileName = "TaskList.txt";
@@ -87,7 +92,9 @@ public class Storage {
 				+ t.getTaskPriority() + "\n" + "====================\n");
 
 		taskList.add(t);
-		// timer.schedule(t, t.getTime());
+		startTimer.schedule(t, t.getTaskStartTime());
+		endTimer.schedule(t, t.getTaskEndTime());
+		
 		numberOfTask++;
 
 		return true;
@@ -118,7 +125,8 @@ public class Storage {
 				+ removedTask.getTaskPriority() + "\n"
 				+ "====================\n");
 
-		// removedTask.cancel();
+		removedTask.cancel();
+		
 		numberOfTask--;
 		history.add(removedTask);
 
@@ -144,6 +152,7 @@ public class Storage {
 		}
 
 		Task targetTask = get(taskId);
+		targetTask.cancel();
 
 		switch (updateIndicator) {
 		case StringFormat.NAME:
@@ -226,7 +235,10 @@ public class Storage {
 				+ taskId + "\n" + "task name: " + targetTask.getTaskName()
 				+ "\n" + "task indicator: " + updateIndicator + "\n"
 				+ "====================\n");
-
+		
+		startTimer.schedule(targetTask, targetTask.getTaskStartTime());
+		endTimer.schedule(targetTask, targetTask.getTaskEndTime());
+		
 		taskList.set(taskId - 1, targetTask);
 
 		return true;
@@ -272,7 +284,10 @@ public class Storage {
 			}
 			taskList.clear();
 		}
-		assert taskList.isEmpty() : "Size of list :" + taskList.size();
+		//assert taskList.isEmpty() : "Size of list :" + taskList.size();
+		
+		startTimer.cancel();
+		endTimer.cancel();
 		
 		LOGGER.info("==============\n" + "Storage clean taskList. \n "
 				+ "====================\n");
@@ -283,6 +298,10 @@ public class Storage {
 	public static void cleanUpEveryThing() {
 		history.clear();
 		taskList.clear();
+		
+		startTimer.cancel();
+		endTimer.cancel();
+		
 	}
 	
 	
@@ -343,6 +362,15 @@ public class Storage {
 				+ resultList.size() + "\n"
 				+ "====================\n");
 		return resultList;
+	}
+	
+	public static void check(String indicatorString){
+		if (indicatorString.equals("start timing")){
+			for (int i=0; i<taskList.size(); i++){
+				Task currTask = taskList.get(i);
+				
+			}
+		}
 	}
 
 	/**
