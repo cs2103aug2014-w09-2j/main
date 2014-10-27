@@ -65,6 +65,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Timer displayTimer;
     private static GUI mainFrame;
 
+    /**
+     * Returns the shell of the program
+     *
+     * @return    The shell of the program
+     * 
+     */
     public static Shell getShell(){
         return shell;
     }
