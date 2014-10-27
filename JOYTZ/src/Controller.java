@@ -109,8 +109,12 @@ public class Controller {
      * the whole data flow. It is called when the user presses "enter"
      * after input in the GUI.
      * 
+     * @param inputCommandString    The user's input
+     * 
+     * @return                      Feedback object used exclusively for testing
+     * 
      */
-    public static void startController(String inputCommandString) {
+    public static Feedback startController(String inputCommandString) {
         assert inputCommandString != null;
 
         LOGGER.info("==============\n" +
@@ -160,12 +164,12 @@ public class Controller {
                     feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
                 }
 
-                outputString = proceedFeedback(feedback);
+                outputString = getFeedbackMessage(feedback);
                 assert outputString != null;
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else {
+                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
                     displayInGUI(outputString, parsedCommand);
                 }
             }
@@ -173,7 +177,7 @@ public class Controller {
             displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
             e.printStackTrace();
         }   
-
+        return feedback;
     }
 
     /**
@@ -212,7 +216,7 @@ public class Controller {
      * @return				String with feedback to show to user after each command
      * 
      */
-    private static String proceedFeedback(Feedback feedback) {
+    private static String getFeedbackMessage(Feedback feedback) {
         String outputString = feedback.getMessageShowToUser();  		
 
         return outputString;	

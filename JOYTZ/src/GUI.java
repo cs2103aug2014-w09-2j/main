@@ -31,11 +31,12 @@ import org.eclipse.swt.widgets.Label;
 public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
-    private static final String HELP_TEXT_COMMANDS = "Commands: \n";
+    private static final String HELP_TEXT_COMMANDS = "List of Commands: \n";
     private static final String HELP_TEXT_ADD = "add~task name~description~start time " +
     											"~end time~location~priority\n";
     private static final String HELP_TEXT_DELETE =  "delete~index number\n";
     private static final String HELP_TEXT_UPDATE = "update~index number~attribute~new data\n";
+    private static final String HELP_TEXT_SEARCH = "search~attribute~search for\n";
     private static final String HELP_TEXT_SORT = "sort~attribute\n";
     private static final String HELP_TEXT_UNDO = "undo\n";
     private static final String HELP_TEXT_DISPLAY ="display\n";
@@ -62,9 +63,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Display display;
     private static Shell shell;
     private static Timer displayTimer;
-    
     private static GUI mainFrame;
 
+    public static Shell getShell(){
+        return shell;
+    }
+    
     /**
      * Displays a feedback string in the GUI after each user command
      *
@@ -105,6 +109,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         itemUpdate.setText(new String[] { HELP_TEXT_UPDATE });
         itemUpdate.setBackground(grey);
         
+        TableItem itemSearch = new TableItem(feedbackTable, SWT.NONE);
+        itemSearch.setText(new String[] { HELP_TEXT_SEARCH });
+        itemSearch.setBackground(grey);
+        
         TableItem itemSort = new TableItem(feedbackTable, SWT.NONE);
         itemSort.setText(new String[] { HELP_TEXT_SORT });
         itemSort.setBackground(grey);
@@ -136,6 +144,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         TableItem itemAttributesGuide = new TableItem(feedbackTable, SWT.NONE);
         itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
         itemAttributesGuide.setBackground(grey);
+        
+        feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
     /**
@@ -305,7 +315,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell.addListener(SWT.Close, new Listener() {
             public void handleEvent(Event event) {
                 Controller.startController("exit");
-                System.exit(0);     // TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
         
@@ -371,12 +380,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnStartedOn = new TableColumn(taskTable, SWT.CENTER);
         tblclmnStartedOn.setMoveable(true);
         tblclmnStartedOn.setWidth(92);
-        tblclmnStartedOn.setText("Started On");
+        tblclmnStartedOn.setText("Start Time");
 
         tblclmnDeadline = new TableColumn(taskTable, SWT.CENTER);
         tblclmnDeadline.setMoveable(true);
         tblclmnDeadline.setWidth(100);
-        tblclmnDeadline.setText("Deadline");
+        tblclmnDeadline.setText("End Time");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);

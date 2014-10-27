@@ -25,7 +25,7 @@ public class Executor {
 	private static final String MESSAGE_EMPTY_DISPLAY = "The task list is empty.\n";
 
 	// these are for Update Method.
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d, \"%s\"is updated successfully.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d: \"%s\" is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
