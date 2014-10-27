@@ -1,8 +1,10 @@
+import java.util.TimerTask;
+
 //package V1;
 
 
 
-public class Task implements Comparable<Task>{
+public class Task extends TimerTask implements Comparable<Task>{
 
 	// task attributes.
 	private String taskName;
@@ -13,6 +15,9 @@ public class Task implements Comparable<Task>{
 	private String taskPriority;
 	
 	private long taskDuration;
+	
+	private boolean passStartTiming = false;
+	private boolean passEndTiming = false;
 	
 	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
@@ -153,6 +158,11 @@ public class Task implements Comparable<Task>{
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public void run() {
+		
 	}
 
 }
