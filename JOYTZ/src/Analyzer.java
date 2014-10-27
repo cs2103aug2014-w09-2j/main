@@ -15,8 +15,7 @@ public class Analyzer {
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
-	private static final String ERROR_INVALID_START_TIMING = "Input start timing is invalid.\n";
-	private static final String ERROR_INVALID_END_TIMING = "Input end timing is invalid.\n";
+	private static final String ERROR_INVALID_TIMING = "Input timing is invalid.\n";
 
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME,
@@ -326,6 +325,28 @@ public class Analyzer {
 		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
+	private static Long startTimingAnalyzer(Date tempStartDate, Date currentDate) {
+		if (!isTimeIndicated(tempStartDate)) {
+			if (isSameDate(tempStartDate, currentDate)) {
+				tempStartDate.setHours(currentDate.getHours());
+				tempStartDate.setMinutes(currentDate.getMinutes() + 1);
+			} else {
+				tempStartDate.setHours(0);
+				tempStartDate.setMinutes(0);
+			}
+		}
+
+		return Long.valueOf(tempStartDate.getTime());
+	}
+
+	private static Long endTimingAnalyzer(Date tempEndDate, Date currentDate) {
+		if (!isTimeIndicated(tempEndDate)) {
+			tempEndDate.setHours(23);
+			tempEndDate.setMinutes(59);
+		}
+		return Long.valueOf(tempEndDate.getTime());
+	}
+
 	private static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -337,43 +358,40 @@ public class Analyzer {
 		if (!start.equals("")) {
 			startTiming = Long.valueOf(start);
 			tempStartDate = new Date(startTiming);
+			startTiming = startTimingAnalyzer(tempStartDate, currentDate);
 		}
+
 		if (!end.equals("")) {
 			endTiming = Long.valueOf(end);
 			tempEndDate = new Date(endTiming);
+			endTiming = endTimingAnalyzer(tempEndDate, currentDate);
 		}
 
 		if (startTiming != 0 && endTiming != 0) {
-
-		} else if (startTiming != 0) {
-			if (!isTimeIndicated(tempStartDate)) {
-				if (isSameDate(tempStartDate, currentDate)) {
-					tempStartDate.setHours(currentDate.getHours());
-					tempStartDate.setMinutes(currentDate.getMinutes() + 1);
-				} else {
-					tempStartDate.setHours(0);
-					tempStartDate.setMinutes(0);
-				}
-				startTiming = Long.valueOf(tempStartDate.getTime());
+			if (tempStartDate.after(currentDate)
+					|| tempStartDate.equals(currentDate)
+					|| tempEndDate.after(currentDate)
+					|| tempStartDate.before(tempEndDate)) {
+				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
+				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
+			} else {
+				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
 			}
+		} else if (startTiming != 0) {
 			if (tempStartDate.after(currentDate)
 					|| tempStartDate.equals(currentDate)) {
 				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_START_TIMING);
+				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
 			}
 		} else if (endTiming != 0) {
-			if (!isTimeIndicated(tempEndDate)) {
-				tempEndDate.setHours(23);
-				tempEndDate.setMinutes(59);
-				endTiming = Long.valueOf(tempEndDate.getTime());
-			}
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_END_TIMING);
+				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
 			}
 		}
+
 		return tempCommand;
 	}
 
