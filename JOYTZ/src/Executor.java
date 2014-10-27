@@ -381,6 +381,7 @@ public class Executor {
 
 		if (commandStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
+			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
@@ -413,6 +414,7 @@ public class Executor {
 
 		if (redoStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_REDO);
+			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
