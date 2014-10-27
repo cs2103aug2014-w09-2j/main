@@ -323,7 +323,7 @@ public class Analyzer {
 	}
 
 	private static boolean isTimeIndicated(Date d) {
-		return d.getHours() != 0 && d.getMinutes() != 0;
+		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
 	private static ExecutableCommand timingAnalyzer(String start, String end,
@@ -332,6 +332,7 @@ public class Analyzer {
 		Long endTiming = (long) 0;
 		Date tempStartDate = new Date();
 		Date tempEndDate = new Date();
+		Date currentDate = new Date(System.currentTimeMillis());
 
 		if (!start.equals("")) {
 			startTiming = Long.valueOf(start);
@@ -345,15 +346,29 @@ public class Analyzer {
 		if (startTiming != 0 && endTiming != 0) {
 
 		} else if (startTiming != 0) {
-
+			if (!isTimeIndicated(tempStartDate)) {
+				if (isSameDate(tempStartDate, currentDate)) {
+					tempStartDate.setHours(currentDate.getHours());
+					tempStartDate.setMinutes(currentDate.getMinutes() + 1);
+				} else {
+					tempStartDate.setHours(0);
+					tempStartDate.setMinutes(0);
+				}
+				startTiming = Long.valueOf(tempStartDate.getTime());
+			}
+			if (tempStartDate.after(currentDate)
+					|| tempStartDate.equals(currentDate)) {
+				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
+			} else {
+				tempCommand.setErrorMessage(ERROR_INVALID_START_TIMING);
+			}
 		} else if (endTiming != 0) {
 			if (!isTimeIndicated(tempEndDate)) {
 				tempEndDate.setHours(23);
 				tempEndDate.setMinutes(59);
 				endTiming = Long.valueOf(tempEndDate.getTime());
-
 			}
-			if (tempEndDate.after(new Date(System.currentTimeMillis()))) {
+			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(ERROR_INVALID_END_TIMING);
