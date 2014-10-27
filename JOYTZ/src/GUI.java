@@ -312,7 +312,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell.addListener(SWT.Close, new Listener() {
             public void handleEvent(Event event) {
                 Controller.startController("exit");
-                System.exit(0);     // TODO: I shouldn't need to call this. "exit" is not being handled?
             }
         });
         
