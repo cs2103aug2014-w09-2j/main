@@ -24,6 +24,7 @@ public class Analyzer {
 			// StringFormat.END_DATE, StringFormat.END_TIME,
 			StringFormat.START_TIMING, StringFormat.END_TIMING,
 			StringFormat.LOCATION, StringFormat.PRIORITY };
+
 	private static final String[] VALID_PRIORITY = new String[] {
 			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
 			StringFormat.MEDIUM_PRIORITY };
@@ -104,9 +105,19 @@ public class Analyzer {
 		}
 		if (arg.length >= 3) {
 			startTiming = inputTimingConvertor(arg[2]);
+			if (startTiming == null) {
+				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+
+				return tempCommand;
+			}
 		}
 		if (arg.length >= 4) {
 			endTiming = inputTimingConvertor(arg[3]);
+			if (endTiming == null) {
+				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+
+				return tempCommand;
+			}
 		}
 
 		tempCommand = timingAnalyzer(startTiming, endTiming, tempCommand);
@@ -315,6 +326,38 @@ public class Analyzer {
 		return false;
 	}
 
+	private static boolean isValidTiming(int[] input) {
+		int year = input[0];
+		int month = input[1];
+		int day = input[2];
+		int hour = input[3];
+		int minute = input[4];
+		boolean leapYear = isLeapYear(year);
+
+		if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31
+				|| hour < 0 || hour > 12 || minute < 0 || minute > 59) {
+			return false;
+		}
+
+		if (month == 2) {
+			if (leapYear && day > 29) {
+				return false;
+			} else if (day > 28) {
+				return false;
+			}
+		} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+			if (day > 30) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean isLeapYear(int year) {
+		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+	}
+
 	private static boolean isSameDate(Date first, Date second) {
 		return first.getYear() == second.getYear()
 				&& first.getMonth() == second.getMonth()
@@ -407,10 +450,16 @@ public class Analyzer {
 
 		if (dateTime.length >= 1) {
 			result = dateTimeSeparator(dateTime[0], result);
+			if (result == null) {
+				return null;
+			}
 		}
 
 		if (dateTime.length == 2) {
 			result = dateTimeSeparator(dateTime[1], result);
+			if (result == null) {
+				return null;
+			}
 		}
 
 		convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2],
@@ -460,6 +509,10 @@ public class Analyzer {
 		result[2] = day;
 		result[3] = hour;
 		result[4] = minute;
+
+		if (!isValidTiming(result)) {
+			return null;
+		}
 
 		return result;
 	}

@@ -39,7 +39,7 @@ public class StringFormat {
 	public static final String END_DATE = "end date";
 
 	/**
-	 * priority tag
+	 * valid priority
 	 */
 	public static final String HIGH_PRIORITY = "high";
 	public static final String MEDIUM_PRIORITY = "medium";

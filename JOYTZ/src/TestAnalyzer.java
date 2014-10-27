@@ -10,11 +10,14 @@ public class TestAnalyzer {
 	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
 	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	private static final String ERROR_INVALID_TIMING = "Input timing is invalid.\n";
 
-	private static Date d1 = new Date(114, 9, 14, 0, 0);
-	private static Date d2 = new Date(114, 9, 20, 0, 0);
-	private static Date d3 = new Date(114, 9, 14, 13, 56);
-	private static Date d4 = new Date(114, 9, 20, 2, 38);
+	private static Date currentDate = new Date(System.currentTimeMillis());
+	private static Date d1 = new Date(115, 9, 14, 0, 0);
+	private static Date d2 = new Date(115, 9, 20, 23, 59);
+	private static Date d3 = new Date(115, 9, 14, 0, 0);
+	private static Date d4 = new Date(115, 9, 20, 23, 59);
+	private static Date d5 = new Date(115, 9, 20, 2, 38);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -23,19 +26,24 @@ public class TestAnalyzer {
 		Command test3 = new Command(
 				"add~meeting with friends~discuss about CS2103T project");
 		Command test4 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2015");
 		Command test5 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014~~NUS");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2015~~NUS");
 		Command test6 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2015~20/10/2015~NUS~medium");
 		Command test7 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2014~20/10/2014~NUS~medium");
-		Command test8 = new Command("add~~~14/10/2014~~NUS~medium");
-		Command test9 = new Command("add~~~~20/10/2014~NUS~medium");
-		Command test10 = new Command(
-				"add~~~14/10/2014 1:56PM~20/10/2014~NUS~medium");
+				"add~meeting with friends~discuss about CS2103T project~14/10/2015~20/10/2015~NUS~medium");
+		Command test8 = new Command("add~~~14/10/2015~~NUS~medium");
+		Command test9 = new Command("add~~~~20/10/2015~NUS~medium");
+		Command test10 = new Command("add~~~14/10/2015~20/10/2015~NUS~medium");
 		Command test11 = new Command(
-				"add~~~14/10/2014~20/10/2014 2:38AM~NUS~medium");
+				"add~~~14/10/2015~20/10/2015 2:38AM~NUS~medium");
+		Command test12 = new Command("add~task1~~32/2/2015");
+		Command test13 = new Command("add~task1~~25/13/2015");
+		Command test14 = new Command("add~task1~~29/2/2017");
+		Command test15 = new Command("add~task1~~31/4/2015");
+		Command test16 = new Command("add~task1~~22/2/2017 13:24PM");
+		Command test17 = new Command("add~task1~~22/4/2015 12:60AM");
 
 		ExecutableCommand expected = new ExecutableCommand("add");
 		expected.setErrorMessage(ERROR_NULL_TASK);
@@ -49,6 +57,11 @@ public class TestAnalyzer {
 		ExecutableCommand expected2 = new ExecutableCommand("add");
 		expected2.setTaskStartTiming(String.valueOf(d3.getTime()));
 		expected2.setTaskEndTiming(String.valueOf(d4.getTime()));
+		expected2.setErrorMessage(ERROR_INVALID_TIMING);
+
+		ExecutableCommand expected3 = new ExecutableCommand("add");
+		expected3.setTaskStartTiming(String.valueOf(d3.getTime()));
+		expected3.setTaskEndTiming(String.valueOf(d5.getTime()));
 
 		// test case 1: test if the error catcher is working
 		assertEquals("null argument case is not handled",
@@ -106,8 +119,38 @@ public class TestAnalyzer {
 		// test case 11: test if the task end time will be recorded into task
 		// end timing correctly
 		assertEquals("fail to get task end timing (with time) to be added",
-				expected2.getTaskEndTiming(), Analyzer.runAnalyzer(test11)
+				expected3.getTaskEndTiming(), Analyzer.runAnalyzer(test11)
 						.getTaskEndTiming());
+
+		// test case 12: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test12)
+						.getErrorMessage());
+
+		// test case 13: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test13)
+						.getErrorMessage());
+
+		// test case 14: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test14)
+						.getErrorMessage());
+
+		// test case 15: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test15)
+						.getErrorMessage());
+
+		// test case 16: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test16)
+						.getErrorMessage());
+
+		// test case 17: test if the input timing is valid
+		assertEquals("fail to get task start timing added with invalid format",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test17)
+						.getErrorMessage());
 	}
 
 	@Test

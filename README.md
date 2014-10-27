@@ -11,8 +11,6 @@ Current functions and how to use them
  	- Deadline format: 
 		- DD/MM/YYYY HH:MMam
 		- DD/MM/YYYY HH:MMpm
-		- HH:MMam DD/MM/YYYY
-		- HH:MMpm DD/MM/YYYY
 	- Not all arguments have to be used. For example:
 	   	- add~task
 	- To skip an argument, leave it blank. For example:
@@ -29,7 +27,8 @@ Current functions and how to use them
   	- The possible indicators are:
 	  	- name
 	  	- description
-	  	- deadline
+	  	- start time
+	  	- end time
 	  	- location
 	  	- priority
 
@@ -38,7 +37,7 @@ Current functions and how to use them
 	- The possible indicators are:
 		- name
 		- id (seen from the index numbers in the table)
-	- Input the task's name if searching through the name, and input the index number if searching through id
+	- The key is the word or letters that you are searching for
 
 5. Sort
 	- sort~indicator
@@ -47,19 +46,23 @@ Current functions and how to use them
 		- deadline (dd/mm/yyyy)
 		- location
 		- priority
-	
-6. Clear
+
+6. Undo
+ 	- undo
+ 	- Undos the previous action
+
+7. Redo
+ 	- redo
+ 	- Undos the previous undo
+
+8. Clear
   	- clear
   	- Clears all data
 
-7. Help
+9. Help
 	- help
 	- Displays the commands available and how to use them
   
-8. Exit
+10. Exit
   	- exit
   	- This exits the program
-
-To do 
---------------
-1. Undo
