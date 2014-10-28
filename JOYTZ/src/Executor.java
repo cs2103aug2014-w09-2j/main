@@ -34,12 +34,12 @@ public class Executor {
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "%s in %s is searched successfully.\n";
 
 	// these are for Undo Method
-	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.";
-	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.";
+	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
+	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.\n";
 
 	// these are for Redo Method
-	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo";
-	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully";
+	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
