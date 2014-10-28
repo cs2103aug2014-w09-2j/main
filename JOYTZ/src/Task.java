@@ -16,8 +16,8 @@ public class Task extends TimerTask implements Comparable<Task>{
 	
 	private long taskDuration;
 	
-	private boolean passStartTiming = false;
-	private boolean passEndTiming = false;
+	public boolean passStartTiming = false;
+	public boolean passEndTiming = false;
 	
 	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
@@ -162,7 +162,7 @@ public class Task extends TimerTask implements Comparable<Task>{
 	
 	@Override
 	public void run() {
-		
+		Storage.check();
 	}
 
 }

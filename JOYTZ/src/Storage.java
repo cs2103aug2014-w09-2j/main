@@ -29,8 +29,7 @@ public class Storage {
  	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
-	public static Timer startTimer = new Timer();
-	public static Timer endTimer = new Timer();
+	public static Timer Timer = new Timer();
 	
 	// the tasks which pass the time.
 	public static boolean[] startTimeSchedule = {};
@@ -92,8 +91,8 @@ public class Storage {
 				+ t.getTaskPriority() + "\n" + "====================\n");
 
 		taskList.add(t);
-		startTimer.schedule(t, t.getTaskStartTime());
-		endTimer.schedule(t, t.getTaskEndTime());
+		Timer.schedule(t, t.getTaskStartTime());
+		Timer.schedule(t, t.getTaskEndTime());
 		
 		numberOfTask++;
 
@@ -236,8 +235,8 @@ public class Storage {
 				+ "\n" + "task indicator: " + updateIndicator + "\n"
 				+ "====================\n");
 		
-		startTimer.schedule(targetTask, targetTask.getTaskStartTime());
-		endTimer.schedule(targetTask, targetTask.getTaskEndTime());
+		Timer.schedule(targetTask, targetTask.getTaskStartTime());
+		Timer.schedule(targetTask, targetTask.getTaskEndTime());
 		
 		taskList.set(taskId - 1, targetTask);
 
@@ -286,8 +285,7 @@ public class Storage {
 		}
 		//assert taskList.isEmpty() : "Size of list :" + taskList.size();
 		
-		startTimer.cancel();
-		endTimer.cancel();
+		Timer.cancel();
 		
 		LOGGER.info("==============\n" + "Storage clean taskList. \n "
 				+ "====================\n");
@@ -299,9 +297,7 @@ public class Storage {
 		history.clear();
 		taskList.clear();
 		
-		startTimer.cancel();
-		endTimer.cancel();
-		
+		Timer.cancel();
 	}
 	
 	
@@ -361,14 +357,25 @@ public class Storage {
 				+ "result: " + resultList.get(0) + "\n"
 				+ resultList.size() + "\n"
 				+ "====================\n");
+		
 		return resultList;
 	}
 	
-	public static void check(String indicatorString){
-		if (indicatorString.equals("start timing")){
-			for (int i=0; i<taskList.size(); i++){
-				Task currTask = taskList.get(i);
-				
+	public static void check(){
+		for (int index=0; index<taskList.size(); index++){
+			Task currTask = taskList.get(index);
+			Long currStartTime = currTask.getTaskStartTime();
+			Long currEndTime = currTask.getTaskEndTime();
+			Long currTime = System.currentTimeMillis();
+			
+			if (currStartTime < currTime){
+				currTask.passStartTiming = true;
+				startTimeSchedule[index] = true;
+			}
+			
+			if (currEndTime < currTime){
+				currTask.passEndTiming = true;
+				endTimeSchedule[index] = true;
 			}
 		}
 	}
