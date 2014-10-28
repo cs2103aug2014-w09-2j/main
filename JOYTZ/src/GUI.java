@@ -322,7 +322,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         displayHelp();
                         inputField.setText("");
                     } else {
-                        Controller.startController(inputField.getText());
+                        String userInput = inputField.getText();
+                        userInput = userInput.replaceAll("[\n\r]", "");
+                        Controller.startController(userInput);
 
                         inputField.setText("");
                     }
