@@ -335,7 +335,7 @@ public class Analyzer {
 		boolean leapYear = isLeapYear(year);
 
 		if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31
-				|| hour < 0 || hour > 12 || minute < 0 || minute > 59) {
+				|| hour < 0 || hour > 24 || minute < 0 || minute > 59) {
 			return false;
 		}
 
@@ -382,7 +382,7 @@ public class Analyzer {
 		return Long.valueOf(tempStartDate.getTime());
 	}
 
-	private static Long endTimingAnalyzer(Date tempEndDate, Date currentDate) {
+	private static Long endTimingAnalyzer(Date tempEndDate) {
 		if (!isTimeIndicated(tempEndDate)) {
 			tempEndDate.setHours(23);
 			tempEndDate.setMinutes(59);
@@ -407,7 +407,7 @@ public class Analyzer {
 		if (!end.equals("")) {
 			endTiming = Long.valueOf(end);
 			tempEndDate = new Date(endTiming);
-			endTiming = endTimingAnalyzer(tempEndDate, currentDate);
+			endTiming = endTimingAnalyzer(tempEndDate);
 		}
 
 		if (startTiming != 0 && endTiming != 0) {
