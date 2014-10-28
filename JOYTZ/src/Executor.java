@@ -348,6 +348,7 @@ public class Executor {
 			fb.setTaskList(resultList);
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
+			return fb;
 		}
 
 		// post-condition
