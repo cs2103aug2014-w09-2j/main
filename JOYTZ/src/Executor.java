@@ -272,6 +272,12 @@ public class Executor {
 
 		return fb;
 	}
+	
+	/**
+	 * Display the current taskList to the user using a arrayList.
+	 * Display the passed time task using two boolean array.
+	 * @return
+	 */
 
 	private static Feedback performDisplayAction() {
 		Feedback fb = new Feedback(true);

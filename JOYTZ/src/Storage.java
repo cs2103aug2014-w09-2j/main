@@ -362,7 +362,15 @@ public class Storage {
 		return resultList;
 	}
 	
+	/**
+	 * Check which task is passed the start and end time.
+	 * Create boolean array to record these passed task.
+	 */
 	public static void checkTime(){
+		// create boolean instance based on the size of the taskList
+		startTimeSchedule = new boolean[taskList.size()];
+		endTimeSchedule = new boolean[taskList.size()];
+		
 		for (int index=0; index<taskList.size(); index++){
 			Task currTask = taskList.get(index);
 			Long currStartTime = currTask.getTaskStartTime();
