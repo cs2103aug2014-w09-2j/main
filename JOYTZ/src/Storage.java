@@ -341,11 +341,10 @@ public class Storage {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ArrayList<String> search(String indicator, String searchValue)
+	public static ArrayList<Task> search(String indicator, String searchValue)
 			throws Exception {
-		ArrayList<String> resultList = new ArrayList<String>();
-		ArrayList<Task> requiredTaskList = new ArrayList<Task>();
-
+		ArrayList<Task> resultTaskList = new ArrayList<Task>();
+		
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
@@ -353,34 +352,34 @@ public class Storage {
 		for (int index = 0; index < taskList.size(); index++) {
 			Task task = taskList.get(index);
 			if (task.get(indicator).trim().equals(searchValue.trim())) {
-				requiredTaskList.add(task);
+				resultTaskList.add(task);
 			}
 		}
 
-		if (requiredTaskList.size() == 0) {
+		if (resultTaskList.size() == 0) {
 			throw new Exception(MESSAGE_NO_TASK_MEET_REQUIREMENTS);
 		}
 
-		resultList = getTaskList(requiredTaskList);
-
-		LOGGER.info("==============\n" + "Storage search. \n " + "result: "
-				+ resultList.get(0) + "\n" + resultList.size() + "\n"
+		LOGGER.info("==============\n" + "Storage search. \n "
 				+ "====================\n");
 
-		return resultList;
+		return resultTaskList;
 	}
 
 	/**
 	 * Check which task is passed the start and end time. Create boolean array
 	 * to record these passed task.
 	 */
-	private static void checkTime() {
+	private static void checkTime(){
+		checkTime(taskList);
+	}
+	private static void checkTime(ArrayList<Task> list) {
 		// create boolean instance based on the size of the taskList
-		PassStartTimeList = new boolean[taskList.size()];
-		passEndTimeList = new boolean[taskList.size()];
+		PassStartTimeList = new boolean[list.size()];
+		passEndTimeList = new boolean[list.size()];
 
-		for (int index = 0; index < taskList.size(); index++) {
-			Task currTask = taskList.get(index);
+		for (int index = 0; index < list.size(); index++) {
+			Task currTask = list.get(index);
 			Long currStartTime = currTask.getTaskStartTime();
 			Long currEndTime = currTask.getTaskEndTime();
 			Long currTime = System.currentTimeMillis();
@@ -401,9 +400,18 @@ public class Storage {
 		checkTime();
 		return PassStartTimeList;
 	}
+	public static boolean[] getPassStartTimeList(ArrayList<Task> list){
+		checkTime(list);
+		return PassStartTimeList;
+	}
 
 	public static boolean[] getPassEndTimeList() {
 		checkTime();
+		return passEndTimeList;
+	}
+	
+	public static boolean[] getPassEndTimeList(ArrayList<Task> list){
+		checkTime(list);
 		return passEndTimeList;
 	}
 
@@ -423,7 +431,7 @@ public class Storage {
 	 * @return
 	 */
 
-	private static ArrayList<String> getTaskList(ArrayList<Task> list) {
+	public static ArrayList<String> getTaskList(ArrayList<Task> list) {
 		ArrayList<String> displayList = new ArrayList<String>();
 
 		for (int i = 0; i < list.size(); i++) {
