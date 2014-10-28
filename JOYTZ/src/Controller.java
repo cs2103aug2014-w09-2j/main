@@ -37,9 +37,7 @@ public class Controller {
         if (command.getErrorMessage().length() == 0) {
             String action = command.getAction();
 
-            if (action == "display") {
-                parseDisplayTasks(action);
-            }
+            parseDisplayTasks(action);
         }
     }
 
@@ -72,8 +70,8 @@ public class Controller {
                                    "===================\n");
 
                 String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
-                isHighlightedPassStart = feedback.getPassStartTimeList()[i];
-                isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
+                isHighlightedPassStart = false; //feedback.getPassStartTimeList()[i];
+                isHighlightedPassEnd = false; //feedback.getPassEndTimeList()[i];
 
                 if (i == feedback.getTaskList().size() - 1) {
                     isLastItem = true;
