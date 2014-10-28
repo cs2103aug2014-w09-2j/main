@@ -3,6 +3,9 @@ import java.util.ArrayList;
 //package V1;
 
 public class Feedback {
+	
+	// action that trigger the feedback
+	private String action;
 
 	// attributes
 	private boolean result;
@@ -22,10 +25,20 @@ public class Feedback {
 		this.result = result;
 		this.messageShowToUser = "";
 	}
+	
+	Feedback(String action, boolean result){
+		this.action = action;
+		this.result = result;
+		this.messageShowToUser = "";
+	}
 
 	/**
 	 * Set methods
 	 */
+	
+	public void setAction(String action){
+		this.action = action;
+	}
 
 	public void setResult(boolean result) {
 		this.result = result;
@@ -50,6 +63,10 @@ public class Feedback {
 	/**
 	 * Get methods
 	 */
+	
+	public String getAction(){
+		return action;
+	}
 
 	public boolean getResult() {
 		return result;

@@ -16,7 +16,7 @@ public class Storage {
 	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
 	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
 	private static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
-	
+
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
@@ -26,14 +26,14 @@ public class Storage {
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> history = new ArrayList<Task>();
- 	public static int numberOfTask = 0;
+	public static int numberOfTask = 0;
 
 	// the timer is used to track the expired date of task.
 	public static Timer Timer = new Timer();
-	
+
 	// the tasks which pass the time.
-	public static boolean[] startTimeSchedule = {};
-	public static boolean[] endTimeSchedule = {};
+	public static boolean[] PassStartTimeList = {};
+	public static boolean[] passEndTimeList = {};
 
 	// the file that used to save current tasks when user exit the program.
 	private static String taskListFileName = "TaskList.txt";
@@ -68,33 +68,36 @@ public class Storage {
 		if (t == null) {
 			throw new Exception(ERROR_NULL_OBJECT);
 		}
-		
+
 		/*
-		assert !t.getTaskName().equals("") : "No task name.";
-		assert t.getTaskStartTime() < System.currentTimeMillis() : "Invalid taskStartTime. start time: "
-				+ t.getTaskStartTime();
-		assert t.getTaskEndTime() < System.currentTimeMillis() : "Invalid taskEndTime. end time: "
-				+ t.getTaskEndTime();
-		assert t.getTaskEndTime() < t.getTaskStartTime() : "Invalid startTime and endTime. startTime: "
-				+ t.getTaskStartTime() + " endTime: " + t.getTaskEndTime();
-		assert !t.getTaskDescription().equals("") : "No task description.";
-		assert !t.getTaskLocation().equals("") : "No task location.";
-		assert !t.getTaskPriority().equals("") : "No task priority.";
-		*/
-		
+		 * assert !t.getTaskName().equals("") : "No task name."; assert
+		 * t.getTaskStartTime() < System.currentTimeMillis() :
+		 * "Invalid taskStartTime. start time: " + t.getTaskStartTime(); assert
+		 * t.getTaskEndTime() < System.currentTimeMillis() :
+		 * "Invalid taskEndTime. end time: " + t.getTaskEndTime(); assert
+		 * t.getTaskEndTime() < t.getTaskStartTime() :
+		 * "Invalid startTime and endTime. startTime: " + t.getTaskStartTime() +
+		 * " endTime: " + t.getTaskEndTime(); assert
+		 * !t.getTaskDescription().equals("") : "No task description."; assert
+		 * !t.getTaskLocation().equals("") : "No task location."; assert
+		 * !t.getTaskPriority().equals("") : "No task priority.";
+		 */
+
 		LOGGER.info("==============\n" + "Storage add task: \n" + "task name: "
 				+ t.getTaskName() + "\n" + "task description: "
 				+ t.getTaskDescription() + "\n" + "task location: "
 				+ t.getTaskLocation() + "\n" + "task start timing: "
-				+ convertLongToDateFormat(t.getTaskStartTime()) + "\n" + "task end timing: "
-				+ convertLongToDateFormat(t.getTaskEndTime()) + "\n" + "task priority: "
-				+ t.getTaskPriority() + "\n" + "====================\n");
+				+ convertLongToDateFormat(t.getTaskStartTime()) + "\n"
+				+ "task end timing: "
+				+ convertLongToDateFormat(t.getTaskEndTime()) + "\n"
+				+ "task priority: " + t.getTaskPriority() + "\n"
+				+ "====================\n");
 
 		taskList.add(t);
-		
-		//Timer.schedule(t, t.getTaskStartTime());
-		//Timer.schedule(t, t.getTaskEndTime());
-		
+
+		// Timer.schedule(t, t.getTaskStartTime());
+		// Timer.schedule(t, t.getTaskEndTime());
+
 		numberOfTask++;
 
 		return true;
@@ -118,15 +121,16 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage delete task. \n "
 				+ "taskId: " + taskId + "\n" + "task name: "
 				+ removedTask.getTaskName() + "\n" + "task start timing: "
-				+ convertLongToDateFormat(removedTask.getTaskStartTime()) + "\n" + "task end timing: "
-				+ convertLongToDateFormat(removedTask.getTaskEndTime()) + "\n" + "task description: "
-				+ removedTask.getTaskDescription() + "\n" + "task location: "
-				+ removedTask.getTaskLocation() + "\n" + "task priority: "
-				+ removedTask.getTaskPriority() + "\n"
-				+ "====================\n");
+				+ convertLongToDateFormat(removedTask.getTaskStartTime())
+				+ "\n" + "task end timing: "
+				+ convertLongToDateFormat(removedTask.getTaskEndTime()) + "\n"
+				+ "task description: " + removedTask.getTaskDescription()
+				+ "\n" + "task location: " + removedTask.getTaskLocation()
+				+ "\n" + "task priority: " + removedTask.getTaskPriority()
+				+ "\n" + "====================\n");
 
-		//removedTask.cancel();
-		
+		// removedTask.cancel();
+
 		numberOfTask--;
 		history.add(removedTask);
 
@@ -152,27 +156,31 @@ public class Storage {
 		}
 
 		Task targetTask = get(taskId);
-		//targetTask.cancel();
+		// targetTask.cancel();
 
 		switch (updateIndicator) {
 		case StringFormat.NAME:
-			//assert updateKeyValue instanceof String : "name: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "name: " +
+			// updateKeyValue;
 
 			targetTask.setTaskName(updateKeyValue);
 			break;
 		case StringFormat.DESCRIPTION:
-			//assert updateKeyValue instanceof String : "description: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "description: " +
+			// updateKeyValue;
 
 			targetTask.setTaskDescription(updateKeyValue);
 			break;
 		case StringFormat.START_TIMING:
-			//assert updateKeyValue instanceof String : "start time: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "start time: " +
+			// updateKeyValue;
 
 			Long newStartTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskStartTime(newStartTime);
 			break;
 		case StringFormat.END_TIMING:
-			//assert updateKeyValue instanceof String : "end time: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "end time: " +
+			// updateKeyValue;
 
 			Long newEndTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskEndTime(newEndTime);
@@ -214,12 +222,14 @@ public class Storage {
 			targetTask.setTaskStartTime(oldTimeet.getTime());
 			break;
 		case StringFormat.LOCATION:
-			//assert updateKeyValue instanceof String : "location: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "location: " +
+			// updateKeyValue;
 
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
 		case StringFormat.PRIORITY:
-			//assert updateKeyValue instanceof String : "priority: " + updateKeyValue;
+			// assert updateKeyValue instanceof String : "priority: " +
+			// updateKeyValue;
 
 			targetTask.setTaskPriority(updateKeyValue);
 			break;
@@ -235,10 +245,10 @@ public class Storage {
 				+ taskId + "\n" + "task name: " + targetTask.getTaskName()
 				+ "\n" + "task indicator: " + updateIndicator + "\n"
 				+ "====================\n");
-		
-		//Timer.schedule(targetTask, targetTask.getTaskStartTime());
-		//Timer.schedule(targetTask, targetTask.getTaskEndTime());
-		
+
+		// Timer.schedule(targetTask, targetTask.getTaskStartTime());
+		// Timer.schedule(targetTask, targetTask.getTaskEndTime());
+
 		taskList.set(taskId - 1, targetTask);
 
 		return true;
@@ -257,17 +267,18 @@ public class Storage {
 			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
 		}
 		Task task = taskList.get(taskId - 1);
-		
-		LOGGER.info("==============\n" + "Storage get task. \n "
-				+ "taskId: " + taskId + "\n" + "task name: "
-				+ task.getTaskName() + "\n" + "task start timing: "
-				+ convertLongToDateFormat(task.getTaskStartTime()) + "\n" + "task end timing: "
-				+ convertLongToDateFormat(task.getTaskEndTime()) + "\n" + "task description: "
-				+ task.getTaskDescription() + "\n" + "task location: "
-				+ task.getTaskLocation() + "\n" + "task priority: "
-				+ task.getTaskPriority() + "\n"
+
+		LOGGER.info("==============\n" + "Storage get task. \n " + "taskId: "
+				+ taskId + "\n" + "task name: " + task.getTaskName() + "\n"
+				+ "task start timing: "
+				+ convertLongToDateFormat(task.getTaskStartTime()) + "\n"
+				+ "task end timing: "
+				+ convertLongToDateFormat(task.getTaskEndTime()) + "\n"
+				+ "task description: " + task.getTaskDescription() + "\n"
+				+ "task location: " + task.getTaskLocation() + "\n"
+				+ "task priority: " + task.getTaskPriority() + "\n"
 				+ "====================\n");
-		
+
 		return task;
 	}
 
@@ -284,10 +295,10 @@ public class Storage {
 			}
 			taskList.clear();
 		}
-		//assert taskList.isEmpty() : "Size of list :" + taskList.size();
-		
-		//Timer.cancel();
-		
+		// assert taskList.isEmpty() : "Size of list :" + taskList.size();
+
+		// Timer.cancel();
+
 		LOGGER.info("==============\n" + "Storage clean taskList. \n "
 				+ "====================\n");
 		return true;
@@ -297,11 +308,10 @@ public class Storage {
 	public static void cleanUpEveryThing() {
 		history.clear();
 		taskList.clear();
-		
-		//Timer.cancel();
+
+		// Timer.cancel();
 	}
-	
-	
+
 	/**
 	 * Sort the task in taskList corresponding to parameter key. if the key is
 	 * not valid, tasks are sorted by name;
@@ -311,17 +321,17 @@ public class Storage {
 	 */
 
 	public static boolean sort(String key) throws Exception {
-		
+
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
-		
+
 		Task.setSortKey(key);
 		Collections.sort(taskList);
-		
+
 		LOGGER.info("==============\n" + "Storage sort taskList. \n "
 				+ "====================\n");
-		
+
 		return true;
 	}
 
@@ -352,41 +362,49 @@ public class Storage {
 		}
 
 		resultList = getTaskList(requiredTaskList);
-		
 
-		LOGGER.info("==============\n" + "Storage search. \n "
-				+ "result: " + resultList.get(0) + "\n"
-				+ resultList.size() + "\n"
+		LOGGER.info("==============\n" + "Storage search. \n " + "result: "
+				+ resultList.get(0) + "\n" + resultList.size() + "\n"
 				+ "====================\n");
-		
+
 		return resultList;
 	}
-	
+
 	/**
-	 * Check which task is passed the start and end time.
-	 * Create boolean array to record these passed task.
+	 * Check which task is passed the start and end time. Create boolean array
+	 * to record these passed task.
 	 */
-	public static void checkTime(){
+	private static void checkTime() {
 		// create boolean instance based on the size of the taskList
-		startTimeSchedule = new boolean[taskList.size()];
-		endTimeSchedule = new boolean[taskList.size()];
-		
-		for (int index=0; index<taskList.size(); index++){
+		PassStartTimeList = new boolean[taskList.size()];
+		passEndTimeList = new boolean[taskList.size()];
+
+		for (int index = 0; index < taskList.size(); index++) {
 			Task currTask = taskList.get(index);
 			Long currStartTime = currTask.getTaskStartTime();
 			Long currEndTime = currTask.getTaskEndTime();
 			Long currTime = System.currentTimeMillis();
-			
-			if (currStartTime < currTime){
+
+			if (currStartTime < currTime) {
 				currTask.passStartTiming = true;
-				startTimeSchedule[index] = true;
+				PassStartTimeList[index] = true;
 			}
-			
-			if (currEndTime < currTime){
+
+			if (currEndTime < currTime) {
 				currTask.passEndTiming = true;
-				endTimeSchedule[index] = true;
+				passEndTimeList[index] = true;
 			}
 		}
+	}
+
+	public static boolean[] getPassStartTimeList() {
+		checkTime();
+		return PassStartTimeList;
+	}
+
+	public static boolean[] getPassEndTimeList() {
+		checkTime();
+		return passEndTimeList;
 	}
 
 	/**
@@ -397,9 +415,10 @@ public class Storage {
 	public static ArrayList<String> getTaskList() {
 		return getTaskList(taskList);
 	}
-	
+
 	/**
 	 * Return a list of tasks in String format.
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -422,7 +441,8 @@ public class Storage {
 			}
 
 			// startTime
-			if (!task.getTaskStartTime().equals(trivalDate) && !task.getTaskStartTime().equals(maxDate)) {
+			if (!task.getTaskStartTime().equals(trivalDate)
+					&& !task.getTaskStartTime().equals(maxDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(convertLongToDateFormat(
 						task.getTaskStartTime()).toString());
@@ -431,7 +451,8 @@ public class Storage {
 			}
 
 			// endTime
-			if (!task.getTaskEndTime().equals(trivalDate) && !task.getTaskEndTime().equals(maxDate)) {
+			if (!task.getTaskEndTime().equals(trivalDate)
+					&& !task.getTaskEndTime().equals(maxDate)) {
 				taskString = taskString.concat("~");
 				taskString = taskString.concat(convertLongToDateFormat(
 						task.getTaskEndTime()).toString());
@@ -541,12 +562,12 @@ public class Storage {
 			taskList.add(task);
 			taskString = taskListBufferedReader.readLine();
 		}
-		
+
 		taskString = historyBufferedReader.readLine();
 		System.out.println(String.format(MESSAGE_RELOADING_FILE, taskString));
-		
+
 		taskString = historyBufferedReader.readLine();
-		while(taskString != null){
+		while (taskString != null) {
 			Task task = convertStringToTask(taskString);
 			history.add(task);
 			taskString = historyBufferedReader.readLine();
@@ -586,14 +607,11 @@ public class Storage {
 		if (task == null) {
 			throw new Exception(ERROR_NULL_OBJECT);
 		}
-		String result = String.format(taskStringFormat, 
-				task.getTaskName(),
-				task.getTaskStartTime(), 
-				task.getTaskEndTime(), 
-				task.getTaskDescription() + " ",
-				task.getTaskLocation() + " ", 
+		String result = String.format(taskStringFormat, task.getTaskName(),
+				task.getTaskStartTime(), task.getTaskEndTime(),
+				task.getTaskDescription() + " ", task.getTaskLocation() + " ",
 				task.getTaskPriority() + " ");
-		
+
 		return result;
 	}
 
@@ -601,8 +619,8 @@ public class Storage {
 		System.out.println(taskString);
 		Task task = new Task();
 
-		//assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
-		
+		// assert taskString.matches("(.*)-(.*)-(.*)-(.*)-(.*)") : taskString;
+
 		if (taskString == null) {
 			throw new Exception(ERROR_NULL_TASK_STRING);
 		} else {
@@ -622,9 +640,10 @@ public class Storage {
 		}
 		return task;
 	}
-	
+
 	/**
-	 * Convert Long to a dateFormat dd-mm-yy. 
+	 * Convert Long to a dateFormat dd-mm-yy.
+	 * 
 	 * @param timeLong
 	 * @return
 	 */

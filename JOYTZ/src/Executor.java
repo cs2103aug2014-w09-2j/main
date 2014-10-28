@@ -114,6 +114,11 @@ public class Executor {
 			}
 		}
 
+		if (!feedback.getAction().equals(StringFormat.SEARCH)
+				|| !feedback.getAction().equals(StringFormat.DISPLAY)) {
+			addInDisplayMessage(feedback);
+		}
+
 		return feedback;
 	}
 
@@ -137,7 +142,7 @@ public class Executor {
 		Long startTime;
 		Long endTime;
 
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.ADD, false);
 
 		if (!startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.parseLong(startTiming);
@@ -163,8 +168,7 @@ public class Executor {
 				priority);
 
 		// pre-condition
-		assert !t.equals(new Task()) : "No task created";
-
+		// assert !t.equals(new Task()) : "No task created";
 		// add the task into the storage.
 		try {
 			fb.setResult(Storage.add(t));
@@ -173,11 +177,10 @@ public class Executor {
 		}
 
 		// post-condition
-		assert fb.getResult() : "Fail to add tasks";
+		// assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
-			fb.setTaskList(Storage.getTaskList());
 		}
 
 		return fb;
@@ -193,7 +196,7 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
 		int taskId = command.getTaskId();
 		String taskName;
@@ -207,7 +210,6 @@ public class Executor {
 			if (fb.getResult()) {
 				fb.setMessageShowToUser(String.format(
 						MESSAGE_DELETE_SUCCESSFUL, taskId, taskName));
-				fb.setTaskList(Storage.getTaskList());
 			}
 
 		} catch (Exception e) {
@@ -227,7 +229,7 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performUpdateAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
 		int taskId = command.getTaskId();
 		String updateIndicator = command.getIndicator();
@@ -246,7 +248,6 @@ public class Executor {
 				taskName = Storage.get(taskId).getTaskName();
 				fb.setMessageShowToUser(String.format(
 						MESSAGE_UPDATE_SUCCESSFUL, taskId, taskName));
-				fb.setTaskList(Storage.getTaskList());
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
@@ -262,7 +263,7 @@ public class Executor {
 	 * @return
 	 */
 	private static Feedback performClearAction() {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 
 		fb.setResult(Storage.clean());
 
@@ -272,24 +273,19 @@ public class Executor {
 
 		return fb;
 	}
-	
+
 	/**
-	 * Display the current taskList to the user using a arrayList.
-	 * Display the passed time task using two boolean array.
+	 * Display the current taskList to the user using a arrayList. Display the
+	 * passed time task using two boolean array.
+	 * 
 	 * @return
 	 */
 
 	private static Feedback performDisplayAction() {
-		Feedback fb = new Feedback(true);
-		fb.setTaskList(Storage.getTaskList());
-		
-		Storage.checkTime();
-		
-		fb.setPassStartTimeList(Storage.startTimeSchedule);
-		fb.setPassEndTimeList(Storage.endTimeSchedule);
-		
+		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
+
 		if (fb.getTaskList().size() == 0) {
-			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);;
+			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);
 			return fb;
 		}
 		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
@@ -309,7 +305,7 @@ public class Executor {
 	private static Feedback performSortAction(ExecutableCommand command) {
 		String sortKey = command.getIndicator();
 
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.SORT, false);
 
 		// check what category user want to sort
 		try {
@@ -322,7 +318,6 @@ public class Executor {
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
 					sortKey));
-			fb.setTaskList(Storage.getTaskList());
 		}
 
 		return fb;
@@ -342,7 +337,7 @@ public class Executor {
 		String searchValue = command.getKey();
 		ArrayList<String> resultList = new ArrayList<String>();
 
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
 		// pre-condition
 		// assert !searchIndicator.equals("") : "No search indicator";
@@ -389,11 +384,10 @@ public class Executor {
 	 */
 
 	private static Feedback performUndoAction() {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
 		if (commandStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
-			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
@@ -404,34 +398,37 @@ public class Executor {
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
-			
+
 			// clean the tasklist and history.
 			Storage.cleanUpEveryThing();
 			// reload the data from saved file.
 			Storage.reloadFile();
-			
+
 			while (!temp.isEmpty()) {
 				proceedAnalyzedCommand(temp.pop());
 			}
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
-			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
 		fb.setResult(true);
-		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
 
 		return fb;
 	}
 
+	/**
+	 * Redo the undo step.
+	 * 
+	 * @return
+	 */
+
 	private static Feedback performRedoAction() {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.REDO, false);
 
 		if (redoStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_REDO);
-			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
@@ -439,12 +436,10 @@ public class Executor {
 			proceedAnalyzedCommand(redoStack.pop());
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
-			fb.setTaskList(Storage.getTaskList());
 			return fb;
 		}
 
 		fb.setResult(true);
-		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
 
 		return fb;
@@ -452,7 +447,7 @@ public class Executor {
 	}
 
 	private static Feedback performReloadAction() {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.RELOAD, false);
 
 		try {
 			Storage.reloadFile();
@@ -462,8 +457,8 @@ public class Executor {
 		}
 
 		fb.setResult(true);
-		fb.setTaskList(Storage.getTaskList());
 		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
+
 		return fb;
 	}
 
@@ -473,7 +468,7 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performExitAction() {
-		Feedback fb = new Feedback(false);
+		Feedback fb = new Feedback(StringFormat.EXIT, false);
 
 		// check whether the storage can store the information into a file.
 		try {
@@ -487,6 +482,12 @@ public class Executor {
 		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 
 		return fb;
+	}
+
+	private static void addInDisplayMessage(Feedback fb) {
+		fb.setTaskList(Storage.getTaskList());
+		fb.setPassStartTimeList(Storage.getPassStartTimeList());
+		fb.setPassEndTimeList(Storage.getPassEndTimeList());
 	}
 
 	/**
