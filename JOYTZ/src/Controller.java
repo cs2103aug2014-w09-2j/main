@@ -54,11 +54,13 @@ public class Controller {
      */
     private static void parseDisplayTasks(String action) {
         boolean isLastItem = false;
-        boolean isHighlighted = false;
+        boolean isHighlightedPassStart = false;
+        boolean isHighlightedPassEnd = false;
 
         if (feedback.getTaskList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, isLastItem, isHighlighted);
+            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, 
+                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
         } else {									// all other commands
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
@@ -68,7 +70,8 @@ public class Controller {
                                    "===================\n");
 
                 String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
-                isHighlighted = false;//feedback.getBooleanList.get(i);
+                isHighlightedPassStart = false; //feedback.getPassStartTimeList()[i];
+                isHighlightedPassEnd = false; //feedback.getPassEndTimeList()[i];
 
                 if (i == feedback.getTaskList().size() - 1) {
                     isLastItem = true;
@@ -94,11 +97,11 @@ public class Controller {
                 if (parameterArr.length == 5) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
                                     parameterArr[4], parameterArr[1], "", action, 
-                                    isLastItem, isHighlighted);
+                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
                 } else if (parameterArr.length == 6) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
                                     parameterArr[4], parameterArr[1], parameterArr[5], action, 
-                                    isLastItem, isHighlighted);
+                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
                 }
             }
         }

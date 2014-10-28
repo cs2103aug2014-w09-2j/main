@@ -45,6 +45,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_EXIT = "exit\n";
     private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
+	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final int REFRESH_RATE = 600000;    // in milliseconds
 
@@ -172,7 +173,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                    String name, String location, 
                                    String description, String priority,
                                    String action, boolean isLastRow,
-                                   boolean isHighlighted) {
+                                   boolean isHighlightedPassStart,
+                                   boolean isHighlightedPassEnd) {
 
         action = action.trim();
         
@@ -207,7 +209,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             TableItem item = new TableItem(taskTable, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
-            if (isHighlighted == true) {
+            if (isHighlightedPassStart == true) {
+                colorRowGreen(item);
+                NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
+            }
+            if (isHighlightedPassEnd == true) {
                 colorRowRed(item);
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
             }
@@ -227,6 +233,17 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void colorRowRed(TableItem item) {
         Color red = display.getSystemColor(SWT.COLOR_RED);
         item.setForeground(red);
+    }
+    
+    /**
+     * Colors the words in a row green.
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowGreen(TableItem item) {
+        Color green = display.getSystemColor(SWT.COLOR_DARK_GREEN);
+        item.setForeground(green);
     }
 
     /**
