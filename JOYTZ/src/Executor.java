@@ -404,7 +404,12 @@ public class Executor {
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
+			
+			// clean the tasklist and history.
 			Storage.cleanUpEveryThing();
+			// reload the data from saved file.
+			Storage.reloadFile();
+			
 			while (!temp.isEmpty()) {
 				proceedAnalyzedCommand(temp.pop());
 			}
