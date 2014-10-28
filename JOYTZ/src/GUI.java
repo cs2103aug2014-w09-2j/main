@@ -178,6 +178,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 
         action = action.trim();
         
+        // TODO: action is always display now
         if (action.equals("sort") || action.equals("search")) {
         	isSortingOrSearching = true;
         	stopDisplayTimer();
@@ -300,6 +301,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
         
         Controller.startController("reload");
+        Controller.startController("display");
         displayHelp();
         resizeTable();
     }
@@ -323,7 +325,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         inputField.setText("");
                     } else {
                         Controller.startController(inputField.getText());
-
+                        Controller.startController("display");    
                         inputField.setText("");
                     }
                 }
