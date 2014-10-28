@@ -114,8 +114,7 @@ public class Executor {
 			}
 		}
 
-		if (!feedback.getAction().equals(StringFormat.SEARCH)
-				&& !feedback.getAction().equals(StringFormat.DISPLAY)) {
+		if (!feedback.getAction().equals(StringFormat.SEARCH)) {
 			addInDisplayMessage(feedback);
 		}
 
@@ -284,7 +283,7 @@ public class Executor {
 	private static Feedback performDisplayAction() {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
 
-		if (fb.getTaskList().size() == 0) {
+		if (Storage.getTaskListSize() == 0) {
 			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);
 			return fb;
 		}
