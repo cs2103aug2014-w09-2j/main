@@ -276,6 +276,12 @@ public class Executor {
 	private static Feedback performDisplayAction() {
 		Feedback fb = new Feedback(true);
 		fb.setTaskList(Storage.getTaskList());
+		
+		Storage.checkTime();
+		
+		fb.setPassStartTimeList(Storage.startTimeSchedule);
+		fb.setPassEndTimeList(Storage.endTimeSchedule);
+		
 		if (fb.getTaskList().size() == 0) {
 			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);;
 			return fb;

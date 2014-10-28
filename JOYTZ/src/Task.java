@@ -4,7 +4,7 @@ import java.util.TimerTask;
 
 
 
-public class Task extends TimerTask implements Comparable<Task>{
+public class Task implements Comparable<Task>{
 
 	// task attributes.
 	private String taskName;
@@ -158,11 +158,6 @@ public class Task extends TimerTask implements Comparable<Task>{
 			return false;
 		}
 		return true;
-	}
-	
-	@Override
-	public void run() {
-		Storage.check();
 	}
 
 }

@@ -11,7 +11,9 @@ public class Feedback {
 	// ArrayList only for display method.
 	private ArrayList<String> taskList = new ArrayList<String>();
 	
-	// boolean 
+	// boolean arrays for task pass the date
+	private boolean[] passStartTime = {};
+	private boolean[] passEndTime = {};
 
 	/**
 	 * Constructor
@@ -36,6 +38,14 @@ public class Feedback {
 	public void setTaskList(ArrayList<String> taskList) {
 		this.taskList = taskList;
 	}
+	
+	public void setPassStartTimeList(boolean[] list){
+		this.passStartTime = list;
+	}
+	
+	public void setPassEndTimeList (boolean[] list){
+		this.passEndTime = list;
+	}
 
 	/**
 	 * Get methods
@@ -52,4 +62,13 @@ public class Feedback {
 	public ArrayList<String> getTaskList() {
 		return taskList;
 	}
+	
+	public boolean[] getPassStartTimeList (){
+		return passStartTime;
+	}
+	
+	public boolean[] getPassEndTimeList() {
+		return passEndTime;
+	}
+
 }

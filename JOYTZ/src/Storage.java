@@ -91,8 +91,9 @@ public class Storage {
 				+ t.getTaskPriority() + "\n" + "====================\n");
 
 		taskList.add(t);
-		Timer.schedule(t, t.getTaskStartTime());
-		Timer.schedule(t, t.getTaskEndTime());
+		
+		//Timer.schedule(t, t.getTaskStartTime());
+		//Timer.schedule(t, t.getTaskEndTime());
 		
 		numberOfTask++;
 
@@ -124,7 +125,7 @@ public class Storage {
 				+ removedTask.getTaskPriority() + "\n"
 				+ "====================\n");
 
-		removedTask.cancel();
+		//removedTask.cancel();
 		
 		numberOfTask--;
 		history.add(removedTask);
@@ -151,7 +152,7 @@ public class Storage {
 		}
 
 		Task targetTask = get(taskId);
-		targetTask.cancel();
+		//targetTask.cancel();
 
 		switch (updateIndicator) {
 		case StringFormat.NAME:
@@ -235,8 +236,8 @@ public class Storage {
 				+ "\n" + "task indicator: " + updateIndicator + "\n"
 				+ "====================\n");
 		
-		Timer.schedule(targetTask, targetTask.getTaskStartTime());
-		Timer.schedule(targetTask, targetTask.getTaskEndTime());
+		//Timer.schedule(targetTask, targetTask.getTaskStartTime());
+		//Timer.schedule(targetTask, targetTask.getTaskEndTime());
 		
 		taskList.set(taskId - 1, targetTask);
 
@@ -285,7 +286,7 @@ public class Storage {
 		}
 		//assert taskList.isEmpty() : "Size of list :" + taskList.size();
 		
-		Timer.cancel();
+		//Timer.cancel();
 		
 		LOGGER.info("==============\n" + "Storage clean taskList. \n "
 				+ "====================\n");
@@ -297,7 +298,7 @@ public class Storage {
 		history.clear();
 		taskList.clear();
 		
-		Timer.cancel();
+		//Timer.cancel();
 	}
 	
 	
@@ -361,7 +362,7 @@ public class Storage {
 		return resultList;
 	}
 	
-	public static void check(){
+	public static void checkTime(){
 		for (int index=0; index<taskList.size(); index++){
 			Task currTask = taskList.get(index);
 			Long currStartTime = currTask.getTaskStartTime();
