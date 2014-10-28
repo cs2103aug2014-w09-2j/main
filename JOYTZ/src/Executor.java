@@ -115,7 +115,7 @@ public class Executor {
 		}
 
 		if (!feedback.getAction().equals(StringFormat.SEARCH)
-				|| !feedback.getAction().equals(StringFormat.DISPLAY)) {
+				&& !feedback.getAction().equals(StringFormat.DISPLAY)) {
 			addInDisplayMessage(feedback);
 		}
 
