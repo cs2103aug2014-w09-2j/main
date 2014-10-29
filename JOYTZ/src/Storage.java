@@ -351,8 +351,47 @@ public class Storage {
 
 		for (int index = 0; index < taskList.size(); index++) {
 			Task task = taskList.get(index);
-			if (task.get(indicator).trim().equals(searchValue.trim())) {
-				resultTaskList.add(task);
+			String taskAttriString = task.get(indicator).trim();
+			
+			switch (indicator){
+			case StringFormat.START_DATE:
+				Date taskAttriStartDate = new Date(Long.parseLong(taskAttriString));
+				Date searchValueStartDate = new Date(Long.parseLong(searchValue));
+				if (taskAttriStartDate.getDate() == searchValueStartDate.getDate() 
+						&& taskAttriStartDate.getMonth() == searchValueStartDate.getMonth()
+						&& taskAttriStartDate.getYear() == searchValueStartDate.getYear()){
+					resultTaskList.add(task);
+				}
+				break;
+			case StringFormat.START_TIME:
+				Date taskAttriStartTime = new Date(Long.parseLong(taskAttriString));
+				Date searchValueStartTime = new Date(Long.parseLong(searchValue));
+				if (taskAttriStartTime.getMinutes() == searchValueStartTime.getMinutes() 
+						&& taskAttriStartTime.getHours() == searchValueStartTime.getHours()){
+					resultTaskList.add(task);
+				}
+				break;
+			case StringFormat.END_DATE:
+				Date taskAttriEndDate = new Date(Long.parseLong(taskAttriString));
+				Date searchValuEndDate = new Date(Long.parseLong(searchValue));
+				if (taskAttriEndDate.getDate() == searchValuEndDate.getDate() 
+						&& taskAttriEndDate.getMonth() == searchValuEndDate.getMonth()
+						&& taskAttriEndDate.getYear() == searchValuEndDate.getYear()){
+					resultTaskList.add(task);
+				}
+				break;
+			case StringFormat.END_TIME:
+				Date taskAttriEndTime = new Date(Long.parseLong(taskAttriString));
+				Date searchValueEndTime = new Date(Long.parseLong(searchValue));
+				if (taskAttriEndTime.getMinutes() == searchValueEndTime.getMinutes() 
+						&& taskAttriEndTime.getHours() == searchValueEndTime.getHours()){
+					resultTaskList.add(task);
+				}
+				break;
+			default:
+				if (taskAttriString.toLowerCase().contains(searchValue.toLowerCase())){
+					resultTaskList.add(task);
+				}
 			}
 		}
 
