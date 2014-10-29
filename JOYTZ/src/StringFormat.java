@@ -44,5 +44,10 @@ public class StringFormat {
 	public static final String HIGH_PRIORITY = "high";
 	public static final String MEDIUM_PRIORITY = "medium";
 	public static final String LOW_PRIORITY = "low";
-
+	
+	/**
+	 * indicator
+	 */
+	public static final String START = "start";
+	public static final String END = "end";
 }

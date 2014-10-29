@@ -15,7 +15,9 @@ public class Analyzer {
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
-	private static final String ERROR_INVALID_TIMING = "Input timing is invalid.\n";
+	private static final String ERROR_INVALID_TIMING = "Format of input %s timing is invalid.\n";
+	private static final String ERROR_INVALID_EARLIER_TIMING = "Input %s timing is earlier than current date.\n";
+	private static final String ERROR_INVALID_END_EARLIER_THAN_START_TIMING = "End timing is earlier than start timing.\n";
 
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME,
@@ -106,7 +108,8 @@ public class Analyzer {
 		if (arg.length >= 3) {
 			startTiming = inputTimingConvertor(arg[2]);
 			if (startTiming == null) {
-				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIMING,
+						StringFormat.START));
 
 				return tempCommand;
 			}
@@ -114,7 +117,8 @@ public class Analyzer {
 		if (arg.length >= 4) {
 			endTiming = inputTimingConvertor(arg[3]);
 			if (endTiming == null) {
-				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIMING,
+						StringFormat.END));
 
 				return tempCommand;
 			}
@@ -334,19 +338,25 @@ public class Analyzer {
 		int minute = input[4];
 		boolean leapYear = isLeapYear(year);
 
-		if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31
-				|| hour < 0 || hour > 24 || minute < 0 || minute > 59) {
-			return false;
-		}
-
-		if (month == 2) {
-			if (leapYear && day > 29) {
-				return false;
-			} else if (day > 28) {
+		if (year != -1 && month != -1 && day != -1) {
+			if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31) {
 				return false;
 			}
-		} else if (month == 4 || month == 6 || month == 9 || month == 11) {
-			if (day > 30) {
+			if (month == 2) {
+				if (leapYear && day > 29) {
+					return false;
+				} else if (day > 28) {
+					return false;
+				}
+			} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+				if (day > 30) {
+					return false;
+				}
+			}
+		}
+		
+		if(hour!=-1 && minute!=-1){
+			if(hour < 0 || hour > 24 || minute < 0 || minute > 59){
 				return false;
 			}
 		}
@@ -368,27 +378,21 @@ public class Analyzer {
 		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
-	private static Long startTimingAnalyzer(Date tempStartDate, Date currentDate) {
-		if (!isTimeIndicated(tempStartDate)) {
-			if (isSameDate(tempStartDate, currentDate)) {
-				tempStartDate.setHours(currentDate.getHours());
-				tempStartDate.setMinutes(currentDate.getMinutes() + 1);
-			} else {
-				tempStartDate.setHours(0);
-				tempStartDate.setMinutes(0);
-			}
-		}
-
-		return Long.valueOf(tempStartDate.getTime());
-	}
-
-	private static Long endTimingAnalyzer(Date tempEndDate) {
-		if (!isTimeIndicated(tempEndDate)) {
-			tempEndDate.setHours(23);
-			tempEndDate.setMinutes(59);
-		}
-		return Long.valueOf(tempEndDate.getTime());
-	}
+	/*
+	 * private static Long startTimingAnalyzer(Date tempStartDate, Date
+	 * currentDate) { if (!isTimeIndicated(tempStartDate)) { if
+	 * (isSameDate(tempStartDate, currentDate)) {
+	 * tempStartDate.setHours(currentDate.getHours());
+	 * tempStartDate.setMinutes(currentDate.getMinutes() + 1); } else {
+	 * tempStartDate.setHours(0); tempStartDate.setMinutes(0); } }
+	 * 
+	 * return Long.valueOf(tempStartDate.getTime()); }
+	 * 
+	 * private static Long endTimingAnalyzer(Date tempEndDate) { if
+	 * (!isTimeIndicated(tempEndDate)) { tempEndDate.setHours(23);
+	 * tempEndDate.setMinutes(59); } return Long.valueOf(tempEndDate.getTime());
+	 * }
+	 */
 
 	private static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
@@ -401,13 +405,13 @@ public class Analyzer {
 		if (!start.equals("")) {
 			startTiming = Long.valueOf(start);
 			tempStartDate = new Date(startTiming);
-			startTiming = startTimingAnalyzer(tempStartDate, currentDate);
+			// startTiming = startTimingAnalyzer(tempStartDate, currentDate);
 		}
 
 		if (!end.equals("")) {
 			endTiming = Long.valueOf(end);
 			tempEndDate = new Date(endTiming);
-			endTiming = endTimingAnalyzer(tempEndDate);
+			// endTiming = endTimingAnalyzer(tempEndDate);
 		}
 
 		if (startTiming != 0 && endTiming != 0) {
@@ -418,20 +422,31 @@ public class Analyzer {
 				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+				if (tempStartDate.before(currentDate)) {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_EARLIER_TIMING, StringFormat.START));
+				} else if (tempEndDate.before(currentDate)) {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_EARLIER_TIMING, StringFormat.END));
+				} else {
+					tempCommand
+							.setErrorMessage(ERROR_INVALID_END_EARLIER_THAN_START_TIMING);
+				}
 			}
 		} else if (startTiming != 0) {
 			if (tempStartDate.after(currentDate)
 					|| tempStartDate.equals(currentDate)) {
 				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+				tempCommand.setErrorMessage(String.format(
+						ERROR_INVALID_EARLIER_TIMING, StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_TIMING);
+				tempCommand.setErrorMessage(String.format(
+						ERROR_INVALID_EARLIER_TIMING, StringFormat.END));
 			}
 		}
 
@@ -444,9 +459,10 @@ public class Analyzer {
 		}
 
 		String[] dateTime = timing.trim().split(" ");
-		int[] result = { 0, 0, 0, 0, 0 };
+		int[] result = { -1, -1, -1, -1, -1 };
 
 		Date convertedDate;
+		boolean timeExistence = false;
 
 		if (dateTime.length >= 1) {
 			result = dateTimeSeparator(dateTime[0], result);
@@ -460,10 +476,15 @@ public class Analyzer {
 			if (result == null) {
 				return null;
 			}
+			timeExistence = true;
 		}
 
-		convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2],
-				result[3], result[4]);
+		if (timeExistence) {
+			convertedDate = new Date(result[0] - 1900, result[1] - 1,
+					result[2], result[3], result[4]);
+		} else {
+			convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2]);
+		}
 
 		return String.valueOf(convertedDate.getTime());
 	}
@@ -489,7 +510,11 @@ public class Analyzer {
 				indicator = dateTime.substring(5).toLowerCase();
 
 				if (indicator.equals("pm") && hour != 12) {
-					hour = hour + 12;
+					if (hour == -1) {
+						hour = hour + 13;
+					} else {
+						hour = hour + 12;
+					}
 				} else if (indicator.equals("am") && hour == 12) {
 					hour = 0;
 				}
@@ -499,7 +524,11 @@ public class Analyzer {
 				indicator = dateTime.substring(4).toLowerCase();
 
 				if (indicator.equals("pm")) {
-					hour = hour + 12;
+					if (hour == -1) {
+						hour = hour + 13;
+					} else {
+						hour = hour + 12;
+					}
 				}
 			}
 		}
