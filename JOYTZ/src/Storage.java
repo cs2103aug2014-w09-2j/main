@@ -341,7 +341,7 @@ public class Storage {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ArrayList<String> search(String indicator, String searchValue)
+	public static ArrayList<Task> search(String indicator, String searchValue)
 			throws Exception {
 		ArrayList<Task> resultTaskList = new ArrayList<Task>();
 
@@ -363,7 +363,7 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage search. \n "
 				+ "====================\n");
 
-		return getTaskList(resultTaskList);
+		return resultTaskList;
 	}
 
 	/**
