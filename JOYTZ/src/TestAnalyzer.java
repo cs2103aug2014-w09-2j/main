@@ -10,11 +10,13 @@ public class TestAnalyzer {
 	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
 	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_TIMING = "Input timing is invalid.\n";
+	private static final String ERROR_INVALID_TIMING = "Format of input %s timing is invalid.\n";
+	private static final String ERROR_INVALID_EARLIER_TIMING = "Input %s timing is earlier than current date.\n";
+	private static final String ERROR_INVALID_END_EARLIER_THAN_START_TIMING = "End timing is earlier than start timing.\n";
 
 	private static Date currentDate = new Date(System.currentTimeMillis());
-	private static Date d1 = new Date(115, 9, 14, 0, 0);
-	private static Date d2 = new Date(115, 9, 20, 23, 59);
+	private static Date d1 = new Date(115, 9, 14);
+	private static Date d2 = new Date(115, 9, 20);
 	private static Date d3 = new Date(115, 9, 14, 0, 0);
 	private static Date d4 = new Date(115, 9, 20, 23, 59);
 	private static Date d5 = new Date(115, 9, 20, 2, 38);
@@ -57,7 +59,8 @@ public class TestAnalyzer {
 		ExecutableCommand expected2 = new ExecutableCommand("add");
 		expected2.setTaskStartTiming(String.valueOf(d3.getTime()));
 		expected2.setTaskEndTiming(String.valueOf(d4.getTime()));
-		expected2.setErrorMessage(ERROR_INVALID_TIMING);
+		expected2.setErrorMessage(String.format(ERROR_INVALID_TIMING,
+				StringFormat.START));
 
 		ExecutableCommand expected3 = new ExecutableCommand("add");
 		expected3.setTaskStartTiming(String.valueOf(d3.getTime()));
