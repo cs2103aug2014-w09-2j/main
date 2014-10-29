@@ -172,7 +172,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     public static void updateTable(int taskNumber, String startDate, String endDate,
                                    String name, String location, 
                                    String description, String priority,
-                                   String action, boolean isLastRow,
+                                   String action, int taskId, boolean isLastRow,
                                    boolean isHighlightedPassStart,
                                    boolean isHighlightedPassEnd) {
 
@@ -211,22 +211,47 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                         description, priority });
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
-            if (isHighlightedPassStart == true) {
-                colorRowGreen(item);
-                if (action.equals("display")) {
-                    NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
-                }
-            }
-            if (isHighlightedPassEnd == true && action.equals("display")) {
-                colorRowRed(item);
-                if (action.equals("display")) {
-                    NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
-                }
-            }
+            displayGUIFeedback(name, action, taskId, isLastRow, isHighlightedPassStart,
+                               isHighlightedPassEnd, item, taskNumber);
         }
 
         if (isLastRow == true) {
             resizeTable();
+        }
+    }
+    
+    /**
+     * Processes the rows to color, and when to display notifications
+     * 
+     * @param name                      The name of the task
+     * @param action                    The action executed by the user
+     * @param isLastRow                 Is this the last row?
+     * @param isHighlightedPassStart    Has the start timing passed?
+     * @param isHighlitedPassEnd        Has the end timing passed?
+     * @param item                      The table row to be colored
+     * @param taskNumber                The index number of the task in the table
+     * 
+     */
+    private static void displayGUIFeedback(String name, String action, int taskId,
+                                           boolean isLastRow, boolean isHighlightedPassStart,
+                                           boolean isHighlightedPassEnd, TableItem item, int taskNumber) {
+        if (isHighlightedPassStart == true) {
+            colorRowGreen(item);
+            if (action.equals("display")) {
+                NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
+            }
+        }
+        if (isHighlightedPassEnd == true && action.equals("display")) {
+            colorRowRed(item);
+            if (action.equals("display")) {
+                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
+            }
+        }
+        if (isLastRow == true && action.equals("add")) {
+            colorRowBackgroundGrey(item);
+        } else if (action.equals("update") && taskNumber+1 == taskId) {
+            colorRowBackgroundGrey(item);
+            taskTable.setTopIndex(taskId);
         }
     } 
     
@@ -250,6 +275,17 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void colorRowGreen(TableItem item) {
         Color green = display.getSystemColor(SWT.COLOR_DARK_GREEN);
         item.setForeground(green);
+    }
+    
+    /**
+     * Colors the background of a row grey
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundGrey(TableItem item) {
+        Color green = display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
+        item.setBackground(green);
     }
 
     /**
