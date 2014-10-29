@@ -146,8 +146,12 @@ public class Executor {
 		if (!startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.parseLong(startTiming);
 			endTime = Long.parseLong(endTiming);
+			if (startTime > endTime) {
+				fb.setMessageShowToUser(ERROR_INVALID_TIMING);
+				return fb;
+			}
 		} else if (startTiming.equals("") && !endTiming.equals("")) {
-			startTime = System.currentTimeMillis();
+			startTime = Long.MAX_VALUE;
 			endTime = Long.parseLong(endTiming);
 		} else if (!startTiming.equals("") && endTiming.equals("")) {
 			startTime = Long.parseLong(startTiming);
@@ -155,11 +159,6 @@ public class Executor {
 		} else {
 			startTime = Long.MAX_VALUE;
 			endTime = Long.MAX_VALUE;
-		}
-
-		if (startTime > endTime) {
-			fb.setMessageShowToUser(ERROR_INVALID_TIMING);
-			return fb;
 		}
 
 		// create a task object with all the attributes.
@@ -343,11 +342,13 @@ public class Executor {
 
 		// check whether Storage can search the result or not
 		try {
-			ArrayList<Task> resultTaskList = Storage.search(searchIndicator, searchValue);
+			ArrayList<Task> resultTaskList = Storage.search(searchIndicator,
+					searchValue);
 			fb.setTaskList(Storage.getTaskList(resultTaskList));
-			fb.setPassStartTimeList(Storage.getPassStartTimeList(resultTaskList));
+			fb.setPassStartTimeList(Storage
+					.getPassStartTimeList(resultTaskList));
 			fb.setPassEndTimeList(Storage.getPassEndTimeList(resultTaskList));
-			
+
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
