@@ -350,6 +350,7 @@ public class Executor {
 			
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
+			return fb;
 		}
 
 		// post-condition

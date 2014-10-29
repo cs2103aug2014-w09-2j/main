@@ -341,10 +341,10 @@ public class Storage {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ArrayList<Task> search(String indicator, String searchValue)
+	public static ArrayList<String> search(String indicator, String searchValue)
 			throws Exception {
 		ArrayList<Task> resultTaskList = new ArrayList<Task>();
-		
+
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
@@ -363,16 +363,17 @@ public class Storage {
 		LOGGER.info("==============\n" + "Storage search. \n "
 				+ "====================\n");
 
-		return resultTaskList;
+		return getTaskList(resultTaskList);
 	}
 
 	/**
 	 * Check which task is passed the start and end time. Create boolean array
 	 * to record these passed task.
 	 */
-	private static void checkTime(){
+	private static void checkTime() {
 		checkTime(taskList);
 	}
+
 	private static void checkTime(ArrayList<Task> list) {
 		// create boolean instance based on the size of the taskList
 		PassStartTimeList = new boolean[list.size()];
@@ -400,7 +401,8 @@ public class Storage {
 		checkTime();
 		return PassStartTimeList;
 	}
-	public static boolean[] getPassStartTimeList(ArrayList<Task> list){
+
+	public static boolean[] getPassStartTimeList(ArrayList<Task> list) {
 		checkTime(list);
 		return PassStartTimeList;
 	}
@@ -409,8 +411,8 @@ public class Storage {
 		checkTime();
 		return passEndTimeList;
 	}
-	
-	public static boolean[] getPassEndTimeList(ArrayList<Task> list){
+
+	public static boolean[] getPassEndTimeList(ArrayList<Task> list) {
 		checkTime(list);
 		return passEndTimeList;
 	}
