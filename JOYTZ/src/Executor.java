@@ -334,7 +334,6 @@ public class Executor {
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		String searchIndicator = command.getIndicator();
 		String searchValue = command.getKey();
-		ArrayList<String> resultList = new ArrayList<String>();
 
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
@@ -344,8 +343,11 @@ public class Executor {
 
 		// check whether Storage can search the result or not
 		try {
-			resultList = Storage.search(searchIndicator, searchValue);
-			fb.setTaskList(resultList);
+			ArrayList<Task> resultTaskList = Storage.search(searchIndicator, searchValue);
+			fb.setTaskList(Storage.getTaskList(resultTaskList));
+			fb.setPassStartTimeList(Storage.getPassStartTimeList(resultTaskList));
+			fb.setPassEndTimeList(Storage.getPassEndTimeList(resultTaskList));
+			
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
