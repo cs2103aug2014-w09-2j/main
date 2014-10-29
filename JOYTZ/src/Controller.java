@@ -36,8 +36,9 @@ public class Controller {
         // If there is no error message
         if (command.getErrorMessage().length() == 0) {
             String action = command.getAction();
+            int taskId = command.getTaskId();
 
-            parseDisplayTasks(action);
+            parseDisplayTasks(action, taskId);
         }
     }
 
@@ -52,14 +53,14 @@ public class Controller {
      * @param action	The user's input action (add, delete, etc.)
      * 
      */
-    private static void parseDisplayTasks(String action) {
+    private static void parseDisplayTasks(String action, int taskId) {
         boolean isLastItem = false;
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
         if (feedback.getTaskList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, 
+            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
                             isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
         } else {									// all other commands
@@ -96,11 +97,11 @@ public class Controller {
                  */ 
                 if (parameterArr.length == 5) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], "", action, 
+                                    parameterArr[4], parameterArr[1], "", action, taskId,
                                     isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
                 } else if (parameterArr.length == 6) {
                     GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], parameterArr[5], action, 
+                                    parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
                                     isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
                 }
             }
