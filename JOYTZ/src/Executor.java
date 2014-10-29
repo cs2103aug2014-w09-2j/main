@@ -153,7 +153,7 @@ public class Executor {
 			startTime = Long.parseLong(startTiming);
 			endTime = Long.MAX_VALUE;
 		} else {
-			startTime = System.currentTimeMillis();
+			startTime = Long.MAX_VALUE;
 			endTime = Long.MAX_VALUE;
 		}
 
@@ -363,27 +363,6 @@ public class Executor {
 
 		return fb;
 	}
-
-	/**
-	 * Perform undo action
-	 * 
-	 * @param int numOfStep
-	 * @return
-	 */
-	/*
-	 * private static Feedback performUndoAction(int numberOfSteps) { Feedback
-	 * fb = new Feedback(false);
-	 * 
-	 * int limit = Integer.min(commandStack.size(), numberOfSteps);
-	 * 
-	 * for (int step = 0; step <= limit; step++) { Feedback feedback =
-	 * performUndoAction(); if (!feedback.getResult()) {
-	 * fb.setMessageShowToUser(feedback.getMessageShowToUser()); return fb; } }
-	 * 
-	 * fb.setResult(true); fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
-	 * 
-	 * return fb; }
-	 */
 
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
