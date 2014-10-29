@@ -221,7 +221,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /**
-     * Processes the rows to color, and when to display notifications
+     * Processes the rows to color, when to display notifications,
+     * as well as the scrolling the table to the newly edited row
      * 
      * @param name                      The name of the task
      * @param action                    The action executed by the user
@@ -235,6 +236,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void displayGUIFeedback(String name, String action, int taskId,
                                            boolean isLastRow, boolean isHighlightedPassStart,
                                            boolean isHighlightedPassEnd, TableItem item, int taskNumber) {
+        
         if (isHighlightedPassStart == true) {
             colorRowGreen(item);
             if (action.equals("display")) {
@@ -251,7 +253,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             colorRowBackgroundGrey(item);
         } else if (action.equals("update") && taskNumber+1 == taskId) {
             colorRowBackgroundGrey(item);
-            taskTable.setTopIndex(taskId);
+        } else if (isLastRow == true && action.equals("update")) {
+            System.out.println("task id = " + taskId);
+            taskTable.showItem(taskTable.getItem(taskId-1));
         }
     } 
     
