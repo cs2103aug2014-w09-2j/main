@@ -209,13 +209,19 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             TableItem item = new TableItem(taskTable, SWT.NONE);
             item.setText(new String[] { (taskNumber+1) + ".", startDate, endDate, name, location, 
                                         description, priority });
+            taskTable.setTopIndex(taskTable.getItemCount() - 1);
+            
             if (isHighlightedPassStart == true) {
                 colorRowGreen(item);
-                NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
+                if (action.equals("display")) {
+                    NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
+                }
             }
-            if (isHighlightedPassEnd == true) {
+            if (isHighlightedPassEnd == true && action.equals("display")) {
                 colorRowRed(item);
-                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
+                if (action.equals("display")) {
+                    NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
+                }
             }
         }
 

@@ -169,14 +169,15 @@ public class NotifierDialog {
         text.setForeground(_fgColor);
         text.setText(message);
 
-        minHeight = 100;
+        minHeight = 50;
+        int minWidth = 300;
 
-        _shell.setSize(350, minHeight);
+        _shell.setSize(minWidth, minHeight);
 
         Rectangle clientArea = Display.getDefault().getClientArea();
 
-        int startX = clientArea.x + clientArea.width - 352;
-        int startY = clientArea.y + clientArea.height - 102;
+        int startX = clientArea.x + clientArea.width - minWidth - 2;
+        int startY = clientArea.y + clientArea.height - minHeight - 2;
 
         // move other shells up
         if (!_activeShells.isEmpty()) {
@@ -184,8 +185,8 @@ public class NotifierDialog {
             Collections.reverse(modifiable);
             for (Shell shell : modifiable) {
                 Point curLoc = shell.getLocation();
-                shell.setLocation(curLoc.x, curLoc.y - 100);
-                if (curLoc.y - 100 < 0) {
+                shell.setLocation(curLoc.x, curLoc.y - minHeight);
+                if (curLoc.y - minHeight < 0) {
                     _activeShells.remove(shell);
                     shell.dispose();
                 }
