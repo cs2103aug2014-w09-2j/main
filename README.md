@@ -34,11 +34,13 @@ Current functions and how to use them
 
 4. Search
 	- search~indicator~key
-	- The possible indicators are:
-		- name
-		- id (seen from the index numbers in the table)
+	- The possible indicators can be seen on the table column headers.
 	- The key is the word or letters that you are searching for
-
+	- Searching for dates and times works differently. For example:
+		-search~start date~10/12/2014
+		-search~start time~10:35pm
+		-search~start timing~14/06/2014 11:55am
+	
 5. Sort
 	- sort~indicator
 	- The possible indicators are:
