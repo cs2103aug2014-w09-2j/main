@@ -453,6 +453,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell.setText("JOYTZ");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        taskTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 11, SWT.NORMAL));
         taskTable.setLinesVisible(true);
         taskTable.setHeaderVisible(true);
         taskTable.setSize(new Point(400, 400));
