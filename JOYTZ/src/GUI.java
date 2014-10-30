@@ -32,20 +32,20 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands: \n";
-    private static final String HELP_TEXT_ADD = "add~task name~description~start time " +
+    private static final String HELP_TEXT_ADD = "\t    add~task name~description~start time " +
     											"~end time~location~priority\n";
-    private static final String HELP_TEXT_DELETE =  "delete~index number\n";
-    private static final String HELP_TEXT_UPDATE = "update~index number~attribute~new data\n";
-    private static final String HELP_TEXT_SEARCH = "search~attribute~search for\n";
-    private static final String HELP_TEXT_SORT = "sort~attribute\n";
-    private static final String HELP_TEXT_UNDO = "undo\n";
-    private static final String HELP_TEXT_REDO = "redo\n";
-    private static final String HELP_TEXT_DISPLAY ="display\n";
-    private static final String HELP_TEXT_CLEAR = "clear\n";
-    private static final String HELP_TEXT_HELP ="help\n";
-    private static final String HELP_TEXT_EXIT = "exit\n";
-    private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
-	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_DELETE =  "\t    delete~index number\n";
+    private static final String HELP_TEXT_UPDATE = "\t    update~index number~attribute~new data\n";
+    private static final String HELP_TEXT_SEARCH = "\t    search~attribute~search for\n";
+    private static final String HELP_TEXT_SORT = "\t    sort~attribute\n";
+    private static final String HELP_TEXT_UNDO = "\t    undo\n";
+    private static final String HELP_TEXT_REDO = "\t    redo\n";
+    private static final String HELP_TEXT_DISPLAY ="\t    display\n";
+    private static final String HELP_TEXT_CLEAR = "\t    clear\n";
+    private static final String HELP_TEXT_HELP ="\t    help\n";
+    private static final String HELP_TEXT_EXIT = "\t    exit\n";
+    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final int REFRESH_RATE = 3600000;    // in milliseconds
@@ -83,9 +83,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param output	The string to be displayed
      * 
      */
-    public static void displayOutput(String output) {
+    public static void displayOutput(String output, boolean hasError) {
         TableItem item = new TableItem(feedbackTable, SWT.NONE);
         item.setText(output);
+        if (hasError) {
+            colorRowBackgroundRed(item);
+        }
         
         // This ensures that the table is always scrolled to the bottom
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
@@ -276,6 +279,17 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /**
+     * Colors the background in a row red.
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundRed(TableItem item) {
+        Color red = display.getSystemColor(SWT.COLOR_RED);
+        item.setBackground(red);
+    }
+    
+    /**
      * Colors the words in a row green.
      * 
      * @param item      The table row to be colored
@@ -398,7 +412,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         feedbackTable.addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
                 tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
-                // resizeTable(); // laggy
+                resizeTable(); // laggy
             }
         });
     }

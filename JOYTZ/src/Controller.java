@@ -26,12 +26,13 @@ public class Controller {
      * 					                user's action and taskId
      * 
      */
-    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
+    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
+                                     boolean hasError) {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
 
-        GUI.displayOutput(outputFeedbackString);
+        GUI.displayOutput(outputFeedbackString, hasError);
 
         // If there is no error message
         if (command.getErrorMessage().length() == 0) {
@@ -156,29 +157,33 @@ public class Controller {
                         "====================\n");
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
-                displayInGUI(parsedCommand.getErrorMessage(), parsedCommand);
+                displayInGUI(parsedCommand.getErrorMessage(), parsedCommand, true);
             } else {	
 
                 if(parsedCommand != null){
                     feedback = startExecutor(parsedCommand);
                     assert feedback != null;
 
-                } else{
+                } else {
                     feedback = new Feedback(false);
                     feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
                 }
 
                 outputString = getFeedbackMessage(feedback);
+                boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
-                    displayInGUI(outputString, parsedCommand);
+                } else if (GUI.getShell() != null && isFeedbackSuccess){      // Only display in GUI if it is running
+                    displayInGUI(outputString, parsedCommand, false);
+                }
+                else if (GUI.getShell() != null && !isFeedbackSuccess){      // Only display in GUI if it is running
+                    displayInGUI(outputString, parsedCommand, true);
                 }
             }
         } catch (ParseException e) {
-            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
             e.printStackTrace();
         }   
         return feedback;
