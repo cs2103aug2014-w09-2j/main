@@ -12,7 +12,6 @@ public class Executor {
 
 	// these are for Add Method.
 	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
-	private static final String ERROR_INVALID_TIMING = "Invalid start and end time\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
@@ -54,7 +53,6 @@ public class Executor {
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
 	 * @return
-	 * 
 	 * 
 	 */
 
@@ -161,17 +159,11 @@ public class Executor {
 		Task t = new Task(name, startTime, endTime, description, location,
 				priority);
 
-		// pre-condition
-		// assert !t.equals(new Task()) : "No task created";
-		// add the task into the storage.
 		try {
 			fb.setResult(Storage.add(t));
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
-
-		// post-condition
-		// assert fb.getResult() : "Fail to add tasks";
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
@@ -194,9 +186,6 @@ public class Executor {
 
 		int taskId = command.getTaskId();
 		String taskName;
-
-		// pre-condition
-		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			taskName = Storage.get(taskId).getTaskName();
@@ -230,10 +219,6 @@ public class Executor {
 		String updateKeyValue = command.getKey();
 		String taskName;
 
-		// pre-condition
-		assert !updateIndicator.equals("") : "No update indicator";
-		assert !updateKeyValue.equals("") : "No update key";
-		assert taskId != -1 : "Task index " + taskId;
 
 		try {
 			fb.setResult(Storage
@@ -274,7 +259,6 @@ public class Executor {
 	 * 
 	 * @return
 	 */
-
 	private static Feedback performDisplayAction() {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
 
@@ -332,10 +316,6 @@ public class Executor {
 
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
-		// pre-condition
-		// assert !searchIndicator.equals("") : "No search indicator";
-		// assert !searchValue.equals("") : "No search value";
-
 		// check whether Storage can search the result or not
 		try {
 			ArrayList<Task> resultTaskList = Storage.search(searchIndicator,
@@ -350,17 +330,19 @@ public class Executor {
 			return fb;
 		}
 
-		// post-condition
-		// assert !searchValue.equals("") : "No given search value";
-		// assert !resultList.equals(null) : "No result is found";
-
 		fb.setResult(true);
 		fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
 				searchValue, searchIndicator));
 
 		return fb;
 	}
-
+	
+	/** 
+	 * Perform undo action, which reverses previous steps
+	 * Can perform undo multiple-steps
+	 * 
+	 * @return Feedback object
+	 */
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
@@ -397,11 +379,11 @@ public class Executor {
 	}
 
 	/**
-	 * Redo the undo step.
+	 * Redo the undo steps
+	 * Can redo the multiple previous undo steps 
 	 * 
 	 * @return
 	 */
-
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(StringFormat.REDO, false);
 
@@ -423,7 +405,12 @@ public class Executor {
 		return fb;
 
 	}
-
+	
+	/**
+	 * Obtain the result and message of reloadFile from Storage
+	 * 
+	 * @return
+	 */
 	private static Feedback performReloadAction() {
 		Feedback fb = new Feedback(StringFormat.RELOAD, false);
 
@@ -444,6 +431,7 @@ public class Executor {
 	 * Perform exit action with command object passed from
 	 * proceedAnalyzedCommand method
 	 * 
+	 * @return
 	 */
 	private static Feedback performExitAction() {
 		Feedback fb = new Feedback(StringFormat.EXIT, false);
@@ -462,21 +450,32 @@ public class Executor {
 		return fb;
 	}
 
-	private static void addInDisplayMessage(Feedback fb) {
-		fb.setTaskList(Storage.getTaskList());
-		fb.setPassStartTimeList(Storage.getPassStartTimeList());
-		fb.setPassEndTimeList(Storage.getPassEndTimeList());
-	}
-
 	/**
 	 * Return feedback to user
 	 * 
+	 * @return
 	 */
 	public static Feedback getFeedback() {
 		return feedback;
 	}
-
+	
+	/**
+	 * Store required user's commands in Stack
+	 * 
+	 * @param command
+	 */
 	private static void storeCommand(ExecutableCommand command) {
 		commandStack.push(command);
+	}
+	
+	/**
+	 * Set displayed messages passed from Storage
+	 * 
+	 * @param fb
+	 */
+	private static void addInDisplayMessage(Feedback fb) {
+		fb.setTaskList(Storage.getTaskList());
+		fb.setPassStartTimeList(Storage.getPassStartTimeList());
+		fb.setPassEndTimeList(Storage.getPassEndTimeList());
 	}
 }
