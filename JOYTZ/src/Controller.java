@@ -72,6 +72,9 @@ public class Controller {
                                    "===================\n");
 
                 String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+                for(int k = 0; k < parameterArr.length; k++) {
+                    parameterArr[k] = parameterArr[k].trim();
+                }
                 isHighlightedPassStart = feedback.getPassStartTimeList()[i];
                 isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
 
