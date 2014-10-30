@@ -39,6 +39,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_SEARCH = "search~attribute~search for\n";
     private static final String HELP_TEXT_SORT = "sort~attribute\n";
     private static final String HELP_TEXT_UNDO = "undo\n";
+    private static final String HELP_TEXT_REDO = "redo\n";
     private static final String HELP_TEXT_DISPLAY ="display\n";
     private static final String HELP_TEXT_CLEAR = "clear\n";
     private static final String HELP_TEXT_HELP ="help\n";
@@ -47,7 +48,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
-	private static final int REFRESH_RATE = 600000;    // in milliseconds
+	private static final int REFRESH_RATE = 3600000;    // in milliseconds
 
     private static StyledText inputField;
     private static Table taskTable;
@@ -127,6 +128,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         TableItem itemUndo = new TableItem(feedbackTable, SWT.NONE);
         itemUndo.setText(new String[] { HELP_TEXT_UNDO });
         itemUndo.setBackground(grey);
+        
+        TableItem itemRedo = new TableItem(feedbackTable, SWT.NONE);
+        itemRedo.setText(new String[] { HELP_TEXT_REDO });
+        itemRedo.setBackground(grey);
         
         TableItem itemDisplay = new TableItem(feedbackTable, SWT.NONE);
         itemDisplay.setText(new String[] { HELP_TEXT_DISPLAY });
@@ -393,7 +398,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         feedbackTable.addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
                 tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
-                resizeTable();
+                // resizeTable(); // laggy
             }
         });
     }
