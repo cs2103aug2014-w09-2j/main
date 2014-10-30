@@ -71,7 +71,7 @@ public class Controller {
                                    "	" + feedback.getTaskList().get(i) + "\n" +
                                    "===================\n");
 
-                String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
+                String[] parameterArr = feedback.getTaskList().get(i).split("~");
                 for(int k = 0; k < parameterArr.length; k++) {
                     parameterArr[k] = parameterArr[k].trim();
                 }
