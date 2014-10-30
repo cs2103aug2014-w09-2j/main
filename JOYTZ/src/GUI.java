@@ -32,20 +32,20 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands: \n";
-    private static final String HELP_TEXT_ADD = "add~task name~description~start time " +
+    private static final String HELP_TEXT_ADD = "\tadd~task name~description~start time " +
     											"~end time~location~priority\n";
-    private static final String HELP_TEXT_DELETE =  "delete~index number\n";
-    private static final String HELP_TEXT_UPDATE = "update~index number~attribute~new data\n";
-    private static final String HELP_TEXT_SEARCH = "search~attribute~search for\n";
-    private static final String HELP_TEXT_SORT = "sort~attribute\n";
-    private static final String HELP_TEXT_UNDO = "undo\n";
-    private static final String HELP_TEXT_REDO = "redo\n";
-    private static final String HELP_TEXT_DISPLAY ="display\n";
-    private static final String HELP_TEXT_CLEAR = "clear\n";
-    private static final String HELP_TEXT_HELP ="help\n";
-    private static final String HELP_TEXT_EXIT = "exit\n";
-    private static final String HELP_TEXT_TIME_GUIDE = "Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
-	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_DELETE =  "\tdelete~index number\n";
+    private static final String HELP_TEXT_UPDATE = "\tupdate~index number~attribute~new data\n";
+    private static final String HELP_TEXT_SEARCH = "\tsearch~attribute~search for\n";
+    private static final String HELP_TEXT_SORT = "\tsort~attribute\n";
+    private static final String HELP_TEXT_UNDO = "\tundo\n";
+    private static final String HELP_TEXT_REDO = "\tredo\n";
+    private static final String HELP_TEXT_DISPLAY ="\tdisplay\n";
+    private static final String HELP_TEXT_CLEAR = "\tclear\n";
+    private static final String HELP_TEXT_HELP ="\thelp\n";
+    private static final String HELP_TEXT_EXIT = "\texit\n";
+    private static final String HELP_TEXT_TIME_GUIDE = "\tTime entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\tAttributes: Refer to the headings on the table";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final int REFRESH_RATE = 3600000;    // in milliseconds

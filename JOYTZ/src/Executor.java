@@ -146,10 +146,6 @@ public class Executor {
 		if (!startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.parseLong(startTiming);
 			endTime = Long.parseLong(endTiming);
-			if (startTime > endTime) {
-				fb.setMessageShowToUser(ERROR_INVALID_TIMING);
-				return fb;
-			}
 		} else if (startTiming.equals("") && !endTiming.equals("")) {
 			startTime = Long.MAX_VALUE;
 			endTime = Long.parseLong(endTiming);
