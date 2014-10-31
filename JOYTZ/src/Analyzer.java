@@ -354,9 +354,9 @@ public class Analyzer {
 				}
 			}
 		}
-		
-		if(hour!=-1 && minute!=-1){
-			if(hour < 0 || hour > 24 || minute < 0 || minute > 59){
+
+		if (hour != -1 && minute != -1) {
+			if (hour < 0 || hour > 24 || minute < 0 || minute > 59) {
 				return false;
 			}
 		}
@@ -415,10 +415,10 @@ public class Analyzer {
 		}
 
 		if (startTiming != 0 && endTiming != 0) {
-			if (tempStartDate.after(currentDate)
-					|| tempStartDate.equals(currentDate)
-					|| tempEndDate.after(currentDate)
-					|| tempStartDate.before(tempEndDate)) {
+			if ((tempStartDate.after(currentDate) || tempStartDate
+					.equals(currentDate))
+					&& tempEndDate.after(currentDate)
+					&& tempStartDate.before(tempEndDate)) {
 				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
@@ -462,7 +462,6 @@ public class Analyzer {
 		int[] result = { -1, -1, -1, -1, -1 };
 
 		Date convertedDate;
-		boolean timeExistence = false;
 
 		if (dateTime.length >= 1) {
 			result = dateTimeSeparator(dateTime[0], result);
@@ -476,17 +475,35 @@ public class Analyzer {
 			if (result == null) {
 				return null;
 			}
-			timeExistence = true;
 		}
 
-		if (timeExistence) {
+		boolean dateExistence = checkDateExistence(result);
+		boolean timeExistence = checkTimeExistence(result);
+
+		if (dateExistence && timeExistence) {
 			convertedDate = new Date(result[0] - 1900, result[1] - 1,
 					result[2], result[3], result[4]);
-		} else {
+		} else if (dateExistence) {
 			convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2]);
+		} else {
+			Date currentDate = new Date(System.currentTimeMillis());
+			int currentYear = currentDate.getYear();
+			int currentMonth = currentDate.getMonth();
+			int currentDay = currentDate.getDate();
+
+			convertedDate = new Date(currentYear, currentMonth, currentDay,
+					result[3], result[4]);
 		}
 
 		return String.valueOf(convertedDate.getTime());
+	}
+
+	private static boolean checkTimeExistence(int[] result) {
+		return result[3] != -1 && result[4] != -1;
+	}
+
+	private static boolean checkDateExistence(int[] result) {
+		return result[0] != -1 && result[1] != -1 && result[2] != -1;
 	}
 
 	private static int[] dateTimeSeparator(String dateTime, int[] result) {
