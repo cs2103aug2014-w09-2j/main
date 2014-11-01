@@ -46,6 +46,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_EXIT = "\t    exit\n";
     private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_SHORTCUT_MAXIMIZE = "\t    ALT+A to maximize application";
+    private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final int REFRESH_RATE = 3600000;    // in milliseconds
@@ -160,6 +162,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         itemAttributesGuide.setText(new String[] { HELP_TEXT_ATTRIBUTES_GUIDE });
         itemAttributesGuide.setBackground(grey);
         
+        TableItem itemMaximize = new TableItem(feedbackTable, SWT.NONE);
+        itemMaximize.setText(new String[] { HELP_TEXT_SHORTCUT_MAXIMIZE });
+        itemMaximize.setBackground(grey);
+        
+        TableItem itemMinimize = new TableItem(feedbackTable, SWT.NONE);
+        itemMinimize.setText(new String[] { HELP_TEXT_SHORTCUT_MINIMIZE });
+        itemMinimize.setBackground(grey);
+        
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
@@ -251,7 +261,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
             }
         }
-        if (isHighlightedPassEnd == true && action.equals("display")) {
+        if (isHighlightedPassEnd == true) {
             colorRowRed(item);
             if (action.equals("display")) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
@@ -360,7 +370,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-        //initJIntellitype();
+       // initJIntellitype();
         isSortingOrSearching = false;
         initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
         
@@ -386,6 +396,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                     if (inputField.getText().trim().equals("help")) {
                         displayHelp();
                         inputField.setText("");
+                    } else if (inputField.getText().trim().equals("tutorial")) {    
+                        GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NO_TRIM);
+                        helpDialog.open();
+                        inputField.setText("");
                     } else {
                         String userInput = inputField.getText();
                         userInput = userInput.replaceAll("[\n\r]", "");
@@ -399,7 +413,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                 }
             }
         });
-
+        
+                
         // We call the controller with an input "exit" so
         // that the current state of the task list can be saved.
         shell.addListener(SWT.Close, new Listener() {
@@ -556,11 +571,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 //           Display.getDefault().syncExec(new Runnable() {
 //               public void run() {
 //                   if (shell.getMaximized() == true) { 
-//                       System.out.println("1");
 //                       shell.forceActive();     // Bring application to front
 //                       shell.setMaximized(true);
 //                   } else if (shell.getMaximized() == false) { 
-//                       System.out.println("2");
 //                       shell.forceActive();     // Bring application to front
 //                       shell.setMinimized(false);
 //                   }
@@ -591,8 +604,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 //           // be attached to this window
 //           JIntellitype.getInstance().addHotKeyListener(mainFrame);
 //           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
-//           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_WIN, (int)'A');    // WIN+A
-//           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_WIN, (int)'Z');    // WIN+Z
+//           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
+//           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
 //           System.out.println("JIntellitype initialized");
 //        } catch (RuntimeException ex) {
 //           System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");

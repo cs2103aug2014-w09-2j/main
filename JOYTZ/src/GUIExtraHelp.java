@@ -19,6 +19,7 @@ public class GUIExtraHelp extends Dialog {
 
     private static final int PAGE_LAST = 3;
     private static final int PAGE_FIRST = 1;
+    private static final String PAGE_ONE_TEXT = "How to add tasks:\nYou need to follow this syntax:";
     
     protected Object result;
     protected Shell shell;
@@ -105,7 +106,7 @@ public class GUIExtraHelp extends Dialog {
     
     private void checkPageAndSetText(int currentPage, Label label) {
         if (currentPage == 1) {
-            label.setText("Page " + currentPage);
+            label.setText(PAGE_ONE_TEXT);
         } else if (currentPage == 2) {
             label.setText("Page " + currentPage);
         } else if (currentPage == 3) {
