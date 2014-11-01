@@ -325,7 +325,9 @@ public class Storage {
 		if (isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
-
+		
+		Task.setSortKey(StringFormat.NAME);
+		Collections.sort(taskList);
 		Task.setSortKey(key);
 		Collections.sort(taskList);
 
