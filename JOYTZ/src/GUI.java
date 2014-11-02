@@ -277,8 +277,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         } else if (action.equals("update") && taskNumber+1 == taskId) {
             colorRowBackgroundGrey(item);
         } else if (isLastRow == true && action.equals("update")) {
-            System.out.println("task id = " + taskId);
-            taskTable.showItem(taskTable.getItem(taskId-1));
+            if ((taskId - 1) <= taskTable.getItemCount()) {
+                taskTable.showItem(taskTable.getItem(taskId-1));
+            }
         }
     } 
     
@@ -342,11 +343,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 
         // Resize all the columns to fit the data
         // Note: Packing is extremely slow
-        //tblclmnNo.pack();
-        //tblclmnStartedOn.pack();
-        //tblclmnDeadline.pack();
         tblclmnName.pack();
-        //tblclmnPriority.pack();
         tblclmnDescription.pack();
         tblclmnLocation.pack();
 
@@ -379,9 +376,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         isSortingOrSearching = false;
         initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
         
-        Controller.startController("reload");
         displayHelp();
-        resizeTable();
+        Controller.startController("reload");
+        Controller.startController("display");
     }
     
     /** 

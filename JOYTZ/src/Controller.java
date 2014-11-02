@@ -35,7 +35,7 @@ public class Controller {
         GUI.displayOutput(outputFeedbackString, hasError);
 
         // If there is no error message
-        if (command.getErrorMessage().length() == 0) {
+        if (command.getErrorMessage().length() == 0 || hasError == false) {
             String action = command.getAction();
             int taskId = command.getTaskId();
 
