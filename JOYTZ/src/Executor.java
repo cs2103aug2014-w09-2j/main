@@ -266,6 +266,7 @@ public class Executor {
 			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);
 			return fb;
 		}
+		Storage.resetCurrDisplayList();
 		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
 
 		return fb;
@@ -320,7 +321,7 @@ public class Executor {
 		try {
 			ArrayList<Task> resultTaskList = Storage.search(searchIndicator,
 					searchValue);
-			fb.setTaskList(Storage.getTaskList(resultTaskList));
+			fb.setTaskList(Storage.convertTaskListToString(resultTaskList));
 			fb.setPassStartTimeList(Storage
 					.getPassStartTimeList(resultTaskList));
 			fb.setPassEndTimeList(Storage.getPassEndTimeList(resultTaskList));
@@ -474,7 +475,7 @@ public class Executor {
 	 * @param fb
 	 */
 	private static void addInDisplayMessage(Feedback fb) {
-		fb.setTaskList(Storage.getTaskList());
+		fb.setTaskList(Storage.getStringFormatOfTaskList());
 		fb.setPassStartTimeList(Storage.getPassStartTimeList());
 		fb.setPassEndTimeList(Storage.getPassEndTimeList());
 	}
