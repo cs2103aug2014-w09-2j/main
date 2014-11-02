@@ -210,23 +210,28 @@ public class Analyzer {
 				return tempCommand;
 			}
 
-			Date checkUpdatedItem = new Date(Long.valueOf(updatedItem));
-			Date currentDate = new Date(System.currentTimeMillis());
+			if (indicator.equals(StringFormat.START)
+					|| indicator.equals(StringFormat.END)) {
+				Date checkUpdatedItem = new Date(Long.valueOf(updatedItem));
+				Date currentDate = new Date(System.currentTimeMillis());
 
-			if (checkUpdatedItem.before(currentDate)) {
-				if (indicator.equals(StringFormat.START)
-						|| indicator.equals(StringFormat.START_DATE)
-						|| indicator.equals(StringFormat.START_TIME)) {
+				if (checkUpdatedItem.before(currentDate)) {
+					if (indicator.equals(StringFormat.START)
+							|| indicator.equals(StringFormat.START_DATE)
+							|| indicator.equals(StringFormat.START_TIME)) {
 
-					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIME, StringFormat.START));
-				} else {
+						tempCommand
+								.setErrorMessage(String.format(
+										ERROR_INVALID_EARLIER_TIME,
+										StringFormat.START));
+					} else {
 
-					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+						tempCommand.setErrorMessage(String.format(
+								ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+					}
+
+					return tempCommand;
 				}
-
-				return tempCommand;
 			}
 		} else {
 			updatedItem = arg[2];
@@ -435,22 +440,6 @@ public class Analyzer {
 		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
-	/*
-	 * private static Long startTimingAnalyzer(Date tempStartDate, Date
-	 * currentDate) { if (!isTimeIndicated(tempStartDate)) { if
-	 * (isSameDate(tempStartDate, currentDate)) {
-	 * tempStartDate.setHours(currentDate.getHours());
-	 * tempStartDate.setMinutes(currentDate.getMinutes() + 1); } else {
-	 * tempStartDate.setHours(0); tempStartDate.setMinutes(0); } }
-	 * 
-	 * return Long.valueOf(tempStartDate.getTime()); }
-	 * 
-	 * private static Long endTimingAnalyzer(Date tempEndDate) { if
-	 * (!isTimeIndicated(tempEndDate)) { tempEndDate.setHours(23);
-	 * tempEndDate.setMinutes(59); } return Long.valueOf(tempEndDate.getTime());
-	 * }
-	 */
-
 	private static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -462,13 +451,11 @@ public class Analyzer {
 		if (!start.equals("")) {
 			startTiming = Long.valueOf(start);
 			tempStartDate = new Date(startTiming);
-			// startTiming = startTimingAnalyzer(tempStartDate, currentDate);
 		}
 
 		if (!end.equals("")) {
 			endTiming = Long.valueOf(end);
 			tempEndDate = new Date(endTiming);
-			// endTiming = endTimingAnalyzer(tempEndDate);
 		}
 
 		if (startTiming != 0 && endTiming != 0) {
