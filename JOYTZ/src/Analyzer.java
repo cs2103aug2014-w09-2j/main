@@ -20,12 +20,10 @@ public class Analyzer {
 	private static final String ERROR_INVALID_END_EARLIER_THAN_START_TIMING = "End timing is earlier than start timing.\n";
 
 	private static final String[] VALID_INDICATOR = new String[] {
-			StringFormat.NAME,
-			StringFormat.DESCRIPTION,
-			// StringFormat.START_DATE, StringFormat.START_TIME,
-			// StringFormat.END_DATE, StringFormat.END_TIME,
-			StringFormat.START_TIMING, StringFormat.END_TIMING,
-			StringFormat.LOCATION, StringFormat.PRIORITY };
+			StringFormat.NAME, StringFormat.DESCRIPTION,
+			StringFormat.START_DATE, StringFormat.START_TIME,
+			StringFormat.END_DATE, StringFormat.END_TIME, StringFormat.START,
+			StringFormat.END, StringFormat.LOCATION, StringFormat.PRIORITY };
 
 	private static final String[] VALID_PRIORITY = new String[] {
 			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
@@ -190,10 +188,7 @@ public class Analyzer {
 
 		tempCommand.setIndicator(updateIndicator);
 
-		if (updateIndicator.equals(StringFormat.START_DATE)
-				|| updateIndicator.equals(StringFormat.START_TIME)
-				|| updateIndicator.equals(StringFormat.END_DATE)
-				|| updateIndicator.equals(StringFormat.END_TIME)) {
+		if (isTiming(updateIndicator)) {
 			updatedItem = inputTimingConvertor(arg[2]);
 		} else {
 			updatedItem = arg[2];
@@ -255,13 +250,11 @@ public class Analyzer {
 
 		String searchIndicator = arg[0].toLowerCase();
 		String searchKey;
+		boolean timing = isTiming(searchIndicator);
 
 		tempCommand.setIndicator(searchIndicator);
 
-		if (searchIndicator.equals(StringFormat.START_DATE)
-				|| searchIndicator.equals(StringFormat.START_TIME)
-				|| searchIndicator.equals(StringFormat.END_DATE)
-				|| searchIndicator.equals(StringFormat.END_TIME)) {
+		if (timing) {
 			searchKey = inputTimingConvertor(arg[1]);
 		} else {
 			searchKey = arg[1];
@@ -310,6 +303,15 @@ public class Analyzer {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	private static boolean isTiming(String indicator) {
+		return indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END)
+				|| indicator.equals(StringFormat.START_DATE)
+				|| indicator.equals(StringFormat.START_TIME)
+				|| indicator.equals(StringFormat.END_DATE)
+				|| indicator.equals(StringFormat.END_TIME);
 	}
 
 	private static boolean isValidIndicator(String indicator) {
