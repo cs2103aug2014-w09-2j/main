@@ -322,7 +322,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void colorRowBackgroundGrey(TableItem item) {
-        Color green = display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
+        Color green = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
         item.setBackground(green);
     }
 
