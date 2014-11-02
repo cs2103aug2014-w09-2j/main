@@ -397,7 +397,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         displayHelp();
                         inputField.setText("");
                     } else if (inputField.getText().trim().equals("tutorial")) {    
-                        GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NO_TRIM);
+                        GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NO_TRIM | SWT.WRAP);
                         helpDialog.open();
                         inputField.setText("");
                     } else {
