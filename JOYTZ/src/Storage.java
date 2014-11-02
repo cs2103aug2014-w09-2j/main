@@ -154,7 +154,6 @@ public class Storage {
 		}
 
 		Task targetTask = get(taskId);
-		// targetTask.cancel();
 
 		switch (updateIndicator) {
 		case StringFormat.NAME:
@@ -173,15 +172,15 @@ public class Storage {
 			// assert updateKeyValue instanceof String : "start time: " +
 			// updateKeyValue;
 
-			Long newStartTime = Long.parseLong(updateKeyValue);
-			targetTask.setTaskStartTime(newStartTime);
+			Long newStart = Long.parseLong(updateKeyValue);
+			targetTask.setTaskStartTime(newStart);
 			break;
 		case StringFormat.END:
 			// assert updateKeyValue instanceof String : "end time: " +
 			// updateKeyValue;
 
-			Long newEndTime = Long.parseLong(updateKeyValue);
-			targetTask.setTaskEndTime(newEndTime);
+			Long newEnd = Long.parseLong(updateKeyValue);
+			targetTask.setTaskEndTime(newEnd);
 			break;
 		case StringFormat.START_DATE:
 			Long newStartDateLong = Long.parseLong(updateKeyValue);
@@ -199,7 +198,7 @@ public class Storage {
 			oldTimest.setHours(newTimest.getHours());
 			oldTimest.setMinutes(newTimest.getMinutes());
 			oldTimest.setSeconds(newTimest.getSeconds());
-			targetTask.setTaskStartTime(oldTimest.getTime());
+			targetTask.setTaskEndTime(oldTimest.getTime());
 			break;
 		case StringFormat.END_DATE:
 			Long newEndDateLong = Long.parseLong(updateKeyValue);
@@ -630,6 +629,8 @@ public class Storage {
 			history.add(task);
 			taskString = historyBufferedReader.readLine();
 		}
+		
+		currentDisplayList = taskList;
 
 		return;
 	}
