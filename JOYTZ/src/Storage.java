@@ -154,7 +154,6 @@ public class Storage {
 		}
 
 		Task targetTask = get(taskId);
-		// targetTask.cancel();
 
 		switch (updateIndicator) {
 		case StringFormat.NAME:
