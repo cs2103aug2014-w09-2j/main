@@ -486,12 +486,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnStartedOn = new TableColumn(taskTable, SWT.CENTER);
         tblclmnStartedOn.setMoveable(true);
         tblclmnStartedOn.setWidth(180);
-        tblclmnStartedOn.setText("Start Time");
+        tblclmnStartedOn.setText("Start");
 
         tblclmnDeadline = new TableColumn(taskTable, SWT.CENTER);
         tblclmnDeadline.setMoveable(true);
         tblclmnDeadline.setWidth(180);
-        tblclmnDeadline.setText("End Time");
+        tblclmnDeadline.setText("End");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);

@@ -127,15 +127,30 @@ public class GUIExtraHelp extends Dialog {
     }
     
     private void checkPageAndSetText(int currentPage, StyledText label) {
-        if (currentPage == 1) {
+        switch(currentPage) {
+        case 1:
             label.setText(PAGE_ONE_TEXT);
-            //btnBack.setEnabled(false);
-        } else if (currentPage == 2) {
+            break;
+        case 2:
             label.setText(PAGE_TWO_TEXT);
-            //btnBack.setEnabled(true);
-        } else if (currentPage == 3) {
-            label.setText("Page " + currentPage);
+            break;
+        case 3:
+            label.setText(PAGE_THREE_TEXT);
+            break;
+        case 4:
+            label.setText(PAGE_FOUR_TEXT);
+            break;
+        case 5:
+            label.setText(PAGE_FIVE_TEXT);
+            break;
+        case 6:
+            label.setText(PAGE_SIX_TEXT);
+            break;
+        case 7:
+            label.setText(PAGE_SEVEN_TEXT);
+            break;
         }
+
     }
 
 }
