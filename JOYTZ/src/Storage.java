@@ -22,6 +22,7 @@ public class Storage {
 	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
+	private static final String ERROR_INVALID_INPUT_TIME = "Input time is invalid.";
 
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
@@ -186,37 +187,69 @@ public class Storage {
 			Long newStartDateLong = Long.parseLong(updateKeyValue);
 			Date newDatesd = new Date(newStartDateLong);
 			Date oldTimesd = new Date(targetTask.getTaskStartTime());
+			
 			oldTimesd.setYear(newDatesd.getYear());
 			oldTimesd.setMonth(newDatesd.getMonth());
 			oldTimesd.setDate(newDatesd.getDate());
+			
+			// check the validity of the input time.
+			Date oldEndsd = new Date(targetTask.getTaskEndTime());
+			if (oldTimesd.after(oldEndsd)){
+				throw new Exception(ERROR_INVALID_INPUT_TIME);
+			}
+						
 			targetTask.setTaskStartTime(oldTimesd.getTime());
 			break;
 		case StringFormat.START_TIME:
 			Long newStartTimeLong = Long.parseLong(updateKeyValue);
 			Date newTimest = new Date(newStartTimeLong);
 			Date oldTimest = new Date(targetTask.getTaskStartTime());
+			
 			oldTimest.setHours(newTimest.getHours());
 			oldTimest.setMinutes(newTimest.getMinutes());
 			oldTimest.setSeconds(newTimest.getSeconds());
-			targetTask.setTaskEndTime(oldTimest.getTime());
+			
+			//check the validity of the input time.
+			Date oldEndst = new Date(targetTask.getTaskEndTime());
+			if (oldTimest.after(oldEndst)){
+				throw new Exception(ERROR_INVALID_INPUT_TIME);
+			}
+			
+			targetTask.setTaskStartTime(oldTimest.getTime());
 			break;
 		case StringFormat.END_DATE:
 			Long newEndDateLong = Long.parseLong(updateKeyValue);
 			Date newDateed = new Date(newEndDateLong);
 			Date oldTimeed = new Date(targetTask.getTaskStartTime());
+			
 			oldTimeed.setYear(newDateed.getYear());
 			oldTimeed.setMonth(newDateed.getMonth());
 			oldTimeed.setDate(newDateed.getDate());
-			targetTask.setTaskStartTime(oldTimeed.getTime());
+			
+			//check the validity of the input time.
+			Date oldStarted = new Date(targetTask.getTaskStartTime());
+			if (oldStarted.after(oldTimeed)){
+				throw new Exception(ERROR_INVALID_INPUT_TIME);
+			}
+			
+			targetTask.setTaskEndTime(oldTimeed.getTime());
 			break;
 		case StringFormat.END_TIME:
 			Long newEndTimeLong = Long.parseLong(updateKeyValue);
 			Date newTimeet = new Date(newEndTimeLong);
 			Date oldTimeet = new Date(targetTask.getTaskStartTime());
+			
 			oldTimeet.setHours(newTimeet.getHours());
 			oldTimeet.setMinutes(newTimeet.getMinutes());
 			oldTimeet.setSeconds(newTimeet.getSeconds());
-			targetTask.setTaskStartTime(oldTimeet.getTime());
+			
+			//check the validity of the input time.
+			Date oldStartet = new Date(targetTask.getTaskStartTime());
+			if (oldStartet.after(oldTimeet)){
+				throw new Exception(ERROR_INVALID_INPUT_TIME);
+			}
+			
+			targetTask.setTaskEndTime(oldTimeet.getTime());
 			break;
 		case StringFormat.LOCATION:
 			// assert updateKeyValue instanceof String : "location: " +
