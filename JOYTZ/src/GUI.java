@@ -43,6 +43,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_DISPLAY ="\t    display\n";
     private static final String HELP_TEXT_CLEAR = "\t    clear\n";
     private static final String HELP_TEXT_HELP ="\t    help\n";
+    private static final String HELP_TEXT_TUTORIAL ="\t    tutorial\n";
     private static final String HELP_TEXT_EXIT = "\t    exit\n";
     private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
@@ -142,14 +143,18 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         itemDisplay.setText(new String[] { HELP_TEXT_DISPLAY });
         itemDisplay.setBackground(grey);
         
-        TableItem itemHelp = new TableItem(feedbackTable, SWT.NONE);
-        itemHelp.setText(new String[] { HELP_TEXT_HELP });
-        itemHelp.setBackground(grey);
-        
         TableItem itemClear = new TableItem(feedbackTable, SWT.NONE);
         itemClear.setText(new String[] { HELP_TEXT_CLEAR });
         itemClear.setBackground(grey);
         
+        TableItem itemHelp = new TableItem(feedbackTable, SWT.NONE);
+        itemHelp.setText(new String[] { HELP_TEXT_HELP });
+        itemHelp.setBackground(grey);
+        
+        TableItem itemTutorial = new TableItem(feedbackTable, SWT.NONE);
+        itemTutorial.setText(new String[] { HELP_TEXT_TUTORIAL });
+        itemTutorial.setBackground(grey);
+
         TableItem itemExit = new TableItem(feedbackTable, SWT.NONE);
         itemExit.setText(new String[] { HELP_TEXT_EXIT });
         itemExit.setBackground(grey);
@@ -317,7 +322,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void colorRowBackgroundGrey(TableItem item) {
-        Color green = display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
+        Color green = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
         item.setBackground(green);
     }
 

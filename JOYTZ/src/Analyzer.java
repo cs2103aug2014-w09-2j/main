@@ -15,17 +15,15 @@ public class Analyzer {
 	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
 	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
-	private static final String ERROR_INVALID_TIMING = "Format of input %s timing is invalid.\n";
-	private static final String ERROR_INVALID_EARLIER_TIMING = "Input %s timing is earlier than current date.\n";
-	private static final String ERROR_INVALID_END_EARLIER_THAN_START_TIMING = "End timing is earlier than start timing.\n";
+	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
+	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
+	private static final String ERROR_INVALID_END_EARLIER_THAN_START = "End time is earlier than start time.\n";
 
 	private static final String[] VALID_INDICATOR = new String[] {
-			StringFormat.NAME,
-			StringFormat.DESCRIPTION,
-			// StringFormat.START_DATE, StringFormat.START_TIME,
-			// StringFormat.END_DATE, StringFormat.END_TIME,
-			StringFormat.START_TIMING, StringFormat.END_TIMING,
-			StringFormat.LOCATION, StringFormat.PRIORITY };
+			StringFormat.NAME, StringFormat.DESCRIPTION,
+			StringFormat.START_DATE, StringFormat.START_TIME,
+			StringFormat.END_DATE, StringFormat.END_TIME, StringFormat.START,
+			StringFormat.END, StringFormat.LOCATION, StringFormat.PRIORITY };
 
 	private static final String[] VALID_PRIORITY = new String[] {
 			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
@@ -108,7 +106,7 @@ public class Analyzer {
 		if (arg.length >= 3) {
 			startTiming = inputTimingConvertor(arg[2]);
 			if (startTiming == null) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIMING,
+				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
 						StringFormat.START));
 
 				return tempCommand;
@@ -117,7 +115,7 @@ public class Analyzer {
 		if (arg.length >= 4) {
 			endTiming = inputTimingConvertor(arg[3]);
 			if (endTiming == null) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIMING,
+				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
 						StringFormat.END));
 
 				return tempCommand;
@@ -185,16 +183,51 @@ public class Analyzer {
 		String taskToBeUpdated = arg[0];
 		tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
 
-		String updateIndicator = arg[1].toLowerCase();
+		String indicator = arg[1].toLowerCase();
 		String updatedItem;
 
-		tempCommand.setIndicator(updateIndicator);
+		tempCommand.setIndicator(indicator);
 
-		if (updateIndicator.equals(StringFormat.START_DATE)
-				|| updateIndicator.equals(StringFormat.START_TIME)
-				|| updateIndicator.equals(StringFormat.END_DATE)
-				|| updateIndicator.equals(StringFormat.END_TIME)) {
+		if (indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END)
+				|| indicator.equals(StringFormat.START_DATE)
+				|| indicator.equals(StringFormat.START_TIME)
+				|| indicator.equals(StringFormat.END_DATE)
+				|| indicator.equals(StringFormat.END_TIME)) {
 			updatedItem = inputTimingConvertor(arg[2]);
+
+			if (updatedItem == null) {
+				if (indicator.equals(StringFormat.START)
+						|| indicator.equals(StringFormat.START_DATE)
+						|| indicator.equals(StringFormat.START_TIME)) {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.START));
+				} else {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.END));
+				}
+
+				return tempCommand;
+			}
+
+			Date checkUpdatedItem = new Date(Long.valueOf(updatedItem));
+			Date currentDate = new Date(System.currentTimeMillis());
+
+			if (checkUpdatedItem.before(currentDate)) {
+				if (indicator.equals(StringFormat.START)
+						|| indicator.equals(StringFormat.START_DATE)
+						|| indicator.equals(StringFormat.START_TIME)) {
+
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+				} else {
+
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+				}
+
+				return tempCommand;
+			}
 		} else {
 			updatedItem = arg[2];
 		}
@@ -225,9 +258,15 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+
 			return tempCommand;
-		} else if (!isValidIndicator(arg[0])) {
+		} else if (!isValidIndicator(arg[0])
+				|| arg[0].equals(StringFormat.START_TIME)
+				|| arg[0].equals(StringFormat.END_TIME)
+				|| arg[0].equals(StringFormat.START_DATE)
+				|| arg[0].equals(StringFormat.END_DATE)) {
 			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+
 			return tempCommand;
 		}
 
@@ -247,22 +286,40 @@ public class Analyzer {
 
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+
 			return tempCommand;
 		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
+
 			return tempCommand;
 		}
 
-		String searchIndicator = arg[0].toLowerCase();
+		String indicator = arg[0].toLowerCase();
 		String searchKey;
 
-		tempCommand.setIndicator(searchIndicator);
+		tempCommand.setIndicator(indicator);
 
-		if (searchIndicator.equals(StringFormat.START_DATE)
-				|| searchIndicator.equals(StringFormat.START_TIME)
-				|| searchIndicator.equals(StringFormat.END_DATE)
-				|| searchIndicator.equals(StringFormat.END_TIME)) {
+		if (indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END)
+				|| indicator.equals(StringFormat.START_DATE)
+				|| indicator.equals(StringFormat.START_TIME)
+				|| indicator.equals(StringFormat.END_DATE)
+				|| indicator.equals(StringFormat.END_TIME)) {
 			searchKey = inputTimingConvertor(arg[1]);
+
+			if (searchKey == null) {
+				if (indicator.equals(StringFormat.START)
+						|| indicator.equals(StringFormat.START_DATE)
+						|| indicator.equals(StringFormat.START_TIME)) {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.START));
+				} else {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.END));
+				}
+
+				return tempCommand;
+			}
 		} else {
 			searchKey = arg[1];
 		}
@@ -424,13 +481,13 @@ public class Analyzer {
 			} else {
 				if (tempStartDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIMING, StringFormat.START));
+							ERROR_INVALID_EARLIER_TIME, StringFormat.START));
 				} else if (tempEndDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIMING, StringFormat.END));
+							ERROR_INVALID_EARLIER_TIME, StringFormat.END));
 				} else {
 					tempCommand
-							.setErrorMessage(ERROR_INVALID_END_EARLIER_THAN_START_TIMING);
+							.setErrorMessage(ERROR_INVALID_END_EARLIER_THAN_START);
 				}
 			}
 		} else if (startTiming != 0) {
@@ -439,14 +496,14 @@ public class Analyzer {
 				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						ERROR_INVALID_EARLIER_TIMING, StringFormat.START));
+						ERROR_INVALID_EARLIER_TIME, StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						ERROR_INVALID_EARLIER_TIMING, StringFormat.END));
+						ERROR_INVALID_EARLIER_TIME, StringFormat.END));
 			}
 		}
 

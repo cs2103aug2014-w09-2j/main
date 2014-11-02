@@ -113,9 +113,9 @@ public class Task implements Comparable<Task>{
 			return taskName;
 		case StringFormat.DESCRIPTION:
 			return taskDescription;
-		case StringFormat.START_TIMING:
+		case StringFormat.START:
 			return taskStartTiming + "";
-		case StringFormat.END_TIMING:
+		case StringFormat.END:
 			return taskEndTiming + "";
 		case StringFormat.LOCATION:
 			return taskLocation;
