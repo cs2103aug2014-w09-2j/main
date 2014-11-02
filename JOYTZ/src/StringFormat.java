@@ -25,8 +25,8 @@ public class StringFormat {
 
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
-	public static final String START_TIMING = "start timing";
-	public static final String END_TIMING = "end timing";
+	public static final String START_TIMING = "start";
+	public static final String END_TIMING = "end";
 	public static final String LOCATION = "location";
 	public static final String PRIORITY = "priority";
 
