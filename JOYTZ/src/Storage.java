@@ -169,14 +169,14 @@ public class Storage {
 
 			targetTask.setTaskDescription(updateKeyValue);
 			break;
-		case StringFormat.START_TIMING:
+		case StringFormat.START:
 			// assert updateKeyValue instanceof String : "start time: " +
 			// updateKeyValue;
 
 			Long newStartTime = Long.parseLong(updateKeyValue);
 			targetTask.setTaskStartTime(newStartTime);
 			break;
-		case StringFormat.END_TIMING:
+		case StringFormat.END:
 			// assert updateKeyValue instanceof String : "end time: " +
 			// updateKeyValue;
 

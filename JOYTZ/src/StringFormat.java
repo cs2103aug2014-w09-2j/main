@@ -18,14 +18,15 @@ public class StringFormat {
 	public static final String RELOAD = "reload";
 
 	/**
-	 * task attribute sort and search indicator
+	 * sort, search and update indicators
 	 */
 
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
-
 	public static final String LOCATION = "location";
 	public static final String PRIORITY = "priority";
+	public static final String START = "start";
+	public static final String END = "end";
 	public static final String START_TIME = "start time";
 	public static final String END_TIME = "end time";
 	public static final String START_DATE = "start date";
@@ -33,10 +34,4 @@ public class StringFormat {
 	public static final String HIGH_PRIORITY = "high";
 	public static final String MEDIUM_PRIORITY = "medium";
 	public static final String LOW_PRIORITY = "low";
-
-	/**
-	 * indicator
-	 */
-	public static final String START = "start";
-	public static final String END = "end";
 }
