@@ -228,8 +228,12 @@ public class Storage {
 			
 			//check the validity of the input time.
 			Date oldStarted = new Date(targetTask.getTaskStartTime());
-			if (oldStarted.after(oldTimeed)){
-				throw new Exception(ERROR_INVALID_INPUT_TIME);
+			if (!targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
+				
+			
+				if (oldStarted.after(oldTimeed)){
+					throw new Exception(ERROR_INVALID_INPUT_TIME);
+				}
 			}
 			
 			targetTask.setTaskEndTime(oldTimeed.getTime());
@@ -245,10 +249,11 @@ public class Storage {
 			
 			//check the validity of the input time.
 			Date oldStartet = new Date(targetTask.getTaskStartTime());
+			if (!targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
 			if (oldStartet.after(oldTimeet)){
 				throw new Exception(ERROR_INVALID_INPUT_TIME);
 			}
-			
+			}
 			targetTask.setTaskEndTime(oldTimeet.getTime());
 			break;
 		case StringFormat.LOCATION:
