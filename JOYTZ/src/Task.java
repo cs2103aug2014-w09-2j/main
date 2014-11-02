@@ -135,10 +135,26 @@ public class Task implements Comparable<Task>{
 	@Override
 	public int compareTo(Task o){
 		Task that = (Task)o;
-		String thisString = this.get(sortKey);
-		String thatString = that.get(sortKey);
+		String thisString = this.get(sortKey).trim();
+		String thatString = that.get(sortKey).trim();
 		
+		if (sortKey.equals(StringFormat.PRIORITY)){
+			thisString = convertPriority(thisString);
+			thatString = convertPriority(thatString);
+		}
 		return thisString.compareToIgnoreCase(thatString);
+	}
+	
+	private String convertPriority (String priority){
+		if (priority.equals(StringFormat.HIGH_PRIORITY)){
+			return "a";
+		}else if (priority.equals(StringFormat.MEDIUM_PRIORITY)){
+			return "b";
+		}else if (priority.equals(StringFormat.LOW_PRIORITY)){
+			return "c";
+		}else {
+			return "d";
+		}
 	}
 
 	@Override

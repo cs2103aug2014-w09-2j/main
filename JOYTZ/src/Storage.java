@@ -25,6 +25,7 @@ public class Storage {
 
 	// this is the two list of tasks.
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
+	private static ArrayList<Task> currentDisplayList = new ArrayList<Task>();
 	private static ArrayList<Task> history = new ArrayList<Task>();
 	public static int numberOfTask = 0;
 
@@ -94,9 +95,7 @@ public class Storage {
 				+ "====================\n");
 
 		taskList.add(t);
-
-		// Timer.schedule(t, t.getTaskStartTime());
-		// Timer.schedule(t, t.getTaskEndTime());
+		currentDisplayList = taskList;
 
 		numberOfTask++;
 
@@ -129,10 +128,9 @@ public class Storage {
 				+ "\n" + "task priority: " + removedTask.getTaskPriority()
 				+ "\n" + "====================\n");
 
-		// removedTask.cancel();
-
 		numberOfTask--;
 		history.add(removedTask);
+		currentDisplayList = taskList;
 
 		return true;
 	}
@@ -250,7 +248,8 @@ public class Storage {
 		// Timer.schedule(targetTask, targetTask.getTaskEndTime());
 
 		taskList.set(taskId - 1, targetTask);
-
+		currentDisplayList = taskList;
+		
 		return true;
 	}
 
@@ -296,8 +295,8 @@ public class Storage {
 			taskList.clear();
 		}
 		// assert taskList.isEmpty() : "Size of list :" + taskList.size();
-
-		// Timer.cancel();
+		
+		currentDisplayList = taskList;
 
 		LOGGER.info("==============\n" + "Storage clean taskList. \n "
 				+ "====================\n");
@@ -308,8 +307,7 @@ public class Storage {
 	public static void cleanUpEveryThing() {
 		history.clear();
 		taskList.clear();
-
-		// Timer.cancel();
+		currentDisplayList = taskList;
 	}
 
 	/**
@@ -322,12 +320,21 @@ public class Storage {
 
 	public static boolean sort(String key) throws Exception {
 
-		if (isEmpty()) {
+		LOGGER.info("==============\n" + "Storage sort taskList. \n "
+				+ "====================\n");
+
+		return sort(key, taskList);
+	}
+	
+	public static boolean sort(String key, ArrayList<Task> targetTaskList) throws Exception{
+		if (targetTaskList.isEmpty()) {
 			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
 		}
-
+		
+		Task.setSortKey(StringFormat.NAME);
+		Collections.sort(currentDisplayList);
 		Task.setSortKey(key);
-		Collections.sort(taskList);
+		Collections.sort(currentDisplayList);
 
 		LOGGER.info("==============\n" + "Storage sort taskList. \n "
 				+ "====================\n");
@@ -401,7 +408,9 @@ public class Storage {
 
 		LOGGER.info("==============\n" + "Storage search. \n "
 				+ "====================\n");
-
+		
+		currentDisplayList = resultTaskList;
+		
 		return resultTaskList;
 	}
 
@@ -410,7 +419,7 @@ public class Storage {
 	 * to record these passed task.
 	 */
 	private static void checkTime() {
-		checkTime(taskList);
+		checkTime(currentDisplayList);
 	}
 
 	private static void checkTime(ArrayList<Task> list) {
@@ -461,8 +470,8 @@ public class Storage {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<String> getTaskList() {
-		return getTaskList(taskList);
+	public static ArrayList<String> getStringFormatOfTaskList() {
+		return convertTaskListToString(currentDisplayList);
 	}
 
 	/**
@@ -472,7 +481,7 @@ public class Storage {
 	 * @return
 	 */
 
-	public static ArrayList<String> getTaskList(ArrayList<Task> list) {
+	public static ArrayList<String> convertTaskListToString(ArrayList<Task> list) {
 		ArrayList<String> displayList = new ArrayList<String>();
 
 		for (int i = 0; i < list.size(); i++) {
@@ -700,6 +709,10 @@ public class Storage {
 		Date date = new Date(timeLong);
 		String dateString = format.format(date);
 		return dateString;
+	}
+
+	public static void resetCurrDisplayList() {
+		currentDisplayList = taskList;
 	}
 
 }
