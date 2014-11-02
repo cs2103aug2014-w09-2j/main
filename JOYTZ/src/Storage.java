@@ -230,15 +230,15 @@ public class Storage {
 			targetTask.setTaskStartTime(oldTimest.getTime());
 			break;
 		case StringFormat.END_DATE:
-			Long newEndDateLong = Long.parseLong(updateKeyValue);
+			Long newEndDateLong = Long.parseLong(updateKeyValue.trim());
 			Date newDateed = new Date(newEndDateLong);
-			Date oldTimeed = new Date(targetTask.getTaskStartTime());
+			Date oldTimeed = new Date(targetTask.getTaskEndTime());
 			
 			oldTimeed.setYear(newDateed.getYear());
 			oldTimeed.setMonth(newDateed.getMonth());
 			oldTimeed.setDate(newDateed.getDate());
 			
-			if (targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
+			if (targetTask.getTaskEndTime().equals(Long.MAX_VALUE)){
 				oldTimeed.setHours(newDateed.getHours());
 				oldTimeed.setMinutes(newDateed.getMinutes());
 				oldTimeed.setSeconds(newDateed.getSeconds());
@@ -255,9 +255,9 @@ public class Storage {
 			targetTask.setTaskEndTime(oldTimeed.getTime());
 			break;
 		case StringFormat.END_TIME:
-			Long newEndTimeLong = Long.parseLong(updateKeyValue);
+			Long newEndTimeLong = Long.parseLong(updateKeyValue.trim());
 			Date newTimeet = new Date(newEndTimeLong);
-			Date oldTimeet = new Date(targetTask.getTaskStartTime());
+			Date oldTimeet = new Date(targetTask.getTaskEndTime());
 			
 			oldTimeet.setHours(newTimeet.getHours());
 			oldTimeet.setMinutes(newTimeet.getMinutes());
