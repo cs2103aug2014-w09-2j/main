@@ -372,7 +372,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-       // initJIntellitype();
+        //initJIntellitype();
         isSortingOrSearching = false;
         initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
         
@@ -470,7 +470,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell.setText("JOYTZ");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        taskTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 10, SWT.NORMAL));
+        taskTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 11, SWT.NORMAL));
         taskTable.setLinesVisible(true);
         taskTable.setHeaderVisible(true);
         taskTable.setSize(new Point(400, 400));
@@ -516,7 +516,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        feedbackTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 10, SWT.NORMAL));
+        feedbackTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 12, SWT.NORMAL));
         GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
         gd_feedbackTable.heightHint = 140;
         feedbackTable.setLayoutData(gd_feedbackTable);
@@ -531,7 +531,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         horizontalSeparator.setLayoutData(gd_horizontalSeparator);
 
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-        inputField.setFont(SWTResourceManager.getFont("Berlin Sans FB", 10, SWT.NORMAL));
+        inputField.setFont(SWTResourceManager.getFont("Berlin Sans FB", 15, SWT.NORMAL));
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);

@@ -192,13 +192,19 @@ public class Storage {
 			oldTimesd.setMonth(newDatesd.getMonth());
 			oldTimesd.setDate(newDatesd.getDate());
 			
-			/*
+			if (targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
+				oldTimesd.setHours(0);
+				oldTimesd.setMinutes(0);
+				oldTimesd.setSeconds(0);
+			}
+			
+			
 			// check the validity of the input time.
 			Date oldEndsd = new Date(targetTask.getTaskEndTime());
 			if (oldTimesd.after(oldEndsd)){
 				throw new Exception(ERROR_INVALID_INPUT_TIME);
 			}
-			*/
+			
 						
 			targetTask.setTaskStartTime(oldTimesd.getTime());
 			break;
@@ -210,24 +216,34 @@ public class Storage {
 			oldTimest.setHours(newTimest.getHours());
 			oldTimest.setMinutes(newTimest.getMinutes());
 			oldTimest.setSeconds(newTimest.getSeconds());
-			/*
+			
+			if (targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
+				throw new Exception ("Empty date value");
+			}
+			
 			//check the validity of the input time.
 			Date oldEndst = new Date(targetTask.getTaskEndTime());
 			if (oldTimest.after(oldEndst)){
 				throw new Exception(ERROR_INVALID_INPUT_TIME);
 			}
-			*/
+			
 			targetTask.setTaskStartTime(oldTimest.getTime());
 			break;
 		case StringFormat.END_DATE:
-			Long newEndDateLong = Long.parseLong(updateKeyValue);
+			Long newEndDateLong = Long.parseLong(updateKeyValue.trim());
 			Date newDateed = new Date(newEndDateLong);
-			Date oldTimeed = new Date(targetTask.getTaskStartTime());
+			Date oldTimeed = new Date(targetTask.getTaskEndTime());
 			
 			oldTimeed.setYear(newDateed.getYear());
 			oldTimeed.setMonth(newDateed.getMonth());
 			oldTimeed.setDate(newDateed.getDate());
-			/*
+			
+			if (targetTask.getTaskEndTime().equals(Long.MAX_VALUE)){
+				oldTimeed.setHours(0);
+				oldTimeed.setMinutes(0);
+				oldTimeed.setSeconds(0);
+			}
+			
 			//check the validity of the input time.
 			Date oldStarted = new Date(targetTask.getTaskStartTime());
 			if (!targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
@@ -235,18 +251,18 @@ public class Storage {
 					throw new Exception(ERROR_INVALID_INPUT_TIME);
 				}
 			}
-			*/
+			
 			targetTask.setTaskEndTime(oldTimeed.getTime());
 			break;
 		case StringFormat.END_TIME:
-			Long newEndTimeLong = Long.parseLong(updateKeyValue);
+			Long newEndTimeLong = Long.parseLong(updateKeyValue.trim());
 			Date newTimeet = new Date(newEndTimeLong);
-			Date oldTimeet = new Date(targetTask.getTaskStartTime());
+			Date oldTimeet = new Date(targetTask.getTaskEndTime());
 			
 			oldTimeet.setHours(newTimeet.getHours());
 			oldTimeet.setMinutes(newTimeet.getMinutes());
 			oldTimeet.setSeconds(newTimeet.getSeconds());
-			/*
+			
 			//check the validity of the input time.
 			Date oldStartet = new Date(targetTask.getTaskStartTime());
 			if (!targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
@@ -254,7 +270,7 @@ public class Storage {
 					throw new Exception(ERROR_INVALID_INPUT_TIME);
 				}
 			}
-			*/
+		
 			targetTask.setTaskEndTime(oldTimeet.getTime());
 			break;
 		case StringFormat.LOCATION:
