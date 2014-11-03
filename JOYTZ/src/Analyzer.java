@@ -342,25 +342,6 @@ public class Analyzer {
 		return new ExecutableCommand(StringFormat.RELOAD);
 	}
 
-	private static String getUserAction(String[] parsedInput) {
-		return parsedInput[0].toLowerCase();
-	}
-
-	private static String[] getArgument(String[] parsedInput) {
-		String[] arg = new String[parsedInput.length - 1];
-
-		for (int i = 1; i < parsedInput.length; i++) {
-			arg[i - 1] = parsedInput[i].trim();
-		}
-
-		return arg;
-	}
-
-	private static String[] convertUserInput(String input) {
-		String[] str = input.trim().split("~");
-		return str;
-	}
-
 	private static boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -386,5 +367,72 @@ public class Analyzer {
 			}
 		}
 		return false;
+	}
+	
+	private static String getUserAction(String[] parsedInput) {
+		return parsedInput[0].toLowerCase();
+	}
+
+	private static String[] getArgument(String[] parsedInput) {
+		String[] arg = new String[parsedInput.length - 1];
+
+		for (int i = 1; i < parsedInput.length; i++) {
+			arg[i - 1] = parsedInput[i].trim();
+		}
+
+		return arg;
+	}
+
+	private static String[] convertUserInput(String input) {
+		String[] str = input.trim().split(" ");
+		String[] parsedInput;
+		
+		switch (str[0]) {
+		case StringFormat.ADD:
+			parsedInput = convertAddInput(str);
+			break;
+		case StringFormat.DELETE:
+			parsedInput = handleDeleteInput(str);
+			break;
+		case StringFormat.UPDATE:
+			parsedInput = handleUpdateInput(str);
+			break;
+		case StringFormat.SORT:
+			parsedInput = handleSortInput(str);
+			break;
+		case StringFormat.SEARCH:
+			parsedInput = handleSearchInput(str);
+			break;
+		default:
+			parsedInput = new String[0];
+			parsedInput[0] = str[0];
+		}		
+		
+		return parsedInput;
+	}
+
+	private static String[] handleSearchInput(String[] str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String[] handleSortInput(String[] str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String[] handleUpdateInput(String[] str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String[] handleDeleteInput(String[] str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String[] convertAddInput(String[] str) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
