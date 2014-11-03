@@ -39,9 +39,10 @@ public class Analyzer {
 			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
 			return outputCommand;
 		}
-
-		String userAction = getUserAction(userCommand);
-		String[] commandArgument = getArgument(userCommand);
+		
+		String[] parsedInput = convertUserInput(userCommand);
+		String userAction = getUserAction(parsedInput);
+		String[] commandArgument = getArgument(parsedInput);
 
 		switch (userAction) {
 		case StringFormat.ADD:
@@ -341,27 +342,23 @@ public class Analyzer {
 		return new ExecutableCommand(StringFormat.RELOAD);
 	}
 
-	private static String getUserAction(String userCommand) {
-		String[] cmd = convertStrToArr(userCommand);
-		return cmd[0].toLowerCase();
+	private static String getUserAction(String[] parsedInput) {
+		return parsedInput[0].toLowerCase();
 	}
 
-	private static String[] getArgument(String userCommand) {
-		assertNotNull("User command argument is null", userCommand);
+	private static String[] getArgument(String[] parsedInput) {
+		String[] arg = new String[parsedInput.length - 1];
 
-		String[] cmd = convertStrToArr(userCommand);
-		String[] arg = new String[cmd.length - 1];
-
-		for (int i = 1; i < cmd.length; i++) {
-			arg[i - 1] = cmd[i].trim();
+		for (int i = 1; i < parsedInput.length; i++) {
+			arg[i - 1] = parsedInput[i].trim();
 		}
 
 		return arg;
 	}
 
-	private static String[] convertStrToArr(String str) {
-		String[] arr = str.trim().split("~");
-		return arr;
+	private static String[] convertUserInput(String input) {
+		String[] str = input.trim().split("~");
+		return str;
 	}
 
 	private static boolean isInteger(String input) {

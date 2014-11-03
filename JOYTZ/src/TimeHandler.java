@@ -5,54 +5,6 @@ public class TimeHandler {
 	private static final String ERROR_INVALID_END_EARLIER_THAN_START = "End time is earlier than start time.\n";
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
 
-	private static boolean isValidTiming(int[] input) {
-		int year = input[0];
-		int month = input[1];
-		int day = input[2];
-		int hour = input[3];
-		int minute = input[4];
-		boolean leapYear = isLeapYear(year);
-
-		if (year != -1 && month != -1 && day != -1) {
-			if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31) {
-				return false;
-			}
-			if (month == 2) {
-				if (leapYear && day > 29) {
-					return false;
-				} else if (day > 28) {
-					return false;
-				}
-			} else if (month == 4 || month == 6 || month == 9 || month == 11) {
-				if (day > 30) {
-					return false;
-				}
-			}
-		}
-
-		if (hour != -1 && minute != -1) {
-			if (hour < 0 || hour > 24 || minute < 0 || minute > 59) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private static boolean isLeapYear(int year) {
-		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
-	}
-
-	private static boolean isSameDate(Date first, Date second) {
-		return first.getYear() == second.getYear()
-				&& first.getMonth() == second.getMonth()
-				&& first.getDay() == second.getDay();
-	}
-
-	private static boolean isTimeIndicated(Date d) {
-		return d.getHours() != 0 || d.getMinutes() != 0;
-	}
-
 	public static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -153,6 +105,54 @@ public class TimeHandler {
 		}
 
 		return String.valueOf(convertedDate.getTime());
+	}
+	
+	private static boolean isValidTiming(int[] input) {
+		int year = input[0];
+		int month = input[1];
+		int day = input[2];
+		int hour = input[3];
+		int minute = input[4];
+		boolean leapYear = isLeapYear(year);
+
+		if (year != -1 && month != -1 && day != -1) {
+			if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31) {
+				return false;
+			}
+			if (month == 2) {
+				if (leapYear && day > 29) {
+					return false;
+				} else if (day > 28) {
+					return false;
+				}
+			} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+				if (day > 30) {
+					return false;
+				}
+			}
+		}
+
+		if (hour != -1 && minute != -1) {
+			if (hour < 0 || hour > 24 || minute < 0 || minute > 59) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean isLeapYear(int year) {
+		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+	}
+
+	private static boolean isSameDate(Date first, Date second) {
+		return first.getYear() == second.getYear()
+				&& first.getMonth() == second.getMonth()
+				&& first.getDay() == second.getDay();
+	}
+
+	private static boolean isTimeIndicated(Date d) {
+		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
 	private static boolean checkTimeExistence(int[] result) {
