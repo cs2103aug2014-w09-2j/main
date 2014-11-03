@@ -69,6 +69,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Shell shell;
     private static Timer displayTimer;
     private static GUI mainFrame;
+    
+    private static void newTableItem(Table thisTable, String text){
+        
+    }
 
     /**
      * Returns the shell of the program
@@ -334,7 +338,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void resizeTable() {
         int tableWidth = taskTable.getSize().x;
-        int scrollbarWidth = taskTable.getVerticalBar().getSize().x;
+        int scrollbarWidth = taskTable.getVerticalBar().getSize().x;  //TODO: check if scrollbar active
 
         int widthLeft = tableWidth - tblclmnNo.getWidth() - 
                         tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
@@ -368,7 +372,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 3. Initialize the timer
      * 4. Load the contents of the database
      * 5. Display the help messages
-     * 6. Adjust the size of the table columns
+     * 6. Display loaded tasks
      * 
      */
     private static void startupProgram() {
@@ -391,7 +395,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void setupListeners() {
         // We call the controller to process 
-        // the user's keyboard commands
+        // the user's entered commands
         inputField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.character == SWT.CR) {    // "enter" key
@@ -460,6 +464,43 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
 
     public static void main(String[] args) {
+        createUI();
+        
+        //@author A0094558N
+        startupProgram();
+        setupListeners();
+      
+        openUI();
+
+        readingAndDispatching();    
+        cleanupUI();
+    }
+
+    private static void cleanupUI() {
+        display.dispose();
+    }
+
+    private static void openUI() {
+        //@author generated
+        shell.open();
+        shell.layout();
+    }
+
+    private static void readingAndDispatching() {
+        while(!shell.isDisposed()) {
+
+            //@author A0094558N
+            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
+                startDisplayTimer();
+            }
+            
+            //@author generated
+            display.readAndDispatch();
+        }
+    }
+    
+    //@author A0094558N
+    private static void createUI() {
         //@author generated
         display = Display.getDefault();
         shell = new Shell();
@@ -537,26 +578,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd_inputField.heightHint = 85;
         inputField.setLayoutData(gd_inputField);
-        
-        //@author A0094558N
-        startupProgram();
-        setupListeners();
-      
-        //@author generated
-        shell.open();
-        shell.layout();
-
-        while(!shell.isDisposed()) {
-
-            //@author A0094558N
-            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
-                startDisplayTimer();
-            }
-            
-            //@author generated
-            display.readAndDispatch();
-        }
-        display.dispose();
     }
     
 //    //@author A0094558N-reused

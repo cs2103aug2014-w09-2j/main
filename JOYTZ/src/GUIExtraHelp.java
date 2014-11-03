@@ -71,6 +71,7 @@ public class GUIExtraHelp extends Dialog {
     private int currentPage; 
     private Button btnBack;
     private Button btnNext;
+    private StyledText textField;
 
     /**
      * Create the dialog.
@@ -89,6 +90,9 @@ public class GUIExtraHelp extends Dialog {
      */
     public Object open() {
         createContents();
+        createButtonListeners();
+        checkPageAndSetText(currentPage, textField);
+        
         shell.open();
         shell.layout();
         Display display = getParent().getDisplay();
@@ -109,7 +113,7 @@ public class GUIExtraHelp extends Dialog {
         shell.setText(getText());
         shell.setLayout(new GridLayout(1, false));
         
-        final StyledText textField = new StyledText(shell, SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+        textField = new StyledText(shell, SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
         textField.setEditable(false);
         textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         
@@ -120,9 +124,9 @@ public class GUIExtraHelp extends Dialog {
         btnNext = new Button(shell, SWT.NONE);
         btnNext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnNext.setText("Next");
-        
-        checkPageAndSetText(currentPage, textField);
+    }
 
+    private void createButtonListeners() {
         btnNext.addSelectionListener(new SelectionListener() {
 
           public void widgetSelected(SelectionEvent event) {
@@ -211,7 +215,5 @@ public class GUIExtraHelp extends Dialog {
             default:
                 break;
         }
-
     }
-
 }
