@@ -18,6 +18,7 @@ public class StringFormat {
 	public static final String RELOAD = "reload";
 	public static final String HELP = "help";
 	public static final String TUTORIAL = "tutorial";
+	public static final String SETTINGS = "settings";
 
 	/**
 	 * sort, search and update indicators

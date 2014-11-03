@@ -441,9 +441,13 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                     displayHelp();
                     inputField.setText("");
                 } else if (inputField.getText().trim().equals(StringFormat.TUTORIAL)) {    
-                    GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NO_TRIM | SWT.WRAP);
-                    helpDialog.open();
+                    GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
                     inputField.setText("");
+                    helpDialog.open();
+                } else if (inputField.getText().trim().equals(StringFormat.SETTINGS)) {    
+                    GUISettings helpDialog = new GUISettings(shell, SWT.NONE);
+                    inputField.setText("");
+                    helpDialog.open();
                 } else {
                     String userInput = inputField.getText();
                     userInput = userInput.replaceAll("[\n\r]", "");
