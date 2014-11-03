@@ -16,6 +16,8 @@ public class StringFormat {
 	public static final String REDO = "redo";
 	public static final String EXIT = "exit";
 	public static final String RELOAD = "reload";
+	public static final String HELP = "help";
+	public static final String TUTORIAL = "tutorial";
 
 	/**
 	 * sort, search and update indicators
