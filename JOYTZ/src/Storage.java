@@ -193,9 +193,9 @@ public class Storage {
 			oldTimesd.setDate(newDatesd.getDate());
 			
 			if (targetTask.getTaskStartTime().equals(Long.MAX_VALUE)){
-				oldTimesd.setHours(newDatesd.getHours());
-				oldTimesd.setMinutes(newDatesd.getMinutes());
-				oldTimesd.setSeconds(newDatesd.getSeconds());
+				oldTimesd.setHours(0);
+				oldTimesd.setMinutes(0);
+				oldTimesd.setSeconds(0);
 			}
 			
 			
@@ -239,9 +239,9 @@ public class Storage {
 			oldTimeed.setDate(newDateed.getDate());
 			
 			if (targetTask.getTaskEndTime().equals(Long.MAX_VALUE)){
-				oldTimeed.setHours(newDateed.getHours());
-				oldTimeed.setMinutes(newDateed.getMinutes());
-				oldTimeed.setSeconds(newDateed.getSeconds());
+				oldTimeed.setHours(0);
+				oldTimeed.setMinutes(0);
+				oldTimeed.setSeconds(0);
 			}
 			
 			//check the validity of the input time.
