@@ -49,6 +49,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_CLEAR = "\t    clear\n";
     private static final String HELP_TEXT_HELP ="\t    help\n";
     private static final String HELP_TEXT_TUTORIAL ="\t    tutorial\n";
+    private static final String HELP_TEXT_SETTINGS ="\t    settings\n";
     private static final String HELP_TEXT_EXIT = "\t    exit\n";
     private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
@@ -67,6 +68,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static final int ONE_MINUTE_IN_MILLISECONDS = 60000;
 	private static final int ONE_DAY_IN_MILLISECONDS = 86400000;
 
+	// Variables for settings
 	private static int refreshRate;
 	private static int deadlineRowColorR;
 	private static int deadlineRowColorG;
@@ -194,6 +196,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         item.setBackground(grey);
         
         item = newTableItem(feedbackTable, HELP_TEXT_TUTORIAL);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SETTINGS);
         item.setBackground(grey);
         
         item = newTableItem(feedbackTable, HELP_TEXT_EXIT);
@@ -448,6 +453,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 5. Display the help messages
      * 6. Load the contents of the database
      * 7. Display loaded tasks
+     * 8. Place typing cursor into the input text field
      * 
      */
     private static void startupProgram() {
@@ -460,6 +466,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         displayHelp();
         Controller.startController(StringFormat.RELOAD);
         Controller.startController(StringFormat.DISPLAY);
+        inputField.setFocus();
     }
 
     /** 

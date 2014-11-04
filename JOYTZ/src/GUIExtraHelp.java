@@ -64,7 +64,11 @@ public class GUIExtraHelp extends Dialog {
                                                  "syntax, type \"help\".\n\nJOYTZ also features keyboard " +
                                                  "shortcuts to maximize and minimize the application. " +
                                                  "To maximize the application, press \"ALT+A\". To " +
-                                                 "minimize the application, press \"ALT+Z\".";
+                                                 "minimize the application, press \"ALT+Z\".\n\nColor-coded" +
+                                                 "tasks are also featured. By default, tasks in red have " +
+                                                 "passed the deadline, and those in green are still ongoing. " +
+                                                 "All remaining tasks are in black.\n\nTo change these colors " +
+                                                 "or change the frequency of notifications, type \"settings\".";
     
     
     protected Object result;
