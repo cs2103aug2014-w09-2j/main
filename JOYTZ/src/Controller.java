@@ -7,6 +7,7 @@ public class Controller {
 
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+    private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String EMPTY_LIST = "null";
 
@@ -185,6 +186,10 @@ public class Controller {
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
+                
+                if (outputString.equals(ERROR_NO_TASK_FILE)) {
+                    GUI.firstRun();
+                }
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);

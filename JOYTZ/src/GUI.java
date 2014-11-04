@@ -57,7 +57,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
-	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";    // in milliseconds
+	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";
 	private static final int DEFAULT_REFRESH_RATE = 3600000;    // in milliseconds
 	private static final int DEFAULT_DEADLINE_COLOR_R = 255;
 	private static final int DEFAULT_DEADLINE_COLOR_G = 0;
@@ -153,6 +153,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
+    public static void firstRun() {
+        GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
+        helpDialog.open();
+    }
+
     /**
      * Displays the help text in text box that is found in the middle,
      * styling it such that the background is colored.
@@ -215,7 +220,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         item = newTableItem(feedbackTable, HELP_TEXT_SHORTCUT_MINIMIZE);
         item.setBackground(grey);
-        
+
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
@@ -341,7 +346,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     } 
     
     /**
-     * Colors the words in a row red.
+     * Colors the row based on the colors used for tasks that
+     * have passed the deadline.
      * 
      * @param item      The table row to be colored
      * 
@@ -372,7 +378,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /**
-     * Colors the words in a row green.
+     * Colors the row based on the colors used for tasks that
+     * are still ongoing.
      * 
      * @param item      The table row to be colored
      * 
@@ -398,8 +405,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void colorRowBackgroundGrey(TableItem item) {
-        Color green = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
-        item.setBackground(green);
+        Color grey = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
+        item.setBackground(grey);
     }
 
     /**
