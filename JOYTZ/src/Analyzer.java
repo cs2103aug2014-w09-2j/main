@@ -408,7 +408,7 @@ public class Analyzer {
 
 		switch (arg[0]) {
 		case StringFormat.ADD:
-			parsedInput = convertAddInput(arg);
+			parsedInput = handleAddInput(arg);
 			break;
 		case StringFormat.DELETE:
 			parsedInput = handleDeleteInput(arg);
@@ -446,11 +446,16 @@ public class Analyzer {
 	}
 
 	private static String[] handleDeleteInput(String[] str) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] output = { StringFormat.DELETE, "" };
+
+		if (str.length > 1) {
+			output[1] = str[1];
+		}
+
+		return output;
 	}
 
-	private static String[] convertAddInput(String[] str) {
+	private static String[] handleAddInput(String[] str) {
 		String[] output = { StringFormat.ADD, "", "", "", "", "", "" };
 		boolean nameExistence = false;
 		boolean descriptionExistence = false;
@@ -582,22 +587,19 @@ public class Analyzer {
 				output[1] = output[1].concat(" ");
 
 				if (str.length > i + 1) {
-					if (isInputIndicator(str[i + 1])) {
-						nameExistence = false;
-						continue;
+					if (temp.contains(StringFormat.DESCRIPTION_INDICATOR)) {
+						output[1] = output[1].substring(0,
+								output[1].length() - 2);
+						descriptionExistence = true;
 					} else if (isAmbiguousInputIndicator(str[i + 1])) {
-						if (!isTimeOrDate(str[i + 1])) {
+						if (isTimeOrDate(str[i + 2])) {
+							nameExistence = false;
+						} else {
 							nameExistence = true;
-							continue;
 						}
+					} else if (!isInputIndicator(str[i + 1])) {
+						nameExistence = true;
 					}
-				}
-
-				if (temp.contains(StringFormat.DESCRIPTION_INDICATOR)) {
-					output[1] = output[1].substring(0, output[1].length() - 2);
-					descriptionExistence = true;
-				} else {
-					nameExistence = true;
 				}
 			}
 		}
