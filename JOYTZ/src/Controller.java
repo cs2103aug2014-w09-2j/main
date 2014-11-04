@@ -1,4 +1,3 @@
-//package V1;
 //@author A0094558N
 import java.text.ParseException;
 import java.util.logging.Logger;
@@ -8,8 +7,8 @@ public class Controller {
 
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
-    public static final String EMPTY_LIST = "null";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
+    public static final String EMPTY_LIST = "null";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -27,16 +26,16 @@ public class Controller {
      * 
      */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
-                                     boolean hasError) {
+                                     boolean isSuccessful) {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
-
-        GUI.displayOutput(outputFeedbackString, hasError);
+        
+        GUI.displayOutput(outputFeedbackString, isSuccessful);
 
         // If there is no error message
-        if (command.getErrorMessage().length() == 0 || hasError == false) {
-            String action = command.getAction();
+        if (isSuccessful == true) {
+            String action = command.getAction().trim();
             int taskId = command.getTaskId();
 
             parseDisplayTasks(action, taskId);
@@ -64,17 +63,14 @@ public class Controller {
             GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
                             isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
-        } else {									// all other commands
+        } else {
             for (int i = 0; i < feedback.getTaskList().size(); i++) {
                 System.out.println("===================\n" +
                                    "Display string from feedback object: \n" + 
                                    "	" + feedback.getTaskList().get(i) + "\n" +
                                    "===================\n");
 
-                String[] parameterArr = feedback.getTaskList().get(i).split("~");
-                for(int k = 0; k < parameterArr.length; k++) {
-                    parameterArr[k] = parameterArr[k].trim();
-                }
+                String[] parameterArr = processDisplayString(i);
                 isHighlightedPassStart = feedback.getPassStartTimeList()[i];
                 isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
 
@@ -99,17 +95,30 @@ public class Controller {
                  * Parameters: updateTable(Table index number, start time, end time, name, 
                  *                         location, description, priority, action);
                  */ 
-                if (parameterArr.length == 5) {
-                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], "", action, taskId,
-                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
-                } else if (parameterArr.length == 6) {
-                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
-                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
-                }
+                assert parameterArr.length == 6;
+                GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
+                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
             }
         }
+    }
+
+    /**
+     * Processes the string obtained from the task list that is stored
+     * in the feedback object. This method will split the string
+     * via the '~' token, and then trim it.
+     * 
+     * @param i     The index of the task in the task list
+     * 
+     * @return      A string array containing the parameters to be displayed
+     * 
+     */
+    private static String[] processDisplayString(int i) {
+        String[] parameterArr = feedback.getTaskList().get(i).split("~");
+        for(int k = 0; k < parameterArr.length; k++) {
+            parameterArr[k] = parameterArr[k].trim();
+        }
+        return parameterArr;
     }
 
     /**
@@ -160,7 +169,8 @@ public class Controller {
                         "====================\n");
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
-                displayInGUI(parsedCommand.getErrorMessage(), parsedCommand, true);
+                outputString = parsedCommand.getErrorMessage();
+                displayInGUI(outputString, parsedCommand, false);
             } else {	
 
                 if(parsedCommand != null){
@@ -178,18 +188,14 @@ public class Controller {
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null && isFeedbackSuccess){      // Only display in GUI if it is running
-                    displayInGUI(outputString, parsedCommand, false);
-                }
-                else if (GUI.getShell() != null && !isFeedbackSuccess){      // Only display in GUI if it is running
-                    displayInGUI(outputString, parsedCommand, true);
+                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
+                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess);
                 }
             }
         } catch (ParseException e) {
             displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
-            e.printStackTrace();
         }   
-        return feedback;
+        return feedback;    // used exclusively for JUnit testing
     }
 
     /**
