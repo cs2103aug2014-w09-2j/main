@@ -188,7 +188,7 @@ public class Controller {
                 assert outputString != null;
                 
                 if (outputString.equals(ERROR_NO_TASK_FILE)) {
-                    GUI.firstRun();
+                    GUI.openTutorial();
                 }
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {

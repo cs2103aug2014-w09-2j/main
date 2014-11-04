@@ -100,7 +100,7 @@ public class GUISettings extends Dialog {
         loadGUISettings();
         createContents();
         setupListeners();
-        displaySettingsInGUI();
+        displaySettingsInSettingsGUI();
         shell.open();
         shell.layout();
         Display display = getParent().getDisplay();
@@ -205,7 +205,7 @@ public class GUISettings extends Dialog {
         tltmOngoingOrange.setText("Orange");
     }
 
-    private void displaySettingsInGUI() {
+    private void displaySettingsInSettingsGUI() {
         spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
         
         int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);

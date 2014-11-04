@@ -96,7 +96,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static GUI mainFrame;
     
     /**
-     * Creates and returns a new TableItem
+     * Creates and returns a new TableItem containing
+     * the given string
      * 
      * @param thisTable     The table the TableItem belongs to
      * @param text          The text to be placed in the TableItem
@@ -153,7 +154,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
     }
 
-    public static void firstRun() {
+    /**
+     * Opens the tutorial
+     * 
+     */
+    public static void openTutorial() {
         GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
         helpDialog.open();
     }
@@ -347,7 +352,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     
     /**
      * Colors the row based on the colors used for tasks that
-     * have passed the deadline.
+     * have passed the deadline (colors are based on user settings)
      * 
      * @param item      The table row to be colored
      * 
@@ -379,7 +384,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     
     /**
      * Colors the row based on the colors used for tasks that
-     * are still ongoing.
+     * are still ongoing  (colors are based on user settings)
      * 
      * @param item      The table row to be colored
      * 
@@ -554,22 +559,20 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /** 
-     * Gets the settings from the settings file
+     * Gets the settings from the settings text file.
+     * The settings are stored in an array list once loaded
      * 
      */
     public static void getSettings() {
         readFile(GUISettings.FILENAME);
-        
-        for (int i = 0; i < settingsStorage.size(); i++){
-            System.out.println("Settings: " + settingsStorage.get(i));
-        }
     }
     
     /** 
-     * Saves the settings into variables for use
+     * Saves the settings into variables that are 
+     * being used by the GUI
      * 
      */
-    public static void applySettings() {
+    private static void applySettings() {
         if (settingsStorage.size() != 0) {
             System.out.println("Loading settings");
             refreshRate = settingsStorage.get(0);
