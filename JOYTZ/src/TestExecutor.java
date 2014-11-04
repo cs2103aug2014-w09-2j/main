@@ -31,15 +31,15 @@ public class TestExecutor {
 		 * This is a boundary case for the non-empty ArrayList partition
 		 */
 		assertNotNull("No element in list", Executor
-				.proceedAnalyzedCommand(obj).getTaskList().size());
+				.proceedAnalyzedCommand(obj).getTaskStringList().size());
 		Executor.proceedAnalyzedCommand(clear);
 
 		assertEquals("There's more than 1 element", 1, Executor
-				.proceedAnalyzedCommand(obj).getTaskList().size());
+				.proceedAnalyzedCommand(obj).getTaskStringList().size());
 		Executor.proceedAnalyzedCommand(clear);
 
 		assertNotEquals("There are 2 elements", 2, Executor
-				.proceedAnalyzedCommand(obj).getTaskList().size());
+				.proceedAnalyzedCommand(obj).getTaskStringList().size());
 		Executor.proceedAnalyzedCommand(clear);
 	}
 
@@ -62,7 +62,7 @@ public class TestExecutor {
 		 * This is a boundary case for the non-empty ArrayList partition
 		 */
 
-		int size = Executor.proceedAnalyzedCommand(obj).getTaskList().size();
+		int size = Executor.proceedAnalyzedCommand(obj).getTaskStringList().size();
 
 		assertEquals("Fail to check size", 1, size);
 		assertNotEquals("Fail to check size", 2, size);
@@ -73,7 +73,7 @@ public class TestExecutor {
 		 * Delete the last item
 		 */
 		assertEquals("Fail to check List", 0, Executor.proceedAnalyzedCommand(obj)
-				.getTaskList().size());
+				.getTaskStringList().size());
 
 		Executor.proceedAnalyzedCommand(clear);
 	}

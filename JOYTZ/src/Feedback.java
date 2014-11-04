@@ -12,20 +12,21 @@ public class Feedback {
 	private String messageShowToUser;
 
 	// ArrayList only for display method.
-	private ArrayList<String> taskList = new ArrayList<String>();
+	private ArrayList<String> taskStringListShowToUser = new ArrayList<String>();
 	
 	// boolean arrays for task pass the date
-	private boolean[] passStartTime = {};
-	private boolean[] passEndTime = {};
+	private boolean[] passStartTimeTaskIndexIndicator = {};
+	private boolean[] passEndTimeTaskIndexIndicator = {};
 
 	/**
 	 * Constructor
 	 */
+	
 	Feedback(boolean result) {
+		this.action = "";
 		this.result = result;
 		this.messageShowToUser = "";
 	}
-	
 	Feedback(String action, boolean result){
 		this.action = action;
 		this.result = result;
@@ -48,16 +49,16 @@ public class Feedback {
 		this.messageShowToUser = message;
 	}
 
-	public void setTaskList(ArrayList<String> taskList) {
-		this.taskList = taskList;
+	public void setTaskStringList(ArrayList<String> taskList) {
+		this.taskStringListShowToUser = taskList;
 	}
 	
-	public void setPassStartTimeList(boolean[] list){
-		this.passStartTime = list;
+	public void setPassStartTimeIndicator(boolean[] indicatorArray){
+		this.passStartTimeTaskIndexIndicator = indicatorArray;
 	}
 	
-	public void setPassEndTimeList (boolean[] list){
-		this.passEndTime = list;
+	public void setPassEndTimeIndicator (boolean[] indicatorArray){
+		this.passEndTimeTaskIndexIndicator = indicatorArray;
 	}
 
 	/**
@@ -76,16 +77,16 @@ public class Feedback {
 		return messageShowToUser;
 	}
 
-	public ArrayList<String> getTaskList() {
-		return taskList;
+	public ArrayList<String> getTaskStringList() {
+		return taskStringListShowToUser;
 	}
 	
-	public boolean[] getPassStartTimeList (){
-		return passStartTime;
+	public boolean[] getPassStartTimeIndicator (){
+		return passStartTimeTaskIndexIndicator;
 	}
 	
-	public boolean[] getPassEndTimeList() {
-		return passEndTime;
+	public boolean[] getPassEndTimeListIndicator() {
+		return passEndTimeTaskIndexIndicator;
 	}
 
 }
