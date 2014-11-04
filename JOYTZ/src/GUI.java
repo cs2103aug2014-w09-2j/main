@@ -1,7 +1,13 @@
 //@author A0094558N 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Timer;
 
@@ -50,8 +56,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
-	private static final int REFRESH_RATE = 3600000;    // in milliseconds
+	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";    // in milliseconds
+	private static final int DEFAULT_REFRESH_RATE = 3600000;    // in milliseconds
+	private static final int DEFAULT_DEADLINE_COLOR_R = 255;
+	private static final int DEFAULT_DEADLINE_COLOR_G = 0;
+	private static final int DEFAULT_DEADLINE_COLOR_B = 0;
+	private static final int DEFAULT_ONGOING_COLOR_R = 0;
+	private static final int DEFAULT_ONGOING_COLOR_G = 128;
+	private static final int DEFAULT_ONGOING_COLOR_B = 0;
+	private static final int ONE_MINUTE_IN_MILLISECONDS = 60000;
+	private static final int ONE_DAY_IN_MILLISECONDS = 86400000;
 
+	private static int refreshRate;
+	private static int deadlineRowColorR;
+	private static int deadlineRowColorG;
+	private static int deadlineRowColorB;
+	private static int ongoingRowColorR;
+	private static int ongoingRowColorG;
+	private static int ongoingRowColorB;
+	private static List<Integer> settingsStorage;
+	
     private static StyledText inputField;
     private static Table taskTable;
     private static Table feedbackTable;
@@ -282,7 +306,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         // Coloring green
         if (isHighlightedPassStart == true) {
-            colorRowGreen(item);
+            colorOngoingRow(item);
             if (action.equals(StringFormat.DISPLAY)) {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
             }
@@ -290,7 +314,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         // Coloring red
         if (isHighlightedPassEnd == true) {
-            colorRowRed(item);
+            colorDeadlineRow(item);
             if (action.equals(StringFormat.DISPLAY)) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
             }
@@ -317,9 +341,18 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param item      The table row to be colored
      * 
      */
-    private static void colorRowRed(TableItem item) {
-        Color red = display.getSystemColor(SWT.COLOR_RED);
-        item.setForeground(red);
+    private static void colorDeadlineRow(TableItem item) {
+        Color color;
+        if (deadlineRowColorR == -1) {
+            color = SWTResourceManager.getColor(DEFAULT_DEADLINE_COLOR_R, 
+                                                DEFAULT_DEADLINE_COLOR_G, 
+                                                DEFAULT_DEADLINE_COLOR_B);
+        } else {
+            color = SWTResourceManager.getColor(deadlineRowColorR, 
+                                                deadlineRowColorG, 
+                                                deadlineRowColorB);
+        }
+        item.setForeground(color);
     }
     
     /**
@@ -339,9 +372,18 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param item      The table row to be colored
      * 
      */
-    private static void colorRowGreen(TableItem item) {
-        Color green = display.getSystemColor(SWT.COLOR_DARK_GREEN);
-        item.setForeground(green);
+    private static void colorOngoingRow(TableItem item) {
+        Color color;
+        if (ongoingRowColorR == -1) {
+            color = SWTResourceManager.getColor(DEFAULT_ONGOING_COLOR_R, 
+                                                DEFAULT_ONGOING_COLOR_G, 
+                                                DEFAULT_ONGOING_COLOR_B);
+        } else {
+            color = SWTResourceManager.getColor(ongoingRowColorR, 
+                                                ongoingRowColorG, 
+                                                ongoingRowColorB);
+        }
+        item.setForeground(color);
     }
     
     /**
@@ -400,21 +442,39 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     /** 
      * Begin startup procedures. Things done:
      * 1. Initialize and start JIntellitype
-     * 2. Initialize booleans
-     * 3. Initialize the timer
-     * 4. Display the help messages
-     * 5. Load the contents of the database
-     * 6. Display loaded tasks
+     * 2. Initialize variables
+     * 3. Load and apply settings
+     * 4. Initialize the timer
+     * 5. Display the help messages
+     * 6. Load the contents of the database
+     * 7. Display loaded tasks
      * 
      */
     private static void startupProgram() {
         //initJIntellitype();
-        isSortingOrSearching = false;
-        initializeDisplayRefreshTimer(REFRESH_RATE);   // Timer delay in milliseconds
+        initializeVariables();
+        getSettings();
+        applySettings();
+        initializeDisplayRefreshTimer(refreshRate);   // Timer delay in milliseconds
         
         displayHelp();
         Controller.startController(StringFormat.RELOAD);
         Controller.startController(StringFormat.DISPLAY);
+    }
+
+    /** 
+     * Initialize some variables used by the program
+     * 
+     */
+    private static void initializeVariables() {
+        isSortingOrSearching = false;
+        settingsStorage = new ArrayList<Integer>();
+        deadlineRowColorR = -1;
+        deadlineRowColorG = -1;
+        deadlineRowColorB = -1;
+        ongoingRowColorR = -1;
+        ongoingRowColorG = -1;
+        ongoingRowColorB = -1;
     }
     
     /** 
@@ -445,9 +505,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                     inputField.setText("");
                     helpDialog.open();
                 } else if (inputField.getText().trim().equals(StringFormat.SETTINGS)) {    
-                    GUISettings helpDialog = new GUISettings(shell, SWT.NONE);
+                    GUISettings settingsDialog = new GUISettings(shell, SWT.NONE);
                     inputField.setText("");
-                    helpDialog.open();
+                    settingsDialog.open();
+                    applySettings();
+                    Controller.startController(StringFormat.DISPLAY);
                 } else {
                     String userInput = inputField.getText();
                     userInput = userInput.replaceAll("[\n\r]", "");
@@ -477,12 +539,86 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /** 
+     * Gets the settings from the settings file
+     * 
+     */
+    public static void getSettings() {
+        readFile(GUISettings.FILENAME);
+        
+        for (int i = 0; i < settingsStorage.size(); i++){
+            System.out.println("Settings: " + settingsStorage.get(i));
+        }
+    }
+    
+    /** 
+     * Saves the settings into variables for use
+     * 
+     */
+    public static void applySettings() {
+        if (settingsStorage.size() != 0) {
+            System.out.println("Loading settings");
+            refreshRate = settingsStorage.get(0);
+            refreshRate *= ONE_MINUTE_IN_MILLISECONDS;
+            deadlineRowColorR = settingsStorage.get(1);
+            deadlineRowColorG = settingsStorage.get(2);
+            deadlineRowColorB = settingsStorage.get(3);
+            ongoingRowColorR = settingsStorage.get(4);
+            ongoingRowColorG = settingsStorage.get(5);
+            ongoingRowColorB = settingsStorage.get(6);
+        } else {
+            System.out.println("Using defaults");
+            refreshRate = DEFAULT_REFRESH_RATE;
+            deadlineRowColorR = DEFAULT_DEADLINE_COLOR_R;
+            deadlineRowColorG = DEFAULT_DEADLINE_COLOR_G;
+            deadlineRowColorB = DEFAULT_DEADLINE_COLOR_B;
+            
+            ongoingRowColorR = DEFAULT_ONGOING_COLOR_R;
+            ongoingRowColorG = DEFAULT_ONGOING_COLOR_G;
+            ongoingRowColorB = DEFAULT_ONGOING_COLOR_B;
+        }
+    }
+    
+    /** 
+     * Read the contents of a file and stores it in an array list
+     * 
+     * @param filename     The name of the file
+     * 
+     */
+    private static void readFile (String filename) {
+        String temp;
+        int i = 0;
+        File settingsFile = new File(filename);
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(settingsFile));
+            // Read the file line by line and add each line
+            // into an index of workingStorage
+            if (settingsStorage.isEmpty()) {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    settingsStorage.add(value);
+                }
+            } else {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    settingsStorage.set(i, value);
+                    i++;
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            System.out.print(GUI.ERROR_NO_SETTINGS);
+        }
+    }
+    
+    /** 
      * Initializes the timer used for the periodic display function
      * 
      * @param delay     The delay used for the timer
      * 
      */
     private static void initializeDisplayRefreshTimer(int delay) {
+        assert delay >= ONE_MINUTE_IN_MILLISECONDS; 
+        assert delay <= ONE_DAY_IN_MILLISECONDS;
         displayTimer = new Timer(delay, null);
         displayTimer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -518,7 +654,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     public static void main(String[] args) {
         createUI();
         
-        //@author A0094558N
         startupProgram();
         setupListeners();
       
@@ -542,7 +677,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void openUI() {
-        //@author generated
         shell.open();
         shell.layout();
     }
@@ -555,24 +689,22 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void readingAndDispatching() {
         while(!shell.isDisposed()) {
 
-            //@author A0094558N
             if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
                 startDisplayTimer();
             }
-            
-            //@author generated
+
             display.readAndDispatch();
         }
     }
     
-    //@author A0094558N
+    //@author generated
     /** 
      * Configuration of the GUI. This includes the layout, 
      * the sizes, the color, the fonts, etc.
      * 
      */
     private static void createUI() {
-        //@author generated
+        
         display = Display.getDefault();
         shell = new Shell();
         shell.setMinimumSize(new Point(400, 450));

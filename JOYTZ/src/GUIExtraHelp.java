@@ -1,3 +1,4 @@
+//@author A0094558N
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -83,7 +84,7 @@ public class GUIExtraHelp extends Dialog {
         setText("Tutorial");
         currentPage = 1;
     }
-
+    //@author generated
     /**
      * Open the dialog.
      * @return the result
@@ -103,7 +104,7 @@ public class GUIExtraHelp extends Dialog {
         }
         return result;
     }
-
+    
     /**
      * Create contents of the dialog.
      */
@@ -125,7 +126,8 @@ public class GUIExtraHelp extends Dialog {
         btnNext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnNext.setText("Next");
     }
-
+    
+    //@author A0094558N
     private void createButtonListeners() {
         btnNext.addSelectionListener(new SelectionListener() {
 

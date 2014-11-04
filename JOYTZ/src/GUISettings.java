@@ -1,3 +1,4 @@
+//@author A0094558N
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -34,15 +35,53 @@ public class GUISettings extends Dialog {
                                                      "reading from file: ";
     private static final String ERROR_WRITING_FILE = "There was a problem " +
                                                      "writing to file: ";
-    private static final String FILENAME = "settings";
+    public static final String FILENAME = "settings.txt";
+    private static final int SETTINGS_TOTAL_NUMBER = 7;
+    private static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
+    private static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
+    private static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
+    private static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
+    private static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
+    private static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
+    private static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
+    private static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
+    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
+    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
+    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
+    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
+    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
+    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
+    private static final int COLOR_RED_R = 255;
+    private static final int COLOR_RED_G = 0;
+    private static final int COLOR_RED_B = 0;
+    private static final int COLOR_GREEN_R = 0;
+    private static final int COLOR_GREEN_G = 128;
+    private static final int COLOR_GREEN_B = 0;
+    private static final int COLOR_BLUE_R = 51;
+    private static final int COLOR_BLUE_G = 153;
+    private static final int COLOR_BLUE_B = 255;
+    private static final int COLOR_ORANGE_R = 244;
+    private static final int COLOR_ORANGE_G = 164;
+    private static final int COLOR_ORANGE_B = 96;
     
     private static File settingsFile;
-    private static List<String> workingStorage;
+    private static List<Integer> workingStorage;
     
     
     protected Object result;
     protected static Shell shell;
+    private static Spinner spinnerNotifFreq;
+    private ToolBar toolBarDeadline;
+    private static ToolItem tltmOngoingRed;
+    private static ToolItem tltmOngoingBlue;
+    private static ToolItem tltmOngoingGreen;
+    private static ToolItem tltmOngoingOrange;
+    private static ToolItem tltmDeadlineRed;
+    private static ToolItem tltmDeadlineBlue;
+    private static ToolItem tltmDeadlineGreen;
+    private static ToolItem tltmDeadlineOrange;
 
+    //@author generated
     /**
      * Create the dialog.
      * @param parent
@@ -58,7 +97,10 @@ public class GUISettings extends Dialog {
      * @return the result
      */
     public Object open() {
+        loadGUISettings();
         createContents();
+        setupListeners();
+        displaySettingsInGUI();
         shell.open();
         shell.layout();
         Display display = getParent().getDisplay();
@@ -87,118 +129,188 @@ public class GUISettings extends Dialog {
         lblNotificationFrequency.setLayoutData(fd_lblNotificationFrequency);
         lblNotificationFrequency.setText("Notification Frequency (minutes):");
         
-        Spinner spinner = new Spinner(shell, SWT.BORDER);
-        spinner.setMaximum(1440);
-        spinner.setMinimum(1);
-        FormData fd_spinner = new FormData();
-        fd_spinner.top = new FormAttachment(0, 10);
-        fd_spinner.left = new FormAttachment(lblNotificationFrequency, 6);
-        spinner.setLayoutData(fd_spinner);
+        spinnerNotifFreq = new Spinner(shell, SWT.BORDER);
+        spinnerNotifFreq.setMaximum(1440);
+        spinnerNotifFreq.setMinimum(1);
+        FormData fd_spinnerNotifFreq = new FormData();
+        fd_spinnerNotifFreq.top = new FormAttachment(0, 10);
+        fd_spinnerNotifFreq.left = new FormAttachment(lblNotificationFrequency, 6);
+        spinnerNotifFreq.setLayoutData(fd_spinnerNotifFreq);
         
-        Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-        FormData fd_label = new FormData();
-        fd_label.bottom = new FormAttachment(spinner, 18, SWT.BOTTOM);
-        fd_label.top = new FormAttachment(spinner, 16);
-        fd_label.left = new FormAttachment(0, 10);
-        fd_label.right = new FormAttachment(100, -10);
-        label.setLayoutData(fd_label);
+        Label horizontalSeparator1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        FormData fd_horizontalSeparator1 = new FormData();
+        fd_horizontalSeparator1.bottom = new FormAttachment(spinnerNotifFreq, 18, SWT.BOTTOM);
+        fd_horizontalSeparator1.top = new FormAttachment(spinnerNotifFreq, 16);
+        fd_horizontalSeparator1.left = new FormAttachment(0, 10);
+        fd_horizontalSeparator1.right = new FormAttachment(100, -10);
+        horizontalSeparator1.setLayoutData(fd_horizontalSeparator1);
         
         Label lblDeadlineColor = new Label(shell, SWT.NONE);
         lblDeadlineColor.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
         FormData fd_lblDeadlineColor = new FormData();
-        fd_lblDeadlineColor.top = new FormAttachment(label, 16);
+        fd_lblDeadlineColor.top = new FormAttachment(horizontalSeparator1, 16);
         fd_lblDeadlineColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
         lblDeadlineColor.setLayoutData(fd_lblDeadlineColor);
         lblDeadlineColor.setText("Deadline color:");
         
-        Label label_1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-        FormData fd_label_1 = new FormData();
-        fd_label_1.top = new FormAttachment(lblDeadlineColor, 17);
-        fd_label_1.right = new FormAttachment(label, 0, SWT.RIGHT);
-        fd_label_1.bottom = new FormAttachment(lblDeadlineColor, 19, SWT.BOTTOM);
-        fd_label_1.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
-        label_1.setLayoutData(fd_label_1);
+        Label horizontalSeparator2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        FormData fd_horizontalSeparator2 = new FormData();
+        fd_horizontalSeparator2.top = new FormAttachment(lblDeadlineColor, 17);
+        fd_horizontalSeparator2.right = new FormAttachment(horizontalSeparator1, 0, SWT.RIGHT);
+        fd_horizontalSeparator2.bottom = new FormAttachment(lblDeadlineColor, 19, SWT.BOTTOM);
+        fd_horizontalSeparator2.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        horizontalSeparator2.setLayoutData(fd_horizontalSeparator2);
         
         Label lblOngoingColor = new Label(shell, SWT.NONE);
         FormData fd_lblOngoingColor = new FormData();
-        fd_lblOngoingColor.top = new FormAttachment(label_1, 21);
+        fd_lblOngoingColor.top = new FormAttachment(horizontalSeparator2, 21);
         fd_lblOngoingColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
         lblOngoingColor.setLayoutData(fd_lblOngoingColor);
         lblOngoingColor.setText("Ongoing color:");
         
-        ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
-        FormData fd_toolBar = new FormData();
-        fd_toolBar.top = new FormAttachment(lblDeadlineColor, 0, SWT.TOP);
-        fd_toolBar.left = new FormAttachment(lblDeadlineColor, 6);
-        toolBar.setLayoutData(fd_toolBar);
+        toolBarDeadline = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
+        FormData fd_toolBarDeadline = new FormData();
+        fd_toolBarDeadline.top = new FormAttachment(lblDeadlineColor, 0, SWT.TOP);
+        fd_toolBarDeadline.left = new FormAttachment(lblDeadlineColor, 6);
+        toolBarDeadline.setLayoutData(fd_toolBarDeadline);
         
-        ToolItem tltmRed = new ToolItem(toolBar, SWT.RADIO);
-        tltmRed.setText("Red");
+        tltmDeadlineRed = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineRed.setText("Red");
         
-        ToolItem tltmBlue = new ToolItem(toolBar, SWT.RADIO);
-        tltmBlue.setText("Blue");
+        tltmDeadlineBlue = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineBlue.setText("Blue");
         
-        ToolItem tltmGreen = new ToolItem(toolBar, SWT.RADIO);
-        tltmGreen.setText("Green");
+        tltmDeadlineGreen = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineGreen.setText("Green");
         
-        ToolItem tltmOrange = new ToolItem(toolBar, SWT.RADIO);
-        tltmOrange.setText("Orange");
+        tltmDeadlineOrange = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineOrange.setText("Orange");
         
-        ToolBar toolBar_1 = new ToolBar(shell,  SWT.RIGHT);
-        FormData fd_toolBar_1 = new FormData();
-        fd_toolBar_1.top = new FormAttachment(lblOngoingColor, 0, SWT.TOP);
-        fd_toolBar_1.left = new FormAttachment(lblOngoingColor, 6);
-        toolBar_1.setLayoutData(fd_toolBar_1);
+        ToolBar toolBarOngoing = new ToolBar(shell,  SWT.RIGHT);
+        FormData fd_toolBarOngoing = new FormData();
+        fd_toolBarOngoing.top = new FormAttachment(lblOngoingColor, 0, SWT.TOP);
+        fd_toolBarOngoing.left = new FormAttachment(lblOngoingColor, 6);
+        toolBarOngoing.setLayoutData(fd_toolBarOngoing);
         
-        ToolItem tltmRed_1 = new ToolItem(toolBar_1, SWT.RADIO);
-        tltmRed_1.setText("Red");
+        tltmOngoingRed = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingRed.setText("Red");
         
-        ToolItem tltmBlue_1 = new ToolItem(toolBar_1, SWT.RADIO);
-        tltmBlue_1.setText("Blue");
+        tltmOngoingBlue = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingBlue.setText("Blue");
         
-        ToolItem tltmGreen_1 = new ToolItem(toolBar_1, SWT.RADIO);
-        tltmGreen_1.setText("Green");
+        tltmOngoingGreen = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingGreen.setText("Green");
         
-        ToolItem tltmOrange_1 = new ToolItem(toolBar_1, SWT.RADIO);
-        tltmOrange_1.setText("Orange");
-
-        setupListeners();
+        tltmOngoingOrange = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingOrange.setText("Orange");
     }
 
+    private void displaySettingsInGUI() {
+        spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
+        
+        int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);
+        int loadedDeadlineColorG = workingStorage.get(SETTINGS_DEADLINE_COLOR_G_INDEX);
+        int loadedDeadlineColorB = workingStorage.get(SETTINGS_DEADLINE_COLOR_B_INDEX);
+        if (loadedDeadlineColorR == COLOR_BLUE_R &&
+            loadedDeadlineColorG == COLOR_BLUE_G &&
+            loadedDeadlineColorB == COLOR_BLUE_B) {
+            tltmDeadlineBlue.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_RED_R &&
+                   loadedDeadlineColorG == COLOR_RED_G &&
+                   loadedDeadlineColorB == COLOR_RED_B) {
+            tltmDeadlineRed.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_ORANGE_R &&
+                   loadedDeadlineColorG == COLOR_ORANGE_G &&
+                   loadedDeadlineColorB == COLOR_ORANGE_B) {
+            tltmDeadlineOrange.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_GREEN_R &&
+                   loadedDeadlineColorG == COLOR_GREEN_G &&
+                   loadedDeadlineColorB == COLOR_GREEN_B) {
+            tltmDeadlineGreen.setSelection(true);
+        }
+        
+        int loadedOngoingColorR = workingStorage.get(SETTINGS_ONGOING_COLOR_R_INDEX);
+        int loadedOngoingColorG = workingStorage.get(SETTINGS_ONGOING_COLOR_G_INDEX);
+        int loadedOngoingColorB = workingStorage.get(SETTINGS_ONGOING_COLOR_B_INDEX);
+        if (loadedOngoingColorR == COLOR_BLUE_R &&
+            loadedOngoingColorG == COLOR_BLUE_G &&
+            loadedOngoingColorB == COLOR_BLUE_B) {
+            tltmOngoingBlue.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_RED_R &&
+                   loadedOngoingColorG == COLOR_RED_G &&
+                   loadedOngoingColorB == COLOR_RED_B) {
+            tltmOngoingRed.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_ORANGE_R &&
+                   loadedOngoingColorG == COLOR_ORANGE_G &&
+                   loadedOngoingColorB == COLOR_ORANGE_B) {
+            tltmOngoingOrange.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_GREEN_R &&
+                   loadedOngoingColorG == COLOR_GREEN_G &&
+                   loadedOngoingColorB == COLOR_GREEN_B) {
+            tltmOngoingGreen.setSelection(true);
+        }
+    }
+
+    //@author A0094558N
     public static void loadGUISettings() {
         initializeVariables();
         createFile(FILENAME);
-        readFile(FILENAME, workingStorage);
+        readFile(FILENAME);
     }
     
     private static void initializeVariables() {
         settingsFile = new File(FILENAME);
-        workingStorage = new ArrayList<String>();
+        workingStorage = new ArrayList<Integer>(SETTINGS_TOTAL_NUMBER);
     }
     
     // Checks whether the given file exists, and creates one if it does not
-    private static void createFile (String filename) {
+    public static void createFile (String filename) {
         // Get the file path directory
         Path filePath = Paths.get(filename);
         // Look for the file in the filepath, and create it if it does not exist
         if (!Files.exists(filePath)) {
             try {
                 settingsFile.createNewFile();
+                initializeWorkingStorage();
+                writeFile(settingsFile);
             } catch (IOException e) {
                 System.out.print(ERROR_CREATE_FILE);
             }
         }
     }
     
+    private static void initializeWorkingStorage() {
+        for (int i = 0; i < SETTINGS_TOTAL_NUMBER; i++) {
+            workingStorage.add(-1);
+        }
+        workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, SETTINGS_DEFAULT_NOTIF_FREQ);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_R);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_G);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_B);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_R);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_G);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_B);
+    }
+
     // Reads the contents of the file and stores it in an array list
-    private static void readFile (String filename, List<String> workingStorage) {
+    private static void readFile (String filename) {
         String temp;
+        int i = 0;
         try {
             BufferedReader in = new BufferedReader(new FileReader(settingsFile));
             // Read the file line by line and add each line
             // into an index of workingStorage
-            while ((temp = in.readLine()) != null) {
-                workingStorage.add(temp);
+            if (workingStorage.isEmpty()) {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    workingStorage.add(value);
+                }
+            } else {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    workingStorage.set(i, value);
+                    i++;
+                }
             }
             in.close();
         } catch (IOException e) {
@@ -207,12 +319,12 @@ public class GUISettings extends Dialog {
     }
     
     // Write the contents of the array list into the file
-    private static void writeFile (File settingsFile, List<String> workingStorage) {
+    private static void writeFile (File settingsFile) {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
             // Write all contents of workingStorage to the file
             for (int i = 0; i < workingStorage.size(); i++) {
-                out.write(workingStorage.get(i));
+                out.write(Integer.toString(workingStorage.get(i)));
                 out.newLine();
             }
             out.close();
@@ -225,7 +337,50 @@ public class GUISettings extends Dialog {
     private static void setupListeners(){
         shell.addListener(SWT.Close, new Listener() {
             public void handleEvent(Event event) {
-                //writeFile(settingsFile, workingStorage);
+                readSettingsFromDialog();
+                writeFile(settingsFile);
+                GUI.getSettings();
+            }
+
+            private void readSettingsFromDialog() {
+                int notificationFreq = Integer.parseInt(spinnerNotifFreq.getText());
+                workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, notificationFreq);
+                
+                if (tltmOngoingRed.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_RED_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_RED_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_RED_B);
+                } else if (tltmOngoingBlue.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_BLUE_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_BLUE_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_BLUE_B);
+                } else if (tltmOngoingOrange.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_ORANGE_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_ORANGE_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_ORANGE_B);
+                } else if (tltmOngoingGreen.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_GREEN_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_GREEN_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_GREEN_B);
+                } 
+                
+                if (tltmDeadlineRed.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_RED_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_RED_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_RED_B);
+                } else if (tltmDeadlineBlue.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_BLUE_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_BLUE_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_BLUE_B);
+                } else if (tltmDeadlineOrange.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_ORANGE_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_ORANGE_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_ORANGE_B);
+                } else if (tltmDeadlineGreen.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_GREEN_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_GREEN_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_GREEN_B);
+                } 
             }
         });
     }
