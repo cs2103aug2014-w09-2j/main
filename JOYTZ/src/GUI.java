@@ -509,6 +509,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                     inputField.setText("");
                     settingsDialog.open();
                     applySettings();
+                    initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
                 } else {
                     String userInput = inputField.getText();
