@@ -24,28 +24,30 @@ public class TestAnalyzer {
 	@Test
 	public void testHandleAddCommand() throws ParseException {
 		Command test1 = new Command("add");
-		Command test2 = new Command("add~meeting with friends");
+		Command test2 = new Command("add meeting with friends");
 		Command test3 = new Command(
-				"add~meeting with friends~discuss about CS2103T project");
+				"add meeting with friends, discuss about CS2103T project");
 		Command test4 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2015");
+				"add meeting with friends, discuss about CS2103T project on 14/10/2015");
 		Command test5 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2015~~NUS");
+				"add meeting with friends, discuss about CS2103T project on 14/10/2015 @NUS");
 		Command test6 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2015~20/10/2015~NUS~medium");
+				"add meeting with friends, discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
 		Command test7 = new Command(
-				"add~meeting with friends~discuss about CS2103T project~14/10/2015~20/10/2015~NUS~medium");
-		Command test8 = new Command("add~~~14/10/2015~~NUS~medium");
-		Command test9 = new Command("add~~~~20/10/2015~NUS~medium");
-		Command test10 = new Command("add~~~14/10/2015~20/10/2015~NUS~medium");
+				"add meeting with friends, discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
+		Command test8 = new Command("add assignment on 14/10/2015 @NUS #medium");
+		Command test9 = new Command(
+				"add jogging due on 20/10/2015 @NUS #medium");
+		Command test10 = new Command(
+				"add project from 14/10/2015 to 20/10/2015 @NUS #medium");
 		Command test11 = new Command(
-				"add~~~14/10/2015~20/10/2015 2:38AM~NUS~medium");
-		Command test12 = new Command("add~task1~~32/2/2015");
-		Command test13 = new Command("add~task1~~25/13/2015");
-		Command test14 = new Command("add~task1~~29/2/2017");
-		Command test15 = new Command("add~task1~~31/4/2015");
-		Command test16 = new Command("add~task1~~22/2/2017 13:24PM");
-		Command test17 = new Command("add~task1~~22/4/2015 12:60AM");
+				"add project from 14/10/2015 to 20/10/2015 2:38AM @NUS #medium");
+		Command test12 = new Command("add task1 on 32/2/2015");
+		Command test13 = new Command("add task1 on 25/13/2015");
+		Command test14 = new Command("add task1 on 29/2/2017");
+		Command test15 = new Command("add task1 on 31/4/2015");
+		Command test16 = new Command("add task1 on 22/2/2017 13:24PM");
+		Command test17 = new Command("add task1 on 22/4/2015 12:60AM");
 
 		ExecutableCommand expected = new ExecutableCommand("add");
 		expected.setErrorMessage(ERROR_NULL_TASK);
@@ -159,8 +161,8 @@ public class TestAnalyzer {
 	@Test
 	public void testHandleDeleteCommand() throws ParseException {
 		Command test1 = new Command("delete");
-		Command test2 = new Command("delete~0");
-		Command test3 = new Command("delete~meeting with friends");
+		Command test2 = new Command("delete 0");
+		Command test3 = new Command("delete meeting with friends");
 
 		ExecutableCommand expected = new ExecutableCommand("delete");
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
@@ -193,9 +195,9 @@ public class TestAnalyzer {
 	@Test
 	public void testHandleUpdateCommand() throws ParseException {
 		Command test1 = new Command("update");
-		Command test2 = new Command("update~2");
-		Command test3 = new Command("update~meeting");
-		Command test4 = new Command("update~2~name~dating");
+		Command test2 = new Command("update 2");
+		Command test3 = new Command("update meeting");
+		Command test4 = new Command("update 2 name dating");
 
 		ExecutableCommand expected = new ExecutableCommand("update");
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);

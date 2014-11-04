@@ -93,7 +93,7 @@ public class Analyzer {
 		String startTiming = "";
 		String endTiming = "";
 
-		if (arg.length == 0) {
+		if (arg[0] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK);
 			return tempCommand;
 		}
@@ -147,7 +147,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.DELETE);
 
-		if (arg.length == 0) {
+		if (arg[0] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
@@ -167,13 +167,13 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.UPDATE);
 
-		if (arg.length == 0) {
+		if (arg[0] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
 			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 			return tempCommand;
-		} else if (arg.length == 1) {
+		} else if (arg[1] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 			return tempCommand;
 		} else if (!isValidIndicator(arg[1])) {
@@ -236,7 +236,8 @@ public class Analyzer {
 		} else if (indicator.equals(StringFormat.PRIORITY)) {
 			String check = arg[2].toLowerCase();
 			if (check.equals(StringFormat.HIGH_PRIORITY)
-					|| check.equals(StringFormat.LOW_PRIORITY)) {
+					|| check.equals(StringFormat.LOW_PRIORITY)
+					|| check.equals(StringFormat.MEDIUM_PRIORITY)) {
 				updatedItem = check;
 			} else if (check.equals(StringFormat.IMPORTANT)) {
 				updatedItem = StringFormat.HIGH_PRIORITY;

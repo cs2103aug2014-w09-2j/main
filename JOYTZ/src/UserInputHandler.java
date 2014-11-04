@@ -169,6 +169,8 @@ public class UserInputHandler {
 					output[6] = StringFormat.HIGH_PRIORITY;
 				} else if (priority.equals(StringFormat.UNIMPORTANT)) {
 					output[6] = StringFormat.LOW_PRIORITY;
+				} else if (priority.equals(StringFormat.MEDIUM_PRIORITY)) {
+					output[6] = StringFormat.MEDIUM_PRIORITY;
 				} else {
 					output[6] = StringFormat.INVALID_PRIORITY;
 				}
