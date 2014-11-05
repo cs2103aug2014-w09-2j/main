@@ -310,22 +310,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     
     /**
      * Processes the rows to color, when to display notifications,
-     * as well as the scrolling the table to the newly edited row
+     * scrolling the table to the newly edited row, and
+     * making tasks with high priority bold.
      * 
      * @param name                      The name of the task
      * @param action                    The action executed by the user
+     * @param taskId                    The index of the task in the table
      * @param isLastRow                 Is this the last row?
      * @param isHighlightedPassStart    Has the start timing passed?
      * @param isHighlitedPassEnd        Has the end timing passed?
-     * @param item                      The table row to be colored
+     * @param item                      The upper table row of the task
+     * @param item2                     The lower table row of the task
      * @param taskNumber                The index number of the task in the table
+     * @param priority                  The priority of the task
      * 
      */
     private static void displayGUIFeedback(String name, String action, int taskId,
                                            boolean isLastRow, boolean isHighlightedPassStart,
                                            boolean isHighlightedPassEnd, TableItem item, 
                                            TableItem item2, int taskNumber, String priority) {
-
+        // Alternate task colors
         if (taskNumber % 2 == 1) {
             colorRowBackgroundYellow(item);
             colorRowBackgroundYellow(item2);
@@ -352,7 +356,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             }
         }
         
-        // Coloring newly edited row grey
+        // Coloring newly edited row
         if (isLastRow == true && action.equals(StringFormat.ADD)) {
             colorRowBackgroundGreen(item);
             colorRowBackgroundGreen(item2);
@@ -367,7 +371,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                 taskTable.showItem(taskTable.getItem(taskId-1));
             }
         }
-
+        
+        // Making tasks with high priority bold
         if (priority.trim().equals("high")) {
             item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.BOLD));
             item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.BOLD));
