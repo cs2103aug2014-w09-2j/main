@@ -85,14 +85,15 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Table feedbackTable;
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
-    private static TableColumn tblclmnStartedOn;
-    private static TableColumn tblclmnDeadline;
+    private static TableColumn tblclmnStart;
+    private static TableColumn tblclmnEnd;
     private static TableColumn tblclmnFeedback;
     private static boolean isSortingOrSearching;
     private static Display display;
     private static Shell shell;
     private static Timer displayTimer;
     private static GUI mainFrame;
+    private static TableColumn tblclmnPriority;
     
     /**
      * Creates and returns a new TableItem containing
@@ -271,14 +272,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
-                                                                     startDate, endDate});
+            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", priority, 
+                                                                     name, startDate, endDate});
             
             TableItem item2;
             if (location.equals(EMPTY_STRING)) {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location, priority });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, location });
             } else {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location, priority });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, "at " + location });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -484,12 +485,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         }
         
         // Resize all the columns to fit the data
-        tblclmnStartedOn.pack();
-        tblclmnDeadline.pack();
+        tblclmnStart.pack();
+        tblclmnEnd.pack();
+        tblclmnPriority.pack();
         tblclmnNo.pack();
         
         int widthLeft = tableWidth - scrollbarWidth - tblclmnNo.getWidth() - 
-                        tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth();
+                        tblclmnStart.getWidth() - tblclmnEnd.getWidth() - 
+                        tblclmnPriority.getWidth();
 
         tblclmnName.setWidth(widthLeft - padding);
     }
@@ -787,21 +790,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
+        
+        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnPriority.setMoveable(true);
+        tblclmnPriority.setWidth(100);
+        tblclmnPriority.setText("Priority");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);
         tblclmnName.setWidth(100);
         tblclmnName.setText("Name");
 
-        tblclmnStartedOn = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnStartedOn.setMoveable(true);
-        tblclmnStartedOn.setWidth(180);
-        tblclmnStartedOn.setText("Start");
+        tblclmnStart = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnStart.setMoveable(true);
+        tblclmnStart.setWidth(180);
+        tblclmnStart.setText("Start");
 
-        tblclmnDeadline = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnDeadline.setMoveable(true);
-        tblclmnDeadline.setWidth(180);
-        tblclmnDeadline.setText("End");
+        tblclmnEnd = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnEnd.setMoveable(true);
+        tblclmnEnd.setWidth(180);
+        tblclmnEnd.setText("End");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
