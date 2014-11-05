@@ -49,11 +49,11 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -62,36 +62,36 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test updating the added task
         // Update name
         systemTestResult = Controller.startController(INPUT_UPDATE_NAME);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Update location
         systemTestResult = Controller.startController(INPUT_UPDATE_LOCATION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Update description
         systemTestResult = Controller.startController(INPUT_UPDATE_DESCRIPTION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -100,17 +100,17 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test clear
         systemTestResult = Controller.startController(StringFormat.CLEAR);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_CLEAR, systemTestResult.getMessageShowToUser());
-        assertEquals(true, systemTestResult.getTaskList().isEmpty());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
     }
     
     @Test
@@ -119,17 +119,17 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test display
         systemTestResult = Controller.startController(StringFormat.DISPLAY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_DISPLAY, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -138,17 +138,17 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test delete
         systemTestResult = Controller.startController(INPUT_DELETE_1);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_DELETE, systemTestResult.getMessageShowToUser());
-        assertEquals(true, systemTestResult.getTaskList().isEmpty());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
     }
     
     @Test
@@ -157,26 +157,26 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
-        listSize = systemTestResult.getTaskList().size();
+        listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test sort
         systemTestResult = Controller.startController(INPUT_SORT_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_SORT, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskList().get(listSize - 2));
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -185,25 +185,25 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
-        listSize = systemTestResult.getTaskList().size();
+        listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test search
         systemTestResult = Controller.startController(INPUT_SEARCH_PRIORITY_HIGH);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_SEARCH, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskList().get(0));
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(0));
     }
     
     @Test
@@ -212,23 +212,23 @@ public class TestSystem {
         
         // Test add
         Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
-        int listSize = systemTestResult.getTaskList().size();
+        int listSize = systemTestResult.getTaskStringList().size();
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test undo
         systemTestResult = Controller.startController(StringFormat.UNDO);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UNDO, systemTestResult.getMessageShowToUser());
-        assertEquals(true, systemTestResult.getTaskList().isEmpty());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
         
         // Test redo
         systemTestResult = Controller.startController(StringFormat.REDO);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_REDO, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
     }
 
 }
