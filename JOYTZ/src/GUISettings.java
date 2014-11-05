@@ -58,11 +58,11 @@ public class GUISettings extends Dialog {
     private static final int COLOR_GREEN_G = 128;
     private static final int COLOR_GREEN_B = 0;
     private static final int COLOR_BLUE_R = 51;
-    private static final int COLOR_BLUE_G = 153;
+    private static final int COLOR_BLUE_G = 102;
     private static final int COLOR_BLUE_B = 255;
-    private static final int COLOR_ORANGE_R = 244;
-    private static final int COLOR_ORANGE_G = 164;
-    private static final int COLOR_ORANGE_B = 96;
+    private static final int COLOR_ORANGE_R = 255;
+    private static final int COLOR_ORANGE_G = 120;
+    private static final int COLOR_ORANGE_B = 0;
     
     private static File settingsFile;
     private static List<Integer> workingStorage;

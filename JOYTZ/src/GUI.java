@@ -28,6 +28,8 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DND;
 
 //import com.melloware.jintellitype.HotkeyListener;
 //import com.melloware.jintellitype.IntellitypeListener;
@@ -84,9 +86,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
     private static TableColumn tblclmnStartedOn;
-    private static TableColumn tblclmnLocation;
-    private static TableColumn tblclmnPriority;
-    private static TableColumn tblclmnDescription;
+//    private static TableColumn tblclmnLocation;
+//    private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDeadline;
     private static TableColumn tblclmnFeedback;
     private static boolean isSortingOrSearching;
@@ -272,13 +273,20 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", startDate, 
-                                                                     endDate, name, location, 
-                                                                     description, priority });
+            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
+                                                                     startDate, endDate});
+            
+            TableItem item2;
+            if (location.equals("")) {
+                item2 = newTableItem(taskTable, new String[] {"", location, priority });
+            } else {
+                item2 = newTableItem(taskTable, new String[] {"", "at " + location, priority });
+            }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
             displayGUIFeedback(name, action, taskId, isLastRow, isHighlightedPassStart,
-                               isHighlightedPassEnd, item, taskNumber);
+                               isHighlightedPassEnd, item, item2, taskNumber, priority);
+            
         }
 
         if (isLastRow == true) {
@@ -317,11 +325,21 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void displayGUIFeedback(String name, String action, int taskId,
                                            boolean isLastRow, boolean isHighlightedPassStart,
-                                           boolean isHighlightedPassEnd, TableItem item, int taskNumber) {
+                                           boolean isHighlightedPassEnd, TableItem item, 
+                                           TableItem item2, int taskNumber, String priority) {
+
+        if (taskNumber % 2 == 1) {
+            colorRowBackgroundYellow(item);
+            colorRowBackgroundYellow(item2);
+        } else {
+            colorRowBackgroundLightGrey(item);
+            colorRowBackgroundLightGrey(item2);
+        }
         
         // Coloring green
         if (isHighlightedPassStart == true) {
             colorOngoingRow(item);
+            colorOngoingRow(item2);
             if (action.equals(StringFormat.DISPLAY)) {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
             }
@@ -330,6 +348,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         // Coloring red
         if (isHighlightedPassEnd == true) {
             colorDeadlineRow(item);
+            colorDeadlineRow(item2);
             if (action.equals(StringFormat.DISPLAY)) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
             }
@@ -337,9 +356,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         // Coloring newly edited row grey
         if (isLastRow == true && action.equals(StringFormat.ADD)) {
-            colorRowBackgroundGrey(item);
+            colorRowBackgroundGreen(item);
+            colorRowBackgroundGreen(item2);
         } else if (action.equals(StringFormat.UPDATE) && taskNumber+1 == taskId) {
-            colorRowBackgroundGrey(item);
+            colorRowBackgroundGreen(item);
+            colorRowBackgroundGreen(item2);
         } 
         
         // Scrolling of table to the newly edited row
@@ -347,6 +368,13 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             if ((taskId - 1) <= taskTable.getItemCount()) {
                 taskTable.showItem(taskTable.getItem(taskId-1));
             }
+        }
+
+        if (priority.trim().equals("high")) {
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.BOLD));
+            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.BOLD));
+        } else {
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
         }
     } 
     
@@ -409,9 +437,31 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param item      The table row to be colored
      * 
      */
-    private static void colorRowBackgroundGrey(TableItem item) {
-        Color grey = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
+    private static void colorRowBackgroundGreen(TableItem item) {
+        Color color = SWTResourceManager.getColor(32,178,170);
+        item.setBackground(color);
+    }
+    
+    /**
+     * Colors the background of a row light grey
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundLightGrey(TableItem item) {
+        Color grey = display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
         item.setBackground(grey);
+    }
+    
+    /**
+     * Colors the background of a row yellow
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundYellow(TableItem item) {
+        Color color = SWTResourceManager.getColor(255,255,240);
+        item.setBackground(color);
     }
 
     /**
@@ -429,31 +479,28 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             scrollbarWidth = 0;
         }
         
-        int widthLeft = tableWidth - tblclmnNo.getWidth() - 
-                        tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
-                        tblclmnPriority.getWidth() - scrollbarWidth;
-        int widthPerColumn = widthLeft / 3;
-
         /*
          *  Resize all the columns to fit the data
          *  The other columns do not undergo this as they have a 
          *  fixed and predictable length.
          *  Note: Packing is extremely slow
          */
-        tblclmnName.pack();
-        tblclmnDescription.pack();
-        tblclmnLocation.pack();
+        tblclmnStartedOn.pack();
+        tblclmnDeadline.pack();
+        
+        int widthLeft = tableWidth - tblclmnNo.getWidth() - 
+                        tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
+                        /*tblclmnPriority.getWidth() - */scrollbarWidth;
+        int widthPerColumn = widthLeft;
 
         // Prevent it from being too big.
-        if (tblclmnName.getWidth() >= widthPerColumn) {
-            tblclmnName.setWidth(widthPerColumn);
-        }
-        if (tblclmnDescription.getWidth() >= widthPerColumn) {
-            tblclmnDescription.setWidth(widthPerColumn);
-        }
-        if (tblclmnLocation.getWidth() >= widthPerColumn) {
-            tblclmnLocation.setWidth(widthPerColumn);
-        }  
+//        if (tblclmnName.getWidth() >= widthPerColumn) {
+//            tblclmnName.setWidth(widthPerColumn);
+//        }
+//        if (tblclmnLocation.getWidth() >= widthPerColumn) {
+//            tblclmnLocation.setWidth(widthPerColumn);
+//        }  
+        tblclmnName.setWidth(widthLeft - 5);// - tblclmnLocation.getWidth());
     }
     
     /** 
@@ -725,15 +772,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         display = Display.getDefault();
         shell = new Shell();
-        shell.setMinimumSize(new Point(400, 450));
+        shell.setMinimumSize(new Point(400, 500));
         shell.setToolTipText("To-do list app of the year");
-        shell.setSize(800, 512);
+        shell.setSize(800, 550);
         shell.setLayout(new GridLayout(1, false));
         shell.setText("JOYTZ");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        taskTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 11, SWT.NORMAL));
-        taskTable.setLinesVisible(true);
+        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
         taskTable.setHeaderVisible(true);
         taskTable.setSize(new Point(400, 400));
         taskTable.setToolTipText("View your tasks here");
@@ -747,6 +793,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
 
+        tblclmnName = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnName.setMoveable(true);
+        tblclmnName.setWidth(100);
+        tblclmnName.setText("Name");
+
         tblclmnStartedOn = new TableColumn(taskTable, SWT.CENTER);
         tblclmnStartedOn.setMoveable(true);
         tblclmnStartedOn.setWidth(180);
@@ -756,31 +807,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnDeadline.setMoveable(true);
         tblclmnDeadline.setWidth(180);
         tblclmnDeadline.setText("End");
-
-        tblclmnName = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnName.setMoveable(true);
-        tblclmnName.setWidth(100);
-        tblclmnName.setText("Name");
-
-        tblclmnLocation = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnLocation.setMoveable(true);
-        tblclmnLocation.setWidth(100);
-        tblclmnLocation.setText("Location");
-
-        tblclmnDescription = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnDescription.setMoveable(true);
-        tblclmnDescription.setWidth(103);
-        tblclmnDescription.setText("Description");
-
-        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnPriority.setMoveable(true);
-        tblclmnPriority.setWidth(85);
-        tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        feedbackTable.setFont(SWTResourceManager.getFont("Berlin Sans FB", 12, SWT.NORMAL));
-        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-        gd_feedbackTable.heightHint = 140;
+        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        gd_feedbackTable.heightHint = 121;
         feedbackTable.setLayoutData(gd_feedbackTable);
         
         tblclmnFeedback = new TableColumn(feedbackTable, SWT.NONE);
@@ -793,7 +824,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         horizontalSeparator.setLayoutData(gd_horizontalSeparator);
 
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-        inputField.setFont(SWTResourceManager.getFont("Berlin Sans FB", 15, SWT.NORMAL));
+        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 14, SWT.NORMAL));
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);

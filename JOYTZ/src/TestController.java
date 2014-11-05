@@ -7,16 +7,16 @@ import org.junit.Test;
 public class TestController {
     private static final String INPUT_INVALID = "sdfsf";
     
-    private static final String INPUT_ADD_ALL = "add~meeting with friends~discuss about CS2103T project~" +
-                                                "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
-    private static final String INPUT_ADD_NO_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
-                                                        "24/02/2015 11:30am~25/02/2015 11:45am~NUS";
-    private static final String INPUT_ADD_NO_LOCATION = "add~meeting with friends~discuss about CS2103T project~" +
-                                                        "24/02/2015 11:30am~25/02/2015 11:45am~~medium";
-    private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add~meeting with friends~" +
-                                                                     "discuss about CS2103T project~" +
-                                                                     "24/02/2015 11:30am~25/02/2015 11:45am~~";
-    private static final String INPUT_ADD_ONLY_NAME = "add~meeting with friends~~~~~";
+    private static final String INPUT_ADD_ALL = "add meeting with friends, discuss about CS2103T project " +
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends, discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS";
+    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends, discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am #medium";
+    private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add meeting with friends, " +
+                                                                     "discuss about CS2103T project " +
+                                                                     "from 24/02/2015 11:30am to 25/02/2015 11:45am";
+    private static final String INPUT_ADD_ONLY_NAME = "add meeting with friends";
     
     private static final String EXECUTABLECOMMAND_ACTION_ADD = "add";
     private static final String EXECUTABLECOMMAND_NAME = "meeting with friends";
