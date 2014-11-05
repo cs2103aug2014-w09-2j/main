@@ -28,8 +28,6 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DND;
 
 //import com.melloware.jintellitype.HotkeyListener;
 //import com.melloware.jintellitype.IntellitypeListener;
@@ -67,8 +65,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static final int DEFAULT_ONGOING_COLOR_R = 0;
 	private static final int DEFAULT_ONGOING_COLOR_G = 128;
 	private static final int DEFAULT_ONGOING_COLOR_B = 0;
-	private static final int ONE_MINUTE_IN_MILLISECONDS = 60000;
-	private static final int ONE_DAY_IN_MILLISECONDS = 86400000;
+	private static final int IN_MILLISECONDS_ONE_MINUTE = 60000;
+	private static final int IN_MILLISECONDS_ONE_DAY = 86400000;
+	private static final int NULL_NUMBER = -1;
+	private static final String EMPTY_STRING = "";
 
 	// Variables for settings
 	private static int refreshRate;
@@ -86,8 +86,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static TableColumn tblclmnNo;
     private static TableColumn tblclmnName;
     private static TableColumn tblclmnStartedOn;
-//    private static TableColumn tblclmnLocation;
-//    private static TableColumn tblclmnPriority;
     private static TableColumn tblclmnDeadline;
     private static TableColumn tblclmnFeedback;
     private static boolean isSortingOrSearching;
@@ -277,10 +275,10 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                                                                      startDate, endDate});
             
             TableItem item2;
-            if (location.equals("")) {
-                item2 = newTableItem(taskTable, new String[] {"", location, priority });
+            if (location.equals(EMPTY_STRING)) {
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location, priority });
             } else {
-                item2 = newTableItem(taskTable, new String[] {"", "at " + location, priority });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location, priority });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -341,7 +339,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             colorOngoingRow(item);
             colorOngoingRow(item2);
             if (action.equals(StringFormat.DISPLAY)) {
-                NotifierDialog.notify(String.format(NOTIFICATION_START, name), "");
+                NotifierDialog.notify(String.format(NOTIFICATION_START, name), EMPTY_STRING);
             }
         }
         
@@ -350,7 +348,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
             if (action.equals(StringFormat.DISPLAY)) {
-                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), "");
+                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), EMPTY_STRING);
             }
         }
         
@@ -387,7 +385,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void colorDeadlineRow(TableItem item) {
         Color color;
-        if (deadlineRowColorR == -1) {
+        if (deadlineRowColorR == NULL_NUMBER) {
             color = SWTResourceManager.getColor(DEFAULT_DEADLINE_COLOR_R, 
                                                 DEFAULT_DEADLINE_COLOR_G, 
                                                 DEFAULT_DEADLINE_COLOR_B);
@@ -419,7 +417,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void colorOngoingRow(TableItem item) {
         Color color;
-        if (ongoingRowColorR == -1) {
+        if (ongoingRowColorR == NULL_NUMBER) {
             color = SWTResourceManager.getColor(DEFAULT_ONGOING_COLOR_R, 
                                                 DEFAULT_ONGOING_COLOR_G, 
                                                 DEFAULT_ONGOING_COLOR_B);
@@ -471,6 +469,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void resizeTable() {
         int scrollbarWidth = 0;
+        int padding = 5;
         int tableWidth = taskTable.getSize().x;
         
         if (taskTable.getVerticalBar().isVisible()) {
@@ -479,28 +478,15 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             scrollbarWidth = 0;
         }
         
-        /*
-         *  Resize all the columns to fit the data
-         *  The other columns do not undergo this as they have a 
-         *  fixed and predictable length.
-         *  Note: Packing is extremely slow
-         */
+        // Resize all the columns to fit the data
         tblclmnStartedOn.pack();
         tblclmnDeadline.pack();
+        tblclmnNo.pack();
         
-        int widthLeft = tableWidth - tblclmnNo.getWidth() - 
-                        tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth() - 
-                        /*tblclmnPriority.getWidth() - */scrollbarWidth;
-        int widthPerColumn = widthLeft;
+        int widthLeft = tableWidth - scrollbarWidth - tblclmnNo.getWidth() - 
+                        tblclmnStartedOn.getWidth() - tblclmnDeadline.getWidth();
 
-        // Prevent it from being too big.
-//        if (tblclmnName.getWidth() >= widthPerColumn) {
-//            tblclmnName.setWidth(widthPerColumn);
-//        }
-//        if (tblclmnLocation.getWidth() >= widthPerColumn) {
-//            tblclmnLocation.setWidth(widthPerColumn);
-//        }  
-        tblclmnName.setWidth(widthLeft - 5);// - tblclmnLocation.getWidth());
+        tblclmnName.setWidth(widthLeft - padding);
     }
     
     /** 
@@ -535,12 +521,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void initializeVariables() {
         isSortingOrSearching = false;
         settingsStorage = new ArrayList<Integer>();
-        deadlineRowColorR = -1;
-        deadlineRowColorG = -1;
-        deadlineRowColorB = -1;
-        ongoingRowColorR = -1;
-        ongoingRowColorG = -1;
-        ongoingRowColorB = -1;
+        deadlineRowColorR = NULL_NUMBER;
+        deadlineRowColorG = NULL_NUMBER;
+        deadlineRowColorB = NULL_NUMBER;
+        ongoingRowColorR = NULL_NUMBER;
+        ongoingRowColorG = NULL_NUMBER;
+        ongoingRowColorB = NULL_NUMBER;
     }
     
     /** 
@@ -565,24 +551,24 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             private void handleUserInput() {
                 if (inputField.getText().trim().equals(StringFormat.HELP)) {
                     displayHelp();
-                    inputField.setText("");
+                    inputField.setText(EMPTY_STRING);
                 } else if (inputField.getText().trim().equals(StringFormat.TUTORIAL)) {    
                     GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
-                    inputField.setText("");
+                    inputField.setText(EMPTY_STRING);
                     helpDialog.open();
                 } else if (inputField.getText().trim().equals(StringFormat.SETTINGS)) {    
                     GUISettings settingsDialog = new GUISettings(shell, SWT.NONE);
-                    inputField.setText("");
+                    inputField.setText(EMPTY_STRING);
                     settingsDialog.open();
                     applySettings();
                     initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
                 } else {
                     String userInput = inputField.getText();
-                    userInput = userInput.replaceAll("[\n\r]", "");
+                    userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
                     Controller.startController(userInput);
 
-                    inputField.setText("");
+                    inputField.setText(EMPTY_STRING);
                 }
             }
         });
@@ -600,7 +586,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         feedbackTable.addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
                 tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
-                resizeTable(); // laggy
+                resizeTable();
             }
         });
     }
@@ -621,17 +607,21 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      */
     private static void applySettings() {
         if (settingsStorage.size() != 0) {
-            System.out.println("Loading settings");
-            refreshRate = settingsStorage.get(0);
-            refreshRate *= ONE_MINUTE_IN_MILLISECONDS;
-            deadlineRowColorR = settingsStorage.get(1);
-            deadlineRowColorG = settingsStorage.get(2);
-            deadlineRowColorB = settingsStorage.get(3);
-            ongoingRowColorR = settingsStorage.get(4);
-            ongoingRowColorG = settingsStorage.get(5);
-            ongoingRowColorB = settingsStorage.get(6);
+            LOGGER.info("==============\n" +
+                        "Loading settings from file.\n" +
+                        "====================\n");
+            refreshRate = settingsStorage.get(GUISettings.SETTINGS_NOTIF_FREQ_INDEX);
+            refreshRate *= IN_MILLISECONDS_ONE_MINUTE;
+            deadlineRowColorR = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_R_INDEX);
+            deadlineRowColorG = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_G_INDEX);
+            deadlineRowColorB = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_B_INDEX);
+            ongoingRowColorR = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_R_INDEX);
+            ongoingRowColorG = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_G_INDEX);
+            ongoingRowColorB = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_B_INDEX);
         } else {
-            System.out.println("Using defaults");
+            LOGGER.info("==============\n" +
+                        "No settings found. Using default settings.\n" +
+                        "====================\n");
             refreshRate = DEFAULT_REFRESH_RATE;
             deadlineRowColorR = DEFAULT_DEADLINE_COLOR_R;
             deadlineRowColorG = DEFAULT_DEADLINE_COLOR_G;
@@ -650,19 +640,19 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void readFile (String filename) {
-        String temp;
-        int i = 0;
-        File settingsFile = new File(filename);
         try {
+            String temp;
+            File settingsFile = new File(filename);
             BufferedReader in = new BufferedReader(new FileReader(settingsFile));
             // Read the file line by line and add each line
-            // into an index of workingStorage
+            // into an index of settingsStorage
             if (settingsStorage.isEmpty()) {
                 while ((temp = in.readLine()) != null) {
                     int value = Integer.parseInt(temp);
                     settingsStorage.add(value);
                 }
             } else {
+                int i = 0;
                 while ((temp = in.readLine()) != null) {
                     int value = Integer.parseInt(temp);
                     settingsStorage.set(i, value);
@@ -682,8 +672,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void initializeDisplayRefreshTimer(int delay) {
-        assert delay >= ONE_MINUTE_IN_MILLISECONDS; 
-        assert delay <= ONE_DAY_IN_MILLISECONDS;
+        assert delay >= IN_MILLISECONDS_ONE_MINUTE; 
+        assert delay <= IN_MILLISECONDS_ONE_DAY;
         displayTimer = new Timer(delay, null);
         displayTimer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
