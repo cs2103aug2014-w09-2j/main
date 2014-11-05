@@ -487,8 +487,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         // Resize all the columns to fit the data
         tblclmnStart.pack();
         tblclmnEnd.pack();
-        tblclmnPriority.pack();
-        tblclmnNo.pack();
         
         int widthLeft = tableWidth - scrollbarWidth - tblclmnNo.getWidth() - 
                         tblclmnStart.getWidth() - tblclmnEnd.getWidth() - 
@@ -793,7 +791,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
         tblclmnPriority.setMoveable(true);
-        tblclmnPriority.setWidth(100);
+        tblclmnPriority.setWidth(90);
         tblclmnPriority.setText("Priority");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
