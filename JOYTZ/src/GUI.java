@@ -36,13 +36,13 @@ import org.eclipse.swt.widgets.Label;
 public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
-    private static final String HELP_TEXT_COMMANDS = "List of Commands: \n";
-    private static final String HELP_TEXT_ADD = "\t    add~task name~description~start time " +
-    											"~end time~location~priority\n";
-    private static final String HELP_TEXT_DELETE =  "\t    delete~index number\n";
-    private static final String HELP_TEXT_UPDATE = "\t    update~index number~attribute~new data\n";
-    private static final String HELP_TEXT_SEARCH = "\t    search~attribute~search for\n";
-    private static final String HELP_TEXT_SORT = "\t    sort~attribute\n";
+    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
+    private static final String HELP_TEXT_ADD = "\t    add <task name>, <description> from <start date> " +
+    											"to <end time> @<location> #<priority>\n";
+    private static final String HELP_TEXT_DELETE =  "\t    delete <index number>\n";
+    private static final String HELP_TEXT_UPDATE = "\t    update <index number> <attribute> <new data>\n";
+    private static final String HELP_TEXT_SEARCH = "\t    search <attribute> <search for>\n";
+    private static final String HELP_TEXT_SORT = "\t    sort <attribute>\n";
     private static final String HELP_TEXT_UNDO = "\t    undo\n";
     private static final String HELP_TEXT_REDO = "\t    redo\n";
     private static final String HELP_TEXT_DISPLAY ="\t    display\n";
