@@ -28,8 +28,8 @@ public class TimeHandler {
 					.equals(currentDate))
 					&& tempEndDate.after(currentDate)
 					&& tempStartDate.before(tempEndDate)) {
-				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
-				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
+				tempCommand.setTaskStart(String.valueOf(startTiming));
+				tempCommand.setTaskEnd(String.valueOf(endTiming));
 			} else {
 				if (tempStartDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
@@ -45,14 +45,14 @@ public class TimeHandler {
 		} else if (startTiming != 0) {
 			if (tempStartDate.after(currentDate)
 					|| tempStartDate.equals(currentDate)) {
-				tempCommand.setTaskStartTiming(String.valueOf(startTiming));
+				tempCommand.setTaskStart(String.valueOf(startTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
 						ERROR_INVALID_EARLIER_TIME, StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
-				tempCommand.setTaskEndTiming(String.valueOf(endTiming));
+				tempCommand.setTaskEnd(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
 						ERROR_INVALID_EARLIER_TIME, StringFormat.END));

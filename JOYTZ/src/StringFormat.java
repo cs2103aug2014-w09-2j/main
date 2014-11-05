@@ -47,6 +47,7 @@ public class StringFormat {
 	public static final String TIME_INDICATOR = ":";
 	public static final String DESC_OR_ITEM_INDICATOR = ",";
 	public static final String DATE_INDICATOR = "/";
+	public static final String DUE_INDICATOR = "due";
 	public static final String DUE_ON_INDICATOR = "dueon";
 	public static final String DUE_AT_INDICATOR = "dueat";
 	public static final String TO_INDICATOR = "to";
@@ -57,4 +58,8 @@ public class StringFormat {
 	public static final String IMPORTANT = "important";
 	public static final String UNIMPORTANT = "unimportant";
 	
+	/**
+	 * invalid indicator
+	 */
+	public static final String INVALID = "invalid";
 }
