@@ -188,7 +188,6 @@ public class Controller {
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
-                System.out.println("#####################" + outputString);
                 if (outputString.equals(ERROR_NO_TASK_FILE)) {
                     GUI.openTutorial();
                 }
