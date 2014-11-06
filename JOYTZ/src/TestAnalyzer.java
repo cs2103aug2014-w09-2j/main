@@ -14,6 +14,7 @@ public class TestAnalyzer {
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
 	private static final String ERROR_INVALID_END_EARLIER_THAN_START_TIME = "End time is earlier than start time.\n";
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
 
 	private static Date currentDate = new Date(System.currentTimeMillis());
 	private static Date d1 = new Date(115, 9, 14);
@@ -76,7 +77,7 @@ public class TestAnalyzer {
 		expected3.setTaskStart(String.valueOf(d3.getTime()));
 		expected3.setTaskEnd(String.valueOf(d5.getTime()));
 		expected3.setErrorMessage(String.format(ERROR_INVALID_PRIORITY));
-		
+
 		ExecutableCommand expected4 = new ExecutableCommand("add");
 		expected4.setErrorMessage(String.format(ERROR_INVALID_TIME,
 				StringFormat.END));
@@ -167,9 +168,9 @@ public class TestAnalyzer {
 		assertEquals("fail to detect invalid task start timing",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test17)
 						.getErrorMessage());
-		
 
-		// test case 18: test if the task location is able to be added correctly with space within
+		// test case 18: test if the task location is able to be added correctly
+		// with space within
 		assertEquals("fail to get task location to be added",
 				expected2.getTaskLocation(), Analyzer.runAnalyzer(test18)
 						.getTaskLocation());
@@ -188,12 +189,12 @@ public class TestAnalyzer {
 		assertEquals("fail to detect invalid task start time",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test21)
 						.getErrorMessage());
-		
+
 		// test case 22: test if the invalid time is able to be detected
 		assertEquals("fail to detect invalid task end time",
 				expected4.getErrorMessage(), Analyzer.runAnalyzer(test22)
 						.getErrorMessage());
-		
+
 		// test case 23: test if the invalid time is able to be detected
 		assertEquals("fail to detect invalid task end time",
 				expected4.getErrorMessage(), Analyzer.runAnalyzer(test23)
@@ -234,12 +235,11 @@ public class TestAnalyzer {
 		assertEquals("invalid task index case is not handled",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test3)
 						.getErrorMessage());
-		
+
 		// test case 4: test if multiple delete can be analyzed correctly
 		assertEquals("multiple delete action is not analyzed correctly",
-				expected.getTaskId(), Analyzer.runAnalyzer(test4)
-						.getTaskId());
-		
+				expected.getTaskId(), Analyzer.runAnalyzer(test4).getTaskId());
+
 		// test case 5: test if the error catcher for invalid task index is
 		// working
 		assertEquals("invalid task index case is not handled",
@@ -251,13 +251,13 @@ public class TestAnalyzer {
 		assertEquals("invalid task index case is not handled",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
 						.getErrorMessage());
-		
+
 		// test case 6: test if the error catcher for invalid task index is
 		// working
 		assertEquals("invalid task index case is not handled",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
 						.getErrorMessage());
-		
+
 	}
 
 	@Test
@@ -302,4 +302,163 @@ public class TestAnalyzer {
 
 	}
 
+	@Test
+	public void testHandleDisplayCommand() throws ParseException {
+		Command test1 = new Command("display");
+		Command test2 = new Command("displayy");
+		Command test3 = new Command("DISPLAY");
+		Command test4 = new Command("display asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand("display");
+		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the display action is processed correctly
+		assertEquals("display action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid display command is
+		// working
+		assertEquals("unable to detect invalid display command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the display action is processed correctly
+		assertEquals("display action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleUndoCommand() throws ParseException {
+		Command test1 = new Command("undo");
+		Command test2 = new Command("undoa");
+		Command test3 = new Command("UNdo");
+		Command test4 = new Command("undo asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand("undo");
+		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the undo action is processed correctly
+		assertEquals("undo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid undo command is
+		// working
+		assertEquals("unable to detect invalid undo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the undo action is processed correctly
+		assertEquals("undo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleRedoCommand() throws ParseException {
+		Command test1 = new Command("redo");
+		Command test2 = new Command("redopls");
+		Command test3 = new Command("ReDo");
+		Command test4 = new Command("ReDO asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand("redo");
+		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the redo action is processed correctly
+		assertEquals("redo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid redo command is
+		// working
+		assertEquals("unable to detect invalid redo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the redo action is processed correctly
+		assertEquals("redo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleClearCommand() throws ParseException {
+		Command test1 = new Command("clear");
+		Command test2 = new Command("clearS");
+		Command test3 = new Command("CLEar");
+		Command test4 = new Command("CLEAr asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand("clear");
+		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the clear action is processed correctly
+		assertEquals("clear action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid clear command is
+		// working
+		assertEquals("unable to detect invalid clear command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the clear action is processed correctly
+		assertEquals("clear action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+	
+	@Test
+	public void testHandleExitCommand() throws ParseException {
+		Command test1 = new Command("exit");
+		Command test2 = new Command("exitS");
+		Command test3 = new Command("ExIT");
+		Command test4 = new Command("EXIT asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand("exit");
+		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the exit action is processed correctly
+		assertEquals("exit action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid exit command is
+		// working
+		assertEquals("unable to detect invalid redo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the exit action is processed correctly
+		assertEquals("exit action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
 }

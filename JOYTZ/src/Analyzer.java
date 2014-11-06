@@ -17,7 +17,7 @@ public class Analyzer {
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
 	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-
+	
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
 			StringFormat.START_DATE, StringFormat.START_TIME,
