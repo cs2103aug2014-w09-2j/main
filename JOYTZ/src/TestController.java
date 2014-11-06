@@ -7,16 +7,16 @@ import org.junit.Test;
 public class TestController {
     private static final String INPUT_INVALID = "sdfsf";
     
-    private static final String INPUT_ADD_ALL = "add~meeting with friends~discuss about CS2103T project~" +
-                                                "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
-    private static final String INPUT_ADD_NO_PRIORITY = "add~meeting with friends~discuss about CS2103T project~" +
-                                                        "24/02/2015 11:30am~25/02/2015 11:45am~NUS";
-    private static final String INPUT_ADD_NO_LOCATION = "add~meeting with friends~discuss about CS2103T project~" +
-                                                        "24/02/2015 11:30am~25/02/2015 11:45am~~medium";
-    private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add~meeting with friends~" +
-                                                                     "discuss about CS2103T project~" +
-                                                                     "24/02/2015 11:30am~25/02/2015 11:45am~~";
-    private static final String INPUT_ADD_ONLY_NAME = "add~meeting with friends~~~~~";
+    private static final String INPUT_ADD_ALL = "add meeting with friends, discuss about CS2103T project " +
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends, discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS";
+    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends, discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am #medium";
+    private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add meeting with friends, " +
+                                                                     "discuss about CS2103T project " +
+                                                                     "from 24/02/2015 11:30am to 25/02/2015 11:45am";
+    private static final String INPUT_ADD_ONLY_NAME = "add meeting with friends";
     
     private static final String EXECUTABLECOMMAND_ACTION_ADD = "add";
     private static final String EXECUTABLECOMMAND_NAME = "meeting with friends";
@@ -63,8 +63,8 @@ public class TestController {
         parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
         parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
         parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
-        parsedCommand.setTaskStartTiming(EXECUTABLECOMMAND_START_TIME);
-        parsedCommand.setTaskEndTiming(EXECUTABLECOMMAND_END_TIME);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
         parsedCommand.setTaskLocation(EXECUTABLECOMMAND_LOCATION);
         parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
 
@@ -89,8 +89,8 @@ public class TestController {
         parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
         parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
         parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
-        parsedCommand.setTaskStartTiming(EXECUTABLECOMMAND_START_TIME);
-        parsedCommand.setTaskEndTiming(EXECUTABLECOMMAND_END_TIME);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
         parsedCommand.setTaskLocation(EXECUTABLECOMMAND_LOCATION);
 
         Feedback result = Controller.startExecutor(parsedCommand);
@@ -114,8 +114,8 @@ public class TestController {
         parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
         parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
         parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
-        parsedCommand.setTaskStartTiming(EXECUTABLECOMMAND_START_TIME);
-        parsedCommand.setTaskEndTiming(EXECUTABLECOMMAND_END_TIME);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
 
         Feedback result = Controller.startExecutor(parsedCommand);
         int listSize = result.getTaskStringList().size();
@@ -139,7 +139,7 @@ public class TestController {
         ExecutableCommand parsedCommand = new ExecutableCommand();
         parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
         parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
-        parsedCommand.setTaskStartTiming(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
         parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
 
         Feedback result = Controller.startExecutor(parsedCommand);
@@ -186,9 +186,9 @@ public class TestController {
         assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
                      Controller.analyzeInput(test).getTaskDescription());	
         assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
-                     Controller.analyzeInput(test).getTaskStartTiming());
+                     Controller.analyzeInput(test).getTaskStart());
         assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
-                     Controller.analyzeInput(test).getTaskEndTiming());
+                     Controller.analyzeInput(test).getTaskEnd());
         assertEquals(ERROR_INVALID_LOCATION, EXECUTABLECOMMAND_LOCATION, 
                      Controller.analyzeInput(test).getTaskLocation());
         assertEquals(ERROR_INVALID_PRIORITY, EXECUTABLECOMMAND_PRIORITY, 
@@ -209,9 +209,9 @@ public class TestController {
         assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
                      Controller.analyzeInput(test).getTaskDescription());	
         assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
-                     Controller.analyzeInput(test).getTaskStartTiming());
+                     Controller.analyzeInput(test).getTaskStart());
         assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
-                     Controller.analyzeInput(test).getTaskEndTiming());
+                     Controller.analyzeInput(test).getTaskEnd());
         assertEquals(ERROR_INVALID_LOCATION, EXECUTABLECOMMAND_LOCATION, 
                      Controller.analyzeInput(test).getTaskLocation());
         assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 
@@ -233,9 +233,9 @@ public class TestController {
         assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
                      Controller.analyzeInput(test).getTaskDescription());	
         assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
-                     Controller.analyzeInput(test).getTaskStartTiming());
+                     Controller.analyzeInput(test).getTaskStart());
         assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
-                     Controller.analyzeInput(test).getTaskEndTiming());
+                     Controller.analyzeInput(test).getTaskEnd());
         assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
                      Controller.analyzeInput(test).getTaskLocation());
         assertEquals(ERROR_INVALID_PRIORITY, EXECUTABLECOMMAND_PRIORITY, 
@@ -257,9 +257,9 @@ public class TestController {
         assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
                      Controller.analyzeInput(test).getTaskDescription());	
         assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
-                     Controller.analyzeInput(test).getTaskStartTiming());
+                     Controller.analyzeInput(test).getTaskStart());
         assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
-                     Controller.analyzeInput(test).getTaskEndTiming());
+                     Controller.analyzeInput(test).getTaskEnd());
         assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
                      Controller.analyzeInput(test).getTaskLocation());
         assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 
@@ -282,9 +282,9 @@ public class TestController {
         assertEquals(ERROR_INVALID_DESCRIPTION, EMPTY_STRING,
                      Controller.analyzeInput(test).getTaskDescription());	
         assertEquals(ERROR_INVALID_START_TIME, EMPTY_STRING, 
-                     Controller.analyzeInput(test).getTaskStartTiming());
+                     Controller.analyzeInput(test).getTaskStart());
         assertEquals(ERROR_INVALID_END_TIME, EMPTY_STRING, 
-                     Controller.analyzeInput(test).getTaskEndTiming());
+                     Controller.analyzeInput(test).getTaskEnd());
         assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
                      Controller.analyzeInput(test).getTaskLocation());
         assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 

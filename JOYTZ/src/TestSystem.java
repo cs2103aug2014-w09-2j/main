@@ -5,21 +5,21 @@ import org.junit.Test;
 
 
 public class TestSystem {
-    private static final String INPUT_ADD_ALL = "add~meeting with friends~discuss about CS2103T project~" +
-                                                "24/02/2015 11:30am~25/02/2015 11:45am~NUS~medium";
-    private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add~meeting with friends~" +
-                                                              "discuss about CS2103T project~" +
-                                                              "24/02/2015 11:30am~25/02/2015 11:45am~" +
-                                                              "NUS~high";
+    private static final String INPUT_ADD_ALL = "add meeting with friends, discuss about CS2103T project " +
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add meeting with friends, " +
+                                                              "discuss about CS2103T project " +
+                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45am " +
+                                                              "@NUS #important";
     
-    private static final String INPUT_UPDATE_NAME = "update~1~name~chat with friends";
-    private static final String INPUT_UPDATE_PRIORITY = "update~1~priority~low";
-    private static final String INPUT_UPDATE_LOCATION = "update~1~location~UTown";
-    private static final String INPUT_UPDATE_DESCRIPTION = "update~1~description~talk about movies";
+    private static final String INPUT_UPDATE_NAME = "update 1 name chat with friends";
+    private static final String INPUT_UPDATE_PRIORITY = "update 1 priority low";
+    private static final String INPUT_UPDATE_LOCATION = "update 1 location UTown";
+    private static final String INPUT_UPDATE_DESCRIPTION = "update 1 description talk about movies";
     
-    private static final String INPUT_SORT_PRIORITY = "sort~priority";
-    private static final String INPUT_SEARCH_PRIORITY_HIGH = "search~priority~high";
-    private static final String INPUT_DELETE_1 = "delete~1";
+    private static final String INPUT_SORT_PRIORITY = "sort priority";
+    private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority high";
+    private static final String INPUT_DELETE_1 = "delete 1";
     
     private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1: \"chat with friends\" is updated successfully.\n";

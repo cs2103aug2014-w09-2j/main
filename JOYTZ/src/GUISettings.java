@@ -37,13 +37,13 @@ public class GUISettings extends Dialog {
                                                      "writing to file: ";
     public static final String FILENAME = "settings.txt";
     private static final int SETTINGS_TOTAL_NUMBER = 7;
-    private static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
-    private static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
-    private static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
-    private static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
-    private static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
-    private static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
-    private static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
+    public static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
+    public static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
+    public static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
+    public static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
+    public static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
+    public static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
+    public static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
     private static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
     private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
     private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
@@ -58,11 +58,11 @@ public class GUISettings extends Dialog {
     private static final int COLOR_GREEN_G = 128;
     private static final int COLOR_GREEN_B = 0;
     private static final int COLOR_BLUE_R = 51;
-    private static final int COLOR_BLUE_G = 153;
+    private static final int COLOR_BLUE_G = 102;
     private static final int COLOR_BLUE_B = 255;
-    private static final int COLOR_ORANGE_R = 244;
-    private static final int COLOR_ORANGE_G = 164;
-    private static final int COLOR_ORANGE_B = 96;
+    private static final int COLOR_ORANGE_R = 255;
+    private static final int COLOR_ORANGE_G = 120;
+    private static final int COLOR_ORANGE_B = 0;
     
     private static File settingsFile;
     private static List<Integer> workingStorage;
