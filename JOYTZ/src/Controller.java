@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 public class Controller {
     private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
-    private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
-    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+    private static final String ERROR_INVALID_COMMAND = "Invalid command. Need help? " +
+                                                        "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
+                                                          "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String EMPTY_LIST = "null";
@@ -59,23 +61,23 @@ public class Controller {
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
-        if (feedback.getTaskStringList().size() == 0) {
+        if (feedback.getTaskList().size() == 0) {
             isLastItem = true;
             GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
                             isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
         } else {
-            for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
+            for (int i = 0; i < feedback.getTaskList().size(); i++) {
                 System.out.println("===================\n" +
                                    "Display string from feedback object: \n" + 
-                                   "	" + feedback.getTaskStringList().get(i) + "\n" +
+                                   "	" + feedback.getTaskList().get(i) + "\n" +
                                    "===================\n");
 
                 String[] parameterArr = processDisplayString(i);
-                isHighlightedPassStart = feedback.getPassStartTimeIndicator()[i];
-                isHighlightedPassEnd = feedback.getPassEndTimeListIndicator()[i];
+                isHighlightedPassStart = feedback.getPassStartTimeList()[i];
+                isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
 
-                if (i == feedback.getTaskStringList().size() - 1) {
+                if (i == feedback.getTaskList().size() - 1) {
                     isLastItem = true;
                 }
 
@@ -115,7 +117,7 @@ public class Controller {
      * 
      */
     private static String[] processDisplayString(int i) {
-        String[] parameterArr = feedback.getTaskStringList().get(i).split("~");
+        String[] parameterArr = feedback.getTaskList().get(i).split("~");
         for(int k = 0; k < parameterArr.length; k++) {
             parameterArr[k] = parameterArr[k].trim();
         }
@@ -159,8 +161,8 @@ public class Controller {
                         "After analyzer: \n" + 
                         "	Action = " + parsedCommand.getAction() + "\n" + 
                         "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
+                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
                         "	Description = " + parsedCommand.getTaskDescription() + "\n" +
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
