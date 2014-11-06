@@ -1,26 +1,25 @@
-import java.util.ArrayList;
-
 public class UserInputHandler {
-
 	public static String[] convertUserInput(String input) {
 		int index;
 		String temp1, temp2;
 
-		if (input.contains(StringFormat.DUE_INDICATOR)) {
-			index = input.indexOf(StringFormat.DUE_INDICATOR);
+		if (input.contains("due")) {
+			index = input.indexOf("due");
 			temp1 = input.substring(index + 4, index + 6);
 			temp2 = input.substring(index + 6);
 			input = input.substring(0, index + 3);
-			if (temp1.equals(StringFormat.ON_INDICATOR)) {
-				input = input.concat(StringFormat.ON_INDICATOR);
+			if (temp1.equals("on")) {
+				input = input.concat("on");
 			} else {
-				input = input.concat(StringFormat.AT_INDICATOR);
+				input = input.concat("at");
 			}
 			input = input.concat(temp2);
 		}
 
 		String[] arg = input.trim().split(" ");
 		String[] parsedInput;
+
+		System.out.println(input);
 
 		switch (arg[0]) {
 		case StringFormat.ADD:
@@ -127,7 +126,8 @@ public class UserInputHandler {
 				if (str.length > i + 1 && isInputIndicator(str[i + 1])) {
 					locationExistence = false;
 				}
-			} else if (temp.equals(StringFormat.TO_INDICATOR)) {
+			} else if (temp.equals(StringFormat.TO_INDICATOR)
+					|| temp.equals(StringFormat.DUE_ON_INDICATOR)) {
 				if (isTimeOrDate(str[i + 1])) {
 					if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
 						endTimeExistence = true;
@@ -135,14 +135,8 @@ public class UserInputHandler {
 						endDateExistence = true;
 					}
 				}
-			} else if (temp.equals(StringFormat.DUE_ON_INDICATOR)) {
-				if (isDate(str[i + 1])) {
-					endDateExistence = true;
-				} else if (isTime(str[i + 1])) {
-					output[4] = StringFormat.INVALID;
-					break;
-				}
-			} else if (temp.equals(StringFormat.FROM_INDICATOR)) {
+			} else if (temp.equals(StringFormat.ON_INDICATOR)
+					|| temp.equals(StringFormat.FROM_INDICATOR)) {
 				if (isTimeOrDate(str[i + 1])) {
 					if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
 						startTimeExistence = true;
@@ -150,26 +144,11 @@ public class UserInputHandler {
 						startDateExistence = true;
 					}
 				}
-			} else if (temp.equals(StringFormat.ON_INDICATOR)) {
-				if (isDate(str[i + 1])) {
-					startDateExistence = true;
-				} else if (isTime(str[i + 1])) {
-					output[3] = StringFormat.INVALID;
-					break;
-				}
 			} else if (temp.equals(StringFormat.DUE_AT_INDICATOR)) {
-				if (isTime(str[i + 1])) {
-					endTimeExistence = true;
-				} else if (isDate(str[i + 1])) {
-					output[4] = StringFormat.INVALID;
-					break;
-				}
+				endTimeExistence = true;
 			} else if (temp.equals(StringFormat.AT_INDICATOR)) {
-				if (isTime(str[i + 1])) {
+				if (isTimeOrDate(str[i + 1])) {
 					startTimeExistence = true;
-				} else if (isDate(str[i + 1])) {
-					output[3] = StringFormat.INVALID;
-					break;
 				}
 			} else if (temp.contains(StringFormat.LOCATION_INDICATOR)) {
 				output[5] = temp.substring(1);
@@ -221,29 +200,23 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleDeleteInput(String[] str) {
-		ArrayList<String> output = new ArrayList<String>();
-
-		output.add(StringFormat.DELETE);
+		String[] output = { StringFormat.DELETE, "" };
 
 		if (str.length > 1) {
-			for (int i = 0; i < str.length; i++) {
-				output.add(str[i]);
-			}
+			output[1] = str[1];
 		}
 
-		String[] outputArr = new String[output.size()];
-		return output.toArray(outputArr);
+		return output;
 	}
 
 	private static String[] handleUpdateInput(String[] str) {
-		ArrayList<String> output = new ArrayList<String>();
-		output.add(StringFormat.UPDATE);
+		String[] output = { StringFormat.UPDATE, "", "", "" };
 
 		if (str.length > 1) {
-			output.add(str[1]);
+			output[1] = str[1];
 		}
 		if (str.length > 2) {
-			output.add(str[2]);
+			output[2] = str[2];
 		}
 		if (str.length > 3) {
 			String itemToBeUpdated = "";
@@ -251,193 +224,39 @@ public class UserInputHandler {
 				itemToBeUpdated = itemToBeUpdated.concat(str[i]);
 				itemToBeUpdated = itemToBeUpdated.concat(" ");
 			}
-			output.add(itemToBeUpdated);
+			output[3] = itemToBeUpdated;
 		}
 
-		String[] outputArr = new String[output.size()];
-		return output.toArray(outputArr);
+		return output;
 	}
 
 	private static String[] handleSearchInput(String[] str) {
-		ArrayList<String> output = new ArrayList<String>();
-
-		boolean nameExistence = false;
-		boolean descriptionExistence = false;
-		boolean dateTimeExistence = false;
-		boolean locationExistence = false;
-		boolean priorityExistence = false;
-		boolean startExistence = false;
-		boolean endExistence = false;
-
-		String key = "";
-
-		output.add(StringFormat.SEARCH);
+		String[] output = { StringFormat.SEARCH, "", "" };
 
 		if (str.length > 1) {
-			for (int i = 0; i < str.length; i++) {
-				String temp = str[i];
-
-				if (nameExistence) {
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							nameExistence = false;
-						} else {
-							key = key.concat(" ");
-						}
-					}
-				} else if (descriptionExistence) {
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							descriptionExistence = false;
-						} else {
-							key = key.concat(" ");
-						}
-					}
-				} else if (dateTimeExistence) {
-					output.add(temp);
-					dateTimeExistence = false;
-				} else if (startExistence) {
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							startExistence = false;
-						} else {
-							key = key.concat(" ");
-						}
-					}
-				} else if (endExistence) {
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							endExistence = false;
-						} else {
-							key = key.concat(" ");
-						}
-					}
-				} else if (locationExistence) {
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							locationExistence = false;
-						} else {
-							key = key.concat(" ");
-						}
-					}
-				} else if (priorityExistence) {
-					output.add(temp);
-					priorityExistence = false;
-				} else if (isSearchIndicator(temp)) {
-					switch (temp) {
-					case StringFormat.DESCRIPTION:
-						output.add(StringFormat.DESCRIPTION);
-						descriptionExistence = true;
-						break;
-					case StringFormat.START_DATE:
-						output.add(StringFormat.START_DATE);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.START_TIME:
-						output.add(StringFormat.START_TIME);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.END_DATE:
-						output.add(StringFormat.END_DATE);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.END_TIME:
-						output.add(StringFormat.END_TIME);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.START:
-						output.add(StringFormat.START);
-						startExistence = true;
-						break;
-					case StringFormat.END:
-						output.add(StringFormat.END);
-						endExistence = true;
-						break;
-					case StringFormat.LOCATION:
-						output.add(StringFormat.LOCATION);
-						locationExistence = true;
-						break;
-					case StringFormat.PRIORITY:
-						output.add(StringFormat.PRIORITY);
-						priorityExistence = true;
-						break;
-					default:
-						output.add(StringFormat.INVALID);
-					}
-				} else {
-					output.add(StringFormat.ADD);
-					key = key.concat(temp);
-
-					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
-							output.add(key);
-							key = "";
-							nameExistence = false;
-						} else {
-							key = key.concat(" ");
-							nameExistence = true;
-						}
-					}
-				}
-			}
+			output[1] = str[1];
 		}
 
-		String[] outputArr = new String[output.size()];
-		return output.toArray(outputArr);
+		if (str.length > 2) {
+			String itemToSearch = "";
+			for (int i = 2; i < str.length; i++) {
+				itemToSearch = itemToSearch.concat(str[i]);
+				itemToSearch = itemToSearch.concat(" ");
+			}
+			output[2] = itemToSearch;
+		}
+
+		return output;
 	}
 
 	private static String[] handleSortInput(String[] str) {
-		ArrayList<String> output = new ArrayList<String>();
-		output.add(StringFormat.SORT);
+		String[] output = { StringFormat.SORT, "" };
 
 		if (str.length > 1) {
-			for (int i = 0; i < str.length; i++) {
-				output.add(str[i]);
-			}
+			output[1] = str[1];
 		}
 
-		String[] outputArr = new String[output.size()];
-		return output.toArray(outputArr);
-	}
-
-	private static boolean isDate(String temp) {
-		return temp.contains(StringFormat.DATE_INDICATOR);
-	}
-
-	private static boolean isTime(String temp) {
-		return temp.contains(StringFormat.TIME_INDICATOR);
-	}
-
-	private static boolean isSearchIndicator(String indicator) {
-		return indicator.equals(StringFormat.DESCRIPTION)
-				|| indicator.equals(StringFormat.START_DATE)
-				|| indicator.equals(StringFormat.START_TIME)
-				|| indicator.equals(StringFormat.END_DATE)
-				|| indicator.equals(StringFormat.END_TIME)
-				|| indicator.equals(StringFormat.LOCATION)
-				|| indicator.equals(StringFormat.PRIORITY)
-				|| indicator.equals(StringFormat.START)
-				|| indicator.equals(StringFormat.END);
+		return output;
 	}
 
 	private static boolean isInputIndicator(String indicator) {

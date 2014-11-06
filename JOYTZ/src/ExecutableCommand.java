@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 //package V1;
 
 public class ExecutableCommand {
@@ -10,57 +8,57 @@ public class ExecutableCommand {
 	// Task Class attributes for (add and update).
 	private String taskName;
 	private String taskDescription;
-	private String taskStart;
-	private String taskEnd;
+	private String taskStartTiming;
+	private String taskEndTiming;
 	private String taskLocation;
 	private String taskPriority;
 
 	// this is for identification of task.
-	private ArrayList<Integer> taskId;
+	private int taskId;
 
 	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
 
 	// these are for update, sort or search method.
-	private ArrayList<String> indicator;
-	private ArrayList<String> key;
+	private String indicator;
+	private String key;
 
 	/**
 	 * Constructor
 	 */
 
 	ExecutableCommand() {
-		this.taskId = new ArrayList<Integer>();
-		this.indicator = new ArrayList<String>();
-		this.key = new ArrayList<String>();
-		
 		this.action = "";
 
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStart = "";
-		this.taskEnd = "";
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 
+		this.taskId = -1;
 		this.errorMessage = "";
+
+		this.indicator = "";
+		this.key = "";
 	}
 
 	ExecutableCommand(String action) {
-		this.taskId = new ArrayList<Integer>();
-		this.indicator = new ArrayList<String>();
-		this.key = new ArrayList<String>();
-		
 		this.action = action;
 
 		this.taskName = "";
 		this.taskDescription = "";
-		this.taskStart = "";
-		this.taskEnd = "";
+		this.taskStartTiming = "";
+		this.taskEndTiming = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 
+		this.taskId = -1;
 		this.errorMessage = "";
+
+		this.indicator = "";
+		this.key = "";
 	}
 
 	/**
@@ -79,12 +77,12 @@ public class ExecutableCommand {
 		this.taskDescription = description;
 	}
 
-	public void setTaskStart(String timing) {
-		this.taskStart = timing;
+	public void setTaskStartTiming(String timing) {
+		this.taskStartTiming = timing;
 	}
 
-	public void setTaskEnd(String timing) {
-		this.taskEnd = timing;
+	public void setTaskEndTiming(String timing) {
+		this.taskEndTiming = timing;
 	}
 
 	public void setTaskLocation(String location) {
@@ -96,7 +94,7 @@ public class ExecutableCommand {
 	}
 
 	public void setTaskId(int id) {
-		this.taskId.add(id);
+		this.taskId = id;
 	}
 
 	public void setErrorMessage(String message) {
@@ -104,11 +102,11 @@ public class ExecutableCommand {
 	}
 
 	public void setIndicator(String indicator) {
-		this.indicator.add(indicator);
+		this.indicator = indicator;
 	}
 
 	public void setKey(String key) {
-		this.key.add(key);
+		this.key = key;
 	}
 
 	/**
@@ -127,12 +125,12 @@ public class ExecutableCommand {
 		return taskDescription;
 	}
 
-	public String getTaskStart() {
-		return taskStart;
+	public String getTaskStartTiming() {
+		return taskStartTiming;
 	}
 
-	public String getTaskEnd() {
-		return taskEnd;
+	public String getTaskEndTiming() {
+		return taskEndTiming;
 	}
 
 	public String getTaskLocation() {
@@ -143,7 +141,7 @@ public class ExecutableCommand {
 		return taskPriority;
 	}
 
-	public ArrayList<Integer> getTaskId() {
+	public int getTaskId() {
 		return taskId;
 	}
 
@@ -151,11 +149,11 @@ public class ExecutableCommand {
 		return errorMessage;
 	}
 
-	public ArrayList<String> getIndicator() {
+	public String getIndicator() {
 		return indicator;
 	}
 
-	public ArrayList<String> getKey() {
+	public String getKey() {
 		return key;
 	}
 

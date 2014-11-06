@@ -104,12 +104,6 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			if(arg[2].equals(StringFormat.INVALID)){
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.START));
-
-				return tempCommand;
-			}
 			startTiming = TimeHandler.inputTimingConvertor(arg[2]);
 			if (startTiming == null) {
 				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
@@ -119,12 +113,6 @@ public class Analyzer {
 			}
 		}
 		if (arg.length >= 4) {
-			if(arg[3].equals(StringFormat.INVALID)){
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.END));
-
-				return tempCommand;
-			}
 			endTiming = TimeHandler.inputTimingConvertor(arg[3]);
 			if (endTiming == null) {
 				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
@@ -159,7 +147,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.DELETE);
 
-		if (arg.length == 0) {
+		if (arg[0] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
@@ -179,13 +167,13 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.UPDATE);
 
-		if (arg.length == 0) {
+		if (arg[0] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
 			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 			return tempCommand;
-		} else if (arg.length == 1) {
+		} else if (arg[1] == "") {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 			return tempCommand;
 		} else if (!isValidIndicator(arg[1])) {
@@ -288,22 +276,23 @@ public class Analyzer {
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
-		if (arg[0] == "") {
+		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		} else if (!isValidIndicator(arg[0])
+				|| arg[0].equals(StringFormat.START_TIME)
+				|| arg[0].equals(StringFormat.END_TIME)
+				|| arg[0].equals(StringFormat.START_DATE)
+				|| arg[0].equals(StringFormat.END_DATE)) {
+			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 
 			return tempCommand;
 		}
 
-		for (int i = 0; i < arg.length; i++) {
-			String sortIndicator = arg[i].toLowerCase();
+		String sortIndicator = arg[0].toLowerCase();
 
-			if (!isValidIndicator(sortIndicator)) {
-				tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
-
-				return tempCommand;
-			}
-			tempCommand.setIndicator(sortIndicator);
-		}
+		tempCommand.setIndicator(sortIndicator);
 
 		return tempCommand;
 	}
@@ -315,53 +304,47 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.SEARCH);
 
-		for (int i = 0; i < arg.length; i++) {
-			String temp = arg[i].toLowerCase();
-			boolean indicatorExistence = i % 2 == 0 ? true : false;
-			boolean argumentExistence = i % 2 != 0 ? true : false;
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 
-			if (indicatorExistence && temp == "") {
-				tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+			return tempCommand;
+		} else if (arg.length == 1) {
+			tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
 
-				return tempCommand;
-			} else if (argumentExistence && temp == "") {
-				tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
-
-				return tempCommand;
-			} else if (temp.equals(StringFormat.INVALID)) {
-				tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
-
-				return tempCommand;
-			}
-
-			if (indicatorExistence) {
-				tempCommand.setIndicator(temp);
-				continue;
-			} else if (argumentExistence) {
-				if (isDateTime(temp)) {
-					String indicator = arg[i - 1];
-					String searchKey = TimeHandler.inputTimingConvertor(temp);
-
-					if (searchKey == null) {
-						if (indicator.equals(StringFormat.START)
-								|| indicator.equals(StringFormat.START_DATE)
-								|| indicator.equals(StringFormat.START_TIME)) {
-							tempCommand.setErrorMessage(String.format(
-									ERROR_INVALID_TIME, StringFormat.START));
-						} else {
-							tempCommand.setErrorMessage(String.format(
-									ERROR_INVALID_TIME, StringFormat.END));
-						}
-
-						return tempCommand;
-					} else {
-						tempCommand.setKey(searchKey);
-					}
-				} else {
-					tempCommand.setKey(temp);
-				}
-			}
+			return tempCommand;
 		}
+
+		String indicator = arg[0].toLowerCase();
+		String searchKey;
+
+		tempCommand.setIndicator(indicator);
+
+		if (indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END)
+				|| indicator.equals(StringFormat.START_DATE)
+				|| indicator.equals(StringFormat.START_TIME)
+				|| indicator.equals(StringFormat.END_DATE)
+				|| indicator.equals(StringFormat.END_TIME)) {
+			searchKey = TimeHandler.inputTimingConvertor(arg[1]);
+
+			if (searchKey == null) {
+				if (indicator.equals(StringFormat.START)
+						|| indicator.equals(StringFormat.START_DATE)
+						|| indicator.equals(StringFormat.START_TIME)) {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.START));
+				} else {
+					tempCommand.setErrorMessage(String.format(
+							ERROR_INVALID_TIME, StringFormat.END));
+				}
+
+				return tempCommand;
+			}
+		} else {
+			searchKey = arg[1];
+		}
+
+		tempCommand.setKey(searchKey);
 
 		return tempCommand;
 	}
@@ -372,14 +355,6 @@ public class Analyzer {
 
 	private static ExecutableCommand handleReloadCommand() {
 		return new ExecutableCommand(StringFormat.RELOAD);
-	}
-
-	private static boolean isDateTime(String temp) {
-		return temp.equals(StringFormat.START) || temp.equals(StringFormat.END)
-				|| temp.equals(StringFormat.START_DATE)
-				|| temp.equals(StringFormat.START_TIME)
-				|| temp.equals(StringFormat.END_DATE)
-				|| temp.equals(StringFormat.END_TIME);
 	}
 
 	private static boolean isInteger(String input) {
