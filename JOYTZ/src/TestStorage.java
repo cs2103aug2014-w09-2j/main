@@ -162,7 +162,7 @@ public class TestStorage {
 			
 			Storage.sort("name");
 			
-			ArrayList<String> result = Storage.getTaskList();
+			ArrayList<String> result = Storage.getStringFormatOfTaskList();
 			
 			assertEquals("task1~Exam1~2014-10-26 15:57~2014-10-26 15:57~SOC~high", result.get(0));
 			assertEquals("task2~Exam~2014-10-26 15:56~2014-10-26 15:56~NUS~high", result.get(1));

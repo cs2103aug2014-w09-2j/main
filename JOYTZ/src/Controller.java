@@ -1,4 +1,3 @@
-//package V1;
 //@author A0094558N
 import java.text.ParseException;
 import java.util.logging.Logger;
@@ -8,8 +7,9 @@ public class Controller {
 
     private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
-    public static final String EMPTY_LIST = "null";
+    private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
+    public static final String EMPTY_LIST = "null";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -26,18 +26,20 @@ public class Controller {
      * 					                user's action and taskId
      * 
      */
-    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command) {
+    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
+                                     boolean isSuccessful) {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
-
-        GUI.displayOutput(outputFeedbackString);
+        
+        GUI.displayOutput(outputFeedbackString, isSuccessful);
 
         // If there is no error message
-        if (command.getErrorMessage().length() == 0) {
-            String action = command.getAction();
+        if (isSuccessful == true) {
+            String action = command.getAction().trim();
+            int taskId = command.getTaskId();
 
-            parseDisplayTasks(action);
+            parseDisplayTasks(action, taskId);
         }
     }
 
@@ -52,28 +54,28 @@ public class Controller {
      * @param action	The user's input action (add, delete, etc.)
      * 
      */
-    private static void parseDisplayTasks(String action) {
+    private static void parseDisplayTasks(String action, int taskId) {
         boolean isLastItem = false;
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
-        if (feedback.getTaskList().size() == 0) {
+        if (feedback.getTaskStringList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, 
+            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
                             isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
-        } else {									// all other commands
-            for (int i = 0; i < feedback.getTaskList().size(); i++) {
+        } else {
+            for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
                 System.out.println("===================\n" +
                                    "Display string from feedback object: \n" + 
-                                   "	" + feedback.getTaskList().get(i) + "\n" +
+                                   "	" + feedback.getTaskStringList().get(i) + "\n" +
                                    "===================\n");
 
-                String[] parameterArr = feedback.getTaskList().get(i).trim().split("~");
-                isHighlightedPassStart = feedback.getPassStartTimeList()[i];
-                isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
+                String[] parameterArr = processDisplayString(i);
+                isHighlightedPassStart = feedback.getPassStartTimeIndicator()[i];
+                isHighlightedPassEnd = feedback.getPassEndTimeListIndicator()[i];
 
-                if (i == feedback.getTaskList().size() - 1) {
+                if (i == feedback.getTaskStringList().size() - 1) {
                     isLastItem = true;
                 }
 
@@ -94,17 +96,30 @@ public class Controller {
                  * Parameters: updateTable(Table index number, start time, end time, name, 
                  *                         location, description, priority, action);
                  */ 
-                if (parameterArr.length == 5) {
-                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], "", action, 
-                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
-                } else if (parameterArr.length == 6) {
-                    GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                    parameterArr[4], parameterArr[1], parameterArr[5], action, 
-                                    isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
-                }
+                assert parameterArr.length == 6;
+                GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
+                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
             }
         }
+    }
+
+    /**
+     * Processes the string obtained from the task list that is stored
+     * in the feedback object. This method will split the string
+     * via the '~' token, and then trim it.
+     * 
+     * @param i     The index of the task in the task list
+     * 
+     * @return      A string array containing the parameters to be displayed
+     * 
+     */
+    private static String[] processDisplayString(int i) {
+        String[] parameterArr = feedback.getTaskStringList().get(i).split("~");
+        for(int k = 0; k < parameterArr.length; k++) {
+            parameterArr[k] = parameterArr[k].trim();
+        }
+        return parameterArr;
     }
 
     /**
@@ -144,8 +159,8 @@ public class Controller {
                         "After analyzer: \n" + 
                         "	Action = " + parsedCommand.getAction() + "\n" + 
                         "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
+                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
                         "	Description = " + parsedCommand.getTaskDescription() + "\n" +
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
@@ -155,32 +170,37 @@ public class Controller {
                         "====================\n");
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
-                displayInGUI(parsedCommand.getErrorMessage(), parsedCommand);
+                outputString = parsedCommand.getErrorMessage();
+                displayInGUI(outputString, parsedCommand, false);
             } else {	
 
                 if(parsedCommand != null){
                     feedback = startExecutor(parsedCommand);
                     assert feedback != null;
 
-                } else{
+                } else {
                     feedback = new Feedback(false);
                     feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
                 }
 
                 outputString = getFeedbackMessage(feedback);
+                boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
+                
+                if (outputString.equals(ERROR_NO_TASK_FILE)) {
+                    GUI.openTutorial();
+                }
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
-                    displayInGUI(outputString, parsedCommand);
+                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
+                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess);
                 }
             }
         } catch (ParseException e) {
-            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand);
-            e.printStackTrace();
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
         }   
-        return feedback;
+        return feedback;    // used exclusively for JUnit testing
     }
 
     /**

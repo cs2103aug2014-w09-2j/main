@@ -3,48 +3,50 @@ main
 
 CS2103T project of team w09-2j
 
-Current functions and how to use them 
+Current functions and how to use them: 
 --------------
+Note: "<" and ">" are not part of the commands.
 
 1. Add
-	- add ~ task name ~ description ~ start deadline ~ end deadline ~ location ~ priority
- 	- Deadline format: 
+	- add \<name\>, \<description\> from \<start date start time\> to \<end date end time\> @\<location\> #\<important\>
+ 	- Date and time format: 
 		- DD/MM/YYYY HH:MMam
 		- DD/MM/YYYY HH:MMpm
 	- Not all arguments have to be used. For example:
-	   	- add~task
-	- To skip an argument, leave it blank. For example:
-		- add~task name~~~end deadline~~priority
-	- The order must be strictly followed
-  
+	   	- add \<task\>
+		- add \<name\> on \<start date start time\> 
+		- add \<name\> on \<start date\>
+		- add \<name\> at \<start time\>
+		- add \<name\> due on \<end date end time\>
+		- add \<name\> due on \<end date\>
+		- add \<name\> due at \<end time\>
 
 2. Delete
-  	- delete~task number
+  	- delete \<task index number\>
   	- The task number can be viewed from the table in the display
 
 3. Update
-  	- update~task number~indicator~new info
+  	- update \<task index number\> \<indicator\> \<new info\>
   	- The possible indicators are:
 	  	- name
 	  	- description
-	  	- start time
-	  	- end time
+	  	- start
+	  	- end
 	  	- location
 	  	- priority
 
 4. Search
-	- search~indicator~key
-	- The possible indicators are:
-		- name
-		- id (seen from the index numbers in the table)
+	- search \<indicator\> \<item\> 
+	- The possible indicators can be seen on the table column headers.
 	- The key is the word or letters that you are searching for
-
+	
 5. Sort
-	- sort~indicator
+	- sort \<indicator\>
 	- The possible indicators are:
-		- name
-		- deadline (dd/mm/yyyy)
-		- location
+		- name (sorted alphabetically)
+		- start
+		- end
+		- location (sorted alphabetically)
 		- priority
 
 6. Undo
@@ -62,7 +64,15 @@ Current functions and how to use them
 9. Help
 	- help
 	- Displays the commands available and how to use them
+	
+10. Tutorial
+	- tutorial
+	- Opens a user guide that explains the usage of commands in-depth.
+	
+11. Settings
+	- settings
+	- Opens the settings for you to tweak the notification frequency, and the colors of the overdue and ongoing tasks.
   
-10. Exit
+12. Exit
   	- exit
   	- This exits the program
