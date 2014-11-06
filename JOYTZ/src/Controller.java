@@ -61,23 +61,23 @@ public class Controller {
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
-        if (feedback.getTaskList().size() == 0) {
+        if (feedback.getTaskStringList().size() == 0) {
             isLastItem = true;
             GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
                             isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
 
         } else {
-            for (int i = 0; i < feedback.getTaskList().size(); i++) {
+            for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
                 System.out.println("===================\n" +
                                    "Display string from feedback object: \n" + 
-                                   "	" + feedback.getTaskList().get(i) + "\n" +
+                                   "	" + feedback.getTaskStringList().get(i) + "\n" +
                                    "===================\n");
 
                 String[] parameterArr = processDisplayString(i);
-                isHighlightedPassStart = feedback.getPassStartTimeList()[i];
-                isHighlightedPassEnd = feedback.getPassEndTimeList()[i];
+                isHighlightedPassStart = feedback.getPassStartTimeIndicator()[i];
+                isHighlightedPassEnd = feedback.getPassEndTimeListIndicator()[i];
 
-                if (i == feedback.getTaskList().size() - 1) {
+                if (i == feedback.getTaskStringList().size() - 1) {
                     isLastItem = true;
                 }
 
@@ -117,7 +117,7 @@ public class Controller {
      * 
      */
     private static String[] processDisplayString(int i) {
-        String[] parameterArr = feedback.getTaskList().get(i).split("~");
+        String[] parameterArr = feedback.getTaskStringList().get(i).split("~");
         for(int k = 0; k < parameterArr.length; k++) {
             parameterArr[k] = parameterArr[k].trim();
         }
@@ -161,8 +161,8 @@ public class Controller {
                         "After analyzer: \n" + 
                         "	Action = " + parsedCommand.getAction() + "\n" + 
                         "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
+                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
                         "	Description = " + parsedCommand.getTaskDescription() + "\n" +
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
