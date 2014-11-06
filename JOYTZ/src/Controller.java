@@ -33,13 +33,16 @@ public class Controller {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
+        int taskId = 0;
         
         GUI.displayOutput(outputFeedbackString, isSuccessful);
 
         // If there is no error message
         if (isSuccessful == true) {
             String action = command.getAction().trim();
-            int taskId = command.getTaskId().get(0);
+            if (command.getTaskId().isEmpty() == false) {
+                taskId = command.getTaskId().get(0);
+            }
 
             parseDisplayTasks(action, taskId);
         }
