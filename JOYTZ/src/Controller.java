@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 public class Controller {
     private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
-    private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
-    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+    private static final String ERROR_INVALID_COMMAND = "Invalid command. Need help? " +
+                                                        "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
+                                                          "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String EMPTY_LIST = "null";
@@ -31,13 +33,16 @@ public class Controller {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
+        int taskId = 0;
         
         GUI.displayOutput(outputFeedbackString, isSuccessful);
 
         // If there is no error message
         if (isSuccessful == true) {
             String action = command.getAction().trim();
-            int taskId = command.getTaskId();
+            if (command.getTaskId().isEmpty() == false) {
+                taskId = command.getTaskId().get(0);
+            }
 
             parseDisplayTasks(action, taskId);
         }
@@ -79,7 +84,7 @@ public class Controller {
                     isLastItem = true;
                 }
 
-                /* Commented because there's too much stuff in the console
+                /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
     						"	Action = " + action + "\n" + 
@@ -90,7 +95,7 @@ public class Controller {
     						"	Location = " + parameterArr[4] + "\n" +
     						"	Priority = " + parameterArr[5] + "\n" +
     						"====================\n");
-                 */
+                 
 
                 /*
                  * Parameters: updateTable(Table index number, start time, end time, name, 
@@ -159,8 +164,8 @@ public class Controller {
                         "After analyzer: \n" + 
                         "	Action = " + parsedCommand.getAction() + "\n" + 
                         "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
+                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
                         "	Description = " + parsedCommand.getTaskDescription() + "\n" +
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
@@ -186,7 +191,6 @@ public class Controller {
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
-                
                 if (outputString.equals(ERROR_NO_TASK_FILE)) {
                     GUI.openTutorial();
                 }

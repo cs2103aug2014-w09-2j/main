@@ -1,4 +1,4 @@
-//package V1;
+//@author A0119378U
 
 import java.io.*;
 import java.text.*;
@@ -19,17 +19,17 @@ public class Storage {
 
 	private static final String ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
 	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
-	private static final String ERROR_INVALID_TASKID = "taskId out of range. taskId : %d\n";
+	private static final String ERROR_INVALID_TASK_INDEX = "taskId out of range. taskId : %d\n";
 	private static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
 	private static final String ERROR_INVALID_INPUT_TIME = "The input time is invalid.";
 
 	// this is the two list of tasks.
-	private static ArrayList<Task> list = new ArrayList<Task>();
+	private static List mainTaskList = new List();
 	private static ArrayList<Task> history = new ArrayList<Task>();
 
 	// these are for display to user.
-	private static ArrayList<Task> displayTaskList= new ArrayList<Task>();
+	private static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 
@@ -62,23 +62,12 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean add(Task task) throws Exception {
-		if (task == null) {
-			throw new Exception(ERROR_NULL_OBJECT);
-		}
-
-		LOGGER.info("==============\n" + "Storage add task: \n" + "task name: "
-				+ task.getTaskName() + "\n" + "task description: "
-				+ task.getTaskDescription() + "\n" + "task location: "
-				+ task.getTaskLocation() + "\n" + "task start timing: "
-				+ task.getStartDateTime() + "\n" + "task end timing: "
-				+ task.getEndDateTime() + "\n" + "task priority: " 
-				+ task.getTaskPriority() + "\n"
-				+ "====================\n");
-
-		list.add(task);
-		setDisplayList(list);
-
+	public static boolean add(Task task){
+		
+		mainTaskList.addTask(task);
+		
+		setDisplayList(mainTaskList);
+		
 		return true;
 	}
 
@@ -88,34 +77,16 @@ public class Storage {
 	 * 
 	 * @param taskId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static boolean delete (int taskId) throws Exception{
-		return delete(displayTaskList, taskId);
-	} 
-
-	public static boolean delete(ArrayList<Task> list, int taskId) throws Exception {
-		if (taskId <= 0 || taskId > getListSize(list)) {
-			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
-		}
-
-		Task removedTask = list.remove(taskId - 1);
-		list.remove(removedTask);
+	public static boolean delete(int index) throws Exception {
+		index--;
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+		mainTaskList.deleteTaskById(targetTaskId);
 		
-		LOGGER.info("==============\n" + "Storage delete task. \n "
-				+ "taskId: " + taskId + "\n" + "task name: "
-				+ removedTask.getTaskName() + "\n" + "task start timing: "
-				+ removedTask.getStartDateTime() + "\n" + "task end timing: "
-				+ removedTask.getEndDateTime() + "\n"
-				+ "task description: " + removedTask.getTaskDescription()
-				+ "\n" + "task location: " + removedTask.getTaskLocation()
-				+ "\n" + "task priority: " + removedTask.getTaskPriority()
-				+ "\n" + "====================\n");
-
-		
-		history.add(removedTask);
 		setDisplayList(displayTaskList);
-
+		
 		return true;
 	}
 
@@ -129,16 +100,27 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean update(int taskId, String updateIndicator,
-			String updateKeyValue) throws Exception {
-
-		if (taskId <= 0 || taskId > getListSize(displayTaskList)) {
-			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
+	public static boolean update(int index, String updateIndicator, String updateKeyValue) throws Exception {
+		
+		if (index <= 0 || index > displayTaskList.size()) {
+			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
 		}
 		
-		Task targetTask = get(displayTaskList, taskId);
-		list.remove(targetTask);
+		index--;
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+		mainTaskList.deleteTaskById(targetTaskId);
+		
+		update(targetTask, updateIndicator, updateKeyValue);
 
+		displayTaskList.setTask(index - 1, targetTask);
+		mainTaskList.addTask(targetTask);
+		
+		setDisplayList(displayTaskList);
+		return true;
+	}
+
+	private static void update(Task targetTask, String updateIndicator, String updateKeyValue) throws Exception {
 		switch (updateIndicator) {
 		case StringFormat.NAME:
 			targetTask.setTaskName(updateKeyValue);
@@ -148,29 +130,35 @@ public class Storage {
 			break;
 		case StringFormat.START:
 			Date newStartDateTime = new Date(Long.parseLong(updateKeyValue));
-			targetTask.setStartDateTime(newStartDateTime);;
+			targetTask.setStartDateTime(newStartDateTime);
+			;
 			break;
 		case StringFormat.END:
 			Date newEndDateTime = new Date(Long.parseLong(updateKeyValue));
-			targetTask.setEndDateTime(newEndDateTime);;
+			targetTask.setEndDateTime(newEndDateTime);
+			;
 			break;
 		case StringFormat.START_DATE:
-			Date newStartDate = new Date(Long.parseLong(updateKeyValue));	
+			Date newStartDate = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setStartDate(newStartDate);
 			break;
 		case StringFormat.START_TIME:
-			Date newStartTime = new Date (Long.parseLong(updateKeyValue));
+			Date newStartTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setStartTime(newStartTime);
 			break;
 		case StringFormat.END_DATE:
 			Date newEndDate = new Date(Long.parseLong(updateKeyValue));
-			targetTask.setEndDate(newEndDate);;
+			targetTask.setEndDate(newEndDate);
+			;
 			break;
 		case StringFormat.END_TIME:
 			Date newEndTime = new Date(Long.parseLong(updateKeyValue));
-			targetTask.setEndTime(newEndTime);;
+			targetTask.setEndTime(newEndTime);
+			;
 			break;
 		case StringFormat.LOCATION:
+			System.out.println("FIND");
+
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
 		case StringFormat.PRIORITY:
@@ -183,46 +171,6 @@ public class Storage {
 					updateIndicator));
 
 		}
-
-		LOGGER.info("==============\n" + "Storage update task. taskId: "
-				+ taskId + "\n" + "task name: " + targetTask.getTaskName()
-				+ "\n" + "task indicator: " + updateIndicator + "\n"
-				+ "====================\n");
-
-		displayTaskList.set(taskId - 1, targetTask);
-		list.add(targetTask);
-		
-		setDisplayList(displayTaskList);
-		
-		return true;
-	}
-
-	/**
-	 * Get a task in the taskList by taskId
-	 * 
-	 * @param taskId
-	 * @return
-	 * @throws Exception
-	 */
-
-	public static Task get(ArrayList<Task> list, int taskId) throws Exception {
-		if (taskId <= 0 || taskId > getListSize(list)) {
-			throw new Exception(String.format(ERROR_INVALID_TASKID, taskId));
-		}
-		Task task = list.get(taskId - 1);
-
-		LOGGER.info("==============\n" + "Storage get task. \n " + "taskId: "
-				+ taskId + "\n" + "task name: " + task.getTaskName() + "\n"
-				+ "task start timing: "
-				+ task.getStartDateTime() + "\n"
-				+ "task end timing: "
-				+ task.getEndDateTime() + "\n"
-				+ "task description: " + task.getTaskDescription() + "\n"
-				+ "task location: " + task.getTaskLocation() + "\n"
-				+ "task priority: " + task.getTaskPriority() + "\n"
-				+ "====================\n");
-
-		return task;
 	}
 
 	/**
@@ -232,29 +180,17 @@ public class Storage {
 	 * @return
 	 */
 	public static boolean clean() {
-		if (!isEmpty()) {
-			for (int itemId = 0; itemId < list.size(); itemId++) {
-				history.add(list.get(itemId));
-			}
-			list.clear();
-		}
-		
-		LOGGER.info("==============\n" + "Storage clean taskList. \n "
-				+ "====================\n");
-		setDisplayList(list);
-		
-		return true;
-	}
-
-	// only for test.
-	public static void cleanUpEveryThing() {
-		history.clear();
-		list.clear();
-		setDisplayList(list);
+		return clean(mainTaskList);
 	}
 	
-	public static void display(){
-		setDisplayList(list);
+	public static boolean clean(List targetList){
+		targetList.clean();
+		setDisplayList(mainTaskList);
+		return true;
+	}
+	
+	public static void display() {
+		setDisplayList(mainTaskList);
 	}
 
 	/**
@@ -266,24 +202,15 @@ public class Storage {
 	 */
 
 	public static boolean sort(String key) throws Exception {
-
-		LOGGER.info("==============\n" + "Storage sort taskList. \n "
-				+ "====================\n");
-
 		return sort(key, displayTaskList);
 	}
-	
-	public static boolean sort(String key, ArrayList<Task> list) throws Exception{
-		if (list.isEmpty()) {
-			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
-		}
-		
+
+	public static boolean sort(String key, List targetList) throws Exception {
+
 		Task.setSortKey(key);
-		Collections.sort(list);
+		targetList.sortList();
 		
-		LOGGER.info("==============\n" + "Storage sort taskList. \n "
-				+ "====================\n");
-		setDisplayList(list);
+		setDisplayList(displayTaskList);
 		
 		return true;
 	}
@@ -294,38 +221,23 @@ public class Storage {
 	 * @return
 	 * @throws Exception
 	 */
-	
-	public static ArrayList<Task> search(String indicator, String searchValue) throws Exception{
+
+	public static boolean search(String indicator, String searchValue) throws Exception {
 		return search(displayTaskList, indicator, searchValue);
 	}
-	
-	public static ArrayList<Task> search(ArrayList<Task> list, String indicator, String searchValue)
-			throws Exception {
-		ArrayList<Task> resultTaskList = new ArrayList<Task>();
-		
-		if (getListSize(list) == 0) {
-			throw new Exception(MESSAGE_NO_TASK_IN_LIST);
-		}
 
-		for (int index = 0; index < getListSize(list); index++) {
-			Task task = list.get(index);
-			String taskAttriString = task.get(indicator);
-			
-			if (taskAttriString.toLowerCase().contains(searchValue.toLowerCase())){
-				resultTaskList.add(task);
+	public static boolean search(List targetList, String indicator, String searchValue) throws Exception {
+		List newList = new List();
+		for (int index=0; index<targetList.size(); index++){
+			Task currTask = targetList.getTaskByIndex(index);
+			if (currTask.get(indicator).toLowerCase().contains(searchValue.toLowerCase())){
+				newList.addTask(currTask);
 			}
 		}
-
-		if (resultTaskList.size() == 0) {
-			throw new Exception(MESSAGE_NO_TASK_MEET_REQUIREMENTS);
-		}
-
-		LOGGER.info("==============\n" + "Storage search. \n "
-				+ "====================\n");
 		
-		setDisplayList(resultTaskList);
-		
-		return resultTaskList;
+		setDisplayList(newList);
+
+		return true;
 	}
 
 	/**
@@ -336,21 +248,24 @@ public class Storage {
 		checkTime(displayTaskList);
 	}
 
-	private static void checkTime(ArrayList<Task> list) {
+	private static void checkTime(List targetList) {
 		// create boolean instance based on the size of the taskList
-		passStartTimeList = new boolean[list.size()];
-		passEndTimeList = new boolean[list.size()];
+		passStartTimeList = new boolean[targetList.size()];
+		passEndTimeList = new boolean[targetList.size()];
 
-		for (int index = 0; index < getListSize(list); index++) {
-			Task currTask = list.get(index);
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
 			Date currStartTime = currTask.getStartDateTime();
 			Date currEndTime = currTask.getEndDateTime();
 			Date currTime = new Date(System.currentTimeMillis());
 
-			if (currTime.after(currStartTime)){
+			if (currStartTime == null || currEndTime == null) {
+				continue;
+			}
+			if (currTime.after(currStartTime)) {
 				passStartTimeList[index] = true;
 			}
-			if (currTime.after(currEndTime)){
+			if (currTime.after(currEndTime)) {
 				passEndTimeList[index] = true;
 			}
 		}
@@ -361,8 +276,8 @@ public class Storage {
 		return passStartTimeList;
 	}
 
-	public static boolean[] getPassStartTimeList(ArrayList<Task> list) {
-		checkTime(list);
+	public static boolean[] getPassStartTimeList(List targetList) {
+		checkTime(targetList);
 		return passStartTimeList;
 	}
 
@@ -371,8 +286,8 @@ public class Storage {
 		return passEndTimeList;
 	}
 
-	public static boolean[] getPassEndTimeList(ArrayList<Task> list) {
-		checkTime(list);
+	public static boolean[] getPassEndTimeList(List targetList) {
+		checkTime(targetList);
 		return passEndTimeList;
 	}
 
@@ -381,18 +296,18 @@ public class Storage {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<String> getStringFormatOfList() {
+	public static ArrayList<String> getStringFormatOfList(){
 		return getStringFormatOfList(displayTaskList);
 	}
-	
-	public static ArrayList<String> getStringFormatOfList(ArrayList<Task> list){
+
+	public static ArrayList<String> getStringFormatOfList(List targetList) {
 		ArrayList<String> resultList = new ArrayList<String>();
 		
-		for (int index = 0; index < getListSize(list); index++){
-			Task task = list.get(index);
-			resultList.add(taskListFileName.toString());
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			resultList.add(currTask.toString());
 		}
-		
+
 		return resultList;
 	}
 
@@ -425,8 +340,8 @@ public class Storage {
 		taskListWriter.write(String.format(messageStringInFile, dateString));
 		historyWriter.write(String.format(messageStringInFile, dateString));
 
-		for (int i = 0; i < list.size(); i++) {
-			String str = convertTaskToString(list.get(i));
+		for (int i = 0; i < mainTaskList.size(); i++) {
+			String str = convertTaskToString(mainTaskList.getTaskByIndex(i));
 			taskListWriter.write(str);
 		}
 		for (int i = 0; i < history.size(); i++) {
@@ -463,8 +378,8 @@ public class Storage {
 		historyFileReader = new FileReader(historyFile);
 		historyBufferedReader = new BufferedReader(historyFileReader);
 
-		if (!isEmpty()) {
-			cleanUpEveryThing();
+		if (!(mainTaskList.size() == 0)) {
+			clean();
 		}
 
 		String taskString = taskListBufferedReader.readLine();
@@ -473,7 +388,7 @@ public class Storage {
 		taskString = taskListBufferedReader.readLine();
 		while (taskString != null) {
 			Task task = convertStringToTask(taskString);
-			list.add(task);
+			mainTaskList.addTask(task);
 			taskString = taskListBufferedReader.readLine();
 		}
 
@@ -486,25 +401,10 @@ public class Storage {
 			history.add(task);
 			taskString = historyBufferedReader.readLine();
 		}
-		
-		displayTaskList = list;
+
+		displayTaskList = mainTaskList;
 
 		return;
-	}
-
-	/**
-	 * Convert a dateFormatString to Date Object.
-	 * 
-	 * @param d
-	 * @return
-	 */
-	
-	public static int getListSize(ArrayList list){
-		return list.size();
-	}
-
-	public static boolean isEmpty() {
-		return list.isEmpty();
 	}
 
 	/**
@@ -520,7 +420,8 @@ public class Storage {
 			throw new Exception(ERROR_NULL_OBJECT);
 		}
 		String result = String.format(taskStringFormat, task.getTaskName(),
-				task.getLongFormatStartDateTimeString(), task.getLongFormatEndDateTimeString(),
+				task.getLongFormatStartDateTimeString(),
+				task.getLongFormatEndDateTimeString(),
 				task.getTaskDescription() + " ", task.getTaskLocation() + " ",
 				task.getTaskPriority() + " ");
 
@@ -529,7 +430,7 @@ public class Storage {
 
 	private static Task convertStringToTask(String taskString) throws Exception {
 		Task task = new Task();
-		
+
 		if (taskString == null) {
 			throw new Exception(ERROR_NULL_TASK_STRING);
 		} else {
@@ -550,9 +451,13 @@ public class Storage {
 		return task;
 	}
 
-	private static void setDisplayList(ArrayList list) {
-		displayTaskList = list;
+	public static void setDisplayList(List targetList) {
+		displayTaskList = targetList;
 		checkTime();
+	}
+	
+	public static int obtainNewTaskId(){
+		return mainTaskList.size();
 	}
 
 }

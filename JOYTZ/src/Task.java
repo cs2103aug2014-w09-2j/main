@@ -1,7 +1,6 @@
+//@author A0119378U
 import java.util.Date;
-import java.util.jar.Attributes.Name;
 
-// @author Zhang Kai (A0119378U)
 public class Task implements Comparable<Task>{
 
 	// task attributes.
@@ -14,6 +13,8 @@ public class Task implements Comparable<Task>{
 	
 	public boolean passStartDateTime = false;
 	public boolean passEndDateTime = false;
+	
+	private int taskId = -1;
 	
 	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
@@ -43,7 +44,7 @@ public class Task implements Comparable<Task>{
 	 */
 
 	public void setTaskName(String name) {
-		this.taskName = name.trim();
+		this.taskName = name;
 	}
 
 	public void setStartDateTime(Date date) {
@@ -86,6 +87,10 @@ public class Task implements Comparable<Task>{
 
 	public void setTaskPriority(String prio) {
 		this.taskPriority = prio.trim();
+	}
+	
+	public void setTaskId(int taskId){
+		this.taskId = taskId;
 	}
 
 	/**
@@ -173,6 +178,10 @@ public class Task implements Comparable<Task>{
 
 	public String getTaskPriority() {
 		return this.taskPriority;
+	}
+	
+	public int getTaskId(){
+		return this.taskId;
 	}
 	
 	// get date will return a long number represent the date.
@@ -263,27 +272,48 @@ public class Task implements Comparable<Task>{
 		return true;
 	}
 	
+	@Override
 	public String toString(){
+		String emptySpace = " ";
 		String resultString = taskName.concat("~");
 		
-		if (!getTaskDescription().equals(null)){
-			resultString.concat(taskDescription);
+		// add in description information.
+		if (!getTaskDescription().equals("")){
+			resultString = resultString.concat(taskDescription);
+		}else {
+			resultString = resultString.concat(emptySpace);
 		}
-		resultString.concat("~");
-		if (!getStartDateTime().equals(null)){
-			resultString.concat(getFormatStartDateTime());
+		resultString = resultString.concat("~");
+		
+		// add in start date time information.
+		if (!(getStartDateTime() == null)){
+			resultString = resultString.concat(getFormatStartDateTime());
+		}else {
+			resultString = resultString.concat(emptySpace);
 		}
-		resultString.concat("~");
-		if (!getEndDateTime().equals(null)){
-			resultString.concat(getFormatEndDateTime());
+		resultString = resultString.concat("~");
+		
+		// add in end date time information.
+		if (!(getEndDateTime() == null)){
+			resultString = resultString.concat(getFormatEndDateTime());
+		}else {
+			resultString = resultString.concat(emptySpace);
 		}
-		resultString.concat("~");
-		if (!getTaskLocation().equals(null)){
-			resultString.concat(getTaskLocation());
+		resultString = resultString.concat("~");
+		
+		// add in location information.
+		if (!getTaskLocation().equals("")){
+			resultString = resultString.concat(getTaskLocation());
+		}else {
+			resultString = resultString.concat(emptySpace);
 		}
-		resultString.concat("~");
-		if (!getTaskPriority().equals(null)){
-			resultString.concat(getTaskPriority());
+		resultString = resultString.concat("~");
+		
+		// add in priority information.
+		if (!getTaskPriority().equals("")){
+			resultString = resultString.concat(getTaskPriority());
+		}else {
+			resultString = resultString.concat(emptySpace);
 		}
 		
 		return resultString;
