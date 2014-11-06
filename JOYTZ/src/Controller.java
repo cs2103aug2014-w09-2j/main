@@ -37,7 +37,7 @@ public class Controller {
         // If there is no error message
         if (isSuccessful == true) {
             String action = command.getAction().trim();
-            int taskId = command.getTaskId();
+            int taskId = command.getTaskId().get(0);
 
             parseDisplayTasks(action, taskId);
         }
