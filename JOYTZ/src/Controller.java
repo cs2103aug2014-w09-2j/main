@@ -159,8 +159,8 @@ public class Controller {
                         "After analyzer: \n" + 
                         "	Action = " + parsedCommand.getAction() + "\n" + 
                         "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
+                        "	Start time = " + parsedCommand.getTaskStartTiming() + "\n" + 
+                        "	End time = " + parsedCommand.getTaskEndTiming() + "\n" + 
                         "	Description = " + parsedCommand.getTaskDescription() + "\n" +
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
