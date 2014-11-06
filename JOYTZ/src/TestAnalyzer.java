@@ -205,16 +205,18 @@ public class TestAnalyzer {
 		Command test1 = new Command("delete");
 		Command test2 = new Command("delete 0");
 		Command test3 = new Command("delete meeting with friends");
+		Command test4 = new Command("delete 1 3");
+		Command test5 = new Command("delete 1 0 3");
+		Command test6 = new Command("delete 1 meeting with friends");
+		Command test7 = new Command("delete 1 3 -3");
 
 		ExecutableCommand expected = new ExecutableCommand("delete");
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
-		expected.setTaskName("meeting with friends");
+		expected.setTaskId(1);
+		expected.setTaskId(3);
 
 		ExecutableCommand expected2 = new ExecutableCommand("delete");
 		expected2.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-
-		ExecutableCommand expected3 = new ExecutableCommand("delete");
-		expected3.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
 		// test case 1: test if the error catcher for null argument is working
 		assertEquals("null argument case is not handled",
@@ -227,11 +229,35 @@ public class TestAnalyzer {
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
 						.getErrorMessage());
 
-		// test case 3: test if the error catcher for invalid input argument is
+		// test case 3: test if the error catcher for invalid task index is
 		// working
-		assertEquals("invalid input argument case is not handled",
-				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test3)
 						.getErrorMessage());
+		
+		// test case 4: test if multiple delete can be analyzed correctly
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test4)
+						.getTaskId());
+		
+		// test case 5: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+		
+		// test case 6: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+		
 	}
 
 	@Test

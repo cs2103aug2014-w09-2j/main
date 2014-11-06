@@ -226,7 +226,7 @@ public class UserInputHandler {
 		output.add(StringFormat.DELETE);
 
 		if (str.length > 1) {
-			for (int i = 0; i < str.length; i++) {
+			for (int i = 1; i < str.length; i++) {
 				output.add(str[i]);
 			}
 		}
