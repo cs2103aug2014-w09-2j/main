@@ -1,19 +1,23 @@
-import java.util.Date;
-import java.util.jar.Attributes.Name;
+import java.util.TimerTask;
 
-// @author Zhang Kai (A0119378U)
+//package V1;
+
+
+
 public class Task implements Comparable<Task>{
 
 	// task attributes.
 	private String taskName;
-	private Date startDateTime;
-	private Date endDateTime;
+	private Long taskStartTiming;
+	private Long taskEndTiming;
 	private String taskDescription;
 	private String taskLocation;
 	private String taskPriority;
 	
-	public boolean passStartDateTime = false;
-	public boolean passEndDateTime = false;
+	private long taskDuration;
+	
+	public boolean passStartTiming = false;
+	public boolean passEndTiming = false;
 	
 	// the sortKey is default to be sorted by name;
 	private static String sortKey = "name";
@@ -21,21 +25,30 @@ public class Task implements Comparable<Task>{
 	/**
 	 * Constructor
 	 */
-	Task (){
+	Task() {
 		this.taskName = "";
-		this.startDateTime = null;
-		this.endDateTime = null;
+		this.taskStartTiming = (long) 0;
+		this.taskEndTiming = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
 	Task (String nameString){
 		this.taskName = nameString;
-		this.startDateTime = null;
-		this.endDateTime = null;
+		this.taskStartTiming = (long) 0;
+		this.taskEndTiming = (long) 0;
 		this.taskDescription = "";
 		this.taskLocation = "";
 		this.taskPriority = "";
+	}
+	Task(String nameString, Long startTimeLong, Long endTimeLong, String descriptionString, String locationString,
+			String priority) {
+		this.taskName = nameString;
+		this.taskStartTiming = startTimeLong;
+		this.taskEndTiming = endTimeLong;
+		this.taskDescription = descriptionString;
+		this.taskLocation = locationString;
+		this.taskPriority = priority;
 	}
 
 	/**
@@ -43,49 +56,27 @@ public class Task implements Comparable<Task>{
 	 */
 
 	public void setTaskName(String name) {
-		this.taskName = name.trim();
+		this.taskName = name;
 	}
 
-	public void setStartDateTime(Date date) {
-		this.startDateTime = date;
+	public void setTaskStartTime(Long startTimeLong) {
+		this.taskStartTiming = startTimeLong;
 	}
 	
-	public void setEndDateTime(Date date){
-		this.endDateTime = date;
-	}
-	
-	public void setStartDate(Date date){
-		this.startDateTime.setYear(date.getYear());
-		this.startDateTime.setMonth(date.getMonth());
-		this.startDateTime.setDate(date.getDate());
-	}
-	
-	public void setEndDate(Date date){
-		this.endDateTime.setYear(date.getYear());
-		this.endDateTime.setMonth(date.getMonth());
-		this.endDateTime.setDate(date.getDate());
-	}
-	
-	public void setStartTime(Date date){
-		this.startDateTime.setHours(date.getHours());
-		this.startDateTime.setMinutes(date.getMinutes());
-	}
-	
-	public void setEndTime(Date date){
-		this.endDateTime.setHours(date.getHours());
-		this.endDateTime.setMinutes(date.getMinutes());
+	public void setTaskEndTime(Long endTimeLong){
+		this.taskEndTiming = endTimeLong;
 	}
 
 	public void setTaskDescription(String des) {
-		this.taskDescription = des.trim();
+		this.taskDescription = des;
 	}
 
 	public void setTaskLocation(String loc) {
-		this.taskLocation = loc.trim();
+		this.taskLocation = loc;
 	}
 
-	public void setTaskPriority(String prio) {
-		this.taskPriority = prio.trim();
+	public void setTaskPriority(String priority) {
+		this.taskPriority = priority;
 	}
 
 	/**
@@ -96,71 +87,12 @@ public class Task implements Comparable<Task>{
 		return this.taskName;
 	}
 
-	public Date getStartDateTime() {
-		return this.startDateTime;
+	public Long getTaskStartTime() {
+		return this.taskStartTiming;
 	}
 	
-	public Date getEndDateTime(){
-		return this.endDateTime;
-	}
-	
-	public String getFormatEndDateTime(){
-		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(endDateTime);
-	}
-	
-	public String getFormatStartDateTime(){
-		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(startDateTime);
-	}
-	public String getLongFormatStartDateTimeString(){
-		return startDateTime.getTime() + "";
-	}
-	
-	public String getLongFormatEndDateTimeString(){
-		return endDateTime.getTime() + "";
-	}
-	
-	public String getLongFormatStartDateString(){
-		Date currDate = new Date();
-		currDate.setYear(startDateTime.getYear());
-		currDate.setMonth(startDateTime.getMonth());
-		currDate.setDate(startDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
-	}
-	
-	public String getLongFormatStartTimeString(){
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(startDateTime.getHours());
-		currDate.setMinutes(startDateTime.getMinutes());
-		return currDate.getTime() + "";
-	}
-	
-	public String getLongFormatEndDateString(){
-		Date currDate = new Date();
-		currDate.setYear(endDateTime.getYear());
-		currDate.setMonth(endDateTime.getMonth());
-		currDate.setDate(endDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
-	}
-	
-	public String getLongFormatEndTimeString(){
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(endDateTime.getHours());
-		currDate.setMinutes(endDateTime.getMinutes());
-		return currDate.getTime() + "";
+	public Long getTaskEndTime(){
+		return this.taskEndTiming;
 	}
 
 	public String getTaskDescription() {
@@ -175,45 +107,27 @@ public class Task implements Comparable<Task>{
 		return this.taskPriority;
 	}
 	
-	// get date will return a long number represent the date.
-	public String get(String attribute){						// need to insert check here?
-		
+	public String get(String attribute){
 		switch(attribute){
 		case StringFormat.NAME: 
-			return getTaskName();
-			
+			return taskName;
 		case StringFormat.DESCRIPTION:
-			return getTaskDescription();
-			
+			return taskDescription;
 		case StringFormat.START:
-			return getLongFormatStartDateTimeString();
-			
+			return taskStartTiming + "";
 		case StringFormat.END:
-			return getLongFormatEndDateTimeString();
-			
-		case StringFormat.START_DATE:
-			return getLongFormatStartDateString();
-			
-		case StringFormat.START_TIME:
-			return getLongFormatStartTimeString();
-			
-		case StringFormat.END_DATE:
-			return getLongFormatEndDateString();
-			
-		case StringFormat.END_TIME:
-			return getLongFormatEndTimeString();
-			
+			return taskEndTiming + "";
 		case StringFormat.LOCATION:
 			return taskLocation;
-			
 		case StringFormat.PRIORITY:
 			return taskPriority;
-			
 		default:
 			return taskName;
 		}
 	}
-
+	
+	
+	// sort method
 	public static void setSortKey(String key){
 		sortKey = key;
 	}
@@ -221,14 +135,13 @@ public class Task implements Comparable<Task>{
 	@Override
 	public int compareTo(Task o){
 		Task that = (Task)o;
-		String thisString = this.get(sortKey);
-		String thatString = that.get(sortKey);
+		String thisString = this.get(sortKey).trim();
+		String thatString = that.get(sortKey).trim();
 		
-		if (sortKey.equals(StringFormat.PRIORITY)){			// need to refactor this? enum priority?
+		if (sortKey.equals(StringFormat.PRIORITY)){
 			thisString = convertPriority(thisString);
 			thatString = convertPriority(thatString);
 		}
-		
 		return thisString.compareToIgnoreCase(thatString);
 	}
 	
@@ -249,9 +162,9 @@ public class Task implements Comparable<Task>{
 		Task that = (Task) o;
 		if (!that.getTaskName().equals(taskName)){
 			return false;
-		}else if(!that.getStartDateTime().equals(getStartDateTime())){
+		}else if(!that.getTaskStartTime().equals(taskStartTiming)){
 			return false;
-		}else if(!that.getEndDateTime().equals(getEndDateTime())){
+		}else if(!that.getTaskEndTime().equals(taskEndTiming)){
 			return false;
 		}else if(!that.getTaskDescription().equals(taskDescription)){
 			return false;
@@ -261,32 +174,6 @@ public class Task implements Comparable<Task>{
 			return false;
 		}
 		return true;
-	}
-	
-	public String toString(){
-		String resultString = taskName.concat("~");
-		
-		if (!getTaskDescription().equals(null)){
-			resultString.concat(taskDescription);
-		}
-		resultString.concat("~");
-		if (!getStartDateTime().equals(null)){
-			resultString.concat(getFormatStartDateTime());
-		}
-		resultString.concat("~");
-		if (!getEndDateTime().equals(null)){
-			resultString.concat(getFormatEndDateTime());
-		}
-		resultString.concat("~");
-		if (!getTaskLocation().equals(null)){
-			resultString.concat(getTaskLocation());
-		}
-		resultString.concat("~");
-		if (!getTaskPriority().equals(null)){
-			resultString.concat(getTaskPriority());
-		}
-		
-		return resultString;
 	}
 
 }

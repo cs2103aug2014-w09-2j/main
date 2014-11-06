@@ -69,7 +69,7 @@ public class TestController {
         parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
 
         Feedback result = Controller.startExecutor(parsedCommand);
-        int listSize = result.getTaskStringList().size();
+        int listSize = result.getTaskList().size();
 
         // Check if the execution has been successful
         assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
@@ -77,7 +77,7 @@ public class TestController {
         assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
         // Check if the display string to be used in the table GUI display is correct
         assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_ALL, 
-                     result.getTaskStringList().get(listSize - 1));
+                     result.getTaskList().get(listSize - 1));
     }
 
     /*
@@ -94,7 +94,7 @@ public class TestController {
         parsedCommand.setTaskLocation(EXECUTABLECOMMAND_LOCATION);
 
         Feedback result = Controller.startExecutor(parsedCommand);
-        int listSize = result.getTaskStringList().size();
+        int listSize = result.getTaskList().size();
 
         // Check if the execution has been successful
         assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
@@ -102,7 +102,7 @@ public class TestController {
         assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
         // Check if the display string to be used in the table GUI display is correct
         assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_NO_PRIORITY, 
-                     result.getTaskStringList().get(listSize - 1));
+                     result.getTaskList().get(listSize - 1));
     }
 
     /*
@@ -118,7 +118,7 @@ public class TestController {
         parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
 
         Feedback result = Controller.startExecutor(parsedCommand);
-        int listSize = result.getTaskStringList().size();
+        int listSize = result.getTaskList().size();
 
         // Check if the execution has been successful
         assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
@@ -126,7 +126,7 @@ public class TestController {
         assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
         // Check if the display string to be used in the table GUI display is correct
         assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY, 
-                     result.getTaskStringList().get(listSize - 1));
+                     result.getTaskList().get(listSize - 1));
     }
 
     /*
@@ -143,7 +143,7 @@ public class TestController {
         parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
 
         Feedback result = Controller.startExecutor(parsedCommand);
-        int listSize = result.getTaskStringList().size();
+        int listSize = result.getTaskList().size();
 
         // Check if the execution has been successful
         assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
@@ -151,7 +151,7 @@ public class TestController {
         assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
         // Check if the display string to be used in the table GUI display is correct
         assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_ONLY_NAME, 
-                     result.getTaskStringList().get(listSize - 1));
+                     result.getTaskList().get(listSize - 1));
     }
 
     /*
