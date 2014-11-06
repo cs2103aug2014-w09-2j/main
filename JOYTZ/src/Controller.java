@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 public class Controller {
     private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
-    private static final String ERROR_INVALID_COMMAND = "Invalid command\n";
-    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter\n";
+    private static final String ERROR_INVALID_COMMAND = "Invalid command. Need help? " +
+                                                        "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
+                                                          "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String EMPTY_LIST = "null";

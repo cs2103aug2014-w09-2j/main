@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import javax.swing.Timer;
@@ -55,6 +57,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
     private static final String HELP_TEXT_SHORTCUT_MAXIMIZE = "\t    ALT+A to maximize application";
     private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
+    private static final String HELP_TEXT_PREVIOUS_COMMAND = "\t    ALT+up to get your previous command";
+    private static final String HELP_TEXT_NEXT_COMMAND = "\t    ALT+down to get your next command";
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";
@@ -88,12 +92,16 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static TableColumn tblclmnStart;
     private static TableColumn tblclmnEnd;
     private static TableColumn tblclmnFeedback;
+    private static TableColumn tblclmnPriority;
     private static boolean isSortingOrSearching;
+    private static Deque<String> previousUserInputStack;
+    private static Deque<String> nextUserInputStack;
     private static Display display;
     private static Shell shell;
     private static Timer displayTimer;
+    private static String beingDisplayed;
     private static GUI mainFrame;
-    private static TableColumn tblclmnPriority;
+    
     
     /**
      * Creates and returns a new TableItem containing
@@ -224,6 +232,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         item.setBackground(grey);
         
         item = newTableItem(feedbackTable, HELP_TEXT_SHORTCUT_MINIMIZE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_PREVIOUS_COMMAND);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_NEXT_COMMAND);
         item.setBackground(grey);
 
         feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
@@ -527,6 +541,9 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static void initializeVariables() {
         isSortingOrSearching = false;
         settingsStorage = new ArrayList<Integer>();
+        previousUserInputStack = new ArrayDeque<String>();
+        nextUserInputStack = new ArrayDeque<String>();
+        beingDisplayed = EMPTY_STRING;
         deadlineRowColorR = NULL_NUMBER;
         deadlineRowColorG = NULL_NUMBER;
         deadlineRowColorB = NULL_NUMBER;
@@ -544,13 +561,52 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void setupListeners() {
+        
         inputField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.CR) {    // "enter" key
+                if (e.character == SWT.CR) {                        // "enter" key
+                    restorePreviousInputStack();
                     handleUserInput();
                 }
-                if(e.stateMask == SWT.CTRL && e.keyCode == 'a') {   // Ctrl+A     
+                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {  // Ctrl+A     
                     inputField.selectAll();
+                }
+                if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_UP) {    // Alt+Up arrow
+                    getNextInput();
+                }
+                if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_DOWN) {  // Alt+Down arrow
+                    getPreviousInput();
+                }
+            }
+
+            private void restorePreviousInputStack() {
+                if (beingDisplayed.equals(EMPTY_STRING) == false) {
+                    previousUserInputStack.push(beingDisplayed);
+                    beingDisplayed = EMPTY_STRING;
+                }
+                
+                while (nextUserInputStack.isEmpty() == false) {
+                    previousUserInputStack.push(nextUserInputStack.pop());
+                }
+            }
+
+            private void getNextInput() {
+                if (previousUserInputStack.isEmpty() == false) {
+                    if (beingDisplayed.equals(EMPTY_STRING) == false) {
+                        nextUserInputStack.push(beingDisplayed);
+                    }
+                    beingDisplayed = previousUserInputStack.pop();
+                    inputField.setText(beingDisplayed);
+                    inputField.setSelection(inputField.getCharCount());
+                }
+            }
+
+            private void getPreviousInput() {
+                if (nextUserInputStack.isEmpty() == false) {
+                    previousUserInputStack.push(beingDisplayed);
+                    beingDisplayed = nextUserInputStack.pop();
+                    inputField.setText(beingDisplayed);
+                    inputField.setSelection(inputField.getCharCount());
                 }
             }
 
@@ -572,6 +628,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                 } else {
                     String userInput = inputField.getText();
                     userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
+                    previousUserInputStack.push(userInput);
                     Controller.startController(userInput);
 
                     inputField.setText(EMPTY_STRING);
