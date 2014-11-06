@@ -79,7 +79,7 @@ public class Controller {
                     isLastItem = true;
                 }
 
-                /* Commented because there's too much stuff in the console
+                /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
     						"	Action = " + action + "\n" + 
@@ -90,7 +90,7 @@ public class Controller {
     						"	Location = " + parameterArr[4] + "\n" +
     						"	Priority = " + parameterArr[5] + "\n" +
     						"====================\n");
-                 */
+                 
 
                 /*
                  * Parameters: updateTable(Table index number, start time, end time, name, 
@@ -186,7 +186,7 @@ public class Controller {
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
-                
+                System.out.println("#####################" + outputString);
                 if (outputString.equals(ERROR_NO_TASK_FILE)) {
                     GUI.openTutorial();
                 }

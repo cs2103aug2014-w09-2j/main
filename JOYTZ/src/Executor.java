@@ -1,4 +1,4 @@
-//package V1;
+//@author A011938U
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class Executor {
 	private static final String MESSAGE_EMPTY_DISPLAY = "The task list is empty.\n";
 
 	// these are for Update Method.
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d: \"%s\" is updated successfully.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
@@ -140,7 +140,7 @@ public class Executor {
 
 		Date startDateTime = convertStringToDate(startDateTimeString);
 		Date endDateTime = convertStringToDate(endDateTimeString);
-
+		
 		try {
 			Task newTask = createNewTask(name, description, startDateTime,
 					endDateTime, location, priority);
@@ -176,18 +176,25 @@ public class Executor {
 		}
 
 		Task newTask = new Task(name);
+		System.out.print("000d0f0df00f" + Storage.obtainNewTaskId());
+		newTask.setTaskId(Storage.obtainNewTaskId());
 
-		if (!description.equals(null)) {
+		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
-		} else if (!startDateTime.equals(null)) {
+		}
+		if (!(startDateTime == null)) {
 			newTask.setStartDateTime(startDateTime);
-		} else if (!endDateTime.equals(null)) {
+		} 
+		if (!(endDateTime == null)) {
 			newTask.setEndDateTime(endDateTime);
-		} else if (!location.equals(null)) {
+		}
+		if (!(location.equals(""))) {
 			newTask.setTaskLocation(location);
-		} else if (!priority.equals(null)) {
+		} 
+		if (!(priority.equals(""))) {
 			newTask.setTaskPriority(priority);
 		}
+		
 
 		return newTask;
 	}
@@ -239,8 +246,11 @@ public class Executor {
 			fb.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
 			if (fb.getResult()) {
 				fb.setMessageShowToUser(String.format(MESSAGE_UPDATE_SUCCESSFUL, taskId));
+			}else {
+				fb.setMessageShowToUser("aaaaaaaaaaaaa");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			fb.setMessageShowToUser(e.getMessage());
 		}
 
@@ -274,13 +284,8 @@ public class Executor {
 	private static Feedback performDisplayAction() {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
 
-		if (Storage.isEmpty()) {
-			fb.setMessageShowToUser(MESSAGE_EMPTY_DISPLAY);
-			return fb;
-		}
 		Storage.display();
 		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
-
 		return fb;
 	}
 
@@ -368,7 +373,7 @@ public class Executor {
 			}
 
 			// clean the tasklist and history.
-			Storage.cleanUpEveryThing();
+			Storage.clean();
 			// reload the data from saved file.
 			Storage.reloadFile();
 
@@ -498,9 +503,9 @@ public class Executor {
 	 */
 	private static Date convertStringToDate(String dateTimeString) {
 		if (dateTimeString.equals("")) {
-			return new Date((long) 0);
+			return null;
 		}
-
+		
 		Long dateTimeLong = Long.parseLong(dateTimeString);
 		Date dateTimeDate = new Date(dateTimeLong);
 

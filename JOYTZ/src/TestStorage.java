@@ -9,7 +9,7 @@ import org.junit.Test;
 
 
 public class TestStorage {
-	
+	/*
 	private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 	
 	@Test
@@ -170,5 +170,5 @@ public class TestStorage {
 			e.printStackTrace();
 		}
 	}
-
+	*/
 }
