@@ -9,16 +9,31 @@ public class StringFormat {
 
 	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-	
+
 	public static final String MESSAGE_SAVED_IN_FILE = "Last saved point: ";
-	
+
 	// indicate name-description-start-end-location-priority.
 	public static final String TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
 
 	public static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 
 	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-	
+
+	/**
+	 * error messages used in Analyzer and TimeHandler
+	 */
+	public static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
+	public static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
+	public static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
+	public static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
+	public static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
+	public static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	public static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	public static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
+	public static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
+	public static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
+	public static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
+	public static final String ERROR_INVALID_END_EARLIER_THAN_START = "End time is earlier than start time.\n";
 
 	/**
 	 * action
@@ -41,7 +56,6 @@ public class StringFormat {
 	/**
 	 * sort, search and update indicators
 	 */
-
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
 	public static final String LOCATION = "location";
@@ -66,6 +80,7 @@ public class StringFormat {
 	public static final String TIME_INDICATOR = ":";
 	public static final String SEPARATE_INDICATOR = ";";
 	public static final String DATE_INDICATOR = "/";
+	public static final String SPACE_INDICATOR = " ";
 	public static final String DUE_INDICATOR = "due";
 	public static final String DUE_ON_INDICATOR = "dueon";
 	public static final String DUE_AT_INDICATOR = "dueat";
@@ -73,6 +88,8 @@ public class StringFormat {
 	public static final String AT_INDICATOR = "at";
 	public static final String ON_INDICATOR = "on";
 	public static final String OF_INDICATOR = "of";
+	public static final String AM_INDICATOR = "am";
+	public static final String PM_INDICATOR = "pm";
 	public static final String FROM_INDICATOR = "from";
 	public static final String IMPORTANT = "important";
 	public static final String UNIMPORTANT = "unimportant";
@@ -81,11 +98,15 @@ public class StringFormat {
 	 * invalid indicator
 	 */
 	public static final String INVALID = "invalid";
+	
+	/**
+	 * empty indicator
+	 */
+	public static final String EMPTY = "";
 
 	/**
 	 * check valid indicator
 	 */
-
 	public static boolean isValidIndicator(String indicator) {
 		return indicator.equals(StringFormat.NAME)
 				|| indicator.equals(StringFormat.DESCRIPTION)
@@ -96,7 +117,7 @@ public class StringFormat {
 	}
 
 	/**
-	 * check valid indicator
+	 * check valid priority
 	 */
 	public static boolean isValidPriority(String priority) {
 		return priority.equals(HIGH_PRIORITY)
@@ -106,13 +127,31 @@ public class StringFormat {
 	}
 
 	/**
+	 * check input indicator
+	 */
+	public static boolean isInputIndicator(String indicator) {
+		return indicator.equals(StringFormat.TIME_INDICATOR)
+				|| indicator.equals(StringFormat.DUE_AT_INDICATOR)
+				|| indicator.equals(StringFormat.DUE_ON_INDICATOR)
+				|| indicator.contains(StringFormat.LOCATION_INDICATOR)
+				|| indicator.contains(StringFormat.PRIORITY_INDICATOR);
+	}
+
+	public static boolean isAmbiguousInputIndicator(String indicator) {
+		return indicator.equals(StringFormat.TO_INDICATOR)
+				|| indicator.equals(StringFormat.FROM_INDICATOR)
+				|| indicator.equals(StringFormat.AT_INDICATOR)
+				|| indicator.equals(StringFormat.ON_INDICATOR);
+	}
+
+	/**
 	 * check existence of date or time or both
 	 */
 	public static boolean isTimeOrDate(String temp) {
 		return temp.contains(StringFormat.TIME_INDICATOR)
 				|| temp.contains(StringFormat.DATE_INDICATOR);
 	}
-	
+
 	public static boolean isDate(String temp) {
 		return temp.contains(StringFormat.DATE_INDICATOR);
 	}

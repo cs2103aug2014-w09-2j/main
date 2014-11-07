@@ -6,18 +6,6 @@ import java.util.Date;
 import org.junit.Test;
 
 public class TestAnalyzer {
-	private static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
-	private static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
-	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
-	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
-	private static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
-	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
-	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
-	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
-	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
-	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-
 	private static Date currentDate = new Date(System.currentTimeMillis());
 	private static Date d1 = new Date(115, 9, 14);
 	private static Date d2 = new Date(115, 9, 20);
@@ -65,7 +53,7 @@ public class TestAnalyzer {
 		Command test23 = new Command("add trial due on 3:45pm");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
-		expected.setErrorMessage(ERROR_NULL_TASK);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
 		expected.setTaskName("meeting with friends");
 		expected.setTaskDescription("discuss about CS2103T project");
 		expected.setTaskStart(String.valueOf(d1.getTime()));
@@ -76,18 +64,19 @@ public class TestAnalyzer {
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.ADD);
 		expected2.setTaskStart(String.valueOf(d3.getTime()));
 		expected2.setTaskEnd(String.valueOf(d4.getTime()));
-		expected2.setErrorMessage(String.format(ERROR_INVALID_TIME,
-				StringFormat.START));
+		expected2.setErrorMessage(String.format(
+				StringFormat.ERROR_INVALID_TIME, StringFormat.START));
 		expected2.setTaskLocation("nus soc");
 
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.ADD);
 		expected3.setTaskStart(String.valueOf(d3.getTime()));
 		expected3.setTaskEnd(String.valueOf(d5.getTime()));
-		expected3.setErrorMessage(String.format(ERROR_INVALID_PRIORITY));
+		expected3.setErrorMessage(String
+				.format(StringFormat.ERROR_INVALID_PRIORITY));
 
 		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.ADD);
-		expected4.setErrorMessage(String.format(ERROR_INVALID_TIME,
-				StringFormat.END));
+		expected4.setErrorMessage(String.format(
+				StringFormat.ERROR_INVALID_TIME, StringFormat.END));
 
 		// test case 1: test if the error catcher is working
 		assertEquals("null argument case is not handled",
@@ -221,12 +210,12 @@ public class TestAnalyzer {
 		Command test9 = new Command("delete 1; 3 4");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.DELETE);
-		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 		expected.setTaskId(1);
 		expected.setTaskId(3);
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DELETE);
-		expected2.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
 		expected2.setTaskId(1);
 		expected2.setTaskId(3);
 		expected2.setTaskId(4);
@@ -303,27 +292,27 @@ public class TestAnalyzer {
 		Command test17 = new Command("update 1 priority high");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.UPDATE);
-		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 		expected.setKey(String.valueOf(d5.getTime()));
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.UPDATE);
-		expected2.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected2.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 		expected2.setKey(String.valueOf(d1.getTime()));
 
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.UPDATE);
-		expected3.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
 		expected3.setKey(String.valueOf(d6.getTime()));
 
 		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.UPDATE);
 		expected4.setKey("dating");
-		expected4.setErrorMessage(ERROR_INVALID_INDICATOR);
+		expected4.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.UPDATE);
-		expected5.setErrorMessage(ERROR_NULL_ARGUMENT);
+		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 		expected5.setKey("new task");
 
 		ExecutableCommand expected6 = new ExecutableCommand(StringFormat.UPDATE);
-		expected6.setErrorMessage(ERROR_INVALID_PRIORITY);
+		expected6.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
 		expected6.setKey("nus mrt");
 
 		ExecutableCommand expected7 = new ExecutableCommand(StringFormat.UPDATE);
@@ -434,7 +423,7 @@ public class TestAnalyzer {
 		Command test4 = new Command("display asdasdaooxcj");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.DISPLAY);
-		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the display action is processed correctly
 		assertEquals("display action is not processed correctly",
@@ -484,19 +473,19 @@ public class TestAnalyzer {
 				"search name meeting with friends; description new task; location kr mrt");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.SEARCH);
-		expected.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 		expected.setKey("meeting");
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SEARCH);
-		expected2.setErrorMessage(ERROR_NULL_ARGUMENT);
+		expected2.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 		expected2.setKey("meeting with friends");
 
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SEARCH);
-		expected3.setErrorMessage(ERROR_INVALID_INDICATOR);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 		expected3.setKey(String.valueOf(d1.getTime()));
 
 		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SEARCH);
-		expected4.setErrorMessage(ERROR_INVALID_PRIORITY);
+		expected4.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
 		expected4.setKey(String.valueOf(d6.getTime()));
 
 		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.SEARCH);
@@ -653,16 +642,16 @@ public class TestAnalyzer {
 		Command test11 = new Command("sort priority location; name");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.SORT);
-		expected.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 		expected.setIndicator(StringFormat.NAME);
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SORT);
 		expected2.setIndicator(StringFormat.PRIORITY);
 		expected2.setIndicator(StringFormat.LOCATION);
-		expected2.setErrorMessage(ERROR_INVALID_INDICATOR);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SORT);
-		expected3.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 		expected3.setIndicator(StringFormat.START);
 
 		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SORT);
@@ -743,7 +732,7 @@ public class TestAnalyzer {
 		Command test4 = new Command("undo asdasdaooxcj");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.UNDO);
-		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the undo action is processed correctly
 		assertEquals("undo action is not processed correctly",
@@ -775,7 +764,7 @@ public class TestAnalyzer {
 		Command test4 = new Command("ReDO asdasdaooxcj");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.REDO);
-		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the redo action is processed correctly
 		assertEquals("redo action is not processed correctly",
@@ -807,7 +796,7 @@ public class TestAnalyzer {
 		Command test4 = new Command("CLEAr asdasdaooxcj");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.CLEAR);
-		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the clear action is processed correctly
 		assertEquals("clear action is not processed correctly",
@@ -839,7 +828,7 @@ public class TestAnalyzer {
 		Command test4 = new Command("EXIT asdasdaooxcj");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.EXIT);
-		expected.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the exit action is processed correctly
 		assertEquals("exit action is not processed correctly",

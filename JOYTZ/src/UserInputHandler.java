@@ -19,7 +19,7 @@ public class UserInputHandler {
 			input = input.concat(temp2);
 		}
 
-		String[] arg = input.trim().split(" ");
+		String[] arg = input.trim().split(StringFormat.SPACE_INDICATOR);
 		String[] parsedInput;
 		String userAction = arg[0].toLowerCase();
 
@@ -48,7 +48,9 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleAddInput(String[] str) {
-		String[] output = { StringFormat.ADD, "", "", "", "", "", "" };
+		String[] output = { StringFormat.ADD, StringFormat.EMPTY,
+				StringFormat.EMPTY, StringFormat.EMPTY, StringFormat.EMPTY,
+				StringFormat.EMPTY, StringFormat.EMPTY };
 		boolean nameExistence = false;
 		boolean descriptionExistence = false;
 		boolean startTimeExistence = false;
@@ -62,25 +64,27 @@ public class UserInputHandler {
 
 			if (nameExistence) {
 				output[1] = output[1].concat(temp);
-				output[1] = output[1].concat(" ");
+				output[1] = output[1].concat(StringFormat.SPACE_INDICATOR);
 				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 					output[1] = output[1].substring(0, output[1].length() - 2);
 					nameExistence = false;
 					descriptionExistence = true;
 				} else if (str.length > i + 1) {
-					if (isInputIndicator(str[i + 1])
-							|| (isAmbiguousInputIndicator(str[i + 1]) && StringFormat
+					if (StringFormat.isInputIndicator(str[i + 1])
+							|| (StringFormat
+									.isAmbiguousInputIndicator(str[i + 1]) && StringFormat
 									.isTimeOrDate(str[i + 2]))) {
 						nameExistence = false;
 					}
 				}
 			} else if (descriptionExistence) {
 				output[2] = output[2].concat(temp);
-				output[2] = output[2].concat(" ");
+				output[2] = output[2].concat(StringFormat.SPACE_INDICATOR);
 
 				if (str.length > i + 1) {
-					if (isInputIndicator(str[i + 1])
-							|| (isAmbiguousInputIndicator(str[i + 1]) && StringFormat
+					if (StringFormat.isInputIndicator(str[i + 1])
+							|| (StringFormat
+									.isAmbiguousInputIndicator(str[i + 1]) && StringFormat
 									.isTimeOrDate(str[i + 2]))) {
 						descriptionExistence = false;
 					}
@@ -96,7 +100,7 @@ public class UserInputHandler {
 				}
 			} else if (startTimeExistence) {
 				if (output[3].contains(StringFormat.DATE_INDICATOR)) {
-					output[3] = output[3].concat(" ");
+					output[3] = output[3].concat(StringFormat.SPACE_INDICATOR);
 					output[3] = output[3].concat(temp);
 				} else {
 					output[3] = temp;
@@ -112,7 +116,7 @@ public class UserInputHandler {
 
 			} else if (endTimeExistence) {
 				if (output[4].contains(StringFormat.DATE_INDICATOR)) {
-					output[4] = output[4].concat(" ");
+					output[4] = output[4].concat(StringFormat.SPACE_INDICATOR);
 					output[4] = output[4].concat(temp);
 				} else {
 					output[4] = temp;
@@ -120,14 +124,15 @@ public class UserInputHandler {
 
 				endTimeExistence = false;
 			} else if (locationExistence) {
-				if (!output[5].equals("")) {
-					output[5] = output[5].concat(" ");
+				if (!output[5].equals(StringFormat.EMPTY)) {
+					output[5] = output[5].concat(StringFormat.SPACE_INDICATOR);
 					output[5] = output[5].concat(temp);
 				} else {
 					output[5] = temp.substring(1);
 				}
 
-				if (str.length > i + 1 && isInputIndicator(str[i + 1])) {
+				if (str.length > i + 1
+						&& StringFormat.isInputIndicator(str[i + 1])) {
 					locationExistence = false;
 				}
 			} else if (temp.equals(StringFormat.TO_INDICATOR)) {
@@ -178,12 +183,12 @@ public class UserInputHandler {
 				output[5] = temp.substring(1);
 
 				if (str.length > i + 1) {
-					if (isAmbiguousInputIndicator(str[i + 1])) {
+					if (StringFormat.isAmbiguousInputIndicator(str[i + 1])) {
 						if (str.length > i + 2
 								&& !StringFormat.isTimeOrDate(str[i + 2])) {
 							locationExistence = true;
 						}
-					} else if (!isInputIndicator(str[i + 1])) {
+					} else if (!StringFormat.isInputIndicator(str[i + 1])) {
 						locationExistence = true;
 					}
 				}
@@ -201,20 +206,21 @@ public class UserInputHandler {
 				}
 			} else {
 				output[1] = output[1].concat(temp);
-				output[1] = output[1].concat(" ");
+				output[1] = output[1].concat(StringFormat.SPACE_INDICATOR);
 
 				if (str.length > i + 1) {
 					if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 						output[1] = output[1].substring(0,
 								output[1].length() - 2);
 						descriptionExistence = true;
-					} else if (isAmbiguousInputIndicator(str[i + 1])) {
+					} else if (StringFormat
+							.isAmbiguousInputIndicator(str[i + 1])) {
 						if (StringFormat.isTimeOrDate(str[i + 2])) {
 							nameExistence = false;
 						} else {
 							nameExistence = true;
 						}
-					} else if (!isInputIndicator(str[i + 1])) {
+					} else if (!StringFormat.isInputIndicator(str[i + 1])) {
 						nameExistence = true;
 					}
 				}
@@ -255,10 +261,11 @@ public class UserInputHandler {
 			output.add(str[2]);
 		}
 		if (str.length > 3) {
-			String itemToBeUpdated = "";
+			String itemToBeUpdated = StringFormat.EMPTY;
 			for (int i = 3; i < str.length; i++) {
 				itemToBeUpdated = itemToBeUpdated.concat(str[i]);
-				itemToBeUpdated = itemToBeUpdated.concat(" ");
+				itemToBeUpdated = itemToBeUpdated
+						.concat(StringFormat.SPACE_INDICATOR);
 			}
 			output.add(itemToBeUpdated);
 		}
@@ -278,7 +285,7 @@ public class UserInputHandler {
 		boolean startExistence = false;
 		boolean endExistence = false;
 
-		String key = "";
+		String key = StringFormat.EMPTY;
 
 		output.add(StringFormat.SEARCH);
 
@@ -292,10 +299,10 @@ public class UserInputHandler {
 					if (str.length > i + 1) {
 						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 							output.add(key.substring(0, key.length() - 1));
-							key = "";
+							key = StringFormat.EMPTY;
 							nameExistence = false;
 						} else {
-							key = key.concat(" ");
+							key = key.concat(StringFormat.SPACE_INDICATOR);
 						}
 					} else {
 						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
@@ -311,10 +318,10 @@ public class UserInputHandler {
 					if (str.length > i + 1) {
 						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 							output.add(key.substring(0, key.length() - 1));
-							key = "";
+							key = StringFormat.EMPTY;
 							descriptionExistence = false;
 						} else {
-							key = key.concat(" ");
+							key = key.concat(StringFormat.SPACE_INDICATOR);
 						}
 					} else {
 						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
@@ -333,10 +340,10 @@ public class UserInputHandler {
 					if (str.length > i + 1) {
 						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 							output.add(key.substring(0, key.length() - 1));
-							key = "";
+							key = StringFormat.EMPTY;
 							startExistence = false;
 						} else {
-							key = key.concat(" ");
+							key = key.concat(StringFormat.SPACE_INDICATOR);
 						}
 					} else {
 						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
@@ -352,10 +359,10 @@ public class UserInputHandler {
 					if (str.length > i + 1) {
 						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 							output.add(key.substring(0, key.length() - 1));
-							key = "";
+							key = StringFormat.EMPTY;
 							endExistence = false;
 						} else {
-							key = key.concat(" ");
+							key = key.concat(StringFormat.SPACE_INDICATOR);
 						}
 					} else {
 						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
@@ -371,10 +378,10 @@ public class UserInputHandler {
 					if (str.length > i + 1) {
 						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 							output.add(key.substring(0, key.length() - 1));
-							key = "";
+							key = StringFormat.EMPTY;
 							locationExistence = false;
 						} else {
-							key = key.concat(" ");
+							key = key.concat(StringFormat.SPACE_INDICATOR);
 						}
 					} else {
 						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
@@ -444,18 +451,4 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
-	private static boolean isInputIndicator(String indicator) {
-		return indicator.equals(StringFormat.TIME_INDICATOR)
-				|| indicator.equals(StringFormat.DUE_AT_INDICATOR)
-				|| indicator.equals(StringFormat.DUE_ON_INDICATOR)
-				|| indicator.contains(StringFormat.LOCATION_INDICATOR)
-				|| indicator.contains(StringFormat.PRIORITY_INDICATOR);
-	}
-
-	private static boolean isAmbiguousInputIndicator(String indicator) {
-		return indicator.equals(StringFormat.TO_INDICATOR)
-				|| indicator.equals(StringFormat.FROM_INDICATOR)
-				|| indicator.equals(StringFormat.AT_INDICATOR)
-				|| indicator.equals(StringFormat.ON_INDICATOR);
-	}
 }
