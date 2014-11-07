@@ -67,6 +67,11 @@ public class Storage {
 		mainTaskList.addTask(task);
 		
 		setDisplayList(mainTaskList);
+		LOGGER.info("==============\n" +
+				"Storage : Add \n" + 
+				"	Add a new task " + "\n" +
+				"	task id : " + task.getTaskId() + "\n" + 
+				"====================\n");
 		
 		return true;
 	}
@@ -75,17 +80,29 @@ public class Storage {
 	 * Delete a task from taskList, and move it to history. Invalid taskId will
 	 * throw NullPointerException;
 	 * 
-	 * @param taskId
+	 * @param index
 	 * @return
 	 * @throws Exception
 	 */
 	public static boolean delete(int index) throws Exception {
-		index--;
+		if (index<0 || index >= displayTaskList.size()){
+			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+		}
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		
 		mainTaskList.deleteTaskById(targetTaskId);
+		displayTaskList.deleteTaskByIndex(index);
 		
 		setDisplayList(displayTaskList);
+		
+		LOGGER.info("==============\n" +
+				"Storage : Delete \n" + 
+				"	Delete a task. " + "Task index : " + index + "\n" +
+				"   current Task size. " + "\n" + 
+				"	displaytasklist size : " + displayTaskList.size() + "\n" + 
+				"	maintasklist size : " + mainTaskList.size() + "\n" +
+ 				"====================\n");
 		
 		return true;
 	}
@@ -307,7 +324,11 @@ public class Storage {
 			Task currTask = targetList.getTaskByIndex(index);
 			resultList.add(currTask.toString());
 		}
-
+		LOGGER.info("==============\n" +
+				"Storage : getDisplayList \n" + 
+				"	resultList size " + resultList.size() + "\n" +
+				"====================\n");
+		
 		return resultList;
 	}
 
@@ -321,7 +342,7 @@ public class Storage {
 
 		File taskListFile = new File(taskListFileName);
 		File historyFile = new File(historyFileName);
-
+		
 		if (!taskListFile.exists()) {
 			taskListFile.createNewFile();
 		}
@@ -331,9 +352,6 @@ public class Storage {
 
 		taskListWriter = new FileWriter(taskListFile);
 		historyWriter = new FileWriter(historyFile);
-
-		assert taskListFile.canWrite() : "taskListFile cannot write.";
-		assert historyFile.canWrite() : "historyFile cannot write.";
 
 		Date date = new Date();
 		String dateString = format.format(date);
@@ -452,7 +470,7 @@ public class Storage {
 	}
 
 	public static void setDisplayList(List targetList) {
-		displayTaskList = targetList;
+		displayTaskList = targetList.copy();
 		checkTime();
 	}
 	
