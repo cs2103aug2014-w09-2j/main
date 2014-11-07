@@ -85,7 +85,7 @@ public class FileInOut {
 	public String getFirstLineMsg() {
 		Date now = new Date();
 		String msgString = StringFormat.MESSAGE_SAVED_IN_FILE;
-		String dateString = StringFormat.DATE_FORMAT_SAVED_IN_FILE.format(now);
+		String dateString = StringFormat.DATE_FORMAT_SAVED_IN_FILE.format(now) + "\n";
 
 		return msgString + dateString;
 	}

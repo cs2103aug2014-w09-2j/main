@@ -8,7 +8,7 @@ public class StringFormat {
 			"yyyy.MM.dd 'at' HH:mm");
 
 	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
-			"E yyyy.MM.dd 'at' hh:mm:ss a zzz\n");
+			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 	
 	public static final String MESSAGE_SAVED_IN_FILE = "Last saved point: ";
 	
