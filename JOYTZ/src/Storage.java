@@ -29,7 +29,7 @@ public class Storage {
 	private static ArrayList<Task> history = new ArrayList<Task>();
 
 	// these are for display to user.
-	private static List displayTaskList = new List();
+	public static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 

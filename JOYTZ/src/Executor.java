@@ -1,3 +1,4 @@
+//@author A0112060E
 //@author A011938U
 
 import java.util.*;
@@ -15,13 +16,13 @@ public class Executor {
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
+	private static final String ERROR_INVALID_DELETE_ATTRIBUTE = "Invalid delete attributes.\n";
 
 	// these are for Clear Method.
 	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
-	private static final String MESSAGE_EMPTY_DISPLAY = "The task list is empty.\n";
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
@@ -53,7 +54,6 @@ public class Executor {
 	 * @param command
 	 * @return
 	 */
-
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -140,7 +140,7 @@ public class Executor {
 
 		Date startDateTime = convertStringToDate(startDateTimeString);
 		Date endDateTime = convertStringToDate(endDateTimeString);
-		
+
 		try {
 			Task newTask = createNewTask(name, description, startDateTime,
 					endDateTime, location, priority);
@@ -157,49 +157,6 @@ public class Executor {
 	}
 
 	/**
-	 * Create a new Task Object based on the attributes.
-	 * 
-	 * @param name
-	 * @param description
-	 * @param location
-	 * @param priority
-	 * @param startDateTime
-	 * @param endDateTime
-	 * @throws Exception
-	 */
-	private static Task createNewTask(String name, String description,
-			Date startDateTime, Date endDateTime, String location,
-			String priority) throws Exception {
-
-		if (name.equals(null)) {
-			throw new Exception("Null task name.");
-		}
-
-		Task newTask = new Task(name);
-		System.out.print("000d0f0df00f" + Storage.obtainNewTaskId());
-		newTask.setTaskId(Storage.obtainNewTaskId());
-
-		if (!(description.equals(""))) {
-			newTask.setTaskDescription(description);
-		}
-		if (!(startDateTime == null)) {
-			newTask.setStartDateTime(startDateTime);
-		} 
-		if (!(endDateTime == null)) {
-			newTask.setEndDateTime(endDateTime);
-		}
-		if (!(location.equals(""))) {
-			newTask.setTaskLocation(location);
-		} 
-		if (!(priority.equals(""))) {
-			newTask.setTaskPriority(priority);
-		}
-		
-
-		return newTask;
-	}
-
-	/**
 	 * Perform delete action with command object passed from
 	 * proceedAnalyzedCommand method
 	 *
@@ -209,18 +166,24 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
+		ArrayList<Integer> listTaskId = command.getTaskId();
 
-		int taskId = command.getTaskId();
+		for (int i = 0; i < listTaskId.size(); i++) {
+			int index = listTaskId.get(i);
 
-		try {
-			fb.setResult(Storage.delete(taskId));
-			if (fb.getResult()) {
-				fb.setMessageShowToUser(String.format(
-						MESSAGE_DELETE_SUCCESSFUL, taskId));
+			try {
+				fb.setResult(Storage.delete(index));
+				if (fb.getResult()) {
+					index--;
+					Task targetTask = Storage.displayTaskList
+							.getTaskByIndex(index);
+
+					fb.setMessageShowToUser(String.format(
+							MESSAGE_DELETE_SUCCESSFUL, targetTask.getTaskName()));
+				}
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
 			}
-
-		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		return fb;
@@ -237,20 +200,34 @@ public class Executor {
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
-		int taskId = command.getTaskId();
-		String updateIndicator = command.getIndicator();
-		String updateKeyValue = command.getKey();
-		
-		try {
-			fb.setResult(Storage.update(taskId, updateIndicator, updateKeyValue));
-			if (fb.getResult()) {
-				fb.setMessageShowToUser(String.format(MESSAGE_UPDATE_SUCCESSFUL, taskId));
-			}else {
-				fb.setMessageShowToUser("aaaaaaaaaaaaa");
+		ArrayList<Integer> taskId = command.getTaskId();
+		ArrayList<String> updateIndicator = command.getIndicator();
+		ArrayList<String> updateKeyValue = command.getKey();
+
+		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+
+		for (int i = 0; i < taskId.size(); i++) {
+			int index = taskId.get(i);
+
+			try {
+				fb.setResult(Storage.update(index, updateIndicator.get(i),
+						updateKeyValue.get(i)));
+				if (fb.getResult()) {
+					index--;
+					Task targetTask = Storage.displayTaskList
+							.getTaskByIndex(index);
+
+					fb.setMessageShowToUser(String.format(
+							MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
+				} else {
+					fb.setMessageShowToUser(ERROR_INVALID_DELETE_ATTRIBUTE);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				fb.setMessageShowToUser(e.getMessage());
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		return fb;
@@ -298,21 +275,23 @@ public class Executor {
 	 * 
 	 */
 	private static Feedback performSortAction(ExecutableCommand command) {
-		String sortKey = command.getIndicator();
+		ArrayList<String> sortKey = command.getIndicator();
 
 		Feedback fb = new Feedback(StringFormat.SORT, false);
 
 		// check what category user want to sort
-		try {
-			fb.setResult(Storage.sort(sortKey));
-		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
-			return fb;
-		}
+		for (int i = 0; i < sortKey.size(); i++) {
+			try {
+				fb.setResult(Storage.sort(sortKey.get(i)));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
 
-		if (fb.getResult()) {
-			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
-					sortKey));
+			if (fb.getResult()) {
+				fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
+						sortKey.get(i)));
+			}
 		}
 
 		return fb;
@@ -329,22 +308,26 @@ public class Executor {
 	 */
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
-		
-		String searchIndicator = command.getIndicator();
-		String searchValue = command.getKey();
+
+		ArrayList<String> searchIndicator = command.getIndicator();
+		ArrayList<String> searchValue = command.getKey();
+
+		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
-		try {
-			Storage.search(searchIndicator, searchValue);
-			
-		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
-			return fb;
-		}
+		for (int i = 0; i < searchIndicator.size(); i++) {
+			try {
+				Storage.search(searchIndicator.get(i), searchValue.get(i));
 
-		fb.setResult(true);
-		fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
-				searchValue, searchIndicator));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+
+			fb.setResult(true);
+			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+					searchValue.get(i), searchIndicator.get(i)));
+		}
 
 		return fb;
 	}
@@ -504,10 +487,51 @@ public class Executor {
 		if (dateTimeString.equals("")) {
 			return null;
 		}
-		
+
 		Long dateTimeLong = Long.parseLong(dateTimeString);
 		Date dateTimeDate = new Date(dateTimeLong);
 
 		return dateTimeDate;
+	}
+
+	/**
+	 * Create a new Task Object based on the attributes.
+	 * 
+	 * @param name
+	 * @param description
+	 * @param location
+	 * @param priority
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @throws Exception
+	 */
+	private static Task createNewTask(String name, String description,
+			Date startDateTime, Date endDateTime, String location,
+			String priority) throws Exception {
+
+		if (name.equals(null)) {
+			throw new Exception("Null task name");
+		}
+
+		Task newTask = new Task(name);
+		newTask.setTaskId(Storage.obtainNewTaskId());
+
+		if (!(description.equals(""))) {
+			newTask.setTaskDescription(description);
+		}
+		if (!(startDateTime == null)) {
+			newTask.setStartDateTime(startDateTime);
+		}
+		if (!(endDateTime == null)) {
+			newTask.setEndDateTime(endDateTime);
+		}
+		if (!(location.equals(""))) {
+			newTask.setTaskLocation(location);
+		}
+		if (!(priority.equals(""))) {
+			newTask.setTaskPriority(priority);
+		}
+
+		return newTask;
 	}
 }

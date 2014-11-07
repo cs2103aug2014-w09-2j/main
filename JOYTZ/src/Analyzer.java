@@ -17,7 +17,7 @@ public class Analyzer {
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
 	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-
+	
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
 			StringFormat.START_DATE, StringFormat.START_TIME,
@@ -104,7 +104,7 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			if(arg[2].equals(StringFormat.INVALID)){
+			if (arg[2].equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
 						StringFormat.START));
 
@@ -119,7 +119,7 @@ public class Analyzer {
 			}
 		}
 		if (arg.length >= 4) {
-			if(arg[3].equals(StringFormat.INVALID)){
+			if (arg[3].equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
 						StringFormat.END));
 
@@ -162,12 +162,16 @@ public class Analyzer {
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
 			return tempCommand;
-		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
-			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
-			return tempCommand;
 		}
 
-		tempCommand.setTaskId(Integer.parseInt(arg[0]));
+		for (int i = 0; i < arg.length; i++) {
+			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
+				tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+				return tempCommand;
+			}
+
+			tempCommand.setTaskId(Integer.parseInt(arg[i]));
+		}
 
 		return tempCommand;
 	}
