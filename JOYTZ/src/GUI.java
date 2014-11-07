@@ -286,14 +286,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", priority, 
-                                                                     name, startDate, endDate});
+            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
+                                                                     startDate, endDate, priority});
             
             TableItem item2;
             if (location.equals(EMPTY_STRING)) {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, location });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location });
             } else {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, "at " + location });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -845,11 +845,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
-        
-        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnPriority.setMoveable(true);
-        tblclmnPriority.setWidth(90);
-        tblclmnPriority.setText("Priority");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);
@@ -865,6 +860,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnEnd.setMoveable(true);
         tblclmnEnd.setWidth(180);
         tblclmnEnd.setText("End");
+        
+        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnPriority.setMoveable(true);
+        tblclmnPriority.setWidth(90);
+        tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
