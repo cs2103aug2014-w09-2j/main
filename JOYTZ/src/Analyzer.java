@@ -17,7 +17,7 @@ public class Analyzer {
 	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
 	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-	
+
 	private static final String[] VALID_INDICATOR = new String[] {
 			StringFormat.NAME, StringFormat.DESCRIPTION,
 			StringFormat.START_DATE, StringFormat.START_TIME,
@@ -211,6 +211,12 @@ public class Analyzer {
 				|| indicator.equals(StringFormat.START_TIME)
 				|| indicator.equals(StringFormat.END_DATE)
 				|| indicator.equals(StringFormat.END_TIME)) {
+			if (arg.length < 3) {
+				tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
+			}
+
 			updatedItem = TimeHandler.inputTimingConvertor(arg[2]);
 
 			if (updatedItem == null) {
@@ -292,7 +298,7 @@ public class Analyzer {
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
-		if (arg[0] == "") {
+		if (arg.length == 0) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 
 			return tempCommand;

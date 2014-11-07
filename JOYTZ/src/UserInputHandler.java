@@ -21,8 +21,9 @@ public class UserInputHandler {
 
 		String[] arg = input.trim().split(" ");
 		String[] parsedInput;
-
-		switch (arg[0]) {
+		String userAction = arg[0].toLowerCase();
+		
+		switch (userAction) {
 		case StringFormat.ADD:
 			parsedInput = handleAddInput(arg);
 			break;
@@ -411,7 +412,7 @@ public class UserInputHandler {
 		output.add(StringFormat.SORT);
 
 		if (str.length > 1) {
-			for (int i = 0; i < str.length; i++) {
+			for (int i = 1; i < str.length; i++) {
 				output.add(str[i]);
 			}
 		}
