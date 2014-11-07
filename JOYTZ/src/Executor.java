@@ -166,15 +166,20 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
+		ArrayList<Integer> listTaskId = command.getTaskId();
 
-		ArrayList<Integer> taskId = command.getTaskId();
+		for (int i = 0; i < listTaskId.size(); i++) {
+			int index = listTaskId.get(i);
 
-		for (int i = 0; i < taskId.size(); i++) {
 			try {
-				fb.setResult(Storage.delete(taskId.get(i)));
+				fb.setResult(Storage.delete(index));
 				if (fb.getResult()) {
+					index--;
+					Task targetTask = Storage.displayTaskList
+							.getTaskByIndex(index);
+
 					fb.setMessageShowToUser(String.format(
-							MESSAGE_DELETE_SUCCESSFUL, taskId.get(i)));
+							MESSAGE_DELETE_SUCCESSFUL, targetTask.getTaskName()));
 				}
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
@@ -200,16 +205,23 @@ public class Executor {
 		ArrayList<String> updateIndicator = command.getIndicator();
 		ArrayList<String> updateKeyValue = command.getKey();
 
-		int maxSize = Math.max(updateKeyValue.size(),
-				Math.max(taskId.size(), updateIndicator.size()));
+		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
 
-		for (int i = 0; i < maxSize; i++)
+		for (int i = 0; i < taskId.size(); i++) {
+			int index = taskId.get(i);
+
 			try {
-				fb.setResult(Storage.update(taskId.get(i),
-						updateIndicator.get(i), updateKeyValue.get(i)));
+				fb.setResult(Storage.update(index, updateIndicator.get(i),
+						updateKeyValue.get(i)));
 				if (fb.getResult()) {
+					index--;
+					Task targetTask = Storage.displayTaskList
+							.getTaskByIndex(index);
+
 					fb.setMessageShowToUser(String.format(
-							MESSAGE_UPDATE_SUCCESSFUL, taskId));
+							MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
 				} else {
 					fb.setMessageShowToUser(ERROR_INVALID_DELETE_ATTRIBUTE);
 				}
@@ -217,6 +229,7 @@ public class Executor {
 				e.printStackTrace();
 				fb.setMessageShowToUser(e.getMessage());
 			}
+		}
 
 		return fb;
 	}
@@ -268,7 +281,7 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.SORT, false);
 
 		// check what category user want to sort
-		for (int i = 0; i < sortKey.size(); i++)
+		for (int i = 0; i < sortKey.size(); i++) {
 			try {
 				fb.setResult(Storage.sort(sortKey.get(i)));
 			} catch (Exception e) {
@@ -276,9 +289,10 @@ public class Executor {
 				return fb;
 			}
 
-		if (fb.getResult()) {
-			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
-					sortKey));
+			if (fb.getResult()) {
+				fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
+						sortKey.get(i)));
+			}
 		}
 
 		return fb;
@@ -299,10 +313,10 @@ public class Executor {
 		ArrayList<String> searchIndicator = command.getIndicator();
 		ArrayList<String> searchValue = command.getKey();
 
-		int maxSize = Math.max(searchIndicator.size(), searchValue.size());
+		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
-		for (int i = 0; i < maxSize; i++)
+		for (int i = 0; i < searchIndicator.size(); i++) {
 			try {
 				Storage.search(searchIndicator.get(i), searchValue.get(i));
 
@@ -311,9 +325,10 @@ public class Executor {
 				return fb;
 			}
 
-		fb.setResult(true);
-		fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
-				searchValue, searchIndicator));
+			fb.setResult(true);
+			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+					searchValue.get(i), searchIndicator.get(i)));
+		}
 
 		return fb;
 	}
