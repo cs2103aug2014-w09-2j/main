@@ -23,6 +23,7 @@ public class Executor {
 
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
+	private static final String MESSAGE_NO_TASK_DISPLAYED = "There is no task in the table.\n";
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
@@ -261,7 +262,12 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
 
 		Storage.display();
-		fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
+		
+		if (Storage.displayTaskList.size() == 0)
+			fb.setMessageShowToUser(MESSAGE_NO_TASK_DISPLAYED);
+		else
+			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
+		
 		return fb;
 	}
 
