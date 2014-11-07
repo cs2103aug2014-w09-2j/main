@@ -98,7 +98,6 @@ public class StringFormat {
 	/**
 	 * check valid indicator
 	 */
-
 	public static boolean isValidPriority(String priority) {
 		return priority.equals(HIGH_PRIORITY)
 				|| priority.equals(MEDIUM_PRIORITY)

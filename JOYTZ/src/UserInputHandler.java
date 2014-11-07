@@ -421,7 +421,6 @@ public class UserInputHandler {
 			}
 		}
 
-		System.out.println(output);
 		String[] outputArr = new String[output.size()];
 		return output.toArray(outputArr);
 	}

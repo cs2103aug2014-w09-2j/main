@@ -217,6 +217,8 @@ public class TestAnalyzer {
 		Command test5 = new Command("delete 1; 0; 3");
 		Command test6 = new Command("delete 1; meeting with friends");
 		Command test7 = new Command("delete 1; 3; -3");
+		Command test8 = new Command("delete 1 3 ");
+		Command test9 = new Command("delete 1; 3 4");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.DELETE);
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
@@ -225,6 +227,9 @@ public class TestAnalyzer {
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DELETE);
 		expected2.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		expected2.setTaskId(1);
+		expected2.setTaskId(3);
+		expected2.setTaskId(4);
 
 		// test case 1: test if the error catcher for null argument is working
 		assertEquals("null argument case is not handled",
@@ -253,7 +258,7 @@ public class TestAnalyzer {
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
 						.getErrorMessage());
 
-		// test case 6: test if the error catcher for invalid task index is
+		// test case 7: test if the error catcher for invalid task index is
 		// working
 		assertEquals("invalid task index case is not handled",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
@@ -264,6 +269,16 @@ public class TestAnalyzer {
 		assertEquals("invalid task index case is not handled",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
 						.getErrorMessage());
+
+		// test case 7: test if multiple delete can be analyzed correctly
+		// without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test8).getTaskId());
+
+		// test case 8: test if multiple delete can be analyzed correctly with
+		// or without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
 
 	}
 
@@ -607,8 +622,7 @@ public class TestAnalyzer {
 		// able to stored correctly correctly
 		assertEquals(
 				"unable to get multiple search indicators and keys to be stored correctly",
-				expected11.getKey(), Analyzer.runAnalyzer(test18)
-						.getKey());
+				expected11.getKey(), Analyzer.runAnalyzer(test18).getKey());
 
 		// test case 19: test if the multiple search indicators and keys are
 		// able to stored correctly
@@ -635,6 +649,8 @@ public class TestAnalyzer {
 		Command test7 = new Command("SORT start");
 		Command test8 = new Command("sort asdasdaooxcj");
 		Command test9 = new Command("sort end time");
+		Command test10 = new Command("sort priority location");
+		Command test11 = new Command("sort priority location; name");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.SORT);
 		expected.setErrorMessage(ERROR_NULL_INDICATOR);
@@ -648,6 +664,11 @@ public class TestAnalyzer {
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SORT);
 		expected3.setErrorMessage(ERROR_INVALID_COMMAND);
 		expected3.setIndicator(StringFormat.START);
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SORT);
+		expected4.setIndicator(StringFormat.PRIORITY);
+		expected4.setIndicator(StringFormat.LOCATION);
+		expected4.setIndicator(StringFormat.NAME);
 
 		// test case 1: test if the error catcher for null indicator is working
 		assertEquals("null indicator is not detected",
@@ -700,6 +721,18 @@ public class TestAnalyzer {
 		assertEquals("invalid sort indicator is not detected",
 				expected2.getErrorMessage(), Analyzer.runAnalyzer(test9)
 						.getErrorMessage());
+
+		// test case 10: test if multiple sort can be analyzed correctly without
+		// the indicator
+		assertEquals("multiple sort action is not analyzed correctly",
+				expected2.getIndicator(), Analyzer.runAnalyzer(test10)
+						.getIndicator());
+
+		// test case 11: test if multiple sort can be analyzed correctly with or
+		// without the indicator
+		assertEquals("multiple sort action is not analyzed correctly",
+				expected4.getIndicator(), Analyzer.runAnalyzer(test11)
+						.getIndicator());
 	}
 
 	@Test
