@@ -82,6 +82,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static int ongoingRowColorR;
 	private static int ongoingRowColorG;
 	private static int ongoingRowColorB;
+	private static int isNotifcationsOverdueEnabled;
+    private static int isNotifcationsOngoingEnabled;
 	private static List<Integer> settingsStorage;
 	
     private static StyledText inputField;
@@ -286,14 +288,14 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", priority, 
-                                                                     name, startDate, endDate});
+            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
+                                                                     startDate, endDate, priority});
             
             TableItem item2;
             if (location.equals(EMPTY_STRING)) {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, location });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location });
             } else {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, EMPTY_STRING, "at " + location });
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -353,20 +355,26 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             colorRowBackgroundLightGrey(item2);
         }
         
+        
+        
         // Coloring green
         if (isHighlightedPassStart == true) {
+            System.out.println("Ongoing = " + isNotifcationsOngoingEnabled);
+            System.out.println("Overdue = " + isNotifcationsOverdueEnabled);
             colorOngoingRow(item);
             colorOngoingRow(item2);
-            if (action.equals(StringFormat.DISPLAY)) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOngoingEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), EMPTY_STRING);
             }
         }
         
         // Coloring red
         if (isHighlightedPassEnd == true) {
+            System.out.println("Ongoing2 = " + isNotifcationsOngoingEnabled);
+            System.out.println("Overdue2 = " + isNotifcationsOverdueEnabled);
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
-            if (action.equals(StringFormat.DISPLAY)) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), EMPTY_STRING);
             }
         }
@@ -550,6 +558,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         ongoingRowColorR = NULL_NUMBER;
         ongoingRowColorG = NULL_NUMBER;
         ongoingRowColorB = NULL_NUMBER;
+        isNotifcationsOverdueEnabled = NULL_NUMBER;
+        isNotifcationsOngoingEnabled = NULL_NUMBER;
     }
     
     /** 
@@ -681,18 +691,23 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             ongoingRowColorR = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_R_INDEX);
             ongoingRowColorG = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_G_INDEX);
             ongoingRowColorB = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_B_INDEX);
+            isNotifcationsOverdueEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
+            isNotifcationsOngoingEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
         } else {
             LOGGER.info("==============\n" +
                         "No settings found. Using default settings.\n" +
                         "====================\n");
-            refreshRate = DEFAULT_REFRESH_RATE;
-            deadlineRowColorR = DEFAULT_DEADLINE_COLOR_R;
-            deadlineRowColorG = DEFAULT_DEADLINE_COLOR_G;
-            deadlineRowColorB = DEFAULT_DEADLINE_COLOR_B;
+            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ;
+            deadlineRowColorR = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_R;
+            deadlineRowColorG = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_G;
+            deadlineRowColorB = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_B;
             
-            ongoingRowColorR = DEFAULT_ONGOING_COLOR_R;
-            ongoingRowColorG = DEFAULT_ONGOING_COLOR_G;
-            ongoingRowColorB = DEFAULT_ONGOING_COLOR_B;
+            ongoingRowColorR = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_R;
+            ongoingRowColorG = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_G;
+            ongoingRowColorB = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_B;
+            
+            isNotifcationsOverdueEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_OVERDUE;
+            isNotifcationsOngoingEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_ONGOING;
         }
     }
     
@@ -845,11 +860,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnNo.setToolTipText("Index number");
         tblclmnNo.setWidth(42);
         tblclmnNo.setText("No.");
-        
-        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
-        tblclmnPriority.setMoveable(true);
-        tblclmnPriority.setWidth(90);
-        tblclmnPriority.setText("Priority");
 
         tblclmnName = new TableColumn(taskTable, SWT.CENTER);
         tblclmnName.setMoveable(true);
@@ -865,6 +875,11 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         tblclmnEnd.setMoveable(true);
         tblclmnEnd.setWidth(180);
         tblclmnEnd.setText("End");
+        
+        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnPriority.setMoveable(true);
+        tblclmnPriority.setWidth(90);
+        tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
         feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));

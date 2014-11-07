@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Button;
 
 
 public class GUISettings extends Dialog {
@@ -36,7 +37,7 @@ public class GUISettings extends Dialog {
     private static final String ERROR_WRITING_FILE = "There was a problem " +
                                                      "writing to file: ";
     public static final String FILENAME = "settings.txt";
-    private static final int SETTINGS_TOTAL_NUMBER = 7;
+    private static final int SETTINGS_TOTAL_NUMBER = 9;
     public static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
     public static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
     public static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
@@ -44,13 +45,17 @@ public class GUISettings extends Dialog {
     public static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
     public static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
     public static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
-    private static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
-    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
-    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
-    private static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
-    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
-    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
-    private static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
+    public static final int SETTINGS_NOTIFICATIONS_ONGOING_INDEX = 7;
+    public static final int SETTINGS_NOTIFICATIONS_OVERDUE_INDEX = 8;
+    public static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
+    public static final int SETTINGS_DEFAULT_NOTIF_OVERDUE = 1;
+    public static final int SETTINGS_DEFAULT_NOTIF_ONGOING = 1;
     private static final int COLOR_RED_R = 255;
     private static final int COLOR_RED_G = 0;
     private static final int COLOR_RED_B = 0;
@@ -80,6 +85,8 @@ public class GUISettings extends Dialog {
     private static ToolItem tltmDeadlineBlue;
     private static ToolItem tltmDeadlineGreen;
     private static ToolItem tltmDeadlineOrange;
+    private static Button btnoverdueNotification;
+    private static Button btnstartedNotification;
 
     //@author generated
     /**
@@ -117,7 +124,7 @@ public class GUISettings extends Dialog {
      */
     private void createContents() {
         shell = new Shell(getParent(), SWT.CLOSE | SWT.MIN | SWT.TITLE);
-        shell.setSize(360, 210);
+        shell.setSize(360, 266);
         shell.setText(getText());
         shell.setLayout(new FormLayout());
         
@@ -139,39 +146,38 @@ public class GUISettings extends Dialog {
         
         Label horizontalSeparator1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
         FormData fd_horizontalSeparator1 = new FormData();
-        fd_horizontalSeparator1.bottom = new FormAttachment(spinnerNotifFreq, 18, SWT.BOTTOM);
-        fd_horizontalSeparator1.top = new FormAttachment(spinnerNotifFreq, 16);
-        fd_horizontalSeparator1.left = new FormAttachment(0, 10);
+        fd_horizontalSeparator1.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
         fd_horizontalSeparator1.right = new FormAttachment(100, -10);
         horizontalSeparator1.setLayoutData(fd_horizontalSeparator1);
         
         Label lblDeadlineColor = new Label(shell, SWT.NONE);
+        fd_horizontalSeparator1.bottom = new FormAttachment(100, -140);
         lblDeadlineColor.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
         FormData fd_lblDeadlineColor = new FormData();
-        fd_lblDeadlineColor.top = new FormAttachment(horizontalSeparator1, 16);
+        fd_lblDeadlineColor.top = new FormAttachment(horizontalSeparator1, 6);
         fd_lblDeadlineColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
         lblDeadlineColor.setLayoutData(fd_lblDeadlineColor);
         lblDeadlineColor.setText("Deadline color:");
         
         Label horizontalSeparator2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
         FormData fd_horizontalSeparator2 = new FormData();
-        fd_horizontalSeparator2.top = new FormAttachment(lblDeadlineColor, 17);
-        fd_horizontalSeparator2.right = new FormAttachment(horizontalSeparator1, 0, SWT.RIGHT);
-        fd_horizontalSeparator2.bottom = new FormAttachment(lblDeadlineColor, 19, SWT.BOTTOM);
-        fd_horizontalSeparator2.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        fd_horizontalSeparator2.top = new FormAttachment(lblDeadlineColor, 18);
+        fd_horizontalSeparator2.left = new FormAttachment(0, 10);
+        fd_horizontalSeparator2.right = new FormAttachment(100, -10);
         horizontalSeparator2.setLayoutData(fd_horizontalSeparator2);
         
         Label lblOngoingColor = new Label(shell, SWT.NONE);
+        fd_horizontalSeparator2.bottom = new FormAttachment(lblOngoingColor, -6);
         FormData fd_lblOngoingColor = new FormData();
-        fd_lblOngoingColor.top = new FormAttachment(horizontalSeparator2, 21);
+        fd_lblOngoingColor.top = new FormAttachment(0, 147);
         fd_lblOngoingColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
         lblOngoingColor.setLayoutData(fd_lblOngoingColor);
         lblOngoingColor.setText("Ongoing color:");
         
         toolBarDeadline = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
         FormData fd_toolBarDeadline = new FormData();
-        fd_toolBarDeadline.top = new FormAttachment(lblDeadlineColor, 0, SWT.TOP);
-        fd_toolBarDeadline.left = new FormAttachment(lblDeadlineColor, 6);
+        fd_toolBarDeadline.top = new FormAttachment(horizontalSeparator1, 6);
+        fd_toolBarDeadline.right = new FormAttachment(spinnerNotifFreq, 0, SWT.RIGHT);
         toolBarDeadline.setLayoutData(fd_toolBarDeadline);
         
         tltmDeadlineRed = new ToolItem(toolBarDeadline, SWT.RADIO);
@@ -188,7 +194,7 @@ public class GUISettings extends Dialog {
         
         ToolBar toolBarOngoing = new ToolBar(shell,  SWT.RIGHT);
         FormData fd_toolBarOngoing = new FormData();
-        fd_toolBarOngoing.top = new FormAttachment(lblOngoingColor, 0, SWT.TOP);
+        fd_toolBarOngoing.top = new FormAttachment(horizontalSeparator2, 6);
         fd_toolBarOngoing.left = new FormAttachment(lblOngoingColor, 6);
         toolBarOngoing.setLayoutData(fd_toolBarOngoing);
         
@@ -203,10 +209,40 @@ public class GUISettings extends Dialog {
         
         tltmOngoingOrange = new ToolItem(toolBarOngoing, SWT.RADIO);
         tltmOngoingOrange.setText("Orange");
+        
+        btnstartedNotification = new Button(shell, SWT.CHECK);
+        FormData fd_btnstartedNotification = new FormData();
+        fd_btnstartedNotification.top = new FormAttachment(lblNotificationFrequency, 17);
+        fd_btnstartedNotification.left = new FormAttachment(0, 10);
+        btnstartedNotification.setLayoutData(fd_btnstartedNotification);
+        btnstartedNotification.setText("\"Started\" notification");
+        
+        btnoverdueNotification = new Button(shell, SWT.CHECK);
+        fd_horizontalSeparator1.top = new FormAttachment(btnoverdueNotification, 6);
+        FormData fd_btnoverdueNotification = new FormData();
+        fd_btnoverdueNotification.top = new FormAttachment(btnstartedNotification, 6);
+        fd_btnoverdueNotification.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        btnoverdueNotification.setLayoutData(fd_btnoverdueNotification);
+        btnoverdueNotification.setText("\"Overdue\" notification");
     }
-
+    
+    //@author A0094558N
     private void displaySettingsInSettingsGUI() {
         spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
+        
+        int loadedNotifOverdue = workingStorage.get(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
+        int loadedNotifOngoing = workingStorage.get(SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+        if (loadedNotifOverdue == 1) {
+            btnoverdueNotification.setSelection(true);
+        } else {
+            btnoverdueNotification.setSelection(false);
+        }
+        
+        if (loadedNotifOngoing == 1) {
+            btnstartedNotification.setSelection(true);
+        } else {
+            btnstartedNotification.setSelection(false);
+        }
         
         int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);
         int loadedDeadlineColorG = workingStorage.get(SETTINGS_DEADLINE_COLOR_G_INDEX);
@@ -251,7 +287,6 @@ public class GUISettings extends Dialog {
         }
     }
 
-    //@author A0094558N
     public static void loadGUISettings() {
         initializeVariables();
         createFile(FILENAME);
@@ -290,6 +325,8 @@ public class GUISettings extends Dialog {
         workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_R);
         workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_G);
         workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_B);
+        workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, SETTINGS_DEFAULT_NOTIF_ONGOING);
+        workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, SETTINGS_DEFAULT_NOTIF_OVERDUE);
     }
 
     // Reads the contents of the file and stores it in an array list
@@ -345,6 +382,18 @@ public class GUISettings extends Dialog {
             private void readSettingsFromDialog() {
                 int notificationFreq = Integer.parseInt(spinnerNotifFreq.getText());
                 workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, notificationFreq);
+                
+                if (btnoverdueNotification.getSelection() == true) {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 1);
+                } else {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 0);
+                }
+                
+                if (btnstartedNotification.getSelection() == true) {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 1);
+                } else {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 0);
+                }
                 
                 if (tltmOngoingRed.getSelection() == true) {
                     workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_RED_R);

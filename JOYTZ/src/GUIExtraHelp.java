@@ -84,7 +84,8 @@ public class GUIExtraHelp extends Dialog {
     private Button btnBack;
     private Button btnNext;
     private StyledText textField;
-
+    
+    //@author generated
     /**
      * Create the dialog.
      * @param parent
@@ -95,7 +96,7 @@ public class GUIExtraHelp extends Dialog {
         setText("Tutorial");
         currentPage = 1;
     }
-    //@author generated
+    
     /**
      * Open the dialog.
      * @return the result

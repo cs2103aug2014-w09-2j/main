@@ -24,6 +24,11 @@ public class TestAnalyzer {
 	private static Date d3 = new Date(115, 9, 14, 0, 0);
 	private static Date d4 = new Date(115, 9, 20, 23, 59);
 	private static Date d5 = new Date(115, 9, 20, 2, 38);
+	private static int currentYear = currentDate.getYear();
+	private static int currentMonth = currentDate.getMonth();
+	private static int currentDay = currentDate.getDate();
+	private static Date d6 = new Date(currentYear, currentMonth, currentDay,
+			23, 59);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -271,24 +276,43 @@ public class TestAnalyzer {
 		Command test5 = new Command("update 0 location nus");
 		Command test6 = new Command("update 1 importance high");
 		Command test7 = new Command("update 1 start");
-		Command test8 = new Command("update 1 start 3/5/2015 3:45pm");
-		Command test9 = new Command("update 1 end 4:50pm");
+		Command test8 = new Command("update 1 start 20/10/2015 2:38AM");
+		Command test9 = new Command("update 1 end 14/10/2015");
+		Command test10 = new Command("update 1 start time 11:59pm");
+		Command test11 = new Command("update 1 task to be updated");
+		Command test12 = new Command("update 1 name new task");
+		Command test13 = new Command("update 1 description new task");
+		Command test14 = new Command("update 1 location nus mrt");
+		Command test15 = new Command("update 1 priority yes");
+		Command test16 = new Command("update 1 priority important");
+		Command test17 = new Command("update 1 priority high");
 
-		ExecutableCommand expected = new ExecutableCommand("update");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.UPDATE);
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
+		expected.setKey(String.valueOf(d5.getTime()));
 
-		ExecutableCommand expected2 = new ExecutableCommand("update");
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.UPDATE);
 		expected2.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected2.setKey(String.valueOf(d1.getTime()));
 
-		ExecutableCommand expected3 = new ExecutableCommand("update");
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.UPDATE);
 		expected3.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+		expected3.setKey(String.valueOf(d6.getTime()));
 
-		ExecutableCommand expected4 = new ExecutableCommand("update");
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.UPDATE);
 		expected4.setKey("dating");
 		expected4.setErrorMessage(ERROR_INVALID_INDICATOR);
-		
-		ExecutableCommand expected5 = new ExecutableCommand("update");
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.UPDATE);
 		expected5.setErrorMessage(ERROR_NULL_ARGUMENT);
+		expected5.setKey("new task");
+
+		ExecutableCommand expected6 = new ExecutableCommand(StringFormat.UPDATE);
+		expected6.setErrorMessage(ERROR_INVALID_PRIORITY);
+		expected6.setKey("nus mrt");
+
+		ExecutableCommand expected7 = new ExecutableCommand(StringFormat.UPDATE);
+		expected7.setKey(StringFormat.HIGH_PRIORITY);
 
 		// test case 1: test if the error catcher for null argument is working
 		assertEquals("null argument case is not handled",
@@ -316,20 +340,77 @@ public class TestAnalyzer {
 		assertEquals("invalid task index case is not handled",
 				expected3.getErrorMessage(), Analyzer.runAnalyzer(test5)
 						.getErrorMessage());
-		
-		// test case 6: test if the error catcher for invalid update indicator is
-		// working
+
+		// test case 6: test if the error catcher for invalid update indicator
+		// is working
 		assertEquals("invalid update indicator is not detected",
 				expected4.getErrorMessage(), Analyzer.runAnalyzer(test6)
 						.getErrorMessage());
-		
+
 		// test case 7: test if the error catcher for null argument case is
 		// working
 		assertEquals("null argument error is not detected",
 				expected5.getErrorMessage(), Analyzer.runAnalyzer(test7)
 						.getErrorMessage());
-	}
 
+		// test case 8: test if the new time to be updated is stored correctly
+		assertEquals("new time to be updated is unable to be stored correctly",
+				expected.getKey(), Analyzer.runAnalyzer(test8).getKey());
+
+		// test case 9: test if the new time to be updated is stored correctly
+		assertEquals("new time to be updated is unable to be stored correctly",
+				expected2.getKey(), Analyzer.runAnalyzer(test9).getKey());
+
+		// test case 10: test when the user input something unexpected, but
+		// required key words are all existed in valid format, it still work
+		assertEquals("new time to be updated is unable to stored correctly",
+				expected3.getKey(), Analyzer.runAnalyzer(test10).getKey());
+
+		// test case 11: test if the error catcher for invalid update indicator
+		// is working
+		assertEquals("invalid update indicator is not detected",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test11)
+						.getErrorMessage());
+
+		// test case 12: test if the new task name to be updated is stored
+		// correctly
+		assertEquals(
+				"new task name to be updated is unable to be stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test12).getKey());
+
+		// test case 13: test if the new task description to be updated is
+		// stored correctly
+		assertEquals(
+				"new task description to be updated is unable to be stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test13).getKey());
+
+		// test case 14: test if the new task location to be updated is stored
+		// correctly
+		assertEquals(
+				"new task location to be updated is unable to be stored correctly",
+				expected6.getKey(), Analyzer.runAnalyzer(test14).getKey());
+
+		// test case 15: test if the error catcher for invalid priority
+		// is working
+		assertEquals(
+				"new task name to be updated is unable to be stored correctly",
+				expected6.getErrorMessage(), Analyzer.runAnalyzer(test15)
+						.getErrorMessage());
+
+		// test case 16: test if the new task priority to be updated is
+		// stored correctly
+		assertEquals(
+				"new task priority to be updated is unable to be stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test16).getKey());
+
+		// test case 16: test if the new task priority to be updated is
+		// stored correctly
+		assertEquals(
+				"new task priority to be updated is unable to be stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test17).getKey());
+
+	}
+	
 	@Test
 	public void testHandleDisplayCommand() throws ParseException {
 		Command test1 = new Command("display");
@@ -362,6 +443,85 @@ public class TestAnalyzer {
 
 	}
 
+	@Test
+	public void testHandleSortCommand() throws ParseException {
+		Command test1 = new Command("sort");
+		Command test2 = new Command("sort name");
+		Command test3 = new Command("sort priority location");
+		Command test4 = new Command("sort place");
+		Command test5 = new Command("sort priority place");
+		Command test6 = new Command("sortS name");
+		Command test7 = new Command("SORT start");
+		Command test8 = new Command("sort asdasdaooxcj");
+		Command test9 = new Command("sort end time");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.SORT);
+		expected.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected.setIndicator(StringFormat.NAME);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SORT);
+		expected2.setIndicator(StringFormat.PRIORITY);
+		expected2.setIndicator(StringFormat.LOCATION);
+		expected2.setErrorMessage(ERROR_INVALID_INDICATOR);
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SORT);
+		expected3.setErrorMessage(ERROR_INVALID_COMMAND);
+		expected3.setIndicator(StringFormat.START);
+
+		// test case 1: test if the error catcher for null indicator is working
+		assertEquals("null indicator is not detected",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the user is able to sort by single indicator
+		assertEquals("unable to get the sort indicator correctly",
+				expected.getIndicator(), Analyzer.runAnalyzer(test2)
+						.getIndicator());
+
+		// test case 3: test if the user is able to sort by multiple indicators
+		assertEquals("unable to get multiple sort indicators correctly",
+				expected2.getIndicator(), Analyzer.runAnalyzer(test3)
+						.getIndicator());
+
+		// test case 4: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4)
+						.getErrorMessage());
+
+		// test case 5: test if the error catcher for invalid sort indicator in
+		// multiple indicators is working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid sort command is
+		// working
+		assertEquals("unable to detect invalid sort command",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 7: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected3.getIndicator(), Analyzer.runAnalyzer(test7)
+						.getIndicator());
+
+		// test case 8: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test8)
+						.getErrorMessage());
+
+		// test case 9: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test9)
+						.getErrorMessage());
+	}
+
+	
 	@Test
 	public void testHandleUndoCommand() throws ParseException {
 		Command test1 = new Command("undo");
@@ -456,77 +616,6 @@ public class TestAnalyzer {
 		assertEquals("clear action is not processed correctly",
 				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
 
-	}
-
-	@Test
-	public void testHandleSortCommand() throws ParseException {
-		Command test1 = new Command("sort");
-		Command test2 = new Command("sort name");
-		Command test3 = new Command("sort priority location");
-		Command test4 = new Command("sort place");
-		Command test5 = new Command("sort priority place");
-		Command test6 = new Command("sortS name");
-		Command test7 = new Command("SORT start");
-		Command test8 = new Command("sort asdasdaooxcj");
-
-		ExecutableCommand expected = new ExecutableCommand(StringFormat.SORT);
-		expected.setErrorMessage(ERROR_NULL_INDICATOR);
-		expected.setIndicator(StringFormat.NAME);
-
-		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SORT);
-		expected2.setIndicator(StringFormat.PRIORITY);
-		expected2.setIndicator(StringFormat.LOCATION);
-		expected2.setErrorMessage(ERROR_INVALID_INDICATOR);
-
-		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SORT);
-		expected3.setErrorMessage(ERROR_INVALID_COMMAND);
-		expected3.setIndicator(StringFormat.START);
-
-		// test case 1: test if the error catcher for null indicator is working
-		assertEquals("null indicator is not detected",
-				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
-						.getErrorMessage());
-
-		// test case 2: test if the user is able to sort by single indicator
-		assertEquals("unable to get the sort indicator correctly",
-				expected.getIndicator(), Analyzer.runAnalyzer(test2)
-						.getIndicator());
-
-		// test case 3: test if the user is able to sort by multiple indicators
-		assertEquals("unable to get multiple sort indicators correctly",
-				expected2.getIndicator(), Analyzer.runAnalyzer(test3)
-						.getIndicator());
-
-		// test case 4: test if the error catcher for invalid sort indicator is
-		// working
-		assertEquals("invalid sort indicator is not detected",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4)
-						.getErrorMessage());
-
-		// test case 5: test if the error catcher for invalid sort indicator in
-		// multiple indicators is working
-		assertEquals("invalid sort indicator is not detected",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
-						.getErrorMessage());
-
-		// test case 6: test if the error catcher for invalid sort command is
-		// working
-		assertEquals("unable to detect invalid sort command",
-				expected3.getErrorMessage(), Analyzer.runAnalyzer(test6)
-						.getErrorMessage());
-
-		// test case 7: test if the user is able to type in command with
-		// capitalized letter
-		assertEquals(
-				"user is unable to type in command with capitalized letter",
-				expected3.getIndicator(), Analyzer.runAnalyzer(test7)
-						.getIndicator());
-		
-		// test case 8: test if the error catcher for invalid sort indicator is
-		// working
-		assertEquals("invalid sort indicator is not detected",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test8)
-						.getErrorMessage());
 	}
 
 	@Test

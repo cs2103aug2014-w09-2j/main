@@ -27,6 +27,7 @@ public class Executor {
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
+	private static final String ERROR_INVALID_UPDATE = "Invalid update attributes.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
@@ -222,10 +223,9 @@ public class Executor {
 					fb.setMessageShowToUser(String.format(
 							MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
 				} else {
-					fb.setMessageShowToUser(ERROR_INVALID_DELETE_ATTRIBUTE);
+					fb.setMessageShowToUser(ERROR_INVALID_UPDATE);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				fb.setMessageShowToUser(e.getMessage());
 			}
 		}
@@ -261,12 +261,12 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
 
 		Storage.display();
-		
+
 		if (Storage.displayTaskList.size() == 0)
 			fb.setMessageShowToUser(MESSAGE_NO_TASK_DISPLAYED);
 		else
 			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
-		
+
 		return fb;
 	}
 

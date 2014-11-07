@@ -22,7 +22,7 @@ public class UserInputHandler {
 		String[] arg = input.trim().split(" ");
 		String[] parsedInput;
 		String userAction = arg[0].toLowerCase();
-		
+
 		switch (userAction) {
 		case StringFormat.ADD:
 			parsedInput = handleAddInput(arg);
@@ -282,7 +282,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							nameExistence = false;
@@ -294,7 +294,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							descriptionExistence = false;
@@ -309,7 +309,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							startExistence = false;
@@ -321,7 +321,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							endExistence = false;
@@ -333,7 +333,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							locationExistence = false;
@@ -344,27 +344,11 @@ public class UserInputHandler {
 				} else if (priorityExistence) {
 					output.add(temp);
 					priorityExistence = false;
-				} else if (isSearchIndicator(temp)) {
+				} else if (StringFormat.isValidIndicator(temp)) {
 					switch (temp) {
 					case StringFormat.DESCRIPTION:
 						output.add(StringFormat.DESCRIPTION);
 						descriptionExistence = true;
-						break;
-					case StringFormat.START_DATE:
-						output.add(StringFormat.START_DATE);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.START_TIME:
-						output.add(StringFormat.START_TIME);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.END_DATE:
-						output.add(StringFormat.END_DATE);
-						dateTimeExistence = true;
-						break;
-					case StringFormat.END_TIME:
-						output.add(StringFormat.END_TIME);
-						dateTimeExistence = true;
 						break;
 					case StringFormat.START:
 						output.add(StringFormat.START);
@@ -390,7 +374,7 @@ public class UserInputHandler {
 					key = key.concat(temp);
 
 					if (str.length > i) {
-						if (isSearchIndicator(str[i + 1])) {
+						if (StringFormat.isValidIndicator(str[i + 1])) {
 							output.add(key);
 							key = "";
 							nameExistence = false;
@@ -427,18 +411,6 @@ public class UserInputHandler {
 
 	private static boolean isTime(String temp) {
 		return temp.contains(StringFormat.TIME_INDICATOR);
-	}
-
-	private static boolean isSearchIndicator(String indicator) {
-		return indicator.equals(StringFormat.DESCRIPTION)
-				|| indicator.equals(StringFormat.START_DATE)
-				|| indicator.equals(StringFormat.START_TIME)
-				|| indicator.equals(StringFormat.END_DATE)
-				|| indicator.equals(StringFormat.END_TIME)
-				|| indicator.equals(StringFormat.LOCATION)
-				|| indicator.equals(StringFormat.PRIORITY)
-				|| indicator.equals(StringFormat.START)
-				|| indicator.equals(StringFormat.END);
 	}
 
 	private static boolean isInputIndicator(String indicator) {
