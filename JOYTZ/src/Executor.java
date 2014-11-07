@@ -15,7 +15,7 @@ public class Executor {
 	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
 
 	// these are for Delete Method.
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "%d. \"%s\" is deleted successfully.\n";
+	private static final String MESSAGE_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
 	private static final String ERROR_INVALID_DELETE_ATTRIBUTE = "Invalid delete attributes.\n";
 
 	// these are for Clear Method.
@@ -142,8 +142,7 @@ public class Executor {
 		Date endDateTime = convertStringToDate(endDateTimeString);
 
 		try {
-			Task newTask = createNewTask(name, description, startDateTime,
-					endDateTime, location, priority);
+			Task newTask = createNewTask(name, description, startDateTime, endDateTime, location, priority);
 			fb.setResult(Storage.add(newTask));
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
@@ -166,24 +165,24 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
-		ArrayList<Integer> listTaskId = command.getTaskId();
-
-		for (int i = 0; i < listTaskId.size(); i++) {
-			int index = listTaskId.get(i);
-
+		ArrayList<Integer> targetTaskIndex = command.getTaskId();
+		
+		Comparator<Integer> reverseComparator = Collections.reverseOrder();
+		Collections.sort(targetTaskIndex, reverseComparator);
+		
+		for (int i = 0; i < targetTaskIndex.size(); i++) {
+			int index = targetTaskIndex.get(i);
+			index--;
 			try {
 				fb.setResult(Storage.delete(index));
-				if (fb.getResult()) {
-					index--;
-					Task targetTask = Storage.displayTaskList
-							.getTaskByIndex(index);
-
-					fb.setMessageShowToUser(String.format(
-							MESSAGE_DELETE_SUCCESSFUL, targetTask.getTaskName()));
-				}
 			} catch (Exception e) {
+				fb.setResult(false);
 				fb.setMessageShowToUser(e.getMessage());
+				break;
 			}
+		}
+		if (fb.getResult()){
+			fb.setMessageShowToUser(MESSAGE_DELETE_SUCCESSFUL);
 		}
 
 		return fb;
@@ -414,9 +413,10 @@ public class Executor {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
-
+		
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
+		
 
 		return fb;
 	}
@@ -534,4 +534,5 @@ public class Executor {
 
 		return newTask;
 	}
+	
 }
