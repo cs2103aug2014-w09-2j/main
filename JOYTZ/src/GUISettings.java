@@ -204,7 +204,8 @@ public class GUISettings extends Dialog {
         tltmOngoingOrange = new ToolItem(toolBarOngoing, SWT.RADIO);
         tltmOngoingOrange.setText("Orange");
     }
-
+    
+    //@author A0094558N
     private void displaySettingsInSettingsGUI() {
         spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
         
@@ -251,7 +252,6 @@ public class GUISettings extends Dialog {
         }
     }
 
-    //@author A0094558N
     public static void loadGUISettings() {
         initializeVariables();
         createFile(FILENAME);
