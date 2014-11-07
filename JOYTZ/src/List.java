@@ -1,6 +1,3 @@
-//package V1;
-
-//package mainComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +12,8 @@ public class List {
 	List() {
 	}
 
-	List(String des) {
-		this.taskListName = des;
+	List(String name) {
+		this.taskListName = name;
 	}
 
 	/**
@@ -78,5 +75,22 @@ public class List {
 	
 	public void clean(){
 		taskList.clear();
+	}
+	
+	public List copy(){
+		List copyList = new List();
+		for (int index=0; index<size(); index++){
+			copyList.addTask(taskList.get(index));
+		}
+		return copyList;
+	}
+	
+	public ArrayList<String> convertToString(){
+		ArrayList<String> resultList = new ArrayList<String>();
+		
+		for (int index=0; index < size(); index++){
+			resultList.add(taskList.get(index).toString());
+		}
+		return resultList;
 	}
 }
