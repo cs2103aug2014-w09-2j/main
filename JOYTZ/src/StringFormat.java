@@ -51,7 +51,7 @@ public class StringFormat {
 	public static final String PRIORITY_INDICATOR = "#";
 	public static final String LOCATION_INDICATOR = "@";
 	public static final String TIME_INDICATOR = ":";
-	public static final String DESC_OR_ITEM_INDICATOR = ",";
+	public static final String SEPARATE_INDICATOR = ";";
 	public static final String DATE_INDICATOR = "/";
 	public static final String DUE_INDICATOR = "due";
 	public static final String DUE_ON_INDICATOR = "dueon";
@@ -80,5 +80,32 @@ public class StringFormat {
 				|| indicator.equals(StringFormat.PRIORITY)
 				|| indicator.equals(StringFormat.START)
 				|| indicator.equals(StringFormat.END);
+	}
+
+	/**
+	 * check valid indicator
+	 */
+
+	public static boolean isValidPriority(String priority) {
+		return priority.equals(HIGH_PRIORITY)
+				|| priority.equals(MEDIUM_PRIORITY)
+				|| priority.equals(LOW_PRIORITY) || priority.equals(IMPORTANT)
+				|| priority.equals(UNIMPORTANT);
+	}
+
+	/**
+	 * check existence of date or time or both
+	 */
+	public static boolean isTimeOrDate(String temp) {
+		return temp.contains(StringFormat.TIME_INDICATOR)
+				|| temp.contains(StringFormat.DATE_INDICATOR);
+	}
+	
+	public static boolean isDate(String temp) {
+		return temp.contains(StringFormat.DATE_INDICATOR);
+	}
+
+	public static boolean isTime(String temp) {
+		return temp.contains(StringFormat.TIME_INDICATOR);
 	}
 }

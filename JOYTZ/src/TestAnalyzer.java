@@ -35,15 +35,15 @@ public class TestAnalyzer {
 		Command test1 = new Command("add");
 		Command test2 = new Command("add meeting with friends");
 		Command test3 = new Command(
-				"add meeting with friends, discuss about CS2103T project");
+				"add meeting with friends; discuss about CS2103T project");
 		Command test4 = new Command(
-				"add meeting with friends, discuss about CS2103T project on 14/10/2015");
+				"add meeting with friends; discuss about CS2103T project on 14/10/2015");
 		Command test5 = new Command(
-				"add meeting with friends, discuss about CS2103T project on 14/10/2015 @NUS");
+				"add meeting with friends; discuss about CS2103T project on 14/10/2015 @NUS");
 		Command test6 = new Command(
-				"add meeting with friends, discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
+				"add meeting with friends; discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
 		Command test7 = new Command(
-				"add meeting with friends, discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
+				"add meeting with friends; discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
 		Command test8 = new Command("add assignment on 14/10/2015 @NUS #medium");
 		Command test9 = new Command(
 				"add jogging due on 20/10/2015 @NUS #medium");
@@ -64,7 +64,7 @@ public class TestAnalyzer {
 		Command test22 = new Command("add trial due at 3/11/2015");
 		Command test23 = new Command("add trial due on 3:45pm");
 
-		ExecutableCommand expected = new ExecutableCommand("add");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
 		expected.setErrorMessage(ERROR_NULL_TASK);
 		expected.setTaskName("meeting with friends");
 		expected.setTaskDescription("discuss about CS2103T project");
@@ -73,19 +73,19 @@ public class TestAnalyzer {
 		expected.setTaskLocation("NUS");
 		expected.setTaskPriority("medium");
 
-		ExecutableCommand expected2 = new ExecutableCommand("add");
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.ADD);
 		expected2.setTaskStart(String.valueOf(d3.getTime()));
 		expected2.setTaskEnd(String.valueOf(d4.getTime()));
 		expected2.setErrorMessage(String.format(ERROR_INVALID_TIME,
 				StringFormat.START));
 		expected2.setTaskLocation("nus soc");
 
-		ExecutableCommand expected3 = new ExecutableCommand("add");
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.ADD);
 		expected3.setTaskStart(String.valueOf(d3.getTime()));
 		expected3.setTaskEnd(String.valueOf(d5.getTime()));
 		expected3.setErrorMessage(String.format(ERROR_INVALID_PRIORITY));
 
-		ExecutableCommand expected4 = new ExecutableCommand("add");
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.ADD);
 		expected4.setErrorMessage(String.format(ERROR_INVALID_TIME,
 				StringFormat.END));
 
@@ -213,17 +213,17 @@ public class TestAnalyzer {
 		Command test1 = new Command("delete");
 		Command test2 = new Command("delete 0");
 		Command test3 = new Command("delete meeting with friends");
-		Command test4 = new Command("delete 1 3");
-		Command test5 = new Command("delete 1 0 3");
-		Command test6 = new Command("delete 1 meeting with friends");
-		Command test7 = new Command("delete 1 3 -3");
+		Command test4 = new Command("delete 1; 3");
+		Command test5 = new Command("delete 1; 0; 3");
+		Command test6 = new Command("delete 1; meeting with friends");
+		Command test7 = new Command("delete 1; 3; -3");
 
-		ExecutableCommand expected = new ExecutableCommand("delete");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DELETE);
 		expected.setErrorMessage(ERROR_NULL_TASK_INDEX);
 		expected.setTaskId(1);
 		expected.setTaskId(3);
 
-		ExecutableCommand expected2 = new ExecutableCommand("delete");
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DELETE);
 		expected2.setErrorMessage(ERROR_INVALID_TASK_INDEX);
 
 		// test case 1: test if the error catcher for null argument is working
@@ -410,7 +410,7 @@ public class TestAnalyzer {
 				expected7.getKey(), Analyzer.runAnalyzer(test17).getKey());
 
 	}
-	
+
 	@Test
 	public void testHandleDisplayCommand() throws ParseException {
 		Command test1 = new Command("display");
@@ -418,7 +418,7 @@ public class TestAnalyzer {
 		Command test3 = new Command("DISPLAY");
 		Command test4 = new Command("display asdasdaooxcj");
 
-		ExecutableCommand expected = new ExecutableCommand("display");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DISPLAY);
 		expected.setErrorMessage(ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the display action is processed correctly
@@ -444,12 +444,193 @@ public class TestAnalyzer {
 	}
 
 	@Test
+	public void testHandleSearchCommand() throws ParseException {
+		Command test1 = new Command("search");
+		Command test2 = new Command("search name");
+		Command test3 = new Command("search task meeting");
+		Command test4 = new Command("search name meeting");
+		Command test5 = new Command("search name meeting with friends");
+		Command test6 = new Command("search start 14/10/2015");
+		Command test7 = new Command("search start 11:59pm");
+		Command test8 = new Command("search end 20/10/2015 2:38AM");
+		Command test9 = new Command("search end time 11:59pm");
+		Command test10 = new Command("search description new");
+		Command test11 = new Command("search description new task");
+		Command test12 = new Command("search location nus");
+		Command test13 = new Command("search location kr mrt");
+		Command test14 = new Command("search priority yes");
+		Command test15 = new Command("search priority unimportant");
+		Command test16 = new Command("search priority low");
+		Command test17 = new Command("search name meeting; desc new");
+		Command test18 = new Command("search name meeting; description new");
+		Command test19 = new Command(
+				"search name meeting with friends; description new task");
+		Command test20 = new Command(
+				"search name meeting with friends; description new task; location kr mrt");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.SEARCH);
+		expected.setErrorMessage(ERROR_NULL_INDICATOR);
+		expected.setKey("meeting");
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SEARCH);
+		expected2.setErrorMessage(ERROR_NULL_ARGUMENT);
+		expected2.setKey("meeting with friends");
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SEARCH);
+		expected3.setErrorMessage(ERROR_INVALID_INDICATOR);
+		expected3.setKey(String.valueOf(d1.getTime()));
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SEARCH);
+		expected4.setErrorMessage(ERROR_INVALID_PRIORITY);
+		expected4.setKey(String.valueOf(d6.getTime()));
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.SEARCH);
+		expected5.setKey(String.valueOf(d5.getTime()));
+
+		ExecutableCommand expected6 = new ExecutableCommand(StringFormat.SEARCH);
+		expected6.setKey("new");
+
+		ExecutableCommand expected7 = new ExecutableCommand(StringFormat.SEARCH);
+		expected7.setKey("new task");
+
+		ExecutableCommand expected8 = new ExecutableCommand(StringFormat.SEARCH);
+		expected8.setKey("nus");
+
+		ExecutableCommand expected9 = new ExecutableCommand(StringFormat.SEARCH);
+		expected9.setKey("kr mrt");
+
+		ExecutableCommand expected10 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected10.setKey(StringFormat.LOW_PRIORITY);
+
+		ExecutableCommand expected11 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected11.setKey("meeting");
+		expected11.setKey("new");
+
+		ExecutableCommand expected12 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected12.setKey("meeting with friends");
+		expected12.setKey("new task");
+
+		ExecutableCommand expected13 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected13.setKey("meeting with friends");
+		expected13.setKey("new task");
+		expected13.setKey("kr mrt");
+
+		// test case 1: test if the error catcher for null indicator is working
+		// correctly
+		assertEquals("unable to detect null indicator error",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for null argument is working
+		// correctly
+		assertEquals("unable to detect null argument error",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid search indicator
+		// is able to work correctly
+		assertEquals("unable to detect invalid search indicator",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if the task name to be searched is stored correctly
+		assertEquals("task name to be searched is not stored correctly",
+				expected.getKey(), Analyzer.runAnalyzer(test4).getKey());
+
+		// test case 5: test if the task name to be searched is stored correctly
+		assertEquals("task name to be searched is not stored correctly",
+				expected2.getKey(), Analyzer.runAnalyzer(test5).getKey());
+
+		// test case 6: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected3.getKey(), Analyzer.runAnalyzer(test6).getKey());
+
+		// test case 7: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected4.getKey(), Analyzer.runAnalyzer(test7).getKey());
+
+		// test case 8: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test8).getKey());
+
+		// test case 9: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected4.getKey(), Analyzer.runAnalyzer(test9).getKey());
+
+		// test case 10: test if the task description to be searched is stored
+		// correctly
+		assertEquals("task description to be searched is not stored correctly",
+				expected6.getKey(), Analyzer.runAnalyzer(test10).getKey());
+
+		// test case 11: test if the task description to be searched is stored
+		// correctly
+		assertEquals("task description to be searched is not stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test11).getKey());
+
+		// test case 12: test if the task location to be searched is stored
+		// correctly
+		assertEquals("task location to be searched is not stored correctly",
+				expected8.getKey(), Analyzer.runAnalyzer(test12).getKey());
+
+		// test case 13: test if the task location to be searched is stored
+		// correctly
+		assertEquals("task location to be searched is not stored correctly",
+				expected9.getKey(), Analyzer.runAnalyzer(test13).getKey());
+
+		// test case 14: test if the error catcher for invalid priority is able
+		// to work correctly
+		assertEquals("unable to detect invalid priority",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test14)
+						.getErrorMessage());
+
+		// test case 15: test if the task priority to be searched is stored
+		// correctly
+		assertEquals("task priority to be searched is not stored correctly",
+				expected10.getKey(), Analyzer.runAnalyzer(test15).getKey());
+
+		// test case 16: test if the task priority to be searched is stored
+		// correctly
+		assertEquals("task priority to be searched is not stored correctly",
+				expected10.getKey(), Analyzer.runAnalyzer(test16).getKey());
+
+		// test case 17: test if the error catcher for invalid search indicator
+		// is able to work correctly
+		assertEquals("unable to detect invalid search indicator",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test17)
+						.getErrorMessage());
+
+		// test case 18: test if the multiple search indicators and keys are
+		// able to stored correctly correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected11.getKey(), Analyzer.runAnalyzer(test18)
+						.getKey());
+
+		// test case 19: test if the multiple search indicators and keys are
+		// able to stored correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected12.getKey(), Analyzer.runAnalyzer(test19).getKey());
+
+		// test case 20: test if the multiple search indicators and keys are
+		// able to stored correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected13.getKey(), Analyzer.runAnalyzer(test20).getKey());
+
+	}
+
+	@Test
 	public void testHandleSortCommand() throws ParseException {
 		Command test1 = new Command("sort");
 		Command test2 = new Command("sort name");
-		Command test3 = new Command("sort priority location");
+		Command test3 = new Command("sort priority; location");
 		Command test4 = new Command("sort place");
-		Command test5 = new Command("sort priority place");
+		Command test5 = new Command("sort priority; place");
 		Command test6 = new Command("sortS name");
 		Command test7 = new Command("SORT start");
 		Command test8 = new Command("sort asdasdaooxcj");
@@ -521,7 +702,6 @@ public class TestAnalyzer {
 						.getErrorMessage());
 	}
 
-	
 	@Test
 	public void testHandleUndoCommand() throws ParseException {
 		Command test1 = new Command("undo");
@@ -529,7 +709,7 @@ public class TestAnalyzer {
 		Command test3 = new Command("UNdo");
 		Command test4 = new Command("undo asdasdaooxcj");
 
-		ExecutableCommand expected = new ExecutableCommand("undo");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.UNDO);
 		expected.setErrorMessage(ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the undo action is processed correctly
@@ -561,7 +741,7 @@ public class TestAnalyzer {
 		Command test3 = new Command("ReDo");
 		Command test4 = new Command("ReDO asdasdaooxcj");
 
-		ExecutableCommand expected = new ExecutableCommand("redo");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.REDO);
 		expected.setErrorMessage(ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the redo action is processed correctly
@@ -593,7 +773,7 @@ public class TestAnalyzer {
 		Command test3 = new Command("CLEar");
 		Command test4 = new Command("CLEAr asdasdaooxcj");
 
-		ExecutableCommand expected = new ExecutableCommand("clear");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.CLEAR);
 		expected.setErrorMessage(ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the clear action is processed correctly
@@ -625,7 +805,7 @@ public class TestAnalyzer {
 		Command test3 = new Command("ExIT");
 		Command test4 = new Command("EXIT asdasdaooxcj");
 
-		ExecutableCommand expected = new ExecutableCommand("exit");
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.EXIT);
 		expected.setErrorMessage(ERROR_INVALID_COMMAND);
 
 		// test case 1: test if the exit action is processed correctly
