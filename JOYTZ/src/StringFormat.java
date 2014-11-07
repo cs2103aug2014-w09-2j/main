@@ -6,7 +6,7 @@ public class StringFormat {
 			"yyyy.MM.dd HH:mm");
 	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
 			"yyyy.MM.dd 'at' HH:mm");
-<<<<<<< HEAD
+
 	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz\n");
 	
@@ -19,9 +19,7 @@ public class StringFormat {
 
 	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	
-=======
 
->>>>>>> 8c8860bfeebca9ba0481b4a01988e574bf231997
 	/**
 	 * action
 	 */

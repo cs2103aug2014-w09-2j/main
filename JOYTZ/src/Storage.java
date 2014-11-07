@@ -118,7 +118,7 @@ public class Storage {
 		
 		update(targetTask, updateIndicator, updateKeyValue);
 
-		displayTaskList.setTask(index - 1, targetTask);
+		displayTaskList.setTask(index, targetTask);
 		mainTaskList.addTask(targetTask);
 		
 		setDisplayList(displayTaskList);
