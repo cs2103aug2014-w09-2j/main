@@ -316,6 +316,7 @@ public class Task implements Comparable<Task>{
 			resultString = resultString.concat(emptySpace);
 		}
 		
+		resultString = resultString.concat("\n");
 		return resultString;
 	}
 
