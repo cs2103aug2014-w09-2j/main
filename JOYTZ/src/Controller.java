@@ -170,6 +170,7 @@ public class Controller {
                         "	Location = " + parsedCommand.getTaskLocation() + "\n" +
                         "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
                         "	Task ID = " + parsedCommand.getTaskId() + "\n" +
+                        "   Search key = " + parsedCommand.getKey() + "\n" +
                         "	Error message = " + parsedCommand.getErrorMessage() + "\n" +
                         "	Update indicator = " + parsedCommand.getIndicator() + "\n" +
                         "====================\n");

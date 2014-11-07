@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class TestSystem {
     private static final String INPUT_ADD_ALL = "add meeting with friends, discuss about CS2103T project " +
-                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45pm @NUS #medium";
     private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add meeting with friends, " +
                                                               "discuss about CS2103T project " +
-                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45am " +
+                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45pm " +
                                                               "@NUS #important";
     
     private static final String INPUT_UPDATE_NAME = "update 1 name chat with friends";
@@ -18,7 +18,7 @@ public class TestSystem {
     private static final String INPUT_UPDATE_DESCRIPTION = "update 1 description talk about movies";
     
     private static final String INPUT_SORT_PRIORITY = "sort priority";
-    private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority high";
+    private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority important";
     private static final String INPUT_DELETE_1 = "delete 1";
     
     private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
@@ -27,21 +27,21 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "1. \"meeting with friends\" is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Category \"priority\" is sorted successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "high in priority is searched successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "important in priority is searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
-    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project ~" +
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~medium ";
-    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about CS2103T project ~" +
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~medium ";
-    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about CS2103T project ~" +
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~low";
-    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project ~" +
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~UTown~low";
+    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium";
+    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium";
+    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~low";
+    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~UTown~low";
-    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project ~" +
-                                                           "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~high ";
+                                                           "2015.02.24 at 11:30~2015.02.25 23:45~UTown~low";
+    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~high";
     
     @Test
     public void systemTestAdd() {

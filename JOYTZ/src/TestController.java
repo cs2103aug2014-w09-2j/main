@@ -43,14 +43,14 @@ public class TestController {
     private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
     
     private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
-    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about CS2103T project ~" +
-                                                     "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~medium ";
-    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about CS2103T project ~" + 
-                                                             "2015-02-24 11:30 AM~2015-02-25 11:45 AM~NUS ~ ";
+    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about CS2103T project~" +
+                                                     "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~medium";
+    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about CS2103T project~" + 
+                                                             "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~ ";
     private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
-                                                                          "discuss about CS2103T project ~" +
-                                                                          "2015-02-24 11:30 AM~2015-02-25 11:45 AM~ ~ ";
-    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015-02-24 11:30 AM~ ~ ~medium ";
+                                                                          "discuss about CS2103T project~" +
+                                                                          "2015.02.24 at 11:30~2015.02.25 at 11:45~ ~ ";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30~ ~ ~medium";
     
     private static final String EMPTY_STRING = "";
 
