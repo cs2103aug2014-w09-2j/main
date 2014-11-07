@@ -135,8 +135,8 @@ public class Executor {
 		String description = command.getTaskDescription();
 		String location = command.getTaskLocation();
 		String priority = command.getTaskPriority();
-		String startDateTimeString = command.getTaskStartTiming();
-		String endDateTimeString = command.getTaskEndTiming();
+		String startDateTimeString = command.getTaskStart();
+		String endDateTimeString = command.getTaskEnd();
 
 		Date startDateTime = convertStringToDate(startDateTimeString);
 		Date endDateTime = convertStringToDate(endDateTimeString);
@@ -231,7 +231,6 @@ public class Executor {
 	 * proceedAnalyzedCommand method
 	 *
 	 * @param command
-	 *            : ExecutableCommand object containing the user's action
 	 * @return
 	 * 
 	 */
