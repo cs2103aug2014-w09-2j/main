@@ -355,7 +355,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             colorRowBackgroundLightGrey(item2);
         }
         
-        
+        System.out.println(isHighlightedPassStart);
+        System.out.println(isHighlightedPassEnd);
         
         // Coloring green
         if (isHighlightedPassStart == true) {
@@ -697,7 +698,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             LOGGER.info("==============\n" +
                         "No settings found. Using default settings.\n" +
                         "====================\n");
-            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ;
+            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
             deadlineRowColorR = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_R;
             deadlineRowColorG = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_G;
             deadlineRowColorB = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_B;
