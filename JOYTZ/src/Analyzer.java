@@ -18,12 +18,6 @@ public class Analyzer {
 	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
 	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
 
-	private static final String[] VALID_INDICATOR = new String[] {
-			StringFormat.NAME, StringFormat.DESCRIPTION,
-			StringFormat.START_DATE, StringFormat.START_TIME,
-			StringFormat.END_DATE, StringFormat.END_TIME, StringFormat.START,
-			StringFormat.END, StringFormat.LOCATION, StringFormat.PRIORITY };
-
 	private static final String[] VALID_PRIORITY = new String[] {
 			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
 			StringFormat.MEDIUM_PRIORITY };
@@ -192,7 +186,7 @@ public class Analyzer {
 		} else if (arg.length == 1) {
 			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
 			return tempCommand;
-		} else if (!isValidIndicator(arg[1])) {
+		} else if (!StringFormat.isValidIndicator(arg[1])) {
 			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 			return tempCommand;
 		}
@@ -206,23 +200,16 @@ public class Analyzer {
 		tempCommand.setIndicator(indicator);
 
 		if (indicator.equals(StringFormat.START)
-				|| indicator.equals(StringFormat.END)
-				|| indicator.equals(StringFormat.START_DATE)
-				|| indicator.equals(StringFormat.START_TIME)
-				|| indicator.equals(StringFormat.END_DATE)
-				|| indicator.equals(StringFormat.END_TIME)) {
+				|| indicator.equals(StringFormat.END)) {
 			if (arg.length < 3) {
 				tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
 
 				return tempCommand;
 			}
-
 			updatedItem = TimeHandler.inputTimingConvertor(arg[2]);
 
 			if (updatedItem == null) {
-				if (indicator.equals(StringFormat.START)
-						|| indicator.equals(StringFormat.START_DATE)
-						|| indicator.equals(StringFormat.START_TIME)) {
+				if (indicator.equals(StringFormat.START)) {
 					tempCommand.setErrorMessage(String.format(
 							ERROR_INVALID_TIME, StringFormat.START));
 				} else {
@@ -239,9 +226,7 @@ public class Analyzer {
 				Date currentDate = new Date(System.currentTimeMillis());
 
 				if (checkUpdatedItem.before(currentDate)) {
-					if (indicator.equals(StringFormat.START)
-							|| indicator.equals(StringFormat.START_DATE)
-							|| indicator.equals(StringFormat.START_TIME)) {
+					if (indicator.equals(StringFormat.START)) {
 						tempCommand
 								.setErrorMessage(String.format(
 										ERROR_INVALID_EARLIER_TIME,
@@ -307,7 +292,7 @@ public class Analyzer {
 		for (int i = 0; i < arg.length; i++) {
 			String sortIndicator = arg[i].toLowerCase();
 
-			if (!isValidIndicator(sortIndicator)) {
+			if (!StringFormat.isValidIndicator(sortIndicator)) {
 				tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
 
 				return tempCommand;
@@ -353,9 +338,7 @@ public class Analyzer {
 					String searchKey = TimeHandler.inputTimingConvertor(temp);
 
 					if (searchKey == null) {
-						if (indicator.equals(StringFormat.START)
-								|| indicator.equals(StringFormat.START_DATE)
-								|| indicator.equals(StringFormat.START_TIME)) {
+						if (indicator.equals(StringFormat.START)) {
 							tempCommand.setErrorMessage(String.format(
 									ERROR_INVALID_TIME, StringFormat.START));
 						} else {
@@ -399,15 +382,6 @@ public class Analyzer {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-
-	private static boolean isValidIndicator(String indicator) {
-		for (int i = 0; i < VALID_INDICATOR.length; i++) {
-			if (VALID_INDICATOR[i].equals(indicator)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private static boolean isValidPriority(String priority) {
