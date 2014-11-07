@@ -1,11 +1,22 @@
 import java.text.SimpleDateFormat;
 
-
 public class StringFormat {
 
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+			"yyyy.MM.dd HH:mm");
+	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
+			"yyyy.MM.dd 'at' HH:mm");
+	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
+			"E yyyy.MM.dd 'at' hh:mm:ss a zzz\n");
 	
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
+	public static final String MESSAGE_SAVED_IN_FILE = "Last saved point: ";
+	
+	// indicate name-description-start-end-location-priority.
+	public static final String TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
+
+	public static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
+
+	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 	
 	/**
 	 * action
@@ -24,7 +35,7 @@ public class StringFormat {
 	public static final String HELP = "help";
 	public static final String TUTORIAL = "tutorial";
 	public static final String SETTINGS = "settings";
-	
+
 	/**
 	 * sort, search and update indicators
 	 */
@@ -42,7 +53,7 @@ public class StringFormat {
 	public static final String HIGH_PRIORITY = "high";
 	public static final String MEDIUM_PRIORITY = "medium";
 	public static final String LOW_PRIORITY = "low";
-	
+
 	public static final String INVALID_PRIORITY = "invalid";
 
 	/**
@@ -63,7 +74,7 @@ public class StringFormat {
 	public static final String FROM_INDICATOR = "from";
 	public static final String IMPORTANT = "important";
 	public static final String UNIMPORTANT = "unimportant";
-	
+
 	/**
 	 * invalid indicator
 	 */
