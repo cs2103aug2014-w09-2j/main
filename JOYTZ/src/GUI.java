@@ -371,8 +371,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         // Coloring red
         if (isHighlightedPassEnd == true) {
-            System.out.println("Ongoing2 = " + isNotifcationsOngoingEnabled);
-            System.out.println("Overdue2 = " + isNotifcationsOverdueEnabled);
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
             if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {

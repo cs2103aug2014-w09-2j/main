@@ -73,7 +73,7 @@ public class Controller {
             for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
                 System.out.println("===================\n" +
                                    "Display string from feedback object: \n" + 
-                                   "	" + feedback.getTaskStringList().get(i) + "\n" +
+                                   "    " + feedback.getTaskStringList().get(i) + "\n" +
                                    "===================\n");
 
                 String[] parameterArr = processDisplayString(i);
@@ -87,13 +87,13 @@ public class Controller {
                 /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
-    						"	Action = " + action + "\n" + 
-    						"	Name = " + parameterArr[0] + "\n" +
-    						"	Start time = " + parameterArr[2] + "\n" + 
-    						"	End time = " + parameterArr[3] + "\n" + 
-    						"	Description = " + parameterArr[1] + "\n" +
-    						"	Location = " + parameterArr[4] + "\n" +
-    						"	Priority = " + parameterArr[5] + "\n" +
+    						"    Action = " + action + "\n" + 
+    						"    Name = " + parameterArr[0] + "\n" +
+    						"    Start time = " + parameterArr[2] + "\n" + 
+    						"    End time = " + parameterArr[3] + "\n" + 
+    						"    Description = " + parameterArr[1] + "\n" +
+    						"    Location = " + parameterArr[4] + "\n" +
+    						"    Priority = " + parameterArr[5] + "\n" +
     						"====================\n");
                  
 
@@ -162,17 +162,17 @@ public class Controller {
             // Debugging code
             LOGGER.info("==============\n" +
                         "After analyzer: \n" + 
-                        "	Action = " + parsedCommand.getAction() + "\n" + 
-                        "	Name = " + parsedCommand.getTaskName() + "\n" +
-                        "	Start time = " + parsedCommand.getTaskStart() + "\n" + 
-                        "	End time = " + parsedCommand.getTaskEnd() + "\n" + 
-                        "	Description = " + parsedCommand.getTaskDescription() + "\n" +
-                        "	Location = " + parsedCommand.getTaskLocation() + "\n" +
-                        "	Priority = " + parsedCommand.getTaskPriority() + "\n" +
-                        "	Task ID = " + parsedCommand.getTaskId() + "\n" +
-                        "   Search key = " + parsedCommand.getKey() + "\n" +
-                        "	Error message = " + parsedCommand.getErrorMessage() + "\n" +
-                        "	Update indicator = " + parsedCommand.getIndicator() + "\n" +
+                        "    Action = " + parsedCommand.getAction() + "\n" + 
+                        "    Name = " + parsedCommand.getTaskName() + "\n" +
+                        "    Start time = " + parsedCommand.getTaskStart() + "\n" + 
+                        "    End time = " + parsedCommand.getTaskEnd() + "\n" + 
+                        "    Description = " + parsedCommand.getTaskDescription() + "\n" +
+                        "    Location = " + parsedCommand.getTaskLocation() + "\n" +
+                        "    Priority = " + parsedCommand.getTaskPriority() + "\n" +
+                        "    Task ID = " + parsedCommand.getTaskId() + "\n" +
+                        "    Search key = " + parsedCommand.getKey() + "\n" +
+                        "    Error message = " + parsedCommand.getErrorMessage() + "\n" +
+                        "    Update indicator = " + parsedCommand.getIndicator() + "\n" +
                         "====================\n");
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
@@ -192,6 +192,7 @@ public class Controller {
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
+                
                 if (outputString.equals(ERROR_NO_TASK_FILE)) {
                     GUI.openTutorial();
                 }
