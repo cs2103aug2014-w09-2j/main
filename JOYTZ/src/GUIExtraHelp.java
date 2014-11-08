@@ -29,7 +29,7 @@ public class GUIExtraHelp extends Dialog {
                                                 "    - Description\n    - Location\n    - Priority\n\n" +
                                                 "To add a task, simply follow this syntax (without typing " +
                                                 "the \"<\" and \">\"):\n" +
-                                                "add <name>, <description> from <start time> to <end time> " +
+                                                "add <name>; <description> from <start time> to <end time> " +
                                                 "@<location> #<priority>\n\n" +
                                                 "Not all attributes have to be filled when adding a task. " +
                                                 "For example, to only add the task's name, type:\n" +
@@ -55,12 +55,17 @@ public class GUIExtraHelp extends Dialog {
                                                 "redo\n\nNote: You are able to perform multiple undo and redo.";
     private static final String PAGE_SEVEN_TEXT = "How to sort tasks:\nThe syntax is (without typing " +
                                                   "the \"<\" and \">\"):\nsort <attribute>\n\n" +
-                                                  "The attribute can be easily referenced from the table headings.";
+                                                  "The attribute can be easily referenced from the table headings.\n\n" +
+                                                  "You can also sort using multiple attributes. For example, to sort " +
+                                                  "using priority, then the end date:\n" +
+                                                  "\"sort priority end\".";
     private static final String PAGE_EIGHT_TEXT = "How to search for tasks:\nThe syntax is (without typing " +
                                                   "the \"<\" and \">\"):\n" +
-                                                  "search <attribute> <what you are searching for>\n\n" +
+                                                  "search <attribute> <search for>\n\n" +
                                                   "The attribute to search for can be referenced from the table " +
-                                                  "headings.\n\nNote: searching is case-insensitive.\nAlso, " +
+                                                  "headings.\n\nYou can also search for multiple items. For example:\n" +
+                                                  "search <attribute1> <search for1>; <attribute2> <search for 2>\n\n" +
+                                                  "Note: searching is case-insensitive.\nAlso, " +                                                   
                                                   "to bring back all your tasks in view, type \"display\"";
     private static final String PAGE_NINE_TEXT = "How to display all tasks:\nThe syntax is:\ndisplay\n\n" +
                                                  "After searching, you are not shown all your tasks. Using " +
