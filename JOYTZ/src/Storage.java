@@ -89,7 +89,13 @@ public class Storage {
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		
-		mainTaskList.deleteTaskById(targetTaskId);
+		if (mainTaskList.containsTaskId(targetTaskId)){
+			mainTaskList.deleteTaskById(targetTaskId);
+		}else if (historyTaskList.containsTaskId(targetTaskId)){
+			historyTaskList.deleteTaskById(targetTaskId);
+		}else {	// not supposed to reach this line;
+			throw new Exception("No Task with same taskId in either mainTaskList nor History.");
+		}
 		displayTaskList.deleteTaskByIndex(index);
 		
 		setDisplayList(displayTaskList);
