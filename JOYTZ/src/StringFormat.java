@@ -44,6 +44,7 @@ public class StringFormat {
 	// In Delete, Update Method
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
 	public static final String STR_ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
+	
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	/**

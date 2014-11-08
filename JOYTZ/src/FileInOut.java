@@ -3,8 +3,9 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 public class FileInOut {
-	private static final Logger LOGGER = Logger.getLogger(FileInOut.class.getName());
-	
+	private static final Logger LOGGER = Logger.getLogger(FileInOut.class
+			.getName());
+
 	private File file;
 	private FileReader fileReader;
 	private BufferedReader bufferedReader;
@@ -19,38 +20,41 @@ public class FileInOut {
 	 * @param targetList
 	 * @param fileName
 	 * @return
+	 * @throws Exception 
 	 */
-	public boolean saveTaskList(List targetList, String fileName) {
+	public boolean saveTaskList(List targetList, String fileName) throws Exception {
 		file = new File(fileName);
-		try {
-			if (!file.exists()) {
-				file.createNewFile();
-			}
 
-			fileWriter = new FileWriter(file);
-			fileWriter.write(getFirstLineMsg());
-			
-			for (int index = 0; index < targetList.size(); index++) {
-				Task currTask = targetList.getTaskByIndex(index);
-				String currTaskString = convertTaskToString(currTask);
-				fileWriter.write(currTaskString);
-			}
-
-			fileWriter.close();
-		} catch (Exception e) {
-			return false;
+		if (!file.exists()) {
+			file.createNewFile();
 		}
-		
-		LOGGER.info("==============\n" +
-				"FileInOut : Save \n" + 
-				"====================\n");
+
+		fileWriter = new FileWriter(file);
+		fileWriter.write(getFirstLineMsg());
+
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			String currTaskString = convertTaskToString(currTask);
+			fileWriter.write(currTaskString);
+		}
+
+		fileWriter.close();
+
+		LOGGER.info("==============\n" + "FileInOut : Save \n"
+				+ "====================\n");
 		return true;
 	}
-
+	
+	/**
+	 * Read the file and create a taskList from the file.
+	 * @param fileName
+	 * @return
+	 * @throws Exception
+	 */
 	public List readTaskList(String fileName) throws Exception {
 		file = new File(fileName);
 		List resultList = new List();
-		
+
 		if (!file.exists()) {
 			throw new Exception(StringFormat.MESSAGE_TASK_LIST_FILE_NOT_EXIST);
 		}
@@ -67,11 +71,10 @@ public class FileInOut {
 			System.out.println(messageLine);
 			taskString = bufferedReader.readLine();
 		}
-		
-		LOGGER.info("==============\n" +
-				"FileInOut : Read \n" + 
-				"	resultList size: " + resultList.size() + "\n" +
-				"====================\n");
+
+		LOGGER.info("==============\n" + "FileInOut : Read \n"
+				+ "	resultList size: " + resultList.size() + "\n"
+				+ "====================\n");
 		return resultList;
 
 	}
@@ -84,7 +87,8 @@ public class FileInOut {
 	public String getFirstLineMsg() {
 		Date now = new Date();
 		String msgString = StringFormat.MESSAGE_SAVED_IN_FILE;
-		String dateString = StringFormat.DATE_FORMAT_SAVED_IN_FILE.format(now) + "\n";
+		String dateString = StringFormat.DATE_FORMAT_SAVED_IN_FILE.format(now)
+				+ "\n";
 
 		return msgString + dateString;
 	}
@@ -99,32 +103,34 @@ public class FileInOut {
 		String result = task.toString();
 		return result;
 	}
-	
+
 	/**
 	 * Convert a String in the saved .txt file to a Task Object.
+	 * 
 	 * @param taskString
 	 * @return
 	 * @throws Exception
 	 */
-	
-	public Task converStringToTask(String taskString) throws Exception{
+
+	public Task converStringToTask(String taskString) throws Exception {
 		String[] taskAttributes = taskString.split("~");
 
 		if (taskAttributes.length != 6) {
 
-			throw new Exception(String.format(StringFormat.ERROR_INVALID_TASK_RECORD, taskString));
+			throw new Exception(String.format(
+					StringFormat.ERROR_INVALID_TASK_RECORD, taskString));
 		} else {
-			
+
 			Task task = new Task();
 			task.setTaskName(taskAttributes[0]);
 
 			task.setTaskDescription(taskAttributes[1]);
-			if (taskAttributes[2].equals(" ")){
+			if (taskAttributes[2].equals(" ")) {
 			} else {
 				task.setStartDate(new Date(Long.parseLong(taskAttributes[2])));
 			}
-			if (taskAttributes[3].equals(" ")){
-			}else {
+			if (taskAttributes[3].equals(" ")) {
+			} else {
 				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
 			}
 			task.setTaskLocation(taskAttributes[4]);
@@ -132,5 +138,5 @@ public class FileInOut {
 			return task;
 		}
 	}
-	
+
 }
