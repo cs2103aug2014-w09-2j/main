@@ -8,11 +8,7 @@ public class Executor {
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 
-	private static final String ERROR_NULL_COMMAND = "Null command.\n";
-	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 
-	// these are for Add Method.
-	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
 
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
@@ -60,7 +56,7 @@ public class Executor {
 		feedback = new Feedback(false);
 
 		if (command.equals(null)) {
-			feedback.setMessageShowToUser(ERROR_NULL_COMMAND);
+			feedback.setMessageShowToUser(StringFormat.EXE_ERROR_NULL_EXECUTABLE_COMMAND);
 			return feedback;
 		}
 
@@ -108,10 +104,13 @@ public class Executor {
 		case StringFormat.EXIT:
 			feedback = performExitAction();
 			break;
+			
+		case "mark":
+			feedback = performMarkAction();
+			break;
 
 		default:
-			feedback.setMessageShowToUser(String.format(
-					ERROR_INVALID_COMMAND_ACTION, command.getAction()));
+			feedback.setMessageShowToUser(String.format(StringFormat.EXE_ERROR_INVALID_COMMAND_ACTION, command.getAction()));
 			return feedback;
 		}
 
@@ -151,7 +150,7 @@ public class Executor {
 		}
 
 		if (fb.getResult()) {
-			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
+			fb.setMessageShowToUser(String.format(StringFormat.EXE_MESSAGE_ADD_SUCCESSFUL, name));
 		}
 
 		return fb;
@@ -446,6 +445,28 @@ public class Executor {
 		fb.setResult(true);
 		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 
+		return fb;
+	}
+	
+	/**
+	 * Add the task into history list as done.
+	 * @param command
+	 * @return
+	 */
+	private static Feedback performMarkAction(ExecutableCommand command){
+		Feedback fb = new Feedback("mark", false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+		for (int i=0; i<targetIndexList.size(); i++){
+			int index = targetIndexList.get(i);
+			try {
+				fb.setResult(Storage.mark(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser("add finished task to history successfully.\n");
 		return fb;
 	}
 

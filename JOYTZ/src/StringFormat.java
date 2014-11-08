@@ -1,24 +1,37 @@
 import java.text.SimpleDateFormat;
 
 public class StringFormat {
-
+	
+	/**
+	 * Format and Static String in FileInOut
+	 */
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy.MM.dd HH:mm");
 	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
 			"yyyy.MM.dd 'at' HH:mm");
-
 	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-
 	public static final String MESSAGE_SAVED_IN_FILE = "Last saved point: ";
-
 	// indicate name-description-start-end-location-priority.
 	public static final String TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
-
 	public static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
-
 	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-
+	
+	/**
+	 * Message show to the user in Executor
+	 */
+	
+	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
+	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
+	// Add 
+	public static final String EXE_MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	
+	/**
+	 * Message show to the user in Storage
+	 */
+	// In Add Method
+	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
+	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
 	/**
 	 * error messages used in Analyzer and TimeHandler
 	 */

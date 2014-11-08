@@ -24,8 +24,9 @@ public class Storage {
 	private static final String ERROR_INVALID_INPUT_TIME = "The input time is invalid.";
 
 	// this is the two list of tasks.
-	private static List mainTaskList = new List();
-
+	private static List mainTaskList = new List("Main task List");
+	private static List historyTaskList = new List("History task List");
+	
 	// these are for display to user.
 	public static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
@@ -42,19 +43,26 @@ public class Storage {
 	private static DateFormat taskDateFormat = new SimpleDateFormat(
 			"dd-MM-yyyy");
 	private static String messageStringInFile = "User saved at %s.\n";
-
+	
+	
 	/**
-	 * add() method add in task passed by Executor.
+	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
 	 * 
 	 * @param Task
 	 * @throws Exception
 	 */
 
-	public static boolean add(Task task){
+	public static boolean add(Task task) throws Exception{
+		if (task == null){
+			throw new Exception(StringFormat.STR_ERROR_NULL_TASK_OBJECT);
+		}
+		if (task.getTaskName().equals("")){
+			throw new Exception(StringFormat.STR_ERROR_NO_TASK_NAME);
+		}
 		
 		mainTaskList.addTask(task);
-		
 		setDisplayList(mainTaskList);
+		
 		LOGGER.info("==============\n" +
 				"Storage : Add \n" + 
 				"	Add a new task " + "\n" +
@@ -91,6 +99,21 @@ public class Storage {
 				"	displaytasklist size : " + displayTaskList.size() + "\n" + 
 				"	maintasklist size : " + mainTaskList.size() + "\n" +
  				"====================\n");
+		
+		return true;
+	}
+	
+	public static boolean mark(int index) throws Exception{
+		if (index<0 || index >= displayTaskList.size()){
+			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+		}
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+		
+		mainTaskList.deleteTaskById(targetTaskId);
+		displayTaskList.deleteTaskByIndex(index);
+		
+		historyTaskList.addTask(targetTask);
 		
 		return true;
 	}
