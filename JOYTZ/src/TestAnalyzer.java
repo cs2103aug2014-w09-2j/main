@@ -428,9 +428,16 @@ public class TestAnalyzer {
 		Command test2 = new Command("displayy");
 		Command test3 = new Command("DISPLAY");
 		Command test4 = new Command("display asdasdaooxcj");
+		Command test5 = new Command("display done");
+		Command test6 = new Command("display DONE");
+		Command test7 = new Command("display donne");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.DISPLAY);
 		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+		expected.setIndicator(StringFormat.DONE);
+		
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DISPLAY);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 		// test case 1: test if the display action is processed correctly
 		assertEquals("display action is not processed correctly",
@@ -448,10 +455,22 @@ public class TestAnalyzer {
 				"user is unable to type in command with capitalized letter",
 				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
 
-		// test case 4: test if the display action is processed correctly
-		assertEquals("display action is not processed correctly",
-				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+		// test case 4: test if the error catcher for invalid display indicator is working
+		assertEquals("unable to detect invalid display indicator",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4).getErrorMessage());
+		
+		// test case 5: test if the user is able to perform display done list command
+		assertEquals(
+				"user is unable to perform display done list command",
+				expected.getIndicator(), Analyzer.runAnalyzer(test5).getIndicator());
 
+		// test case 6: test if the user is able to perform display done list command with the capitalized done indicator
+		assertEquals("unable to detect invalid display indicator",
+				expected.getIndicator(), Analyzer.runAnalyzer(test6).getIndicator());
+		
+		// test case 7: test if the error catcher for invalid display indicator is working
+		assertEquals("unable to detect invalid display indicator",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7).getErrorMessage());
 	}
 
 	@Test
