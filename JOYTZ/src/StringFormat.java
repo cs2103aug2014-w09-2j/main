@@ -60,6 +60,7 @@ public class StringFormat {
 	public static final String SORT = "sort";
 	public static final String UNDO = "undo";
 	public static final String REDO = "redo";
+	public static final String DONE = "done";
 	public static final String EXIT = "exit";
 	public static final String RELOAD = "reload";
 	public static final String HELP = "help";
