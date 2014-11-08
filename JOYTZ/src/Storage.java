@@ -5,6 +5,8 @@ import java.text.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.eclipse.jface.preference.StringFieldEditor;
+
 public class Storage {
 
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
@@ -114,7 +116,6 @@ public class Storage {
 		displayTaskList.deleteTaskByIndex(index);
 		
 		historyTaskList.addTask(targetTask);
-		
 		return true;
 	}
 
@@ -159,12 +160,10 @@ public class Storage {
 		case StringFormat.START:
 			Date newStartDateTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setStartDateTime(newStartDateTime);
-			;
 			break;
 		case StringFormat.END:
 			Date newEndDateTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndDateTime(newEndDateTime);
-			;
 			break;
 		case StringFormat.START_DATE:
 			Date newStartDate = new Date(Long.parseLong(updateKeyValue));
@@ -177,15 +176,12 @@ public class Storage {
 		case StringFormat.END_DATE:
 			Date newEndDate = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndDate(newEndDate);
-			;
 			break;
 		case StringFormat.END_TIME:
 			Date newEndTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndTime(newEndTime);
-			;
 			break;
 		case StringFormat.LOCATION:
-
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
 		case StringFormat.PRIORITY:
@@ -201,18 +197,37 @@ public class Storage {
 	}
 
 	/**
-	 * Clean all the task Objects in the taskList; Put all the tasks into
-	 * history
-	 * 
+	 * Delete all the task in the current DisplayToUser list.
+	 * After perform clean, user will see a empty taskList.
+	 * @param targetListName
 	 * @return
 	 */
-	public static boolean clean() {
-		return clean(mainTaskList);
+	public static boolean clean(String targetListName) {
+		
+		switch (targetListName){
+		case StringFormat.MAIN_TASK_LIST:
+			clean(mainTaskList);
+			break;
+		case StringFormat.HISTORY_TASK_LIST:
+			clean(historyTaskList);
+			break;
+		default:
+			return false;
+		}
+		
+		return clean(displayTaskList);
 	}
 	
 	public static boolean clean(List targetList){
-		targetList.clean();
-		setDisplayList(mainTaskList);
+		for (int index=0; index<displayTaskList.size(); index++){
+			Task targetTask = displayTaskList.getTaskByIndex(index);
+			int targetTaskId = targetTask.getTaskId();
+			
+			targetList.deleteTaskById(targetTaskId);
+		}
+		displayTaskList.clean();
+		setDisplayList(displayTaskList);
+		
 		return true;
 	}
 	

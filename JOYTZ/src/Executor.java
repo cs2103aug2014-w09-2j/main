@@ -74,7 +74,7 @@ public class Executor {
 			break;
 
 		case StringFormat.CLEAR:
-			feedback = performClearAction();
+			feedback = performClearAction(command);
 			break;
 
 		case StringFormat.DISPLAY:
@@ -106,7 +106,7 @@ public class Executor {
 			break;
 			
 		case "mark":
-			feedback = performMarkAction();
+			feedback = performDoneAction(command);
 			break;
 
 		default:
@@ -150,7 +150,7 @@ public class Executor {
 		}
 
 		if (fb.getResult()) {
-			fb.setMessageShowToUser(String.format(StringFormat.EXE_MESSAGE_ADD_SUCCESSFUL, name));
+			fb.setMessageShowToUser(String.format(StringFormat.EXE_MSG_ADD_SUCCESSFUL, name));
 		}
 
 		return fb;
@@ -186,6 +186,29 @@ public class Executor {
 			fb.setMessageShowToUser(MESSAGE_DELETE_SUCCESSFUL);
 		}
 
+		return fb;
+	}
+	
+	/**
+	 * Add the task into history list as done.
+	 * @param command
+	 * @return
+	 */
+	// @author A0119378U
+	private static Feedback performDoneAction(ExecutableCommand command){
+		Feedback fb = new Feedback(StringFormat.DONE, false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+		for (int i=0; i<targetIndexList.size(); i++){
+			int index = targetIndexList.get(i);
+			try {
+				fb.setResult(Storage.mark(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
 		return fb;
 	}
 
@@ -238,10 +261,10 @@ public class Executor {
 	 * 
 	 * @return
 	 */
-	private static Feedback performClearAction() {
+	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 
-		fb.setResult(Storage.clean());
+		fb.setResult(Storage.clean(StringFormat.MAIN_TASK_LIST));
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
@@ -358,7 +381,7 @@ public class Executor {
 			}
 
 			// clean the tasklist and history.
-			Storage.clean();
+			Storage.clean(StringFormat.MAIN_TASK_LIST);
 			// reload the data from saved file.
 			Storage.reloadFile();
 
@@ -445,28 +468,6 @@ public class Executor {
 		fb.setResult(true);
 		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 
-		return fb;
-	}
-	
-	/**
-	 * Add the task into history list as done.
-	 * @param command
-	 * @return
-	 */
-	private static Feedback performMarkAction(ExecutableCommand command){
-		Feedback fb = new Feedback("mark", false);
-		ArrayList<Integer> targetIndexList = command.getTaskId();
-		for (int i=0; i<targetIndexList.size(); i++){
-			int index = targetIndexList.get(i);
-			try {
-				fb.setResult(Storage.mark(index));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
-		}
-		fb.setResult(true);
-		fb.setMessageShowToUser("add finished task to history successfully.\n");
 		return fb;
 	}
 

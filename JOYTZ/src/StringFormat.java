@@ -24,7 +24,9 @@ public class StringFormat {
 	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 	// Add 
-	public static final String EXE_MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	// Done
+	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
 	
 	/**
 	 * Message show to the user in Storage
@@ -66,7 +68,9 @@ public class StringFormat {
 	public static final String HELP = "help";
 	public static final String TUTORIAL = "tutorial";
 	public static final String SETTINGS = "settings";
-
+	
+	public static final String MAIN_TASK_LIST = "mainTaskList";
+	public static final String HISTORY_TASK_LIST = "historyTaskList";
 	/**
 	 * sort, search and update indicators
 	 */
