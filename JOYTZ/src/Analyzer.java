@@ -263,7 +263,7 @@ public class Analyzer {
 			return tempCommand;
 		}else{
 			if(arg[0].equals(StringFormat.DONE)){
-				tempCommand.setIndicator(StringFormat.DONE);
+				tempCommand.setIndicator(StringFormat.HISTORY_TASK_LIST);
 			}else{
 				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 			}
