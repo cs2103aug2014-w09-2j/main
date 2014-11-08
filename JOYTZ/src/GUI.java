@@ -62,7 +62,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 	private static final String NOTIFICATION_START = "%s has started!";
 	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
 	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";
-	private static final int DEFAULT_REFRESH_RATE = 3600000;    // in milliseconds
+	private static final String LABEL_TASKS_INCOMPLETE = "Task List: Incomplete Tasks";
+	private static final String LABEL_TASKS_DONE = "Task List: Done Tasks";
 	private static final int DEFAULT_DEADLINE_COLOR_R = 255;
 	private static final int DEFAULT_DEADLINE_COLOR_G = 0;
 	private static final int DEFAULT_DEADLINE_COLOR_B = 0;
@@ -103,6 +104,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static Timer displayTimer;
     private static String beingDisplayed;
     private static GUI mainFrame;
+    private static Label lblIncompleteTasks;
+    private static Label lblInputBox;
     
     
     /**
@@ -620,24 +623,32 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
             }
 
             private void handleUserInput() {
-                if (inputField.getText().trim().equals(StringFormat.HELP)) {
+                String userInput = inputField.getText().trim();
+                
+                if (userInput.equals(StringFormat.HELP)) {
                     displayHelp();
                     inputField.setText(EMPTY_STRING);
-                } else if (inputField.getText().trim().equals(StringFormat.TUTORIAL)) {    
+                } else if (userInput.equals(StringFormat.TUTORIAL)) {    
                     GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
                     inputField.setText(EMPTY_STRING);
                     helpDialog.open();
-                } else if (inputField.getText().trim().equals(StringFormat.SETTINGS)) {    
+                } else if (userInput.equals(StringFormat.SETTINGS)) {    
                     GUISettings settingsDialog = new GUISettings(shell, SWT.NONE);
                     inputField.setText(EMPTY_STRING);
                     settingsDialog.open();
                     applySettings();
                     initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
+                } else if (userInput.equals("display done")) {
+                    previousUserInputStack.push(userInput);
+                    lblIncompleteTasks.setText(LABEL_TASKS_DONE);
+                    Controller.startController(userInput);
+
+                    inputField.setText(EMPTY_STRING);
                 } else {
-                    String userInput = inputField.getText();
                     userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
                     previousUserInputStack.push(userInput);
+                    lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
                     Controller.startController(userInput);
 
                     inputField.setText(EMPTY_STRING);
@@ -844,6 +855,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         shell.setSize(800, 550);
         shell.setLayout(new GridLayout(1, false));
         shell.setText("JOYTZ");
+        
+        lblIncompleteTasks = new Label(shell, SWT.NONE);
+        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblIncompleteTasks.setAlignment(SWT.CENTER);
+        lblIncompleteTasks.setText("Task List: Incomplete Tasks");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
@@ -894,6 +911,12 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         gd_horizontalSeparator.widthHint = 550;
         horizontalSeparator.setLayoutData(gd_horizontalSeparator);
+        
+        lblInputBox = new Label(shell, SWT.NONE);
+        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblInputBox.setAlignment(SWT.CENTER);
+        lblInputBox.setText("Input Box");
 
         inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
         inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 14, SWT.NORMAL));
