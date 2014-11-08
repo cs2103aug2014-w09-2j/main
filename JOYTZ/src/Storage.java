@@ -5,6 +5,8 @@ import java.text.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.eclipse.jface.preference.StringFieldEditor;
+
 public class Storage {
 
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
@@ -24,8 +26,9 @@ public class Storage {
 	private static final String ERROR_INVALID_INPUT_TIME = "The input time is invalid.";
 
 	// this is the two list of tasks.
-	private static List mainTaskList = new List();
-
+	private static List mainTaskList = new List("Main task List");
+	private static List historyTaskList = new List("History task List");
+	
 	// these are for display to user.
 	public static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
@@ -42,19 +45,26 @@ public class Storage {
 	private static DateFormat taskDateFormat = new SimpleDateFormat(
 			"dd-MM-yyyy");
 	private static String messageStringInFile = "User saved at %s.\n";
-
+	
+	
 	/**
-	 * add() method add in task passed by Executor.
+	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
 	 * 
 	 * @param Task
 	 * @throws Exception
 	 */
 
-	public static boolean add(Task task){
+	public static boolean add(Task task) throws Exception{
+		if (task == null){
+			throw new Exception(StringFormat.STR_ERROR_NULL_TASK_OBJECT);
+		}
+		if (task.getTaskName().equals("")){
+			throw new Exception(StringFormat.STR_ERROR_NO_TASK_NAME);
+		}
 		
 		mainTaskList.addTask(task);
-		
 		setDisplayList(mainTaskList);
+		
 		LOGGER.info("==============\n" +
 				"Storage : Add \n" + 
 				"	Add a new task " + "\n" +
@@ -74,12 +84,18 @@ public class Storage {
 	 */
 	public static boolean delete(int index) throws Exception {
 		if (index<0 || index >= displayTaskList.size()){
-			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		
-		mainTaskList.deleteTaskById(targetTaskId);
+		if (mainTaskList.containsTaskId(targetTaskId)){
+			mainTaskList.deleteTaskById(targetTaskId);
+		}else if (historyTaskList.containsTaskId(targetTaskId)){
+			historyTaskList.deleteTaskById(targetTaskId);
+		}else {	// not supposed to reach this line;
+			throw new Exception("No Task with same taskId in either mainTaskList nor History.");
+		}
 		displayTaskList.deleteTaskByIndex(index);
 		
 		setDisplayList(displayTaskList);
@@ -92,6 +108,20 @@ public class Storage {
 				"	maintasklist size : " + mainTaskList.size() + "\n" +
  				"====================\n");
 		
+		return true;
+	}
+	
+	public static boolean mark(int index) throws Exception{
+		if (index<0 || index >= displayTaskList.size()){
+			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+		}
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+		
+		mainTaskList.deleteTaskById(targetTaskId);
+		displayTaskList.deleteTaskByIndex(index);
+		
+		historyTaskList.addTask(targetTask);
 		return true;
 	}
 
@@ -136,12 +166,10 @@ public class Storage {
 		case StringFormat.START:
 			Date newStartDateTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setStartDateTime(newStartDateTime);
-			;
 			break;
 		case StringFormat.END:
 			Date newEndDateTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndDateTime(newEndDateTime);
-			;
 			break;
 		case StringFormat.START_DATE:
 			Date newStartDate = new Date(Long.parseLong(updateKeyValue));
@@ -154,15 +182,12 @@ public class Storage {
 		case StringFormat.END_DATE:
 			Date newEndDate = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndDate(newEndDate);
-			;
 			break;
 		case StringFormat.END_TIME:
 			Date newEndTime = new Date(Long.parseLong(updateKeyValue));
 			targetTask.setEndTime(newEndTime);
-			;
 			break;
 		case StringFormat.LOCATION:
-
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
 		case StringFormat.PRIORITY:
@@ -178,18 +203,37 @@ public class Storage {
 	}
 
 	/**
-	 * Clean all the task Objects in the taskList; Put all the tasks into
-	 * history
-	 * 
+	 * Delete all the task in the current DisplayToUser list.
+	 * After perform clean, user will see a empty taskList.
+	 * @param targetListName
 	 * @return
 	 */
-	public static boolean clean() {
-		return clean(mainTaskList);
+	public static boolean clean(String targetListName) {
+		
+		switch (targetListName){
+		case StringFormat.MAIN_TASK_LIST:
+			clean(mainTaskList);
+			break;
+		case StringFormat.HISTORY_TASK_LIST:
+			clean(historyTaskList);
+			break;
+		default:
+			return false;
+		}
+		
+		return clean(displayTaskList);
 	}
 	
 	public static boolean clean(List targetList){
-		targetList.clean();
-		setDisplayList(mainTaskList);
+		for (int index=0; index<displayTaskList.size(); index++){
+			Task targetTask = displayTaskList.getTaskByIndex(index);
+			int targetTaskId = targetTask.getTaskId();
+			
+			targetList.deleteTaskById(targetTaskId);
+		}
+		displayTaskList.clean();
+		setDisplayList(displayTaskList);
+		
 		return true;
 	}
 	

@@ -21,7 +21,7 @@ public class ExecutableCommand {
 	// errorMessage is used for Analyzer to report error to controller.
 	private String errorMessage;
 
-	// these are for update, sort or search method.
+	// these are for display, update, sort or search method.
 	private ArrayList<String> indicator;
 	private ArrayList<String> key;
 

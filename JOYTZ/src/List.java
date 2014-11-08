@@ -77,6 +77,21 @@ public class List {
 		taskList.clear();
 	}
 	
+	/**
+	 * Reture true if taskList contains a task with the same Id as given targetId.
+	 * @param targetTaskId
+	 * @return
+	 */
+	public boolean containsTaskId(int targetTaskId){
+		for (int index=0; index<taskList.size(); index++){
+			Task currTask = taskList.get(index);
+			if (currTask.getTaskId() == targetTaskId){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public List copy(){
 		List copyList = new List();
 		for (int index=0; index<size(); index++){

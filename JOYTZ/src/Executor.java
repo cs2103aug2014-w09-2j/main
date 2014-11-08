@@ -8,12 +8,6 @@ public class Executor {
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 
-	private static final String ERROR_NULL_COMMAND = "Null command.\n";
-	private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
-
-	// these are for Add Method.
-	private static final String MESSAGE_ADD_SUCCESSFUL = "%s is added successfully.\n";
-
 	// these are for Delete Method.
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
 	private static final String ERROR_INVALID_DELETE_ATTRIBUTE = "Invalid delete attributes.\n";
@@ -60,7 +54,7 @@ public class Executor {
 		feedback = new Feedback(false);
 
 		if (command.equals(null)) {
-			feedback.setMessageShowToUser(ERROR_NULL_COMMAND);
+			feedback.setMessageShowToUser(StringFormat.EXE_ERROR_NULL_EXECUTABLE_COMMAND);
 			return feedback;
 		}
 
@@ -78,11 +72,11 @@ public class Executor {
 			break;
 
 		case StringFormat.CLEAR:
-			feedback = performClearAction();
+			feedback = performClearAction(command);
 			break;
 
 		case StringFormat.DISPLAY:
-			feedback = performDisplayAction();
+			feedback = performDisplayAction(command);
 			break;
 
 		case StringFormat.SORT:
@@ -109,9 +103,14 @@ public class Executor {
 			feedback = performExitAction();
 			break;
 
+		case StringFormat.DONE:
+			feedback = performDoneAction(command);
+			break;
+
 		default:
 			feedback.setMessageShowToUser(String.format(
-					ERROR_INVALID_COMMAND_ACTION, command.getAction()));
+					StringFormat.EXE_ERROR_INVALID_COMMAND_ACTION,
+					command.getAction()));
 			return feedback;
 		}
 
@@ -124,8 +123,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform add action with command object passed from proceedAnalyzedCommand
-	 * method
+	 * Add a new Task Object to the Story.
 	 *
 	 * @param command
 	 * @return
@@ -144,22 +142,23 @@ public class Executor {
 		Date endDateTime = convertStringToDate(endDateTimeString);
 
 		try {
-			Task newTask = createNewTask(name, description, startDateTime, endDateTime, location, priority);
+			Task newTask = createNewTask(name, description, startDateTime,
+					endDateTime, location, priority);
 			fb.setResult(Storage.add(newTask));
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
 
 		if (fb.getResult()) {
-			fb.setMessageShowToUser(String.format(MESSAGE_ADD_SUCCESSFUL, name));
+			fb.setMessageShowToUser(String.format(
+					StringFormat.EXE_MSG_ADD_SUCCESSFUL, name));
 		}
 
 		return fb;
 	}
 
 	/**
-	 * Perform delete action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Delete several tasks according to the indexIndicatorArray in command.
 	 *
 	 * @param command
 	 * @return
@@ -167,26 +166,60 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
+
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
-		
-		Comparator<Integer> reverseComparator = Collections.reverseOrder();
-		Collections.sort(targetTaskIndex, reverseComparator);
-		
+		sort(targetTaskIndex); // from big to small.
+
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
 			index--;
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
-				fb.setResult(false);
 				fb.setMessageShowToUser(e.getMessage());
 				break;
 			}
 		}
-		if (fb.getResult()){
-			fb.setMessageShowToUser(MESSAGE_DELETE_SUCCESSFUL);
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
 		}
 
+		return fb;
+	}
+
+	/**
+	 * Sort the index array from big number to small number.
+	 * 
+	 * @param targetTaskIndexArray
+	 */
+	// @author A0119378U
+	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
+		Comparator<Integer> reverseComparator = Collections.reverseOrder();
+		Collections.sort(targetTaskIndexArray, reverseComparator);
+	}
+
+	/**
+	 * Add the task into history list as done.
+	 * 
+	 * @param command
+	 * @return
+	 */
+	// @author A0119378U
+	private static Feedback performDoneAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DONE, false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+		for (int i = 0; i < targetIndexList.size(); i++) {
+			int index = targetIndexList.get(i);
+			index--;
+			try {
+				fb.setResult(Storage.mark(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
 		return fb;
 	}
 
@@ -239,10 +272,10 @@ public class Executor {
 	 * 
 	 * @return
 	 */
-	private static Feedback performClearAction() {
+	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 
-		fb.setResult(Storage.clean());
+		fb.setResult(Storage.clean(StringFormat.MAIN_TASK_LIST));
 
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
@@ -257,9 +290,8 @@ public class Executor {
 	 * 
 	 * @return
 	 */
-	private static Feedback performDisplayAction() {
+	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
-
 		Storage.display();
 
 		if (Storage.displayTaskList.size() == 0)
@@ -317,19 +349,20 @@ public class Executor {
 		ArrayList<String> searchIndicator = command.getIndicator();
 		ArrayList<String> searchValue = command.getKey();
 
-		//assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
+		// assert searchIndicator.size() == searchValue.size() :
+		// "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			try {
 				Storage.search(searchIndicator.get(i), searchValue.get(i));
-				
+
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
 			}
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
@@ -359,7 +392,7 @@ public class Executor {
 			}
 
 			// clean the tasklist and history.
-			Storage.clean();
+			Storage.clean(StringFormat.MAIN_TASK_LIST);
 			// reload the data from saved file.
 			Storage.reloadFile();
 
@@ -418,10 +451,9 @@ public class Executor {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
-		
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
-		
 
 		return fb;
 	}
@@ -539,5 +571,5 @@ public class Executor {
 
 		return newTask;
 	}
-	
+
 }
