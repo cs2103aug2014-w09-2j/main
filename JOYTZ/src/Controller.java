@@ -9,7 +9,6 @@ public class Controller {
                                                         "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
                                                           "Type \"help\" or \"tutorial\".\n";
-    private static final String ERROR_NO_TASK_FILE = "TaskListFile not exist.\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String EMPTY_LIST = "null";
 
@@ -193,7 +192,7 @@ public class Controller {
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
                 
-                if (outputString.equals(ERROR_NO_TASK_FILE)) {
+                if (outputString.equals(StringFormat.MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
                     GUI.openTutorial();
                 }
                 
