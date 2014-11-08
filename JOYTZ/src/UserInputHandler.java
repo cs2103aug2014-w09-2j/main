@@ -195,9 +195,11 @@ public class UserInputHandler {
 			} else if (temp.contains(StringFormat.PRIORITY_INDICATOR)) {
 				String priority = temp.substring(1).toLowerCase();
 
-				if (priority.equals(StringFormat.IMPORTANT)) {
+				if (priority.equals(StringFormat.IMPORTANT)
+						|| priority.equals(StringFormat.HIGH_PRIORITY)) {
 					output[6] = StringFormat.HIGH_PRIORITY;
-				} else if (priority.equals(StringFormat.UNIMPORTANT)) {
+				} else if (priority.equals(StringFormat.UNIMPORTANT)
+						|| priority.equals(StringFormat.LOW_PRIORITY)) {
 					output[6] = StringFormat.LOW_PRIORITY;
 				} else if (priority.equals(StringFormat.MEDIUM_PRIORITY)) {
 					output[6] = StringFormat.MEDIUM_PRIORITY;

@@ -51,6 +51,7 @@ public class TestAnalyzer {
 		Command test21 = new Command("add trial at 11/11/2014");
 		Command test22 = new Command("add trial due at 3/11/2015");
 		Command test23 = new Command("add trial due on 3:45pm");
+		Command test24 = new Command("add trial #high");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
 		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
@@ -59,7 +60,7 @@ public class TestAnalyzer {
 		expected.setTaskStart(String.valueOf(d1.getTime()));
 		expected.setTaskEnd(String.valueOf(d2.getTime()));
 		expected.setTaskLocation("NUS");
-		expected.setTaskPriority("medium");
+		expected.setTaskPriority(StringFormat.MEDIUM_PRIORITY);
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.ADD);
 		expected2.setTaskStart(String.valueOf(d3.getTime()));
@@ -67,6 +68,7 @@ public class TestAnalyzer {
 		expected2.setErrorMessage(String.format(
 				StringFormat.ERROR_INVALID_TIME, StringFormat.START));
 		expected2.setTaskLocation("nus soc");
+		expected2.setTaskPriority(StringFormat.HIGH_PRIORITY);
 
 		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.ADD);
 		expected3.setTaskStart(String.valueOf(d3.getTime()));
@@ -195,6 +197,11 @@ public class TestAnalyzer {
 		assertEquals("fail to detect invalid task end time",
 				expected4.getErrorMessage(), Analyzer.runAnalyzer(test23)
 						.getErrorMessage());
+		
+		// test case 24: test if the task priority will be recorded correctly
+		assertEquals("fail to get task priority to be added",
+				expected2.getTaskPriority(), Analyzer.runAnalyzer(test24)
+						.getTaskPriority());
 	}
 
 	@Test
