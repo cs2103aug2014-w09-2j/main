@@ -25,6 +25,8 @@ public class StringFormat {
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 	// Add 
 	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	//Delete
+	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
 	// Done
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
 	
@@ -34,6 +36,9 @@ public class StringFormat {
 	// In Add Method
 	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
 	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
+	
+	// In Delete Method
+	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d\n";
 	/**
 	 * error messages used in Analyzer and TimeHandler
 	 */

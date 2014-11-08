@@ -157,8 +157,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform delete action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Delete several tasks according to the indexIndicatorArray in command.
 	 *
 	 * @param command
 	 * @return
@@ -166,10 +165,9 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
-		ArrayList<Integer> targetTaskIndex = command.getTaskId();
 		
-		Comparator<Integer> reverseComparator = Collections.reverseOrder();
-		Collections.sort(targetTaskIndex, reverseComparator);
+		ArrayList<Integer> targetTaskIndex = command.getTaskId();
+		sort(targetTaskIndex);	// from big to small.
 		
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
@@ -177,16 +175,25 @@ public class Executor {
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
-				fb.setResult(false);
 				fb.setMessageShowToUser(e.getMessage());
 				break;
 			}
 		}
 		if (fb.getResult()){
-			fb.setMessageShowToUser(MESSAGE_DELETE_SUCCESSFUL);
+			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
 		}
 
 		return fb;
+	}
+	
+	/**
+	 * Sort the index array from big number to small number.
+	 * @param targetTaskIndexArray
+	 */
+	
+	private static void sort(ArrayList<Integer> targetTaskIndexArray){
+		Comparator<Integer> reverseComparator = Collections.reverseOrder();
+		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
 	
 	/**
