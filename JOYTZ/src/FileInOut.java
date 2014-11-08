@@ -120,20 +120,14 @@ public class FileInOut {
 			task.setTaskName(taskAttributes[0]);
 
 			task.setTaskDescription(taskAttributes[1]);
-			System.out.println("show 1");
-			if (taskAttributes[2] == " "){
-				System.out.println("show 2");
+			if (taskAttributes[2].equals(" ")){
 			} else {
-				System.out.println("show 3");
 				task.setStartDate(new Date(Long.parseLong(taskAttributes[2])));
 			}
-			if (taskAttributes[3] == " "){
-				System.out.println("show 4");
+			if (taskAttributes[3].equals(" ")){
 			}else {
-				System.out.println("show 5");
 				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
 			}
-			System.out.println("show 6");
 			task.setTaskLocation(taskAttributes[4]);
 			task.setTaskPriority(taskAttributes[5]);
 			return task;
