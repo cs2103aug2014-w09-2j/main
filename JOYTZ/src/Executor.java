@@ -267,11 +267,11 @@ public class Executor {
 	}
 
 	/**
-	 * Perform clear action with command object passed from
-	 * proceedAnalyzedCommand method
-	 * 
-	 * @return
+	 * Perform multiple delete function in storage. Delete the tasks displayed to user.
+	 * @param command
+	 * @return 
 	 */
+	// @author A0119378U
 	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 		
@@ -409,9 +409,8 @@ public class Executor {
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
-
-			// clean the tasklist and history.
-			Storage.clean(StringFormat.MAIN_TASK_LIST);
+			// clean the mainTaskList and doneTaskList.
+			Storage.clean();
 			// reload the data from saved file.
 			Storage.reloadFile();
 

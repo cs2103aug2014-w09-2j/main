@@ -216,6 +216,12 @@ public class Storage {
 	 * @param targetListName
 	 * @return
 	 */
+	public static boolean clean(){
+		clean(mainTaskList);
+		clean(doneTaskList);
+		
+		return true;
+	}
 	public static boolean clean(String targetListName) {
 		switch (targetListName) {
 		case StringFormat.MAIN_TASK_LIST:
@@ -230,15 +236,8 @@ public class Storage {
 
 		return clean(displayTaskList);
 	}
-
 	public static boolean clean(List targetList) {
-		for (int index = 0; index < displayTaskList.size(); index++) {
-			Task targetTask = displayTaskList.getTaskByIndex(index);
-			int targetTaskId = targetTask.getTaskId();
-
-			targetList.deleteTaskById(targetTaskId);
-		}
-		displayTaskList.clean();
+		targetList.clean();
 		setDisplayList(displayTaskList);
 
 		return true;
