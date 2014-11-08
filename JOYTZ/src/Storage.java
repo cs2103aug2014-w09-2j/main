@@ -214,7 +214,7 @@ public class Storage {
 		case StringFormat.MAIN_TASK_LIST:
 			clean(mainTaskList);
 			break;
-		case StringFormat.HISTORY_TASK_LIST:
+		case StringFormat.DONE_TASK_LIST:
 			clean(historyTaskList);
 			break;
 		default:

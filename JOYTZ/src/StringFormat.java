@@ -74,8 +74,6 @@ public class StringFormat {
 	public static final String TUTORIAL = "tutorial";
 	public static final String SETTINGS = "settings";
 	
-	public static final String MAIN_TASK_LIST = "mainTaskList";
-	public static final String HISTORY_TASK_LIST = "historyTaskList";
 	/**
 	 * sort, search and update indicators
 	 */
