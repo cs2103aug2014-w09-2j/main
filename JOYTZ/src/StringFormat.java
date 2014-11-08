@@ -92,7 +92,13 @@ public class StringFormat {
 	public static final String FROM_INDICATOR = "from";
 	public static final String IMPORTANT = "important";
 	public static final String UNIMPORTANT = "unimportant";
-
+	
+	/**
+	 * current task list and done task list indicators
+	 */
+	public static final String MAIN_TASK_LIST = "main task list";
+	public static final String DONE_TASK_LIST = "done task list";
+	
 	/**
 	 * invalid indicator
 	 */

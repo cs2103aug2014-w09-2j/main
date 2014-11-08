@@ -260,10 +260,11 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DISPLAY);
 
 		if(arg.length == 0){
+			tempCommand.setIndicator(StringFormat.MAIN_TASK_LIST);
 			return tempCommand;
 		}else{
 			if(arg[0].equals(StringFormat.DONE)){
-				tempCommand.setIndicator(StringFormat.DONE);
+				tempCommand.setIndicator(StringFormat.DONE_TASK_LIST);
 			}else{
 				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 			}
