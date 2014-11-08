@@ -42,6 +42,9 @@ public class UserInputHandler {
 		case StringFormat.DONE:
 			parsedInput = handleDoneInput(arg);
 			break;
+		case StringFormat.DISPLAY:
+			parsedInput = handleDisplayInput(arg);
+			break;
 		default:
 			parsedInput = new String[1];
 			parsedInput[0] = arg[0];
@@ -474,6 +477,20 @@ public class UserInputHandler {
 
 		String[] outputArr = new String[output.size()];
 		return output.toArray(outputArr);
+	}
+
+
+	private static String[] handleDisplayInput(String[] str) {
+		ArrayList<String> output = new ArrayList<String>();
+
+		output.add(StringFormat.DISPLAY);
+
+		if (str.length > 1) {
+			output.add(str[1].toLowerCase());
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);		
 	}
 
 }

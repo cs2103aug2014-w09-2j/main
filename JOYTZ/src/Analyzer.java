@@ -33,7 +33,7 @@ public class Analyzer {
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
 		case StringFormat.DISPLAY:
-			outputCommand = handlDisplayCommand();
+			outputCommand = handlDisplayCommand(commandArgument);
 			break;
 		case StringFormat.UNDO:
 			outputCommand = handleUndoCommand();
@@ -256,8 +256,19 @@ public class Analyzer {
 		return tempCommand;
 	}
 
-	private static ExecutableCommand handlDisplayCommand() {
-		return new ExecutableCommand(StringFormat.DISPLAY);
+	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DISPLAY);
+
+		if(arg.length == 0){
+			return tempCommand;
+		}else{
+			if(arg[0].equals(StringFormat.DONE)){
+				tempCommand.setIndicator(StringFormat.DONE);
+			}else{
+				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			}
+		}
+		return tempCommand;
 	}
 
 	private static ExecutableCommand handleUndoCommand() {
