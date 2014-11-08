@@ -16,7 +16,7 @@ public class Task implements Comparable<Task>{
 	
 	private int taskId = -1;
 	
-	// the sortKey is default to be sorted by name;
+	// the sortKey is name by default;
 	private static String sortKey = "name";
 
 	/**
@@ -46,32 +46,56 @@ public class Task implements Comparable<Task>{
 	public void setTaskName(String name) {
 		this.taskName = name;
 	}
-
+	
+	/**
+	 * Set startDateTime from a given Date Object.
+	 * @param date
+	 */
 	public void setStartDateTime(Date date) {
 		this.startDateTime = date;
 	}
 	
+	/**
+	 * Set endDateTime from a given Date Object.
+	 * @param date
+	 */
 	public void setEndDateTime(Date date){
 		this.endDateTime = date;
 	}
 	
+	/**
+	 * Set startDate from a given Date Object.
+	 * @param date
+	 */
 	public void setStartDate(Date date){
 		this.startDateTime.setYear(date.getYear());
 		this.startDateTime.setMonth(date.getMonth());
 		this.startDateTime.setDate(date.getDate());
 	}
 	
+	/**
+	 * Set endDate from a given Date Object.
+	 * @param date
+	 */
 	public void setEndDate(Date date){
 		this.endDateTime.setYear(date.getYear());
 		this.endDateTime.setMonth(date.getMonth());
 		this.endDateTime.setDate(date.getDate());
 	}
 	
+	/**
+	 * Set startTime from a given Date Object.
+	 * @param date
+	 */
 	public void setStartTime(Date date){
 		this.startDateTime.setHours(date.getHours());
 		this.startDateTime.setMinutes(date.getMinutes());
 	}
 	
+	/**
+	 * Set endTime from a given Date Object.
+	 * @param date
+	 */
 	public void setEndTime(Date date){
 		this.endDateTime.setHours(date.getHours());
 		this.endDateTime.setMinutes(date.getMinutes());
@@ -100,31 +124,71 @@ public class Task implements Comparable<Task>{
 	public String getTaskName() {
 		return this.taskName;
 	}
-
+	
+	/**
+	 * return null is there is not startDateTime.
+	 * @return
+	 */
 	public Date getStartDateTime() {
 		return this.startDateTime;
 	}
 	
+	/**
+	 * return null is there is not endDateTime.
+	 * @return
+	 */
 	public Date getEndDateTime(){
 		return this.endDateTime;
 	}
 	
+	/**
+	 * Return String format of endDateTime.
+	 * @return
+	 */
 	public String getFormatEndDateTime(){
+		if (endDateTime == null){
+			return "";
+		}
 		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(endDateTime);
 	}
 	
+	/**
+	 * Return String format of startDateTime.
+	 * @return
+	 */
 	public String getFormatStartDateTime(){
+		if (startDateTime == null){
+			return "";
+		}
 		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(startDateTime);
 	}
-	public String getLongFormatStartDateTimeString(){
+	
+	/**
+	 * Return Long String to represent startDateTime.
+	 * @return
+	 */
+	public String getLongStringFormatStartDateTime(){
+		if (startDateTime == null){
+			return "";
+		}
 		return startDateTime.getTime() + "";
 	}
 	
-	public String getLongFormatEndDateTimeString(){
+	/**
+	 * Return Long String to represent endDateTime.
+	 * @return
+	 */
+	public String getLongStringFormatEndDateTime(){
+		if (endDateTime == null){
+			return "";
+		}
 		return endDateTime.getTime() + "";
 	}
 	
-	public String getLongFormatStartDateString(){
+	public String getLongStringFormatStartDate(){
+		if (startDateTime == null){
+			return "";
+		}
 		Date currDate = new Date();
 		currDate.setYear(startDateTime.getYear());
 		currDate.setMonth(startDateTime.getMonth());
@@ -135,7 +199,10 @@ public class Task implements Comparable<Task>{
 		return currDate.getTime() + "";
 	}
 	
-	public String getLongFormatStartTimeString(){
+	public String getLongStringFormatStartTime(){
+		if (startDateTime == null){
+			return "";
+		}
 		Date currDate = new Date();
 		currDate.setYear(0);
 		currDate.setMonth(0);
@@ -146,7 +213,10 @@ public class Task implements Comparable<Task>{
 		return currDate.getTime() + "";
 	}
 	
-	public String getLongFormatEndDateString(){
+	public String getLongStringFormatEndDate(){
+		if (endDateTime == null){
+			return "";
+		}
 		Date currDate = new Date();
 		currDate.setYear(endDateTime.getYear());
 		currDate.setMonth(endDateTime.getMonth());
@@ -157,7 +227,10 @@ public class Task implements Comparable<Task>{
 		return currDate.getTime() + "";
 	}
 	
-	public String getLongFormatEndTimeString(){
+	public String getLongStringFormatEndTime(){
+		if (endDateTime == null){
+			return "";
+		}
 		Date currDate = new Date();
 		currDate.setYear(0);
 		currDate.setMonth(0);
@@ -184,8 +257,12 @@ public class Task implements Comparable<Task>{
 		return this.taskId;
 	}
 	
-	// get date will return a long number represent the date.
-	public String get(String attribute){						// need to insert check here?
+	/**
+	 * get a certain attribute of the task.
+	 * @param attribute
+	 * @return
+	 */
+	public String get(String attribute){
 		
 		switch(attribute){
 		case StringFormat.NAME: 
@@ -195,22 +272,22 @@ public class Task implements Comparable<Task>{
 			return getTaskDescription();
 			
 		case StringFormat.START:
-			return getLongFormatStartDateTimeString();
+			return getLongStringFormatStartDateTime();
 			
 		case StringFormat.END:
-			return getLongFormatEndDateTimeString();
+			return getLongStringFormatEndDateTime();
 			
 		case StringFormat.START_DATE:
-			return getLongFormatStartDateString();
+			return getLongStringFormatStartDate();
 			
 		case StringFormat.START_TIME:
-			return getLongFormatStartTimeString();
+			return getLongStringFormatStartTime();
 			
 		case StringFormat.END_DATE:
-			return getLongFormatEndDateString();
+			return getLongStringFormatEndDate();
 			
 		case StringFormat.END_TIME:
-			return getLongFormatEndTimeString();
+			return getLongStringFormatEndTime();
 			
 		case StringFormat.LOCATION:
 			return taskLocation;
@@ -223,17 +300,22 @@ public class Task implements Comparable<Task>{
 		}
 	}
 
+	/**
+	 * Set a the static value sortKey.
+	 * @param key
+	 */
 	public static void setSortKey(String key){
 		sortKey = key;
 	}
-
+	
+	
 	@Override
 	public int compareTo(Task o){
 		Task that = (Task)o;
 		String thisString = this.get(sortKey);
 		String thatString = that.get(sortKey);
 		
-		if (sortKey.equals(StringFormat.PRIORITY)){			// need to refactor this? enum priority?
+		if (sortKey.equals(StringFormat.PRIORITY)){			
 			thisString = convertPriority(thisString);
 			thatString = convertPriority(thatString);
 		}
@@ -241,6 +323,12 @@ public class Task implements Comparable<Task>{
 		return thisString.compareToIgnoreCase(thatString);
 	}
 	
+	/**
+	 * The user input priority may be ordered in High, Medium, Low.
+	 * This method convert the priority into comparable string.
+	 * @param priority
+	 * @return
+	 */
 	private String convertPriority (String priority){
 		if (priority.equals(StringFormat.HIGH_PRIORITY)){
 			return "a";
