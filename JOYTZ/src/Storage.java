@@ -5,8 +5,6 @@ import java.text.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-import org.eclipse.jface.preference.StringFieldEditor;
-
 public class Storage {
 
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
@@ -28,6 +26,7 @@ public class Storage {
 	// this is the two list of tasks.
 	private static List mainTaskList = new List("Main task List");
 	private static List doneTaskList = new List("History task List");
+	private static Integer taskId = -1; // Unique taskId start from 0.
 
 	// these are for display to user.
 	public static List displayTaskList = new List();
@@ -107,8 +106,10 @@ public class Storage {
 
 		return true;
 	}
+
 	/**
 	 * Move the targetTask from mainTaskList to historyTaskList.
+	 * 
 	 * @param index
 	 * @return
 	 * @throws Exception
@@ -147,13 +148,13 @@ public class Storage {
 			throw new Exception(String.format(
 					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
-
+		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		mainTaskList.deleteTaskById(targetTaskId);
-
+		// update the old task.
 		update(targetTask, updateIndicator, updateKeyValue);
-
+		// add the new task back.
 		displayTaskList.setTask(index, targetTask);
 		mainTaskList.addTask(targetTask);
 
@@ -161,6 +162,14 @@ public class Storage {
 		return true;
 	}
 
+	/**
+	 * Update a task Object with specified indicator and value.
+	 * 
+	 * @param targetTask
+	 * @param updateIndicator
+	 * @param updateKeyValue
+	 * @throws Exception
+	 */
 	private static void update(Task targetTask, String updateIndicator,
 			String updateKeyValue) throws Exception {
 		switch (updateIndicator) {
@@ -210,19 +219,25 @@ public class Storage {
 	}
 
 	/**
-	 * Delete all the task in the current DisplayToUser list. After perform
-	 * clean, user will see a empty taskList.
+	 * Clean all the tasks inside mainTaskList and doneTaskList.
+	 * 
+	 * @return
+	 */
+	public static boolean clean() {
+		clean(mainTaskList);
+		clean(doneTaskList);
+
+		return true;
+	}
+
+	/**
+	 * Clean tasks inside taskList with targetListName.
 	 * 
 	 * @param targetListName
 	 * @return
+	 * @throws Exception
 	 */
-	public static boolean clean(){
-		clean(mainTaskList);
-		clean(doneTaskList);
-		
-		return true;
-	}
-	public static boolean clean(String targetListName) {
+	public static boolean clean(String targetListName) throws Exception {
 		switch (targetListName) {
 		case StringFormat.MAIN_TASK_LIST:
 			clean(mainTaskList);
@@ -231,20 +246,30 @@ public class Storage {
 			clean(doneTaskList);
 			break;
 		default:
-			return false;
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
+					targetListName));
 		}
 
 		return clean(displayTaskList);
 	}
-	public static boolean clean(List targetList) {
+
+	/**
+	 * Clear tasks inside target TaskList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
+	private static boolean clean(List targetList) {
 		targetList.clean();
 		setDisplayList(displayTaskList);
 
 		return true;
 	}
-	
+
 	/**
 	 * Set displayList to be task list indicate by targetListIndicator.
+	 * 
 	 * @param targetListIndicator
 	 * @return
 	 * @throws Exception
@@ -268,7 +293,7 @@ public class Storage {
 
 	/**
 	 * Sort the task in taskList corresponding to parameter key. if the key is
-	 * not valid, tasks are sorted by name;
+	 * not valid, tasks are sorted by name(default);
 	 * 
 	 * @return
 	 * @throws Exception
@@ -278,8 +303,7 @@ public class Storage {
 		return sort(key, displayTaskList);
 	}
 
-	public static boolean sort(String key, List targetList) throws Exception {
-
+	private static boolean sort(String key, List targetList) throws Exception {
 		Task.setSortKey(key);
 		targetList.sortList();
 
@@ -300,21 +324,16 @@ public class Storage {
 		return search(displayTaskList, indicator, searchValue);
 	}
 
-	public static boolean search(List targetList, String indicator,
+	private static boolean search(List targetList, String indicator,
 			String searchValue) throws Exception {
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
-			System.out.println("show 1");
 			Task currTask = targetList.getTaskByIndex(index);
-			System.out.println("show 2");
 			if (currTask.get(indicator).toLowerCase()
 					.contains(searchValue.toLowerCase())) {
-				System.out.println("show 3");
 				newList.addTask(currTask);
-				System.out.println("show 4");
 			}
 		}
-		System.out.println("show 5");
 
 		setDisplayList(newList);
 
@@ -322,15 +341,14 @@ public class Storage {
 	}
 
 	/**
-	 * Check which task is passed the start and end time. Create boolean array
-	 * to record these passed task.
+	 * Check which task is passed the start and end time. Task that pass
+	 * start(or end) time will be recorded in boolean array.
 	 */
 	private static void checkTime() {
 		checkTime(displayTaskList);
 	}
 
 	private static void checkTime(List targetList) {
-		// create boolean instance based on the size of the taskList
 		passStartTimeList = new boolean[targetList.size()];
 		passEndTimeList = new boolean[targetList.size()];
 
@@ -340,33 +358,56 @@ public class Storage {
 			Date currEndTime = currTask.getEndDateTime();
 			Date currTime = new Date(System.currentTimeMillis());
 
-			if (currStartTime == null || currEndTime == null) {
+			if (currStartTime == null) {
 				continue;
-			}
-			if (currTime.after(currStartTime)) {
+			} else if (currTime.after(currStartTime)) {
 				passStartTimeList[index] = true;
 			}
-			if (currTime.after(currEndTime)) {
+			if (currEndTime == null) {
+				continue;
+			} else if (currTime.after(currEndTime)) {
 				passEndTimeList[index] = true;
 			}
 		}
 	}
 
+	/**
+	 * Get the Pass Start Time indicator array of displayTaskList.
+	 * 
+	 * @return
+	 */
 	public static boolean[] getPassStartTimeList() {
 		checkTime();
 		return passStartTimeList;
 	}
 
+	/**
+	 * Get the Pass Start Time indicator array of targetList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
 	public static boolean[] getPassStartTimeList(List targetList) {
 		checkTime(targetList);
 		return passStartTimeList;
 	}
 
+	/**
+	 * Get the Pass End Time indicator array of displayTaskList.
+	 * 
+	 * @return
+	 */
 	public static boolean[] getPassEndTimeList() {
 		checkTime();
 		return passEndTimeList;
 	}
 
+	/**
+	 * Get the Pass End Time indicator array of targetList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
 	public static boolean[] getPassEndTimeList(List targetList) {
 		checkTime(targetList);
 		return passEndTimeList;
@@ -381,7 +422,7 @@ public class Storage {
 		return getStringFormatOfList(displayTaskList);
 	}
 
-	public static ArrayList<String> getStringFormatOfList(List targetList) {
+	private static ArrayList<String> getStringFormatOfList(List targetList) {
 		ArrayList<String> resultList = new ArrayList<String>();
 
 		for (int index = 0; index < targetList.size(); index++) {
@@ -396,7 +437,7 @@ public class Storage {
 	}
 
 	/**
-	 * Save the mainTaskList to a .txt file.
+	 * Save the mainTaskList to .txt file.
 	 * 
 	 * @throws IOException
 	 */
@@ -417,21 +458,51 @@ public class Storage {
 		setDisplayList(mainTaskList);
 	}
 
-	public static void setDisplayList(List targetList) {
+	private static void setDisplayList(List targetList) {
 		displayTaskList = targetList.copy();
 		checkTime();
 	}
 
-	public static int obtainNewTaskId() {
-		return mainTaskList.size();
-	}
-	
 	/**
-	 * Get the size of displayTaskList.
+	 * Return a unique taskId for new Task. And reset TaskId is necessary.
+	 * 
 	 * @return
 	 */
-	public static int getDisplayTaskListSize(){
+	public static int obtainNewTaskId() {
+		if (taskId == Integer.MAX_VALUE){
+			resetTaskId();
+		}
+		taskId++;
+		
+		return taskId;
+	}
+
+	/**
+	 * Get the size of displayTaskList.
+	 * 
+	 * @return
+	 */
+	public static int getDisplayTaskListSize() {
 		return displayTaskList.size();
+	}
+
+	/**
+	 * There will become a lot unused TaskId after a lot of delete action. If
+	 * Integer TaskId is out of range when create a new Task, this method will
+	 * reset the TaskId to fill the empty holes.
+	 */
+	private static void resetTaskId() {
+		taskId = -1; // set the start taskId to be 0;
+		for (int index = 0; index < doneTaskList.size(); index++) {
+			int currId = obtainNewTaskId();
+			Task currTask = doneTaskList.getTaskByIndex(index);
+			currTask.setTaskId(currId);
+		}
+		for (int index = 0; index < mainTaskList.size(); index++) {
+			int currId = obtainNewTaskId();
+			Task currTask = mainTaskList.getTaskByIndex(index);
+			currTask.setTaskId(currId);
+		}
 	}
 
 }
