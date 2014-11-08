@@ -50,6 +50,9 @@ public class Analyzer {
 		case StringFormat.SEARCH:
 			outputCommand = handleSearchCommand(commandArgument);
 			break;
+		case StringFormat.DONE:
+			outputCommand = handleDoneCommand(commandArgument);
+			break;
 		case StringFormat.EXIT:
 			outputCommand = handleExitCommand();
 			break;
@@ -121,7 +124,8 @@ public class Analyzer {
 		if (arg.length >= 6) {
 			String temp = arg[5].toLowerCase();
 
-			if (!StringFormat.isValidPriority(temp) && !temp.equals(StringFormat.EMPTY)) {
+			if (!StringFormat.isValidPriority(temp)
+					&& !temp.equals(StringFormat.EMPTY)) {
 				tempCommand
 						.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
 			} else {
@@ -145,7 +149,8 @@ public class Analyzer {
 
 		for (int i = 0; i < arg.length; i++) {
 			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
-				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
 				return tempCommand;
 			}
 
@@ -213,14 +218,14 @@ public class Analyzer {
 
 				if (checkUpdatedItem.before(currentDate)) {
 					if (indicator.equals(StringFormat.START)) {
-						tempCommand
-								.setErrorMessage(String.format(
-										StringFormat.ERROR_INVALID_EARLIER_TIME,
-										StringFormat.START));
+						tempCommand.setErrorMessage(String.format(
+								StringFormat.ERROR_INVALID_EARLIER_TIME,
+								StringFormat.START));
 					} else {
 
 						tempCommand.setErrorMessage(String.format(
-								StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+								StringFormat.ERROR_INVALID_EARLIER_TIME,
+								StringFormat.END));
 					}
 
 					return tempCommand;
@@ -280,7 +285,8 @@ public class Analyzer {
 			String sortIndicator = arg[i].toLowerCase();
 
 			if (!StringFormat.isValidIndicator(sortIndicator)) {
-				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 				return tempCommand;
 			}
@@ -319,7 +325,8 @@ public class Analyzer {
 			boolean argumentExistence = i % 2 != 0 ? true : false;
 
 			if (temp.equals(StringFormat.INVALID)) {
-				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 				return tempCommand;
 			}
@@ -372,6 +379,29 @@ public class Analyzer {
 					tempCommand.setKey(temp);
 				}
 			}
+		}
+
+		return tempCommand;
+	}
+
+	private static ExecutableCommand handleDoneCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DONE);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+				return tempCommand;
+			}
+
+			tempCommand.setTaskId(Integer.parseInt(arg[i]));
 		}
 
 		return tempCommand;

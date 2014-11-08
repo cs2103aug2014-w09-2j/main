@@ -39,6 +39,9 @@ public class UserInputHandler {
 		case StringFormat.SEARCH:
 			parsedInput = handleSearchInput(arg);
 			break;
+		case StringFormat.DONE:
+			parsedInput = handleDoneInput(arg);
+			break;
 		default:
 			parsedInput = new String[1];
 			parsedInput[0] = arg[0];
@@ -437,6 +440,26 @@ public class UserInputHandler {
 	private static String[] handleSortInput(String[] str) {
 		ArrayList<String> output = new ArrayList<String>();
 		output.add(StringFormat.SORT);
+
+		if (str.length > 1) {
+			for (int i = 1; i < str.length; i++) {
+				String temp = str[i];
+				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+					output.add(temp.substring(0, temp.length() - 1));
+				} else {
+					output.add(temp);
+				}
+			}
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+	
+	private static String[] handleDoneInput(String[] str) {
+		ArrayList<String> output = new ArrayList<String>();
+
+		output.add(StringFormat.DONE);
 
 		if (str.length > 1) {
 			for (int i = 1; i < str.length; i++) {

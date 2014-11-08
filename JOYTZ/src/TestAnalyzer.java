@@ -826,6 +826,80 @@ public class TestAnalyzer {
 				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
 
 	}
+	
+	@Test
+	public void testHandleDoneCommand() throws ParseException {
+		Command test1 = new Command("done");
+		Command test2 = new Command("done 0");
+		Command test3 = new Command("done meeting with friends");
+		Command test4 = new Command("done 1; 3");
+		Command test5 = new Command("done 1; 0; 3");
+		Command test6 = new Command("done 1; meeting with friends");
+		Command test7 = new Command("done 1; 3; -3");
+		Command test8 = new Command("done 1 3 ");
+		Command test9 = new Command("done 1; 3 4");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DONE);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+		expected.setTaskId(1);
+		expected.setTaskId(3);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DONE);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+		expected2.setTaskId(1);
+		expected2.setTaskId(3);
+		expected2.setTaskId(4);
+
+		// test case 1: test if the error catcher for null argument is working
+		assertEquals("null argument case is not handled",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if multiple done can be analyzed correctly
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test4).getTaskId());
+
+		// test case 5: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 7: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+
+		// test case 7: test if multiple done can be analyzed correctly
+		// without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test8).getTaskId());
+
+		// test case 8: test if multiple done can be analyzed correctly with
+		// or without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
+
+	}
 
 	@Test
 	public void testHandleExitCommand() throws ParseException {
