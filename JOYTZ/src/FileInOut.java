@@ -35,7 +35,6 @@ public class FileInOut {
 			for (int index = 0; index < targetList.size(); index++) {
 				Task currTask = targetList.getTaskByIndex(index);
 				String currTaskString = convertTaskToString(currTask);
-				System.out.println("shwo nee");
 				fileWriter.write(currTaskString);
 			}
 
@@ -50,7 +49,7 @@ public class FileInOut {
 		return true;
 	}
 
-	public List readTaskList(String fileName) throws Exception {
+	public List readTaskList() throws Exception {
 		List resultList = new List();
 		
 		if (!file.exists()) {
@@ -61,11 +60,12 @@ public class FileInOut {
 		bufferedReader = new BufferedReader(fileReader);
 		// read the first line.
 		String messageLine = bufferedReader.readLine();
-		
 		String taskString = bufferedReader.readLine();
 		while (taskString != null) {
 			Task task = converStringToTask(taskString);
 			resultList.addTask(task);
+
+			System.out.println(messageLine);
 			taskString = bufferedReader.readLine();
 		}
 		
@@ -110,15 +110,30 @@ public class FileInOut {
 	
 	public Task converStringToTask(String taskString) throws Exception{
 		String[] taskAttributes = taskString.split("~");
-		
+
 		if (taskAttributes.length != 6) {
+
 			throw new Exception(String.format(StringFormat.ERROR_INVALID_TASK_RECORD, taskString));
 		} else {
+			
 			Task task = new Task();
 			task.setTaskName(taskAttributes[0]);
-			task.setStartDate(new Date(Long.parseLong(taskAttributes[1])));
-			task.setEndDateTime(new Date(Long.parseLong(taskAttributes[2])));
-			task.setTaskDescription(taskAttributes[3]);
+
+			task.setTaskDescription(taskAttributes[1]);
+			System.out.println("show 1");
+			if (taskAttributes[2] == " "){
+				System.out.println("show 2");
+			} else {
+				System.out.println("show 3");
+				task.setStartDate(new Date(Long.parseLong(taskAttributes[2])));
+			}
+			if (taskAttributes[3] == " "){
+				System.out.println("show 4");
+			}else {
+				System.out.println("show 5");
+				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
+			}
+			System.out.println("show 6");
 			task.setTaskLocation(taskAttributes[4]);
 			task.setTaskPriority(taskAttributes[5]);
 			return task;

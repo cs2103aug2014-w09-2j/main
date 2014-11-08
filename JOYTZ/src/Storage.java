@@ -338,7 +338,7 @@ public class Storage {
 
 	public static void reloadFile() throws Exception {
 		mainTaskList.clean();
-		mainTaskList = fileProcesser.readTaskList(fileName);
+		mainTaskList = fileProcesser.readTaskList();
 		setDisplayList(mainTaskList);
 	}
 
