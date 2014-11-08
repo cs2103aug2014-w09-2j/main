@@ -292,12 +292,20 @@ public class Executor {
 	 */
 	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
-		Storage.display();
+		String targetListIndicator = StringFormat.MAIN_TASK_LIST;
+		if (!(command.getIndicator().size() == 0)){
+			targetListIndicator = command.getIndicator().get(0);
+		}
+		try {
+			fb.setResult(Storage.display(targetListIndicator));
+		} catch (Exception e) {
+			fb.setResult(false);
+			fb.setMessageShowToUser(e.getMessage());
+		}
 
-		if (Storage.displayTaskList.size() == 0)
-			fb.setMessageShowToUser(MESSAGE_NO_TASK_DISPLAYED);
-		else
+		if (fb.getResult()){
 			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
+		}
 
 		return fb;
 	}

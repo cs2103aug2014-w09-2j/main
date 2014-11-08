@@ -237,8 +237,18 @@ public class Storage {
 		return true;
 	}
 	
-	public static void display() {
-		setDisplayList(mainTaskList);
+	public static boolean display(String targetListIndicator) throws Exception{
+		switch (targetListIndicator) {
+		case StringFormat.MAIN_TASK_LIST:
+			setDisplayList(mainTaskList);
+			break;
+		case StringFormat.HISTORY_TASK_LIST:
+			setDisplayList(historyTaskList);
+			break;
+		default:
+			throw new Exception("No such taskList. List name : " + targetListIndicator);
+		}
+		return true;
 	}
 
 	/**
