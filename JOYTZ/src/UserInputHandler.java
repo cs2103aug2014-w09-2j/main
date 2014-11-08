@@ -210,7 +210,7 @@ public class UserInputHandler {
 				} else if (priority.equals(StringFormat.MEDIUM_PRIORITY)) {
 					output[6] = StringFormat.MEDIUM_PRIORITY;
 				} else {
-					output[6] = StringFormat.INVALID_PRIORITY;
+					output[6] = StringFormat.INVALID;
 				}
 			} else {
 				output[1] = output[1].concat(temp);

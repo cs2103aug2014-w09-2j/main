@@ -93,8 +93,6 @@ public class StringFormat {
 	public static final String MEDIUM_PRIORITY = "medium";
 	public static final String LOW_PRIORITY = "low";
 
-	public static final String INVALID_PRIORITY = "invalid";
-
 	/**
 	 * user input indicators
 	 */
@@ -121,6 +119,7 @@ public class StringFormat {
 	 * invalid indicator
 	 */
 	public static final String INVALID = "invalid";
+
 	
 	/**
 	 * empty indicator
