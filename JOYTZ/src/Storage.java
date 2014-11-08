@@ -28,7 +28,7 @@ public class Storage {
 	// this is the two list of tasks.
 	private static List mainTaskList = new List("Main task List");
 	private static List historyTaskList = new List("History task List");
-	
+
 	// these are for display to user.
 	public static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
@@ -45,8 +45,7 @@ public class Storage {
 	private static DateFormat taskDateFormat = new SimpleDateFormat(
 			"dd-MM-yyyy");
 	private static String messageStringInFile = "User saved at %s.\n";
-	
-	
+
 	/**
 	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
 	 * 
@@ -54,23 +53,21 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean add(Task task) throws Exception{
-		if (task == null){
+	public static boolean add(Task task) throws Exception {
+		if (task == null) {
 			throw new Exception(StringFormat.STR_ERROR_NULL_TASK_OBJECT);
 		}
-		if (task.getTaskName().equals("")){
+		if (task.getTaskName().equals("")) {
 			throw new Exception(StringFormat.STR_ERROR_NO_TASK_NAME);
 		}
-		
+
 		mainTaskList.addTask(task);
 		setDisplayList(mainTaskList);
-		
-		LOGGER.info("==============\n" +
-				"Storage : Add \n" + 
-				"	Add a new task " + "\n" +
-				"	task id : " + task.getTaskId() + "\n" + 
-				"====================\n");
-		
+
+		LOGGER.info("==============\n" + "Storage : Add \n"
+				+ "	Add a new task " + "\n" + "	task id : " + task.getTaskId()
+				+ "\n" + "====================\n");
+
 		return true;
 	}
 
@@ -83,45 +80,52 @@ public class Storage {
 	 * @throws Exception
 	 */
 	public static boolean delete(int index) throws Exception {
-		if (index<0 || index >= displayTaskList.size()){
-			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+		if (index < 0 || index >= displayTaskList.size()) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
-		
-		if (mainTaskList.containsTaskId(targetTaskId)){
+
+		if (mainTaskList.containsTaskId(targetTaskId)) {
 			mainTaskList.deleteTaskById(targetTaskId);
-		}else if (historyTaskList.containsTaskId(targetTaskId)){
+		} else if (historyTaskList.containsTaskId(targetTaskId)) {
 			historyTaskList.deleteTaskById(targetTaskId);
-		}else {	// not supposed to reach this line;
-			throw new Exception("No Task with same taskId in either mainTaskList nor History.");
+		} else { // not supposed to reach this line;
+			throw new Exception(
+					"No Task with same taskId in either mainTaskList nor History.");
 		}
 		displayTaskList.deleteTaskByIndex(index);
-		
+
 		setDisplayList(displayTaskList);
-		
-		LOGGER.info("==============\n" +
-				"Storage : Delete \n" + 
-				"	Delete a task. " + "Task index : " + index + "\n" +
-				"   current Task size. " + "\n" + 
-				"	displaytasklist size : " + displayTaskList.size() + "\n" + 
-				"	maintasklist size : " + mainTaskList.size() + "\n" +
- 				"====================\n");
-		
+
+		LOGGER.info("==============\n" + "Storage : Delete \n"
+				+ "	Delete a task. " + "Task index : " + index + "\n"
+				+ "   current Task size. " + "\n" + "	displaytasklist size : "
+				+ displayTaskList.size() + "\n" + "	maintasklist size : "
+				+ mainTaskList.size() + "\n" + "====================\n");
+
 		return true;
 	}
-	
-	public static boolean mark(int index) throws Exception{
-		if (index<0 || index >= displayTaskList.size()){
-			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+	/**
+	 * Move the targetTask from mainTaskList to historyTaskList.
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static boolean done(int index) throws Exception {
+		if (index < 0 || index >= displayTaskList.size()) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
-		
+
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
-		
+
 		mainTaskList.deleteTaskById(targetTaskId);
 		displayTaskList.deleteTaskByIndex(index);
-		
+
 		historyTaskList.addTask(targetTask);
 		return true;
 	}
@@ -136,26 +140,29 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean update(int index, String updateIndicator, String updateKeyValue) throws Exception {
-		
+	public static boolean update(int index, String updateIndicator,
+			String updateKeyValue) throws Exception {
+
 		if (index <= 0 || index > displayTaskList.size()) {
-			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
-		
+
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		mainTaskList.deleteTaskById(targetTaskId);
-		
+
 		update(targetTask, updateIndicator, updateKeyValue);
 
 		displayTaskList.setTask(index, targetTask);
 		mainTaskList.addTask(targetTask);
-		
+
 		setDisplayList(displayTaskList);
 		return true;
 	}
 
-	private static void update(Task targetTask, String updateIndicator, String updateKeyValue) throws Exception {
+	private static void update(Task targetTask, String updateIndicator,
+			String updateKeyValue) throws Exception {
 		switch (updateIndicator) {
 		case StringFormat.NAME:
 			targetTask.setTaskName(updateKeyValue);
@@ -203,14 +210,14 @@ public class Storage {
 	}
 
 	/**
-	 * Delete all the task in the current DisplayToUser list.
-	 * After perform clean, user will see a empty taskList.
+	 * Delete all the task in the current DisplayToUser list. After perform
+	 * clean, user will see a empty taskList.
+	 * 
 	 * @param targetListName
 	 * @return
 	 */
 	public static boolean clean(String targetListName) {
-		
-		switch (targetListName){
+		switch (targetListName) {
 		case StringFormat.MAIN_TASK_LIST:
 			clean(mainTaskList);
 			break;
@@ -220,24 +227,31 @@ public class Storage {
 		default:
 			return false;
 		}
-		
+
 		return clean(displayTaskList);
 	}
-	
-	public static boolean clean(List targetList){
-		for (int index=0; index<displayTaskList.size(); index++){
+
+	public static boolean clean(List targetList) {
+		for (int index = 0; index < displayTaskList.size(); index++) {
 			Task targetTask = displayTaskList.getTaskByIndex(index);
 			int targetTaskId = targetTask.getTaskId();
-			
+
 			targetList.deleteTaskById(targetTaskId);
 		}
 		displayTaskList.clean();
 		setDisplayList(displayTaskList);
-		
+
 		return true;
 	}
 	
-	public static boolean display(String targetListIndicator) throws Exception{
+	/**
+	 * Set displayList to be task list indicate by targetListIndicator.
+	 * @param targetListIndicator
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static boolean display(String targetListIndicator) throws Exception {
 		switch (targetListIndicator) {
 		case StringFormat.MAIN_TASK_LIST:
 			setDisplayList(mainTaskList);
@@ -246,7 +260,9 @@ public class Storage {
 			setDisplayList(historyTaskList);
 			break;
 		default:
-			throw new Exception("No such taskList. List name : " + targetListIndicator);
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
+					targetListIndicator));
 		}
 		return true;
 	}
@@ -267,9 +283,9 @@ public class Storage {
 
 		Task.setSortKey(key);
 		targetList.sortList();
-		
+
 		setDisplayList(displayTaskList);
-		
+
 		return true;
 	}
 
@@ -280,26 +296,28 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean search(String indicator, String searchValue) throws Exception {
+	public static boolean search(String indicator, String searchValue)
+			throws Exception {
 		return search(displayTaskList, indicator, searchValue);
 	}
 
-	public static boolean search(List targetList, String indicator, String searchValue) throws Exception {
+	public static boolean search(List targetList, String indicator,
+			String searchValue) throws Exception {
 		List newList = new List();
-		for (int index=0; index<targetList.size(); index++){
+		for (int index = 0; index < targetList.size(); index++) {
 			System.out.println("show 1");
 			Task currTask = targetList.getTaskByIndex(index);
 			System.out.println("show 2");
-			if (currTask.get(indicator).toLowerCase().contains(searchValue.toLowerCase())){
+			if (currTask.get(indicator).toLowerCase()
+					.contains(searchValue.toLowerCase())) {
 				System.out.println("show 3");
 				newList.addTask(currTask);
 				System.out.println("show 4");
 			}
 		}
 		System.out.println("show 5");
-		
+
 		setDisplayList(newList);
-		
 
 		return true;
 	}
@@ -360,22 +378,21 @@ public class Storage {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<String> getStringFormatOfList(){
+	public static ArrayList<String> getStringFormatOfList() {
 		return getStringFormatOfList(displayTaskList);
 	}
 
 	public static ArrayList<String> getStringFormatOfList(List targetList) {
 		ArrayList<String> resultList = new ArrayList<String>();
-		
+
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
 			resultList.add(currTask.toString());
 		}
-		LOGGER.info("==============\n" +
-				"Storage : getDisplayList \n" + 
-				"	resultList size " + resultList.size() + "\n" +
-				"====================\n");
-		
+		LOGGER.info("==============\n" + "Storage : getDisplayList \n"
+				+ "	resultList size " + resultList.size() + "\n"
+				+ "====================\n");
+
 		return resultList;
 	}
 
@@ -401,14 +418,12 @@ public class Storage {
 		setDisplayList(mainTaskList);
 	}
 
-	
-
 	public static void setDisplayList(List targetList) {
 		displayTaskList = targetList.copy();
 		checkTime();
 	}
-	
-	public static int obtainNewTaskId(){
+
+	public static int obtainNewTaskId() {
 		return mainTaskList.size();
 	}
 

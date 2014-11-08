@@ -29,6 +29,8 @@ public class StringFormat {
 	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
 	// Done
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
+	// Display
+	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
 	
 	/**
 	 * Message show to the user in Storage
@@ -38,7 +40,9 @@ public class StringFormat {
 	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
 	
 	// In Delete, Update Method
-	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d\n";
+	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
+	// In Display Method
+	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	/**
 	 * error messages used in Analyzer and TimeHandler
 	 */

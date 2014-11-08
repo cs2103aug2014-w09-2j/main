@@ -212,7 +212,7 @@ public class Executor {
 			int index = targetIndexList.get(i);
 			index--;
 			try {
-				fb.setResult(Storage.mark(index));
+				fb.setResult(Storage.done(index));
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
@@ -290,12 +290,15 @@ public class Executor {
 	 * 
 	 * @return
 	 */
+	// @author A0119378U
 	private static Feedback performDisplayAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(StringFormat.DISPLAY, true);
-		String targetListIndicator = StringFormat.MAIN_TASK_LIST;
-		if (!(command.getIndicator().size() == 0)){
-			targetListIndicator = command.getIndicator().get(0);
+		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
+		if (command.getIndicator().size() != 1){
+			fb.setMessageShowToUser(StringFormat.EXE_ERROR_NO_TASK_LIST_INDICATOR);
+			return fb;
 		}
+		
+		String targetListIndicator = command.getIndicator().get(0);
 		try {
 			fb.setResult(Storage.display(targetListIndicator));
 		} catch (Exception e) {
