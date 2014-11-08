@@ -31,6 +31,8 @@ public class StringFormat {
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
 	// Display
 	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
+	// Clear
+	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
 	
 	/**
 	 * Message show to the user in Storage

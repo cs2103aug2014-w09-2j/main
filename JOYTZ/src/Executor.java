@@ -274,11 +274,19 @@ public class Executor {
 	 */
 	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
-
-		fb.setResult(Storage.clean(StringFormat.MAIN_TASK_LIST));
-
-		if (fb.getResult()) {
-			fb.setMessageShowToUser(MESSAGE_CLEAR_SUCCESSFUL);
+		
+		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
+		for (int i=sizeOfDisplayTaskList; i>=1; i--){
+			int index = i-1;
+			try {
+				fb.setResult(Storage.delete(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		if (fb.getResult()){
+			fb.setMessageShowToUser(StringFormat.EXE_MSG_CLEAR_SUCCESSFUL);
 		}
 
 		return fb;

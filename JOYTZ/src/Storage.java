@@ -27,7 +27,7 @@ public class Storage {
 
 	// this is the two list of tasks.
 	private static List mainTaskList = new List("Main task List");
-	private static List historyTaskList = new List("History task List");
+	private static List doneTaskList = new List("History task List");
 
 	// these are for display to user.
 	public static List displayTaskList = new List();
@@ -89,8 +89,8 @@ public class Storage {
 
 		if (mainTaskList.containsTaskId(targetTaskId)) {
 			mainTaskList.deleteTaskById(targetTaskId);
-		} else if (historyTaskList.containsTaskId(targetTaskId)) {
-			historyTaskList.deleteTaskById(targetTaskId);
+		} else if (doneTaskList.containsTaskId(targetTaskId)) {
+			doneTaskList.deleteTaskById(targetTaskId);
 		} else { // not supposed to reach this line;
 			throw new Exception(
 					"No Task with same taskId in either mainTaskList nor History.");
@@ -126,7 +126,7 @@ public class Storage {
 		mainTaskList.deleteTaskById(targetTaskId);
 		displayTaskList.deleteTaskByIndex(index);
 
-		historyTaskList.addTask(targetTask);
+		doneTaskList.addTask(targetTask);
 		return true;
 	}
 
@@ -222,7 +222,7 @@ public class Storage {
 			clean(mainTaskList);
 			break;
 		case StringFormat.DONE_TASK_LIST:
-			clean(historyTaskList);
+			clean(doneTaskList);
 			break;
 		default:
 			return false;
@@ -256,8 +256,8 @@ public class Storage {
 		case StringFormat.MAIN_TASK_LIST:
 			setDisplayList(mainTaskList);
 			break;
-		case StringFormat.HISTORY_TASK_LIST:
-			setDisplayList(historyTaskList);
+		case StringFormat.DONE_TASK_LIST:
+			setDisplayList(doneTaskList);
 			break;
 		default:
 			throw new Exception(String.format(
@@ -425,6 +425,14 @@ public class Storage {
 
 	public static int obtainNewTaskId() {
 		return mainTaskList.size();
+	}
+	
+	/**
+	 * Get the size of displayTaskList.
+	 * @return
+	 */
+	public static int getDisplayTaskListSize(){
+		return displayTaskList.size();
 	}
 
 }
