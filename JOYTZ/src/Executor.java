@@ -128,6 +128,7 @@ public class Executor {
 	 * @param command
 	 * @return
 	 */
+	// @author A0119378U
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
 
@@ -164,6 +165,7 @@ public class Executor {
 	 * @return
 	 * 
 	 */
+	// @author A0119378U
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
@@ -238,13 +240,13 @@ public class Executor {
 		ArrayList<String> updateIndicator = command.getIndicator();
 		ArrayList<String> updateKeyValue = command.getKey();
 
-		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
-		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
-		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+		//assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		//assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		//assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
 
 		for (int i = 0; i < taskId.size(); i++) {
 			int index = taskId.get(i);
-
+			index--;
 			try {
 				fb.setResult(Storage.update(index, updateIndicator.get(i),
 						updateKeyValue.get(i)));
@@ -526,6 +528,7 @@ public class Executor {
 	 * 
 	 * @param fb
 	 */
+	// @author A0119378U
 	private static void addInDisplayMessage(Feedback fb) {
 		fb.setTaskStringList(Storage.getStringFormatOfList());
 		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
@@ -560,6 +563,7 @@ public class Executor {
 	 * @param endDateTime
 	 * @throws Exception
 	 */
+	// @author A0119378U
 	private static Task createNewTask(String name, String description,
 			Date startDateTime, Date endDateTime, String location,
 			String priority) throws Exception {

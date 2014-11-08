@@ -5,15 +5,12 @@ import java.util.logging.Logger;
 public class FileInOut {
 	private static final Logger LOGGER = Logger.getLogger(FileInOut.class.getName());
 	
-	String fileName;
 	private File file;
 	private FileReader fileReader;
 	private BufferedReader bufferedReader;
 	private FileWriter fileWriter;
 
-	public FileInOut(String name) {
-		this.fileName = name;
-		this.file = new File(fileName);
+	public FileInOut() {
 	}
 
 	/**
@@ -24,6 +21,7 @@ public class FileInOut {
 	 * @return
 	 */
 	public boolean saveTaskList(List targetList, String fileName) {
+		file = new File(fileName);
 		try {
 			if (!file.exists()) {
 				file.createNewFile();
@@ -49,7 +47,8 @@ public class FileInOut {
 		return true;
 	}
 
-	public List readTaskList() throws Exception {
+	public List readTaskList(String fileName) throws Exception {
+		file = new File(fileName);
 		List resultList = new List();
 		
 		if (!file.exists()) {

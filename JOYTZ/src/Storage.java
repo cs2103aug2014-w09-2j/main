@@ -10,32 +10,20 @@ public class Storage {
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
 			.getName());
 
-	// Exception messages and error
-	private static final String MESSAGE_NO_TASK_IN_LIST = "There is no task in the task list.";
-	private static final String MESSAGE_NO_TASK_MEET_REQUIREMENTS = "No task meet requirements.";
-	private static final String MESSAGE_RELOADING_FILE = "reloading file from last saved point: %s\n";
-	private static final String MESSAGE_HISTORY_FILE_NOT_EXIST = "HistoryFile not exist.\n";
-	private static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
-
-	private static final String ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
-	private static final String ERROR_NULL_OBJECT = "Null Object.\n";
-	private static final String ERROR_INVALID_TASK_INDEX = "taskId out of range. taskId : %d\n";
-	private static final String ERROR_NULL_TASK_STRING = "Task String is null.";
-	private static final String ERROR_INVALID_INPUT_TIME = "The input time is invalid.";
-
 	// this is the two list of tasks.
 	private static List mainTaskList = new List("Main task List");
 	private static List doneTaskList = new List("History task List");
 	private static Integer taskId = -1; // Unique taskId start from 0.
 
-	// these are for display to user.
+	// these are for display.
 	public static List displayTaskList = new List();
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 
 	// the file that used to save current tasks when user exit the program.
-	private static String fileName = "taskList.txt";
-	private static FileInOut fileProcesser = new FileInOut(fileName);
+	private static String mainTaskListFileName = "taskList.txt";
+	private static String doneTaskListFileName = "doneList.txt";
+	private static FileInOut fileProcesser = new FileInOut();
 
 	// these three are for recording current information in the file.
 	private static DateFormat format = new SimpleDateFormat(
@@ -212,7 +200,7 @@ public class Storage {
 
 		default:
 			assert false : updateIndicator;
-			throw new Exception(String.format(ERROR_INVALID_INDICATOR,
+			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_INDICATOR,
 					updateIndicator));
 
 		}
@@ -437,24 +425,28 @@ public class Storage {
 	}
 
 	/**
-	 * Save the mainTaskList to .txt file.
+	 * Save the mainTaskList and doneTaskList to .txt file.
 	 * 
 	 * @throws IOException
 	 */
 
 	public static void saveFile() throws Exception {
-		fileProcesser.saveTaskList(mainTaskList, fileName);
+		fileProcesser.saveTaskList(mainTaskList, mainTaskListFileName);
+		fileProcesser.saveTaskList(doneTaskList, doneTaskListFileName);
 	}
 
 	/**
-	 * reload mainTaskList from .txt file
+	 * reload mainTaskList and doneTaskList from .txt file
 	 * 
 	 * @throws Exception
 	 */
 
 	public static void reloadFile() throws Exception {
 		mainTaskList.clean();
-		mainTaskList = fileProcesser.readTaskList();
+		doneTaskList.clean();
+		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
+		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
+		
 		setDisplayList(mainTaskList);
 	}
 
