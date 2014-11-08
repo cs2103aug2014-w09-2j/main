@@ -1,7 +1,6 @@
 //@author A0119378U
 
 import java.io.*;
-import java.text.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -25,14 +24,6 @@ public class Storage {
 	private static String doneTaskListFileName = "doneList.txt";
 	private static FileInOut fileProcesser = new FileInOut();
 
-	// these three are for recording current information in the file.
-	private static DateFormat format = new SimpleDateFormat(
-			"yyyy-MM-dd hh:mm a");
-	private static String taskStringFormat = "%s-%s-%s-%s-%s-%s\n";
-	private static DateFormat taskDateFormat = new SimpleDateFormat(
-			"dd-MM-yyyy");
-	private static String messageStringInFile = "User saved at %s.\n";
-
 	/**
 	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
 	 * 
@@ -41,11 +32,36 @@ public class Storage {
 	 */
 
 	public static boolean add(Task task) throws Exception {
+		// check whether the task object is null.
 		if (task == null) {
 			throw new Exception(StringFormat.STR_ERROR_NULL_TASK_OBJECT);
 		}
+		// check whether task has task name.
 		if (task.getTaskName().equals("")) {
 			throw new Exception(StringFormat.STR_ERROR_NO_TASK_NAME);
+		}
+		// check the validity of Start & End time.
+		if (task.getStartDateTime() != null && task.getEndDateTime() != null
+				&& task.getStartDateTime().after(task.getEndDateTime())) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_START_TIME_AFTER_END_TIME,
+					task.getFormatStartDateTime(), task.getFormatEndDateTime()));
+		}
+		// check the validity of Start time.
+		if (task.getStartDateTime() != null
+				&& task.getStartDateTime().before(new Date())) {
+
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_START_TIME_BEFORE_CURRENT_TIME,
+					task.getFormatStartDateTime()));
+		}
+		// check the validity of End time.
+		if (task.getEndDateTime() != null
+				&& task.getEndDateTime().before(new Date())) {
+
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_END_TIME_BEFORE_CURRENT_TIME,
+					task.getFormatEndDateTime()));
 		}
 
 		mainTaskList.addTask(task);
@@ -200,8 +216,8 @@ public class Storage {
 
 		default:
 			assert false : updateIndicator;
-			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_INDICATOR,
-					updateIndicator));
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_INDICATOR, updateIndicator));
 
 		}
 	}
@@ -446,7 +462,7 @@ public class Storage {
 		doneTaskList.clean();
 		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
 		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
-		
+
 		setDisplayList(mainTaskList);
 	}
 
@@ -461,11 +477,11 @@ public class Storage {
 	 * @return
 	 */
 	public static int obtainNewTaskId() {
-		if (taskId == Integer.MAX_VALUE){
+		if (taskId == Integer.MAX_VALUE) {
 			resetTaskId();
 		}
 		taskId++;
-		
+
 		return taskId;
 	}
 
@@ -495,6 +511,17 @@ public class Storage {
 			Task currTask = mainTaskList.getTaskByIndex(index);
 			currTask.setTaskId(currId);
 		}
+	}
+
+	/**
+	 * These method is only for Unit Test.
+	 */
+	public static List getMainTaskList() {
+		return mainTaskList;
+	}
+
+	public static List getDoneTaskList() {
+		return doneTaskList;
 	}
 
 }
