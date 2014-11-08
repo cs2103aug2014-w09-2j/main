@@ -40,6 +40,9 @@ public class StringFormat {
 	// In Add Method
 	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
 	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
+	public static final String STR_ERROR_START_TIME_AFTER_END_TIME = "Start time is after End time. Start time : %s; End time : %s.\n";
+	public static final String STR_ERROR_START_TIME_BEFORE_CURRENT_TIME = "Start time is before current time. Start time : %s.\n";
+	public static final String STR_ERROR_END_TIME_BEFORE_CURRENT_TIME = "End time is before current time. End time : %s.\n";
 
 	// In Delete, Update Method
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
