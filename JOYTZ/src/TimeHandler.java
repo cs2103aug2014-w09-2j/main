@@ -1,10 +1,6 @@
 import java.util.Date;
 
-
 public class TimeHandler {
-	private static final String ERROR_INVALID_END_EARLIER_THAN_START = "End time is earlier than start time.\n";
-	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-
 	public static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -13,12 +9,12 @@ public class TimeHandler {
 		Date tempEndDate = new Date();
 		Date currentDate = new Date(System.currentTimeMillis());
 
-		if (!start.equals("")) {
+		if (!start.equals(StringFormat.EMPTY)) {
 			startTiming = Long.valueOf(start);
 			tempStartDate = new Date(startTiming);
 		}
 
-		if (!end.equals("")) {
+		if (!end.equals(StringFormat.EMPTY)) {
 			endTiming = Long.valueOf(end);
 			tempEndDate = new Date(endTiming);
 		}
@@ -33,13 +29,13 @@ public class TimeHandler {
 			} else {
 				if (tempStartDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
 				} else if (tempEndDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
 				} else {
 					tempCommand
-							.setErrorMessage(ERROR_INVALID_END_EARLIER_THAN_START);
+							.setErrorMessage(StringFormat.ERROR_INVALID_END_EARLIER_THAN_START);
 				}
 			}
 		} else if (startTiming != 0) {
@@ -48,14 +44,14 @@ public class TimeHandler {
 				tempCommand.setTaskStart(String.valueOf(startTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEnd(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
 			}
 		}
 
@@ -63,11 +59,11 @@ public class TimeHandler {
 	}
 
 	public static String inputTimingConvertor(String timing) {
-		if (timing.equals("")) {
-			return "";
+		if (timing.equals(StringFormat.EMPTY)) {
+			return StringFormat.EMPTY;
 		}
 
-		String[] dateTime = timing.trim().split(" ");
+		String[] dateTime = timing.trim().split(StringFormat.SPACE_INDICATOR);
 		int[] result = { -1, -1, -1, -1, -1 };
 
 		Date convertedDate;
@@ -106,7 +102,7 @@ public class TimeHandler {
 
 		return String.valueOf(convertedDate.getTime());
 	}
-	
+
 	private static boolean isValidTiming(int[] input) {
 		int year = input[0];
 		int month = input[1];
@@ -170,26 +166,26 @@ public class TimeHandler {
 		int day = result[2];
 		int hour = result[3];
 		int minute = result[4];
-		String indicator = "";
+		String indicator = StringFormat.EMPTY;
 
-		if (dateTime.contains("/")) {
-			temp = dateTime.trim().split("/");
+		if (dateTime.contains(StringFormat.DATE_INDICATOR)) {
+			temp = dateTime.trim().split(StringFormat.DATE_INDICATOR);
 			day = Integer.parseInt(temp[0]);
 			month = Integer.parseInt(temp[1]);
 			year = Integer.parseInt(temp[2]);
-		} else if (dateTime.contains(":")) {
+		} else if (dateTime.contains(StringFormat.TIME_INDICATOR)) {
 			if (dateTime.length() == 7) {
 				hour = Integer.parseInt(dateTime.substring(0, 2));
 				minute = Integer.parseInt(dateTime.substring(3, 5));
 				indicator = dateTime.substring(5).toLowerCase();
 
-				if (indicator.equals("pm") && hour != 12) {
+				if (indicator.equals(StringFormat.PM_INDICATOR) && hour != 12) {
 					if (hour == -1) {
 						hour = hour + 13;
 					} else {
 						hour = hour + 12;
 					}
-				} else if (indicator.equals("am") && hour == 12) {
+				} else if (indicator.equals(StringFormat.AM_INDICATOR) && hour == 12) {
 					hour = 0;
 				}
 			} else {
@@ -197,7 +193,7 @@ public class TimeHandler {
 				minute = Integer.parseInt(dateTime.substring(2, 4));
 				indicator = dateTime.substring(4).toLowerCase();
 
-				if (indicator.equals("pm")) {
+				if (indicator.equals(StringFormat.PM_INDICATOR)) {
 					if (hour == -1) {
 						hour = hour + 13;
 					} else {

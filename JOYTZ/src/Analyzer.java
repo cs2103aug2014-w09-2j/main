@@ -6,22 +6,6 @@ import java.util.Date;
 import java.text.ParseException;
 
 public class Analyzer {
-	private static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
-	private static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
-	private static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
-	private static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
-	private static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
-	private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
-	private static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
-	private static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
-	private static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
-	private static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
-	private static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
-
-	private static final String[] VALID_PRIORITY = new String[] {
-			StringFormat.HIGH_PRIORITY, StringFormat.LOW_PRIORITY,
-			StringFormat.MEDIUM_PRIORITY };
-
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
 		assertNotNull("User input is null", userInput);
@@ -29,8 +13,8 @@ public class Analyzer {
 		String userCommand = userInput.getUserCommand();
 		ExecutableCommand outputCommand = new ExecutableCommand();
 
-		if (userCommand == "") {
-			outputCommand.setErrorMessage(ERROR_NULL_COMMAND);
+		if (userCommand == StringFormat.EMPTY) {
+			outputCommand.setErrorMessage(StringFormat.ERROR_NULL_COMMAND);
 			return outputCommand;
 		}
 
@@ -73,7 +57,7 @@ public class Analyzer {
 			outputCommand = handleReloadCommand();
 			break;
 		default:
-			outputCommand.setErrorMessage(ERROR_INVALID_COMMAND);
+			outputCommand.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 		}
 
 		return outputCommand;
@@ -84,11 +68,11 @@ public class Analyzer {
 		assertNotNull("User argument is null", arg);
 
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.ADD);
-		String startTiming = "";
-		String endTiming = "";
+		String startTiming = StringFormat.EMPTY;
+		String endTiming = StringFormat.EMPTY;
 
-		if (arg[0] == "") {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK);
+		if (arg[0] == StringFormat.EMPTY) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK);
 			return tempCommand;
 		}
 
@@ -99,30 +83,30 @@ public class Analyzer {
 		}
 		if (arg.length >= 3) {
 			if (arg[2].equals(StringFormat.INVALID)) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.START));
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
 
 				return tempCommand;
 			}
 			startTiming = TimeHandler.inputTimingConvertor(arg[2]);
 			if (startTiming == null) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.START));
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
 
 				return tempCommand;
 			}
 		}
 		if (arg.length >= 4) {
 			if (arg[3].equals(StringFormat.INVALID)) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.END));
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
 
 				return tempCommand;
 			}
 			endTiming = TimeHandler.inputTimingConvertor(arg[3]);
 			if (endTiming == null) {
-				tempCommand.setErrorMessage(String.format(ERROR_INVALID_TIME,
-						StringFormat.END));
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
 
 				return tempCommand;
 			}
@@ -137,8 +121,9 @@ public class Analyzer {
 		if (arg.length >= 6) {
 			String temp = arg[5].toLowerCase();
 
-			if (!isValidPriority(temp) && !temp.equals("")) {
-				tempCommand.setErrorMessage(ERROR_INVALID_PRIORITY);
+			if (!StringFormat.isValidPriority(temp) && !temp.equals(StringFormat.EMPTY)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
 			} else {
 				tempCommand.setTaskPriority(temp);
 			}
@@ -154,13 +139,13 @@ public class Analyzer {
 				StringFormat.DELETE);
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		}
 
 		for (int i = 0; i < arg.length; i++) {
 			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
-				tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
 				return tempCommand;
 			}
 
@@ -178,16 +163,16 @@ public class Analyzer {
 				StringFormat.UPDATE);
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_TASK_INDEX);
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 			return tempCommand;
 		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
-			tempCommand.setErrorMessage(ERROR_INVALID_TASK_INDEX);
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
 			return tempCommand;
 		} else if (arg.length == 1) {
-			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 			return tempCommand;
 		} else if (!StringFormat.isValidIndicator(arg[1])) {
-			tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 			return tempCommand;
 		}
 
@@ -202,7 +187,7 @@ public class Analyzer {
 		if (indicator.equals(StringFormat.START)
 				|| indicator.equals(StringFormat.END)) {
 			if (arg.length < 3) {
-				tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 
 				return tempCommand;
 			}
@@ -210,11 +195,12 @@ public class Analyzer {
 
 			if (updatedItem == null) {
 				if (indicator.equals(StringFormat.START)) {
-					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_TIME, StringFormat.START));
+					tempCommand.setErrorMessage(String
+							.format(StringFormat.ERROR_INVALID_TIME,
+									StringFormat.START));
 				} else {
 					tempCommand.setErrorMessage(String.format(
-							ERROR_INVALID_TIME, StringFormat.END));
+							StringFormat.ERROR_INVALID_TIME, StringFormat.END));
 				}
 
 				return tempCommand;
@@ -229,12 +215,12 @@ public class Analyzer {
 					if (indicator.equals(StringFormat.START)) {
 						tempCommand
 								.setErrorMessage(String.format(
-										ERROR_INVALID_EARLIER_TIME,
+										StringFormat.ERROR_INVALID_EARLIER_TIME,
 										StringFormat.START));
 					} else {
 
 						tempCommand.setErrorMessage(String.format(
-								ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+								StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
 					}
 
 					return tempCommand;
@@ -251,7 +237,8 @@ public class Analyzer {
 			} else if (check.equals(StringFormat.UNIMPORTANT)) {
 				updatedItem = StringFormat.LOW_PRIORITY;
 			} else {
-				tempCommand.setErrorMessage(ERROR_INVALID_PRIORITY);
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
 
 				return tempCommand;
 			}
@@ -284,7 +271,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
 		if (arg.length == 0) {
-			tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 
 			return tempCommand;
 		}
@@ -293,7 +280,7 @@ public class Analyzer {
 			String sortIndicator = arg[i].toLowerCase();
 
 			if (!StringFormat.isValidIndicator(sortIndicator)) {
-				tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 				return tempCommand;
 			}
@@ -310,45 +297,76 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.SEARCH);
 
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1 && arg[0].equals(StringFormat.INVALID)) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+			return tempCommand;
+		}
+
+		boolean priorityExistence = false;
+
 		for (int i = 0; i < arg.length; i++) {
-			String temp = arg[i].toLowerCase();
+			String temp = arg[i];
 			boolean indicatorExistence = i % 2 == 0 ? true : false;
 			boolean argumentExistence = i % 2 != 0 ? true : false;
 
-			if (indicatorExistence && temp == "") {
-				tempCommand.setErrorMessage(ERROR_NULL_INDICATOR);
-
-				return tempCommand;
-			} else if (argumentExistence && temp == "") {
-				tempCommand.setErrorMessage(ERROR_NULL_ARGUMENT);
-
-				return tempCommand;
-			} else if (temp.equals(StringFormat.INVALID)) {
-				tempCommand.setErrorMessage(ERROR_INVALID_INDICATOR);
+			if (temp.equals(StringFormat.INVALID)) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 				return tempCommand;
 			}
 
 			if (indicatorExistence) {
-				tempCommand.setIndicator(temp);
-				continue;
+				tempCommand.setIndicator(temp.toLowerCase());
+
+				if (temp.equals(StringFormat.PRIORITY)) {
+					priorityExistence = true;
+				}
 			} else if (argumentExistence) {
-				if (isDateTime(temp)) {
+				if (StringFormat.isTimeOrDate(temp)) {
 					String indicator = arg[i - 1];
 					String searchKey = TimeHandler.inputTimingConvertor(temp);
 
 					if (searchKey == null) {
 						if (indicator.equals(StringFormat.START)) {
 							tempCommand.setErrorMessage(String.format(
-									ERROR_INVALID_TIME, StringFormat.START));
+									StringFormat.ERROR_INVALID_TIME,
+									StringFormat.START));
 						} else {
 							tempCommand.setErrorMessage(String.format(
-									ERROR_INVALID_TIME, StringFormat.END));
+									StringFormat.ERROR_INVALID_TIME,
+									StringFormat.END));
 						}
 
 						return tempCommand;
 					} else {
 						tempCommand.setKey(searchKey);
+					}
+				} else if (priorityExistence) {
+					if (!StringFormat.isValidPriority(temp)) {
+						tempCommand
+								.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+
+						return tempCommand;
+					} else {
+						switch (temp) {
+						case StringFormat.IMPORTANT:
+							tempCommand.setKey(StringFormat.HIGH_PRIORITY);
+							break;
+						case StringFormat.UNIMPORTANT:
+							tempCommand.setKey(StringFormat.LOW_PRIORITY);
+							break;
+						default:
+							tempCommand.setKey(temp.toLowerCase());
+						}
 					}
 				} else {
 					tempCommand.setKey(temp);
@@ -367,14 +385,6 @@ public class Analyzer {
 		return new ExecutableCommand(StringFormat.RELOAD);
 	}
 
-	private static boolean isDateTime(String temp) {
-		return temp.equals(StringFormat.START) || temp.equals(StringFormat.END)
-				|| temp.equals(StringFormat.START_DATE)
-				|| temp.equals(StringFormat.START_TIME)
-				|| temp.equals(StringFormat.END_DATE)
-				|| temp.equals(StringFormat.END_TIME);
-	}
-
 	private static boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -382,15 +392,6 @@ public class Analyzer {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-
-	private static boolean isValidPriority(String priority) {
-		for (int i = 0; i < VALID_PRIORITY.length; i++) {
-			if (VALID_PRIORITY[i].equals(priority)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private static String getUserAction(String[] parsedInput) {

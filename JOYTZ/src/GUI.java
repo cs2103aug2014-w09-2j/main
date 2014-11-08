@@ -39,7 +39,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
-    private static final String HELP_TEXT_ADD = "\t    add <task name>, <description> from <start date> " +
+    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> from <start date> " +
     											"to <end time> @<location> #<priority>\n";
     private static final String HELP_TEXT_DELETE =  "\t    delete <index number>\n";
     private static final String HELP_TEXT_UPDATE = "\t    update <index number> <attribute> <new data>\n";
@@ -371,8 +371,6 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
         
         // Coloring red
         if (isHighlightedPassEnd == true) {
-            System.out.println("Ongoing2 = " + isNotifcationsOngoingEnabled);
-            System.out.println("Overdue2 = " + isNotifcationsOverdueEnabled);
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
             if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {
