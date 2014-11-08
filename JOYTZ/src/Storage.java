@@ -113,8 +113,9 @@ public class Storage {
 	
 	public static boolean mark(int index) throws Exception{
 		if (index<0 || index >= displayTaskList.size()){
-			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
+		
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		
@@ -138,10 +139,9 @@ public class Storage {
 	public static boolean update(int index, String updateIndicator, String updateKeyValue) throws Exception {
 		
 		if (index <= 0 || index > displayTaskList.size()) {
-			throw new Exception(String.format(ERROR_INVALID_TASK_INDEX, index));
+			throw new Exception(String.format(StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
 		
-		index--;
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		mainTaskList.deleteTaskById(targetTaskId);
@@ -237,8 +237,18 @@ public class Storage {
 		return true;
 	}
 	
-	public static void display() {
-		setDisplayList(mainTaskList);
+	public static boolean display(String targetListIndicator) throws Exception{
+		switch (targetListIndicator) {
+		case StringFormat.MAIN_TASK_LIST:
+			setDisplayList(mainTaskList);
+			break;
+		case StringFormat.HISTORY_TASK_LIST:
+			setDisplayList(historyTaskList);
+			break;
+		default:
+			throw new Exception("No such taskList. List name : " + targetListIndicator);
+		}
+		return true;
 	}
 
 	/**

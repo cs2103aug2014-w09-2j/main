@@ -37,7 +37,7 @@ public class StringFormat {
 	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
 	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
 	
-	// In Delete Method
+	// In Delete, Update Method
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d\n";
 	/**
 	 * error messages used in Analyzer and TimeHandler
