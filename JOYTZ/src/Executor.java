@@ -317,22 +317,21 @@ public class Executor {
 		ArrayList<String> searchIndicator = command.getIndicator();
 		ArrayList<String> searchValue = command.getKey();
 
-		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
+		//assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			try {
 				Storage.search(searchIndicator.get(i), searchValue.get(i));
-
+				
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
 			}
-
-			fb.setResult(true);
-			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
-					searchValue.get(i), searchIndicator.get(i)));
 		}
+		
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
 		return fb;
 	}

@@ -162,7 +162,6 @@ public class Storage {
 			;
 			break;
 		case StringFormat.LOCATION:
-			System.out.println("FIND");
 
 			targetTask.setTaskLocation(updateKeyValue);
 			break;
@@ -234,13 +233,19 @@ public class Storage {
 	public static boolean search(List targetList, String indicator, String searchValue) throws Exception {
 		List newList = new List();
 		for (int index=0; index<targetList.size(); index++){
+			System.out.println("show 1");
 			Task currTask = targetList.getTaskByIndex(index);
+			System.out.println("show 2");
 			if (currTask.get(indicator).toLowerCase().contains(searchValue.toLowerCase())){
+				System.out.println("show 3");
 				newList.addTask(currTask);
+				System.out.println("show 4");
 			}
 		}
+		System.out.println("show 5");
 		
 		setDisplayList(newList);
+		
 
 		return true;
 	}
