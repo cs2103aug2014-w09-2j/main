@@ -38,6 +38,15 @@ public class Task implements Comparable<Task>{
 		this.taskLocation = "";
 		this.taskPriority = "";
 	}
+	Task (String nameString, int taskId){
+		this.taskName = nameString;
+		this.startDateTime = null;
+		this.endDateTime = null;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+		this.taskId = taskId;
+	}
 
 	/**
 	 * Set methods
