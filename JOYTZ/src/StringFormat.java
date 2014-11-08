@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat;
 
 public class StringFormat {
-	
+
 	/**
 	 * Format and Static String in FileInOut
 	 */
@@ -16,16 +16,16 @@ public class StringFormat {
 	public static final String TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
 	public static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-	
+
 	/**
 	 * Message show to the user in Executor
 	 */
-	
+
 	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
-	// Add 
+	// Add
 	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
-	//Delete
+	// Delete
 	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
 	// Done
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
@@ -33,18 +33,18 @@ public class StringFormat {
 	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
 	// Clear
 	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-	
+
 	/**
 	 * Message show to the user in Storage
 	 */
 	// In Add Method
 	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
 	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
-	
+
 	// In Delete, Update Method
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
 	public static final String STR_ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
-	
+
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	/**
@@ -81,7 +81,7 @@ public class StringFormat {
 	public static final String HELP = "help";
 	public static final String TUTORIAL = "tutorial";
 	public static final String SETTINGS = "settings";
-	
+
 	/**
 	 * sort, search and update indicators
 	 */
@@ -114,25 +114,24 @@ public class StringFormat {
 	public static final String TO_INDICATOR = "to";
 	public static final String AT_INDICATOR = "at";
 	public static final String ON_INDICATOR = "on";
-	public static final String OF_INDICATOR = "of";
 	public static final String AM_INDICATOR = "am";
 	public static final String PM_INDICATOR = "pm";
 	public static final String FROM_INDICATOR = "from";
 	public static final String IMPORTANT = "important";
 	public static final String UNIMPORTANT = "unimportant";
-	
+
 	/**
 	 * current task list and done task list indicators
 	 */
 	public static final String MAIN_TASK_LIST = "main task list";
 	public static final String DONE_TASK_LIST = "done task list";
-	
+
 	/**
-	 * invalid indicator
+	 * invalid and null indicators
 	 */
 	public static final String INVALID = "invalid";
+	public static final String NULL = "null";
 
-	
 	/**
 	 * empty indicator
 	 */

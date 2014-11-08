@@ -73,6 +73,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.ADD);
 		String startTiming = StringFormat.EMPTY;
 		String endTiming = StringFormat.EMPTY;
+		String temp;
 
 		if (arg[0] == StringFormat.EMPTY) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK);
@@ -85,13 +86,21 @@ public class Analyzer {
 			tempCommand.setTaskDescription(arg[1]);
 		}
 		if (arg.length >= 3) {
-			if (arg[2].equals(StringFormat.INVALID)) {
+			temp = arg[2];
+
+			if (temp.equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(
 						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
 
 				return tempCommand;
+			} else if (temp.equals(StringFormat.NULL)) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
 			}
-			startTiming = TimeHandler.inputTimingConvertor(arg[2]);
+
+			startTiming = TimeHandler.inputTimingConvertor(temp);
+
 			if (startTiming == null) {
 				tempCommand.setErrorMessage(String.format(
 						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
@@ -100,13 +109,21 @@ public class Analyzer {
 			}
 		}
 		if (arg.length >= 4) {
-			if (arg[3].equals(StringFormat.INVALID)) {
+			temp = arg[3];
+
+			if (temp.equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(
 						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
 
 				return tempCommand;
+			} else if (temp.equals(StringFormat.NULL)) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
 			}
-			endTiming = TimeHandler.inputTimingConvertor(arg[3]);
+
+			endTiming = TimeHandler.inputTimingConvertor(temp);
+
 			if (endTiming == null) {
 				tempCommand.setErrorMessage(String.format(
 						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
@@ -122,7 +139,7 @@ public class Analyzer {
 			tempCommand.setTaskLocation(arg[4]);
 		}
 		if (arg.length >= 6) {
-			String temp = arg[5].toLowerCase();
+			temp = arg[5].toLowerCase();
 
 			if (!StringFormat.isValidPriority(temp)
 					&& !temp.equals(StringFormat.EMPTY)) {
@@ -257,16 +274,18 @@ public class Analyzer {
 	}
 
 	private static ExecutableCommand handlDisplayCommand(String[] arg) {
-		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DISPLAY);
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.DISPLAY);
 
-		if(arg.length == 0){
+		if (arg.length == 0) {
 			tempCommand.setIndicator(StringFormat.MAIN_TASK_LIST);
 			return tempCommand;
-		}else{
-			if(arg[0].equals(StringFormat.DONE)){
+		} else {
+			if (arg[0].equals(StringFormat.DONE)) {
 				tempCommand.setIndicator(StringFormat.DONE_TASK_LIST);
-			}else{
-				tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			} else {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 			}
 		}
 		return tempCommand;

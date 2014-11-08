@@ -17,6 +17,7 @@ public class TestAnalyzer {
 	private static int currentDay = currentDate.getDate();
 	private static Date d6 = new Date(currentYear, currentMonth, currentDay,
 			23, 59);
+	private static Date d7 = new Date(115, 9, 20, 16, 50);
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -52,6 +53,17 @@ public class TestAnalyzer {
 		Command test22 = new Command("add trial due at 3/11/2015");
 		Command test23 = new Command("add trial due on 3:45pm");
 		Command test24 = new Command("add trial #high");
+		Command test25 = new Command(
+				"add assignment from 20/10/2015 2:38AM to 4:50pm");
+		Command test26 = new Command("add assignment from Ms Khoo");
+		Command test27 = new Command(
+				"add assignment from Ms Khoo from 20/10/2015 2:38AM to 4:50pm");
+		Command test28 = new Command("add assignment from");
+		Command test29 = new Command("add assignement on");
+		Command test30 = new Command("add assignment from");
+		Command test31 = new Command("add assignement due at");
+		Command test32 = new Command("add assignment due on");
+		Command test33 = new Command("add assignement at");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
 		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
@@ -63,6 +75,7 @@ public class TestAnalyzer {
 		expected.setTaskPriority(StringFormat.MEDIUM_PRIORITY);
 
 		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.ADD);
+		expected2.setTaskName("assignment from Ms Khoo");
 		expected2.setTaskStart(String.valueOf(d3.getTime()));
 		expected2.setTaskEnd(String.valueOf(d4.getTime()));
 		expected2.setErrorMessage(String.format(
@@ -79,6 +92,10 @@ public class TestAnalyzer {
 		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.ADD);
 		expected4.setErrorMessage(String.format(
 				StringFormat.ERROR_INVALID_TIME, StringFormat.END));
+		expected4.setTaskEnd(String.valueOf(d7.getTime()));
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.ADD);
+		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 
 		// test case 1: test if the error catcher is working
 		assertEquals("null argument case is not handled",
@@ -197,11 +214,61 @@ public class TestAnalyzer {
 		assertEquals("fail to detect invalid task end time",
 				expected4.getErrorMessage(), Analyzer.runAnalyzer(test23)
 						.getErrorMessage());
-		
+
 		// test case 24: test if the task priority will be recorded correctly
 		assertEquals("fail to get task priority to be added",
 				expected2.getTaskPriority(), Analyzer.runAnalyzer(test24)
 						.getTaskPriority());
+
+		// test case 25: test if timed task will be added correctly
+		assertEquals("fail to get timed task to be added correctly",
+				expected4.getTaskEnd(), Analyzer.runAnalyzer(test25)
+						.getTaskEnd());
+
+		// test case 26: test if the task name is able to be added
+		assertEquals("fail to get task name to be added",
+				expected2.getTaskName(), Analyzer.runAnalyzer(test26)
+						.getTaskName());
+
+		// test case 27: test if the task name is able to be added
+		assertEquals("fail to get task name to be added",
+				expected2.getTaskName(), Analyzer.runAnalyzer(test27)
+						.getTaskName());
+
+		// test case 28: test if timed task will be added correctly
+		assertEquals("fail to get timed task to be added correctly",
+				expected4.getTaskEnd(), Analyzer.runAnalyzer(test27)
+						.getTaskEnd());
+		
+		// test case 29: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test28)
+						.getErrorMessage());
+		
+		// test case 30: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test29)
+						.getErrorMessage());
+		
+		// test case 31: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test30)
+						.getErrorMessage());
+		
+		// test case 32: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test31)
+						.getErrorMessage());
+		
+		// test case 33: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test32)
+						.getErrorMessage());
+		
+		// test case 34: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test33)
+						.getErrorMessage());
 	}
 
 	@Test
@@ -434,9 +501,10 @@ public class TestAnalyzer {
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.DISPLAY);
 		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
-		expected.setIndicator(StringFormat.DONE);
-		
-		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DISPLAY);
+		expected.setIndicator(StringFormat.DONE_TASK_LIST);
+
+		ExecutableCommand expected2 = new ExecutableCommand(
+				StringFormat.DISPLAY);
 		expected2.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
 
 		// test case 1: test if the display action is processed correctly
@@ -455,22 +523,29 @@ public class TestAnalyzer {
 				"user is unable to type in command with capitalized letter",
 				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
 
-		// test case 4: test if the error catcher for invalid display indicator is working
+		// test case 4: test if the error catcher for invalid display indicator
+		// is working
 		assertEquals("unable to detect invalid display indicator",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4).getErrorMessage());
-		
-		// test case 5: test if the user is able to perform display done list command
-		assertEquals(
-				"user is unable to perform display done list command",
-				expected.getIndicator(), Analyzer.runAnalyzer(test5).getIndicator());
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4)
+						.getErrorMessage());
 
-		// test case 6: test if the user is able to perform display done list command with the capitalized done indicator
+		// test case 5: test if the user is able to perform display done list
+		// command
+		assertEquals("user is unable to perform display done list command",
+				expected.getIndicator(), Analyzer.runAnalyzer(test5)
+						.getIndicator());
+
+		// test case 6: test if the user is able to perform display done list
+		// command with the capitalized done indicator
 		assertEquals("unable to detect invalid display indicator",
-				expected.getIndicator(), Analyzer.runAnalyzer(test6).getIndicator());
-		
-		// test case 7: test if the error catcher for invalid display indicator is working
+				expected.getIndicator(), Analyzer.runAnalyzer(test6)
+						.getIndicator());
+
+		// test case 7: test if the error catcher for invalid display indicator
+		// is working
 		assertEquals("unable to detect invalid display indicator",
-				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7).getErrorMessage());
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
 	}
 
 	@Test
@@ -845,7 +920,7 @@ public class TestAnalyzer {
 				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
 
 	}
-	
+
 	@Test
 	public void testHandleDoneCommand() throws ParseException {
 		Command test1 = new Command("done");

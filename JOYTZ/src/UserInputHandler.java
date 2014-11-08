@@ -64,6 +64,9 @@ public class UserInputHandler {
 		boolean endTimeExistence = false;
 		boolean endDateExistence = false;
 		boolean locationExistence = false;
+		boolean fromIndicatorExistence = false;
+		boolean toIndicatorExistence = false;
+		String tempStartDate = "";
 
 		for (int i = 1; i < str.length; i++) {
 			String temp = str[i];
@@ -78,8 +81,9 @@ public class UserInputHandler {
 				} else if (str.length > i + 1) {
 					if (StringFormat.isInputIndicator(str[i + 1])
 							|| (StringFormat
-									.isAmbiguousInputIndicator(str[i + 1]) && StringFormat
-									.isTimeOrDate(str[i + 2]))) {
+									.isAmbiguousInputIndicator(str[i + 1])
+									&& str.length > i + 2 && StringFormat
+										.isTimeOrDate(str[i + 2]))) {
 						nameExistence = false;
 					}
 				}
@@ -90,8 +94,9 @@ public class UserInputHandler {
 				if (str.length > i + 1) {
 					if (StringFormat.isInputIndicator(str[i + 1])
 							|| (StringFormat
-									.isAmbiguousInputIndicator(str[i + 1]) && StringFormat
-									.isTimeOrDate(str[i + 2]))) {
+									.isAmbiguousInputIndicator(str[i + 1])
+									&& str.length > i + 2 && StringFormat
+										.isTimeOrDate(str[i + 2]))) {
 						descriptionExistence = false;
 					}
 				}
@@ -102,7 +107,6 @@ public class UserInputHandler {
 				if (str.length > i + 1
 						&& str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
 					startTimeExistence = true;
-
 				}
 			} else if (startTimeExistence) {
 				if (output[3].contains(StringFormat.DATE_INDICATOR)) {
@@ -125,7 +129,16 @@ public class UserInputHandler {
 					output[4] = output[4].concat(StringFormat.SPACE_INDICATOR);
 					output[4] = output[4].concat(temp);
 				} else {
-					output[4] = temp;
+					if (fromIndicatorExistence && toIndicatorExistence) {
+						output[4] = output[4].concat(tempStartDate);
+						output[4] = output[4].concat(" ");
+						output[4] = output[4].concat(temp);
+
+						fromIndicatorExistence = false;
+						toIndicatorExistence = false;
+					} else {
+						output[4] = temp;
+					}
 				}
 
 				endTimeExistence = false;
@@ -142,47 +155,80 @@ public class UserInputHandler {
 					locationExistence = false;
 				}
 			} else if (temp.equals(StringFormat.TO_INDICATOR)) {
-				if (StringFormat.isTimeOrDate(str[i + 1])) {
-					if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
-						endTimeExistence = true;
-					} else {
-						endDateExistence = true;
+				toIndicatorExistence = true;
+				if (str.length > i + 1) {
+					if (StringFormat.isTimeOrDate(str[i + 1])) {
+						if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+							endTimeExistence = true;
+						} else {
+							endDateExistence = true;
+						}
 					}
+				} else {
+					output[4] = StringFormat.NULL;
+					break;
 				}
 			} else if (temp.equals(StringFormat.DUE_ON_INDICATOR)) {
-				if (StringFormat.isDate(str[i + 1])) {
-					endDateExistence = true;
-				} else if (StringFormat.isTime(str[i + 1])) {
-					output[4] = StringFormat.INVALID;
+				if (str.length > i + 1) {
+					if (StringFormat.isDate(str[i + 1])) {
+						endDateExistence = true;
+					} else if (StringFormat.isTime(str[i + 1])) {
+						output[4] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
 					break;
 				}
 			} else if (temp.equals(StringFormat.FROM_INDICATOR)) {
-				if (StringFormat.isTimeOrDate(str[i + 1])) {
-					if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
-						startTimeExistence = true;
-					} else {
-						startDateExistence = true;
+				fromIndicatorExistence = true;
+				if (str.length > i + 1) {
+					if (StringFormat.isTimeOrDate(str[i + 1])) {
+						if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+							startTimeExistence = true;
+						} else {
+							tempStartDate = str[i + 1];
+							startDateExistence = true;
+						}
 					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
 				}
 			} else if (temp.equals(StringFormat.ON_INDICATOR)) {
-				if (StringFormat.isDate(str[i + 1])) {
-					startDateExistence = true;
-				} else if (StringFormat.isTime(str[i + 1])) {
-					output[3] = StringFormat.INVALID;
+				if (str.length > i + 1) {
+					if (StringFormat.isDate(str[i + 1])) {
+						startDateExistence = true;
+					} else if (StringFormat.isTime(str[i + 1])) {
+						output[3] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
 					break;
 				}
 			} else if (temp.equals(StringFormat.DUE_AT_INDICATOR)) {
-				if (StringFormat.isTime(str[i + 1])) {
-					endTimeExistence = true;
-				} else if (StringFormat.isDate(str[i + 1])) {
-					output[4] = StringFormat.INVALID;
+				if (str.length > i + 1) {
+					if (StringFormat.isTime(str[i + 1])) {
+						endTimeExistence = true;
+					} else if (StringFormat.isDate(str[i + 1])) {
+						output[4] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
 					break;
 				}
 			} else if (temp.equals(StringFormat.AT_INDICATOR)) {
-				if (StringFormat.isTime(str[i + 1])) {
-					startTimeExistence = true;
-				} else if (StringFormat.isDate(str[i + 1])) {
-					output[3] = StringFormat.INVALID;
+				if (str.length > i + 1) {
+					if (StringFormat.isTime(str[i + 1])) {
+						startTimeExistence = true;
+					} else if (StringFormat.isDate(str[i + 1])) {
+						output[3] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
 					break;
 				}
 			} else if (temp.contains(StringFormat.LOCATION_INDICATOR)) {
@@ -223,10 +269,12 @@ public class UserInputHandler {
 						descriptionExistence = true;
 					} else if (StringFormat
 							.isAmbiguousInputIndicator(str[i + 1])) {
-						if (StringFormat.isTimeOrDate(str[i + 2])) {
-							nameExistence = false;
-						} else {
-							nameExistence = true;
+						if (str.length > i + 2) {
+							if (StringFormat.isTimeOrDate(str[i + 2])) {
+								nameExistence = false;
+							} else {
+								nameExistence = true;
+							}
 						}
 					} else if (!StringFormat.isInputIndicator(str[i + 1])) {
 						nameExistence = true;
@@ -458,7 +506,7 @@ public class UserInputHandler {
 		String[] outputArr = new String[output.size()];
 		return output.toArray(outputArr);
 	}
-	
+
 	private static String[] handleDoneInput(String[] str) {
 		ArrayList<String> output = new ArrayList<String>();
 
@@ -479,7 +527,6 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
-
 	private static String[] handleDisplayInput(String[] str) {
 		ArrayList<String> output = new ArrayList<String>();
 
@@ -490,7 +537,7 @@ public class UserInputHandler {
 		}
 
 		String[] outputArr = new String[output.size()];
-		return output.toArray(outputArr);		
+		return output.toArray(outputArr);
 	}
 
 }
