@@ -1,3 +1,4 @@
+// @author A0119378U
 import static org.junit.Assert.*;
 
 import java.text.DateFormat;
@@ -184,8 +185,8 @@ public class TestStorage {
 		Task task3 = new Task("task3");
 		
 		
-		String expectedResult1 = "Task index is out of range. Index : -1.\n";
-		String expectedResult2 = "Task index is out of range. Index : 3.\n";
+		String expectedResult1 = "Task index is out of range. Index : 0.\n";
+		String expectedResult2 = "Task index is out of range. Index : 4.\n";
 		
 		try {
 			Storage.clean();
