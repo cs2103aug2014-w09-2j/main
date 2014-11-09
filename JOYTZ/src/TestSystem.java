@@ -22,7 +22,7 @@ public class TestSystem {
     private static final String INPUT_DELETE_1 = "delete 1";
     
     private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1: \"chat with friends\" is updated successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1 is updated successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
@@ -39,7 +39,7 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project~" +
                                                            "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015.02.24 at 11:30~2015.02.25 23:45~UTown~low\n";
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project~" +
                                                            "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~high\n";
     
@@ -72,26 +72,25 @@ public class TestSystem {
         // Update name
         systemTestResult = Controller.startController(INPUT_UPDATE_NAME);
         assertEquals(true, systemTestResult.getResult());
-        assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update location
         systemTestResult = Controller.startController(INPUT_UPDATE_LOCATION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update description
         systemTestResult = Controller.startController(INPUT_UPDATE_DESCRIPTION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 2));
     }
     
     @Test
