@@ -1,0 +1,311 @@
+//@author: generated
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+	 */
+
+    /** 
+     * Configuration of the GUI. This includes the layout, 
+     * the sizes, the color, the fonts, etc.
+     * 
+     */
+    private static void createUI() {
+        
+        display = Display.getDefault();
+        shell = new Shell();
+        shell.setMinimumSize(new Point(400, 500));
+        shell.setToolTipText("To-do list app of the year");
+        shell.setSize(800, 550);
+        shell.setLayout(new GridLayout(1, false));
+        shell.setText("JOYTZ");
+        
+        lblIncompleteTasks = new Label(shell, SWT.NONE);
+        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblIncompleteTasks.setAlignment(SWT.CENTER);
+        lblIncompleteTasks.setText("Task List: Incomplete Tasks");
+
+        taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        taskTable.setHeaderVisible(true);
+        taskTable.setSize(new Point(400, 400));
+        taskTable.setToolTipText("View your tasks here");
+        GridData gd_taskTable = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gd_taskTable.heightHint = 248;
+        taskTable.setLayoutData(gd_taskTable);
+
+        tblclmnNo = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnNo.setMoveable(true);
+        tblclmnNo.setToolTipText("Index number");
+        tblclmnNo.setWidth(42);
+        tblclmnNo.setText("No.");
+
+        tblclmnName = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnName.setMoveable(true);
+        tblclmnName.setWidth(100);
+        tblclmnName.setText("Name");
+
+        tblclmnStart = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnStart.setMoveable(true);
+        tblclmnStart.setWidth(180);
+        tblclmnStart.setText("Start");
+
+        tblclmnEnd = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnEnd.setMoveable(true);
+        tblclmnEnd.setWidth(180);
+        tblclmnEnd.setText("End");
+        
+        tblclmnPriority = new TableColumn(taskTable, SWT.CENTER);
+        tblclmnPriority.setMoveable(true);
+        tblclmnPriority.setWidth(90);
+        tblclmnPriority.setText("Priority");
+        
+        feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        gd_feedbackTable.heightHint = 121;
+        feedbackTable.setLayoutData(gd_feedbackTable);
+        
+        tblclmnFeedback = new TableColumn(feedbackTable, SWT.NONE);
+        tblclmnFeedback.setWidth(100);
+        tblclmnFeedback.setText("Feedback");
+        
+        Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+        gd_horizontalSeparator.widthHint = 550;
+        horizontalSeparator.setLayoutData(gd_horizontalSeparator);
+        
+        lblInputBox = new Label(shell, SWT.NONE);
+        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblInputBox.setAlignment(SWT.CENTER);
+        lblInputBox.setText("Input Box");
+
+        inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 14, SWT.NORMAL));
+        inputField.setToolTipText("Enter your commands here");
+        inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+        GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        gd_inputField.heightHint = 85;
+        inputField.setLayoutData(gd_inputField);
+    }
+    
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	 */
+
+    /**
+     * Create the dialog.
+     * @param parent
+     * @param style
+     */
+    public GUIExtraHelp(Shell parent, int style) {
+        super(parent, style);
+        setText("Tutorial");
+        currentPage = 1;
+    }
+    
+    /**
+     * Open the dialog.
+     * @return the result
+     */
+    public Object open() {
+        createContents();
+        createButtonListeners();
+        checkPageAndSetText(currentPage, textField);
+        
+        shell.open();
+        shell.layout();
+        Display display = getParent().getDisplay();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Create contents of the dialog.
+     */
+    private void createContents() {
+        shell = new Shell(getParent(), SWT.CLOSE | SWT.MIN | SWT.TITLE);
+        shell.setMinimumSize(new Point(300, 400));
+        shell.setSize(450, 330);
+        shell.setText(getText());
+        shell.setLayout(new GridLayout(1, false));
+        
+        textField = new StyledText(shell, SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+        textField.setEditable(false);
+        textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        
+        btnBack = new Button(shell, SWT.NONE);
+        btnBack.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        btnBack.setText("Back");
+        
+        btnNext = new Button(shell, SWT.NONE);
+        btnNext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        btnNext.setText("Next");
+    }
+    
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	 */
+
+    /**
+     * Create the dialog.
+     * @param parent
+     * @param style
+     */
+    public GUISettings(Shell parent, int style) {
+        super(parent, style);
+        setText("JOYTZ Settings");
+    }
+
+    /**
+     * Open the dialog.
+     * @return the result
+     */
+    public Object open() {
+        loadGUISettings();
+        createContents();
+        setupListeners();
+        displaySettingsInSettingsGUI();
+        shell.open();
+        shell.layout();
+        Display display = getParent().getDisplay();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Create contents of the dialog.
+     */
+    private void createContents() {
+        shell = new Shell(getParent(), SWT.CLOSE | SWT.MIN | SWT.TITLE);
+        shell.setSize(360, 266);
+        shell.setText(getText());
+        shell.setLayout(new FormLayout());
+        
+        Label lblNotificationFrequency = new Label(shell, SWT.NONE);
+        lblNotificationFrequency.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+        FormData fd_lblNotificationFrequency = new FormData();
+        fd_lblNotificationFrequency.top = new FormAttachment(0, 10);
+        fd_lblNotificationFrequency.left = new FormAttachment(0, 10);
+        lblNotificationFrequency.setLayoutData(fd_lblNotificationFrequency);
+        lblNotificationFrequency.setText("Notification Frequency (minutes):");
+        
+        spinnerNotifFreq = new Spinner(shell, SWT.BORDER);
+        spinnerNotifFreq.setMaximum(1440);
+        spinnerNotifFreq.setMinimum(1);
+        FormData fd_spinnerNotifFreq = new FormData();
+        fd_spinnerNotifFreq.top = new FormAttachment(0, 10);
+        fd_spinnerNotifFreq.left = new FormAttachment(lblNotificationFrequency, 6);
+        spinnerNotifFreq.setLayoutData(fd_spinnerNotifFreq);
+        
+        Label horizontalSeparator1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        FormData fd_horizontalSeparator1 = new FormData();
+        fd_horizontalSeparator1.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        fd_horizontalSeparator1.right = new FormAttachment(100, -10);
+        horizontalSeparator1.setLayoutData(fd_horizontalSeparator1);
+        
+        Label lblDeadlineColor = new Label(shell, SWT.NONE);
+        fd_horizontalSeparator1.bottom = new FormAttachment(100, -140);
+        lblDeadlineColor.setFont(SWTResourceManager.getFont("Segoe UI", 10, SWT.NORMAL));
+        FormData fd_lblDeadlineColor = new FormData();
+        fd_lblDeadlineColor.top = new FormAttachment(horizontalSeparator1, 6);
+        fd_lblDeadlineColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        lblDeadlineColor.setLayoutData(fd_lblDeadlineColor);
+        lblDeadlineColor.setText("Deadline color:");
+        
+        Label horizontalSeparator2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        FormData fd_horizontalSeparator2 = new FormData();
+        fd_horizontalSeparator2.top = new FormAttachment(lblDeadlineColor, 18);
+        fd_horizontalSeparator2.left = new FormAttachment(0, 10);
+        fd_horizontalSeparator2.right = new FormAttachment(100, -10);
+        horizontalSeparator2.setLayoutData(fd_horizontalSeparator2);
+        
+        Label lblOngoingColor = new Label(shell, SWT.NONE);
+        fd_horizontalSeparator2.bottom = new FormAttachment(lblOngoingColor, -6);
+        FormData fd_lblOngoingColor = new FormData();
+        fd_lblOngoingColor.top = new FormAttachment(0, 147);
+        fd_lblOngoingColor.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        lblOngoingColor.setLayoutData(fd_lblOngoingColor);
+        lblOngoingColor.setText("Ongoing color:");
+        
+        toolBarDeadline = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
+        FormData fd_toolBarDeadline = new FormData();
+        fd_toolBarDeadline.top = new FormAttachment(horizontalSeparator1, 6);
+        fd_toolBarDeadline.right = new FormAttachment(spinnerNotifFreq, 0, SWT.RIGHT);
+        toolBarDeadline.setLayoutData(fd_toolBarDeadline);
+        
+        tltmDeadlineRed = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineRed.setText("Red");
+        
+        tltmDeadlineBlue = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineBlue.setText("Blue");
+        
+        tltmDeadlineGreen = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineGreen.setText("Green");
+        
+        tltmDeadlineOrange = new ToolItem(toolBarDeadline, SWT.RADIO);
+        tltmDeadlineOrange.setText("Orange");
+        
+        ToolBar toolBarOngoing = new ToolBar(shell,  SWT.RIGHT);
+        FormData fd_toolBarOngoing = new FormData();
+        fd_toolBarOngoing.top = new FormAttachment(horizontalSeparator2, 6);
+        fd_toolBarOngoing.left = new FormAttachment(lblOngoingColor, 6);
+        toolBarOngoing.setLayoutData(fd_toolBarOngoing);
+        
+        tltmOngoingRed = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingRed.setText("Red");
+        
+        tltmOngoingBlue = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingBlue.setText("Blue");
+        
+        tltmOngoingGreen = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingGreen.setText("Green");
+        
+        tltmOngoingOrange = new ToolItem(toolBarOngoing, SWT.RADIO);
+        tltmOngoingOrange.setText("Orange");
+        
+        btnstartedNotification = new Button(shell, SWT.CHECK);
+        FormData fd_btnstartedNotification = new FormData();
+        fd_btnstartedNotification.top = new FormAttachment(lblNotificationFrequency, 17);
+        fd_btnstartedNotification.left = new FormAttachment(0, 10);
+        btnstartedNotification.setLayoutData(fd_btnstartedNotification);
+        btnstartedNotification.setText("\"Started\" notification");
+        
+        btnoverdueNotification = new Button(shell, SWT.CHECK);
+        fd_horizontalSeparator1.top = new FormAttachment(btnoverdueNotification, 6);
+        FormData fd_btnoverdueNotification = new FormData();
+        fd_btnoverdueNotification.top = new FormAttachment(btnstartedNotification, 6);
+        fd_btnoverdueNotification.left = new FormAttachment(lblNotificationFrequency, 0, SWT.LEFT);
+        btnoverdueNotification.setLayoutData(fd_btnoverdueNotification);
+        btnoverdueNotification.setText("\"Overdue\" notification");
+    }
+    
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+
+
+
+
+
