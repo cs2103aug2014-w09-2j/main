@@ -37,8 +37,8 @@ public class Executor {
 	public static Feedback feedback;
 
 	/**
-	 * Called by Controller to initialize Executor.
-	 * Splits into cases for processing in Executor component
+	 * Called by Controller to initialize Executor. Splits into cases for
+	 * processing in Executor component
 	 * 
 	 * @param command
 	 * 
@@ -120,8 +120,8 @@ public class Executor {
 	}
 
 	/**
-	 * Adds a Task object to Storage.
-	 * Returns a Feedback object to show to a user.
+	 * Adds a Task object to Storage. Returns a Feedback object to show to a
+	 * user.
 	 *
 	 * @param command
 	 * 
@@ -250,8 +250,8 @@ public class Executor {
 	}
 
 	/**
-	 * Performs a/multiple delete action(s) in Storage.
-	 * Deletes tasks displayed to a user.
+	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
+	 * to a user.
 	 * 
 	 * @param command
 	 * 
@@ -280,8 +280,8 @@ public class Executor {
 	}
 
 	/**
-	 * Displays the current taskList to a user using an arrayList. 
-	 * Displays the passed time task using two boolean arrays.
+	 * Displays the current taskList to a user using an arrayList. Displays the
+	 * passed time task using two boolean arrays.
 	 * 
 	 * @para command
 	 * 
@@ -372,17 +372,18 @@ public class Executor {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
 			}
+			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+					searchValue.get(i), searchIndicator.get(i)));
 		}
 
 		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
 		return fb;
 	}
 
 	/**
-	 * Performs an/multiple undo action(s), which reverse(s) previous steps
-	 * Can perform undo multiple-steps.
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
+	 * perform undo multiple-steps.
 	 * 
 	 * @return a Feedback object
 	 * 
@@ -423,8 +424,7 @@ public class Executor {
 	}
 
 	/**
-	 * Redoes the undo steps
-	 * Can redo the multiple previous undo steps
+	 * Redoes the undo steps Can redo the multiple previous undo steps
 	 * 
 	 * @return a Feedback object
 	 * 
@@ -498,7 +498,7 @@ public class Executor {
 
 		return fb;
 	}
-	
+
 	/**
 	 * Adds a task into a history list as done.
 	 * 
