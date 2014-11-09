@@ -120,7 +120,7 @@ public class Analyzer {
 
 				return tempCommand;
 			}
-
+			
 			startTiming = TimeHandler.inputTimingConvertor(temp);
 
 			if (startTiming == null) {

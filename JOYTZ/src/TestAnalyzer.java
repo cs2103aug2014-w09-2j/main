@@ -22,6 +22,8 @@ public class TestAnalyzer {
 	private static Date d6 = new Date(currentYear, currentMonth, currentDay,
 			23, 59);
 	private static Date d7 = new Date(115, 9, 20, 16, 50);
+	private static Date d8 = new Date(115, 9, 14, 16, 50);
+
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -63,11 +65,20 @@ public class TestAnalyzer {
 		Command test27 = new Command(
 				"add assignment from Ms Khoo from 20/10/2015 2:38AM to 4:50pm");
 		Command test28 = new Command("add assignment from");
-		Command test29 = new Command("add assignement on");
+		Command test29 = new Command("add assignment on");
 		Command test30 = new Command("add assignment from");
-		Command test31 = new Command("add assignement due at");
+		Command test31 = new Command("add assignment due at");
 		Command test32 = new Command("add assignment due on");
-		Command test33 = new Command("add assignement at");
+		Command test33 = new Command("add assignment at");
+		Command test34 = new Command("add assignment at 3:4pm");
+		Command test35 = new Command("add assignment at 3p:49am");
+		Command test36 = new Command("add assignment on 3/5p/2016");
+		Command test37 = new Command("add assignment on 4a/3/2015");
+		Command test38 = new Command("add assignment due at 3p:49am");
+		Command test39 = new Command("add assignment due on 3/5p/2016");
+		Command test40 = new Command("add assignment from 4a/3/2015 to 4:50pm");
+		Command test41 = new Command("add assignment from 4/3/2015 to 4:5ppm");
+		Command test42 = new Command("add assignment from 14/10/2015 to 4:50pm");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
 		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
@@ -100,6 +111,7 @@ public class TestAnalyzer {
 
 		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.ADD);
 		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+		expected5.setTaskEnd(String.valueOf(d8.getTime()));
 
 		// test case 1: test if the error catcher is working
 		assertEquals("null argument case is not handled",
@@ -273,6 +285,56 @@ public class TestAnalyzer {
 		assertEquals("fail to detect null argument",
 				expected5.getErrorMessage(), Analyzer.runAnalyzer(test33)
 						.getErrorMessage());
+		
+		// test case 35: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test34)
+						.getErrorMessage());
+		
+		// test case 36: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test35)
+						.getErrorMessage());
+		
+		// test case 37: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test36)
+						.getErrorMessage());
+		
+		// test case 38: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test37)
+						.getErrorMessage());
+		
+		// test case 39: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test38)
+						.getErrorMessage());
+		
+		// test case 40: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test39)
+						.getErrorMessage());
+		
+		// test case 41: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test40)
+						.getErrorMessage());
+		
+		// test case 42: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test41)
+						.getErrorMessage());
+		
+		// test case 43: test if the timed task can be added correctly
+		assertEquals("fail to get timed task to be added",
+				expected.getTaskStart(), Analyzer.runAnalyzer(test42)
+						.getTaskStart());
+		
+		// test case 44: test if the timed task can be added correctly
+		assertEquals("fail to get timed task to be added",
+				expected5.getTaskEnd(), Analyzer.runAnalyzer(test42)
+						.getTaskEnd());
 	}
 
 	@Test
@@ -347,6 +409,7 @@ public class TestAnalyzer {
 		assertEquals("multiple delete action is not analyzed correctly",
 				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
 
+		
 	}
 
 	@Test

@@ -1,9 +1,10 @@
 //@author A0112162Y
 
+import java.text.ParseException;
 import java.util.Date;
 
 public class TimeHandler {
-	
+
 	public static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -32,10 +33,12 @@ public class TimeHandler {
 			} else {
 				if (tempStartDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+							StringFormat.ERROR_INVALID_EARLIER_TIME,
+							StringFormat.START));
 				} else if (tempEndDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+							StringFormat.ERROR_INVALID_EARLIER_TIME,
+							StringFormat.END));
 				} else {
 					tempCommand
 							.setErrorMessage(StringFormat.ERROR_INVALID_END_EARLIER_THAN_START);
@@ -47,14 +50,16 @@ public class TimeHandler {
 				tempCommand.setTaskStart(String.valueOf(startTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+						StringFormat.ERROR_INVALID_EARLIER_TIME,
+						StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEnd(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+						StringFormat.ERROR_INVALID_EARLIER_TIME,
+						StringFormat.END));
 			}
 		}
 
@@ -73,14 +78,22 @@ public class TimeHandler {
 		Date convertedDate;
 
 		if (dateTime.length >= 1) {
-			result = dateTimeSeparator(dateTime[0], result);
+			try {
+				result = dateTimeSeparator(dateTime[0], result);
+			} catch (ParseException e) {
+				return null;
+			}
 			if (result == null) {
 				return null;
 			}
 		}
 
 		if (dateTime.length == 2) {
-			result = dateTimeSeparator(dateTime[1], result);
+			try {
+				result = dateTimeSeparator(dateTime[1], result);
+			} catch (ParseException e) {
+				return null;
+			}
 			if (result == null) {
 				return null;
 			}
@@ -153,7 +166,8 @@ public class TimeHandler {
 		return result[0] != -1 && result[1] != -1 && result[2] != -1;
 	}
 
-	private static int[] dateTimeSeparator(String dateTime, int[] result) {
+	private static int[] dateTimeSeparator(String dateTime, int[] result)
+			throws ParseException {
 		String[] temp;
 		int year = result[0];
 		int month = result[1];
@@ -164,13 +178,23 @@ public class TimeHandler {
 
 		if (dateTime.contains(StringFormat.DATE_INDICATOR)) {
 			temp = dateTime.trim().split(StringFormat.DATE_INDICATOR);
-			day = Integer.parseInt(temp[0]);
-			month = Integer.parseInt(temp[1]);
-			year = Integer.parseInt(temp[2]);
+
+			try {
+				day = Integer.parseInt(temp[0]);
+				month = Integer.parseInt(temp[1]);
+				year = Integer.parseInt(temp[2]);
+			} catch (Exception e) {
+				return null;
+			}
 		} else if (dateTime.contains(StringFormat.TIME_INDICATOR)) {
 			if (dateTime.length() == 7) {
-				hour = Integer.parseInt(dateTime.substring(0, 2));
-				minute = Integer.parseInt(dateTime.substring(3, 5));
+				try {
+					hour = Integer.parseInt(dateTime.substring(0, 2));
+					minute = Integer.parseInt(dateTime.substring(3, 5));
+				} catch (Exception e) {
+					return null;
+				}
+
 				indicator = dateTime.substring(5).toLowerCase();
 
 				if (indicator.equals(StringFormat.PM_INDICATOR) && hour != 12) {
@@ -179,12 +203,18 @@ public class TimeHandler {
 					} else {
 						hour = hour + 12;
 					}
-				} else if (indicator.equals(StringFormat.AM_INDICATOR) && hour == 12) {
+				} else if (indicator.equals(StringFormat.AM_INDICATOR)
+						&& hour == 12) {
 					hour = 0;
 				}
 			} else {
-				hour = Integer.parseInt(dateTime.substring(0, 1));
-				minute = Integer.parseInt(dateTime.substring(2, 4));
+				try {
+					hour = Integer.parseInt(dateTime.substring(0, 1));
+					minute = Integer.parseInt(dateTime.substring(2, 4));
+				} catch (Exception e) {
+					return null;
+				}
+
 				indicator = dateTime.substring(4).toLowerCase();
 
 				if (indicator.equals(StringFormat.PM_INDICATOR)) {
