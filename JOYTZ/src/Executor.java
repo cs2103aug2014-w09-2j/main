@@ -354,12 +354,7 @@ public class Executor {
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
-			try {
-				Storage.search(searchIndicator.get(i), searchValue.get(i));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
+			Storage.search(searchIndicator.get(i), searchValue.get(i));
 			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
 					searchValue.get(i), searchIndicator.get(i)));
 		}
