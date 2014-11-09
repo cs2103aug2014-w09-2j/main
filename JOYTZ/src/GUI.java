@@ -263,6 +263,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
      * @param isLastRow			         Is this the last item 
      * @param isHighlightedPassStart     Has the task passed the start time
      * @param isHighlightedPassEnd       Has the task passed the end time
+     * @param displayList                Which list is being displayed
      * 
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,
@@ -270,9 +271,17 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                                    String description, String priority,
                                    String action, int taskId, boolean isLastRow,
                                    boolean isHighlightedPassStart,
-                                   boolean isHighlightedPassEnd) {
+                                   boolean isHighlightedPassEnd, String displayList) {
         
         stopTimerIfSortingOrSearching(action);
+        
+        System.out.println("Display list = " + displayList);
+        
+        if (displayList.equals(StringFormat.MAIN_TASK_LIST)) {
+            lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
+        } else if (displayList.equals(StringFormat.DONE_TASK_LIST)) {
+            lblIncompleteTasks.setText(LABEL_TASKS_DONE);
+        }
 
         // To prevent multiple of the same entries, we clear the whole table first
         if (taskNumber == 0 || action.equals("null")) {
@@ -280,7 +289,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             assert taskTable.getItemCount() == 0;
         }
 
-        if (!action.equals(StringFormat.CLEAR) && !startDate.equals(Controller.EMPTY_LIST)) {
+        if (!action.equals(StringFormat.CLEAR) && !startDate.equals(Controller.NULL_STRING)) {
             // Debugging code
             LOGGER.info("==============\n" +
                         "Writing to table (GUI):  \n" + 
@@ -640,12 +649,6 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                     initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
                 } else {
-                    if (userInput.equals("display done")) { 
-                        lblIncompleteTasks.setText(LABEL_TASKS_DONE);
-                    } else if (userInput.equals("display")) {
-                        lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
-                    }
-                    
                     previousUserInputStack.push(userInput);
                     Controller.startController(userInput);
 

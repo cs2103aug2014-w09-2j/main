@@ -10,7 +10,7 @@ public class Controller {
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
                                                           "Type \"help\" or \"tutorial\".\n";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
-    public static final String EMPTY_LIST = "null";
+    public static final String NULL_STRING = "null";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -25,10 +25,11 @@ public class Controller {
      * 					                after each command
      * @param command			        ExecutableCommand object containing the
      * 					                user's action and taskId
+     * @param displayList               Which list is being displayed
      * 
      */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
-                                     boolean isSuccessful) {
+                                     boolean isSuccessful, String displayList) {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
@@ -43,7 +44,7 @@ public class Controller {
                 taskId = command.getTaskId().get(0);
             }
 
-            parseDisplayTasks(action, taskId);
+            parseDisplayTasks(action, taskId, displayList);
         }
     }
 
@@ -55,19 +56,21 @@ public class Controller {
      * empty values, leave it blank. For example: "name~~~end date~~priority"
      * to leave the description and location empty.
      * 
-     * @param action	The user's input action (add, delete, etc.)
-     * @param taskId    The id of the task given by the user
+     * @param action	        The user's input action (add, delete, etc.)
+     * @param taskId            The id of the task given by the user
+     * @param displayList       Which list is being displayed
      * 
      */
-    private static void parseDisplayTasks(String action, int taskId) {
+    private static void parseDisplayTasks(String action, int taskId, String displayList) {
         boolean isLastItem = false;
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
         if (feedback.getTaskStringList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
-                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+            GUI.updateTable(0, NULL_STRING, "", "", "", "", "", action, taskId,
+                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd,
+                            displayList);
 
         } else {
             for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
@@ -104,7 +107,7 @@ public class Controller {
                 assert parameterArr.length == 6;
                 GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
                                 parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
-                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd, displayList);
             }
         }
     }
@@ -177,7 +180,7 @@ public class Controller {
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
                 outputString = parsedCommand.getErrorMessage();
-                displayInGUI(outputString, parsedCommand, false);
+                displayInGUI(outputString, parsedCommand, false, NULL_STRING);
             } else {	
 
                 if(parsedCommand != null){
@@ -191,6 +194,7 @@ public class Controller {
 
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
+                String displayList = feedback.getListNameIndicator();
                 assert outputString != null;
                 
                 if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
@@ -200,11 +204,11 @@ public class Controller {
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
                 } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
-                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess);
+                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess, displayList);
                 }
             }
         } catch (ParseException e) {
-            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true, NULL_STRING);
         }   
         return feedback;    // used exclusively for JUnit testing
     }
