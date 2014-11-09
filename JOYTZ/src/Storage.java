@@ -326,7 +326,7 @@ public class Storage {
 	 * @return
 	 */
 	public static boolean search(String indicator, String searchValue) {
-		return search(mainTaskList, indicator, searchValue);
+		return search(displayTaskList, indicator, searchValue);
 	}
 
 	private static boolean search(List targetList, String indicator,
