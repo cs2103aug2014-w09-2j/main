@@ -38,11 +38,12 @@ public class Executor {
 
 	/**
 	 * Called by Controller to initialize Executor.
-	 *
 	 * Splits into cases for processing in Executor component
 	 * 
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0112060E
 	// @author A0119378U
@@ -120,11 +121,12 @@ public class Executor {
 
 	/**
 	 * Adds a Task object to Storage.
-	 * 
 	 * Returns a Feedback object to show to a user.
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0112060E
 	// @author A0119378U
@@ -161,7 +163,8 @@ public class Executor {
 	 * Deletes several tasks at the same time according to indices
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
 	// @author A0112060E
@@ -193,6 +196,7 @@ public class Executor {
 	 * Sorts a index array from big number to small number.
 	 * 
 	 * @param targetTaskIndexArray
+	 * 
 	 */
 	// @author A0119378U
 	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
@@ -205,7 +209,8 @@ public class Executor {
 	 * the proceedAnalyzedCommand method
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
 	// @author A0112060E
@@ -246,11 +251,12 @@ public class Executor {
 
 	/**
 	 * Performs a/multiple delete action(s) in Storage.
-	 * 
 	 * Deletes tasks displayed to a user.
 	 * 
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0119378U
 	private static Feedback performClearAction(ExecutableCommand command) {
@@ -279,7 +285,8 @@ public class Executor {
 	 * 
 	 * @para command
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0119378U
 	private static Feedback performDisplayAction(ExecutableCommand command) {
@@ -343,7 +350,8 @@ public class Executor {
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
 	// @author A0112060E
@@ -374,10 +382,10 @@ public class Executor {
 
 	/**
 	 * Performs an/multiple undo action(s), which reverse(s) previous steps
-	 * 
 	 * Can perform undo multiple-steps.
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0112060E
 	private static Feedback performUndoAction() {
@@ -416,10 +424,10 @@ public class Executor {
 
 	/**
 	 * Redoes the undo steps
-	 * 
 	 * Can redo the multiple previous undo steps
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0112060E
 	private static Feedback performRedoAction() {
@@ -447,7 +455,8 @@ public class Executor {
 	/**
 	 * Obtains a result and message of the reloadFile from Storage
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0112060E
 	private static Feedback performReloadAction() {
@@ -470,7 +479,8 @@ public class Executor {
 	 * Performs a exit action with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	private static Feedback performExitAction() {
 		Feedback fb = new Feedback(StringFormat.EXIT, false);
@@ -493,7 +503,9 @@ public class Executor {
 	 * Adds a task into a history list as done.
 	 * 
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0119378U
 	private static Feedback performDoneAction(ExecutableCommand command) {
@@ -517,7 +529,8 @@ public class Executor {
 	/**
 	 * Return a feedback object to user
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	public static Feedback getFeedback() {
 		return feedback;
@@ -527,6 +540,7 @@ public class Executor {
 	 * Saves user's commands in a Stack
 	 * 
 	 * @param command
+	 * 
 	 */
 	private static void saveUserCommand(ExecutableCommand command) {
 		if (!command.getAction().equals("undo")
@@ -540,6 +554,7 @@ public class Executor {
 	 * Set displayed messages passed from Storage.
 	 * 
 	 * @param fb
+	 * 
 	 */
 	// @author A0119378U
 	private static void addInDisplayMessage(Feedback fb) {
@@ -552,7 +567,9 @@ public class Executor {
 	 * Converts a String of Date to the actual date.
 	 * 
 	 * @param dateTimeString
+	 * 
 	 * @return
+	 * 
 	 */
 	private static Date convertStringToDate(String dateTimeString) {
 		if (dateTimeString.equals("")) {
@@ -574,6 +591,7 @@ public class Executor {
 	 * @param startDateTime
 	 * @param endDateTime
 	 * @throws Exception
+	 * 
 	 */
 	// @author A0119378U
 	private static Task createNewTask(String name, String description,
