@@ -361,13 +361,11 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             colorRowBackgroundLightGrey(item2);
         }
         
-        System.out.println(isHighlightedPassStart);
-        System.out.println(isHighlightedPassEnd);
+        System.out.println("Highlighted start" + isHighlightedPassStart);
+        System.out.println("Highlighted end " + isHighlightedPassEnd);
         
         // Coloring green
         if (isHighlightedPassStart == true) {
-            System.out.println("Ongoing = " + isNotifcationsOngoingEnabled);
-            System.out.println("Overdue = " + isNotifcationsOverdueEnabled);
             colorOngoingRow(item);
             colorOngoingRow(item2);
             if (action.equals(StringFormat.DISPLAY) && isNotifcationsOngoingEnabled == 1) {
@@ -628,6 +626,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
 
             private void handleUserInput() {
                 String userInput = inputField.getText().trim();
+                userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
                 
                 if (userInput.equals(StringFormat.HELP)) {
                     displayHelp();
@@ -643,16 +642,14 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                     applySettings();
                     initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
-                } else if (userInput.equals("display done")) {
-                    previousUserInputStack.push(userInput);
-                    lblIncompleteTasks.setText(LABEL_TASKS_DONE);
-                    Controller.startController(userInput);
-
-                    inputField.setText(EMPTY_STRING);
                 } else {
-                    userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
+                    if (userInput.equals("display done")) { 
+                        lblIncompleteTasks.setText(LABEL_TASKS_DONE);
+                    } else if (userInput.equals("display")) {
+                        lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
+                    }
+                    
                     previousUserInputStack.push(userInput);
-                    lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
                     Controller.startController(userInput);
 
                     inputField.setText(EMPTY_STRING);
