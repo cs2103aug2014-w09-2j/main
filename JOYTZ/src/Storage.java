@@ -308,11 +308,11 @@ public class Storage {
 	 * @throws Exception
 	 */
 
-	public static boolean sort(String key) throws Exception {
+	public static boolean sort(String key) {
 		return sort(key, displayTaskList);
 	}
 
-	private static boolean sort(String key, List targetList) throws Exception {
+	private static boolean sort(String key, List targetList) {
 		Task.setSortKey(key);
 		targetList.sortList();
 
