@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+
+=======
+>>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 import java.util.*;
 
 public class Executor {
@@ -30,18 +34,24 @@ public class Executor {
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 	private static final String MESSAGE_RELOAD_SUCCESSFULLY = "The Storage is reloaded successfully.\n";
 
+	// @author A0119378U
 	public static Feedback feedback;
 
+	// @author A0119378U
 	/**
 	 * Called by Controller to initialize Executor. Splits into cases for
 	 * processing in Executor component
 	 * 
 	 * @param command
+	 *            ExecutableCommand from Controller.
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
+<<<<<<< HEAD
+=======
 	// @author A0119378U
+>>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -64,7 +74,7 @@ public class Executor {
 			break;
 
 		case StringFormat.CLEAR:
-			feedback = performClearAction(command);
+			feedback = performClearAction();
 			break;
 
 		case StringFormat.DISPLAY:
@@ -114,16 +124,22 @@ public class Executor {
 		return feedback;
 	}
 
+	// @author A0119378U
 	/**
 	 * Adds a Task object to Storage. Returns a Feedback object to show to a
 	 * user.
 	 *
 	 * @param command
+	 *            ExecutableCommand from Controller. Need the Task Attributes
+	 *            inside the Object.
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
+<<<<<<< HEAD
+=======
 	// @author A0119378U
+>>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
 
@@ -243,17 +259,15 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
 	 * to a user.
-	 * 
-	 * @param command
-	 * 
+	 *
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0119378U
-	private static Feedback performClearAction(ExecutableCommand command) {
+	private static Feedback performClearAction() {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
@@ -274,16 +288,17 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Displays the current taskList to a user using an arrayList. Displays the
 	 * passed time task using two boolean arrays.
 	 * 
-	 * @para command
+	 * @para command ExecutableCommand passed from Controller. Need the
+	 *       indicator inside.
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0119378U
 	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
 		if (command.getIndicator().size() != 1) {
@@ -416,7 +431,7 @@ public class Executor {
 	}
 
 	/**
-	 * Redoes the undo steps Can redo the multiple previous undo steps
+	 * Redo the undo steps Can redo the multiple previous undo steps
 	 * 
 	 * @return a Feedback object
 	 * 
@@ -467,6 +482,7 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Performs a exit action with a command object passed from the
 	 * proceedAnalyzedCommand method
@@ -491,15 +507,15 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Adds a task into a history list as done.
 	 * 
 	 * @param command
+	 *            ExecutableCommand Object passed from Controller.
 	 * 
 	 * @return a Feedback object
-	 * 
 	 */
-	// @author A0119378U
 	private static Feedback performDoneAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DONE, false);
 		ArrayList<Integer> targetIndexList = command.getTaskId();
@@ -535,6 +551,7 @@ public class Executor {
 	 * Saves user's commands in a Stack
 	 * 
 	 * @param command
+	 *            ExecutableCommand Object passed in.
 	 * 
 	 */
 	private static void saveUserCommand(ExecutableCommand command) {
@@ -545,13 +562,14 @@ public class Executor {
 		}
 	}
 
+	// @author A0119378U
 	/**
 	 * Set displayed messages passed from Storage.
 	 * 
 	 * @param fb
+	 *            feedback object that will be returned to Controller.
 	 * 
 	 */
-	// @author A0119378U
 	private static void addInDisplayMessage(Feedback fb) {
 		fb.setTaskStringList(Storage.getStringFormatOfList());
 		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
@@ -582,24 +600,31 @@ public class Executor {
 		return dateTimeDate;
 	}
 
+	// @author A0119378U
 	/**
 	 * Creates a new Task Object based on the attributes.
 	 * 
 	 * @param name
+	 *            name string from ExecutableCommand Object
 	 * @param description
+	 *            description string from ExecutableCommand Object
 	 * @param location
+	 *            location string from ExecutableCommand Object
 	 * @param priority
+	 *            priority string from ExecutableCommand Object
 	 * @param startDateTime
+	 *            startDateTime long string from ExecutableCommand Object
 	 * @param endDateTime
+	 *            endDateTime long string from ExecutableCommand Object
 	 * @throws Exception
+	 *             throw Exception if the name is null or empty String.
 	 * 
 	 */
-	// @author A0119378U
 	private static Task createNewTask(String name, String description,
 			Date startDateTime, Date endDateTime, String location,
 			String priority) throws Exception {
 
-		if (name.equals(null)) {
+		if (name.equals(null) || name.equals("")) {
 			throw new Exception("Null task name");
 		}
 
