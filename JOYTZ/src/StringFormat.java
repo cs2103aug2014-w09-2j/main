@@ -56,6 +56,7 @@ public class StringFormat {
 	
 	// query the display list
 	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
+	
 	//@author A0112162Y
 	/**
 	 * error messages used in Analyzer and TimeHandler
