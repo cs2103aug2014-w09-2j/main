@@ -432,7 +432,7 @@ public class Storage {
 	}
 
 	/**
-	 * get the string format of all tasks in taskList and store in arrayList.
+	 * Get the string format of all tasks in taskList and store in arrayList.
 	 * 
 	 * @return
 	 */
@@ -466,7 +466,7 @@ public class Storage {
 	}
 
 	/**
-	 * reload mainTaskList and doneTaskList from .txt file
+	 * Reload mainTaskList and doneTaskList from .txt file
 	 * 
 	 * @throws Exception
 	 */
