@@ -1,11 +1,21 @@
-//package V1;
-
+//@author A0112162Y
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 import java.text.ParseException;
 
 public class Analyzer {
+
+	/**
+	 * run Analyzer and return ExecutableCommand containing all relevant
+	 * information
+	 * 
+	 * @param userInput
+	 *            The user input
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
 	public static ExecutableCommand runAnalyzer(Command userInput)
 			throws ParseException {
 		assertNotNull("User input is null", userInput);
@@ -66,6 +76,18 @@ public class Analyzer {
 		return outputCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "add" action and contains all
+	 * relevant information: task name, task description, task start time, task
+	 * end time, task location, task priority. Task name must be indicated while
+	 * the rest can be absent.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
 	private static ExecutableCommand handleAddCommand(String[] arg)
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
@@ -153,6 +175,15 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "delete" action and contains all
+	 * relevant information: task index. Task index must be indicated and it can
+	 * be duplicated to perform multiple delete action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return Executable Command containing all relevant information
+	 */
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
 
@@ -177,6 +208,17 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "update" action and contains all
+	 * relevant information: task index, update indicator, update key. All
+	 * attributes stated above must be indicated.
+	 * 
+	 * @param arg
+	 *            The user Argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
 	private static ExecutableCommand handleUpdateCommand(String[] arg)
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
@@ -273,7 +315,18 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "display" action and contains all
+	 * relevant information: display indicator. Display indicator can be
+	 * ignored. In this case, default display operation will be executed.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
 	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.DISPLAY);
 
@@ -291,19 +344,45 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "add" action
+	 * 
+	 * @return ExecutableCommand with undo action indicated
+	 */
 	private static ExecutableCommand handleUndoCommand() {
 		return new ExecutableCommand(StringFormat.UNDO);
 	}
 
+	/**
+	 * create an ExecutableCommand object with "redo" action
+	 * 
+	 * @return ExecutableCommand with redo action indicated
+	 */
 	private static ExecutableCommand handleRedoCommand() {
 		return new ExecutableCommand(StringFormat.REDO);
 	}
 
+	/**
+	 * create an ExecutableCommand object with "clear" action
+	 * 
+	 * @return ExecutableCommand with clear action indicated
+	 */
 	private static ExecutableCommand handleClearCommand() {
 		return new ExecutableCommand(StringFormat.CLEAR);
 	}
 
+	/**
+	 * create an ExecutableCommand object with "sort" action and contains all
+	 * relevant information: sort indicator. Sort indicator must be indicated
+	 * and it can be duplicated to perform multiple sort action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
 	private static ExecutableCommand handleSortCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
 		if (arg.length == 0) {
@@ -327,6 +406,18 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "search" action and contains all
+	 * relevant information:search indicator and search key. Search indicator
+	 * and search key must be indicated and they can be duplicated to perform
+	 * multiple search action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
 	private static ExecutableCommand handleSearchCommand(String[] arg)
 			throws ParseException {
 		assertNotNull("User argument is null", arg);
@@ -415,6 +506,15 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "done" action and contains all
+	 * relevant information: task index. Task index must be indicated and it can
+	 * be duplicated to perform multiple done action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
 	private static ExecutableCommand handleDoneCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
 
@@ -438,6 +538,11 @@ public class Analyzer {
 		return tempCommand;
 	}
 
+	/**
+	 * create an ExecutableCommand object with "exit" action
+	 * 
+	 * @return ExecutableCommand with exit action indicated
+	 */
 	private static ExecutableCommand handleExitCommand() {
 		return new ExecutableCommand(StringFormat.EXIT);
 	}
