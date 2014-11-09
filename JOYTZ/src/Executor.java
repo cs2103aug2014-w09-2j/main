@@ -19,7 +19,7 @@ public class Executor {
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
 
 	// these are for Search Method
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "%s in %s is searched successfully.\n";
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
@@ -182,9 +182,10 @@ public class Executor {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
-				break;
+				return fb;
 			}
 		}
+
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
 		}
@@ -243,6 +244,7 @@ public class Executor {
 				}
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
+				return fb;
 			}
 		}
 
@@ -272,6 +274,7 @@ public class Executor {
 				return fb;
 			}
 		}
+
 		if (fb.getResult()) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_CLEAR_SUCCESSFUL);
 		}
@@ -334,12 +337,12 @@ public class Executor {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
 			}
+			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
+					sortKey.get(i)));
 
-			if (fb.getResult()) {
-				fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
-						sortKey.get(i)));
-			}
 		}
+		
+		fb.setResult(true);
 
 		return fb;
 	}
@@ -367,7 +370,6 @@ public class Executor {
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			try {
 				Storage.search(searchIndicator.get(i), searchValue.get(i));
-
 			} catch (Exception e) {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
@@ -375,6 +377,7 @@ public class Executor {
 			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
 					searchValue.get(i), searchIndicator.get(i)));
 		}
+		
 		fb.setResult(true);
 
 		return fb;
@@ -533,6 +536,7 @@ public class Executor {
 
 		fb.setResult(true);
 		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
+
 		return fb;
 	}
 
@@ -585,6 +589,7 @@ public class Executor {
 		if (dateTimeString.equals("")) {
 			return null;
 		}
+
 		Long dateTimeLong = Long.parseLong(dateTimeString);
 		Date dateTimeDate = new Date(dateTimeLong);
 
