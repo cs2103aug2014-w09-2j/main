@@ -3,6 +3,15 @@ import java.io.*;
 import java.util.Date;
 import java.util.logging.Logger;
 
+/**
+ * Description :
+ * 
+ * FileInOut class in charge of save taskList from memory to .txt file and
+ * reload a txt file to taskList.
+ * 
+ * @author zk
+ *
+ */
 public class FileInOut {
 	private static final Logger LOGGER = Logger.getLogger(FileInOut.class
 			.getName());
@@ -21,9 +30,10 @@ public class FileInOut {
 	 * @param targetList
 	 * @param fileName
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public boolean saveTaskList(List targetList, String fileName) throws Exception {
+	public boolean saveTaskList(List targetList, String fileName)
+			throws Exception {
 		file = new File(fileName);
 
 		if (!file.exists()) {
@@ -45,9 +55,10 @@ public class FileInOut {
 				+ "====================\n");
 		return true;
 	}
-	
+
 	/**
 	 * Read the file and create a taskList from the file.
+	 * 
 	 * @param fileName
 	 * @return
 	 * @throws Exception
@@ -57,7 +68,8 @@ public class FileInOut {
 		List resultList = new List();
 
 		if (!file.exists()) {
-			throw new Exception(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST);
+			throw new Exception(
+					StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST);
 		}
 
 		fileReader = new FileReader(file);
@@ -87,8 +99,8 @@ public class FileInOut {
 	public String getFirstLineMsg() {
 		Date now = new Date();
 		String msgString = StringFormat.IO_MESSAGE_SAVED_IN_FILE;
-		String dateString = StringFormat.IO_DATE_FORMAT_SAVED_IN_FILE.format(now)
-				+ "\n";
+		String dateString = StringFormat.IO_DATE_FORMAT_SAVED_IN_FILE
+				.format(now) + "\n";
 
 		return msgString + dateString;
 	}
@@ -102,33 +114,35 @@ public class FileInOut {
 	public String convertTaskToString(Task task) {
 		String emptySpace = " ";
 		String resultString = task.getTaskName().concat("~");
-		
+
 		// add in description information.
-		
+
 		resultString = resultString.concat(task.getTaskDescription());
-		
+
 		resultString = resultString.concat("~");
-		
+
 		// add in start date time information.
-		if (task.getStartDateTime() != null){
-			resultString = resultString.concat(task.getLongStringFormatStartDateTime());
+		if (task.getStartDateTime() != null) {
+			resultString = resultString.concat(task
+					.getLongStringFormatStartDateTime());
 		}
 		resultString = resultString.concat("~");
-		
+
 		// add in end date time information.
-		if (task.getEndDateTime() != null){
-			resultString = resultString.concat(task.getLongStringFormatEndDateTime());
+		if (task.getEndDateTime() != null) {
+			resultString = resultString.concat(task
+					.getLongStringFormatEndDateTime());
 		}
 		resultString = resultString.concat("~");
-		
+
 		// add in location information.
 		resultString = resultString.concat(task.getTaskLocation());
 		resultString = resultString.concat("~");
-		
+
 		// add in priority information.
 		resultString = resultString.concat(task.getTaskPriority());
 		resultString = resultString.concat(emptySpace);
-		
+
 		resultString = resultString.concat("\n");
 		return resultString;
 	}
@@ -156,7 +170,8 @@ public class FileInOut {
 			if (!taskAttributes[2].equals("")) {
 
 				System.out.println(taskAttributes[2]);
-				task.setStartDateTime(new Date(Long.parseLong(taskAttributes[2])));
+				task.setStartDateTime(new Date(Long
+						.parseLong(taskAttributes[2])));
 
 				System.out.println("exception here");
 			}

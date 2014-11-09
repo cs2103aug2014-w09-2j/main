@@ -137,8 +137,8 @@ public class StringFormat {
 	/**
 	 * current task list and done task list indicators
 	 */
-	public static final String MAIN_TASK_LIST = "main task list";
-	public static final String DONE_TASK_LIST = "done task list";
+	public static final String MAIN_TASK_LIST = "mainTaskList";
+	public static final String DONE_TASK_LIST = "doneTaskList";
 
 	/**
 	 * invalid and null indicators

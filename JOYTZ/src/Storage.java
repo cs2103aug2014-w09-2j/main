@@ -4,6 +4,18 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * Description of Storage :
+ * 
+ * 1. Storage contains mainTaskList, doneTaskList, displayTaskList. Tasks in
+ * displayTaskList will be show to user. 2. The User action will first be done
+ * in the displayTaskList. And then perform the same action to either
+ * mainTaskList or doneTaskList. 3. Index shown to user start from 1; index in
+ * each taskList start from zero; TaskId start from zero.
+ * 
+ * @author Zhang Kai (A0119378U)
+ *
+ */
 public class Storage {
 
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
@@ -63,7 +75,7 @@ public class Storage {
 					StringFormat.STR_ERROR_END_TIME_BEFORE_CURRENT_TIME,
 					task.getFormatEndDateTime()));
 		}
-		
+
 		task.setTaskId(obtainNewTaskId());
 		mainTaskList.addTask(task);
 		setDisplayList(mainTaskList);
@@ -161,7 +173,7 @@ public class Storage {
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
 		// user cannot update tasks that has been done.
-		if (doneTaskList.containsTaskId(targetTaskId)){
+		if (doneTaskList.containsTaskId(targetTaskId)) {
 			throw new Exception(StringFormat.STR_ERROR_UPDATE_DONE_TASK);
 		}
 		// update the old task.
@@ -277,8 +289,8 @@ public class Storage {
 	}
 
 	/**
-	 * Set displayList to be task list indicate by targetListIndicator.
-	 * And display the String format of displayList
+	 * Set displayList to be task list indicate by targetListIndicator. And
+	 * display the String format of displayList
 	 * 
 	 * @param targetListIndicator
 	 * @return
@@ -331,7 +343,7 @@ public class Storage {
 	}
 
 	private static boolean search(List targetList, String indicator,
-			String searchValue){
+			String searchValue) {
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
@@ -464,7 +476,7 @@ public class Storage {
 		doneTaskList.clean();
 		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
 		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
-		
+
 		resetTaskId();
 		setDisplayList(mainTaskList);
 	}
@@ -502,7 +514,7 @@ public class Storage {
 	 * Integer TaskId is out of range when create a new Task, this method will
 	 * reset the TaskId to fill the empty holes.
 	 */
-	private static void resetTaskId() {
+	public static void resetTaskId() {
 		taskId = -1; // set the start taskId to be 0;
 		for (int index = 0; index < doneTaskList.size(); index++) {
 			int currId = obtainNewTaskId();
@@ -516,6 +528,13 @@ public class Storage {
 		}
 	}
 
+	/**
+	 * Find whether mainTaskList or doneTaskList contains the displayList by
+	 * search for the taskId in displayList.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public static String listContainsDisplayList() throws Exception {
 		if (displayTaskList.size() == 0) {
 			return StringFormat.MAIN_TASK_LIST;
@@ -535,7 +554,7 @@ public class Storage {
 	}
 
 	/**
-	 * These method is only for Unit Test.
+	 * These three below method is only for Unit Test.
 	 */
 	public static List getMainTaskList() {
 		return mainTaskList;
@@ -543,6 +562,10 @@ public class Storage {
 
 	public static List getDoneTaskList() {
 		return doneTaskList;
+	}
+
+	public static List getDisplayTaskList() {
+		return displayTaskList;
 	}
 
 }
