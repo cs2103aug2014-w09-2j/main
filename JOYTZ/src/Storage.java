@@ -63,7 +63,8 @@ public class Storage {
 					StringFormat.STR_ERROR_END_TIME_BEFORE_CURRENT_TIME,
 					task.getFormatEndDateTime()));
 		}
-
+		
+		task.setTaskId(obtainNewTaskId());
 		mainTaskList.addTask(task);
 		setDisplayList(mainTaskList);
 
@@ -160,12 +161,12 @@ public class Storage {
 		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
-		mainTaskList.deleteTaskById(targetTaskId);
+		// user cannot update tasks that has been done.
+		if (doneTaskList.containsTaskId(targetTaskId)){
+			throw new Exception(StringFormat.STR_ERROR_UPDATE_DONE_TASK);
+		}
 		// update the old task.
 		update(targetTask, updateIndicator, updateKeyValue);
-		// add the new task back.
-		displayTaskList.setTask(index, targetTask);
-		mainTaskList.addTask(targetTask);
 
 		setDisplayList(displayTaskList);
 		return true;
@@ -464,7 +465,8 @@ public class Storage {
 		doneTaskList.clean();
 		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
 		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
-
+		
+		resetTaskId();
 		setDisplayList(mainTaskList);
 	}
 

@@ -49,12 +49,12 @@ public class StringFormat {
 	// In Delete, Update Method
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
 	public static final String STR_ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
-
+	public static final String STR_ERROR_UPDATE_DONE_TASK = "Cannot update done tasks.\n";
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	
 	// In Done Method
-	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "Cannot done a task in done list.\n";
+	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "The task has been done.\n";
 	
 	// query the display list
 	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";

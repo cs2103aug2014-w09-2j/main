@@ -91,7 +91,24 @@ public class List {
 		}
 		return taskList.get(index);
 	}
-
+	
+	/**
+	 * Get the index of task with provided Id. 
+	 * Search through the list.
+	 * @param targetTaskId
+	 * @return
+	 */
+	public int getIndexByTaskId(int targetTaskId){
+		int result = -1;
+		for (int index=0; index<taskList.size(); index++){
+			Task currTask = taskList.get(index);
+			if (currTask.getTaskId() == targetTaskId){
+				result = index;
+				break;
+			}
+		}
+		return result;
+	}
 	/**
 	 * Sort the taskList array. The key is in the Task object.
 	 */

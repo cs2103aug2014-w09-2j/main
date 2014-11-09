@@ -625,8 +625,7 @@ public class Executor {
 		}
 
 		Task newTask = new Task(name);
-		newTask.setTaskId(Storage.obtainNewTaskId());
-
+		
 		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
 		}
