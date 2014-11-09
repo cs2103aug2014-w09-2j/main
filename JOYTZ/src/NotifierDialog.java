@@ -170,7 +170,7 @@ public class NotifierDialog {
         text.setText(message);
 
         minHeight = 50;
-        int minWidth = 300;
+        int minWidth = 350;
 
         _shell.setSize(minWidth, minHeight);
 
