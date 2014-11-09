@@ -1,6 +1,3 @@
-//@author A0112060E
-//@author A011938U
-
 import java.util.*;
 
 public class Executor {
@@ -12,8 +9,7 @@ public class Executor {
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
 
 	// these are for Update Method.
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
-	private static final String ERROR_INVALID_UPDATE = "Invalid update attributes.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task \"%d\" is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
@@ -45,7 +41,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	// @author A0119378U
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
@@ -128,7 +123,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	// @author A0119378U
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
@@ -168,7 +162,6 @@ public class Executor {
 	 * 
 	 */
 	// @author A0112060E
-	// @author A0119378U
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
@@ -178,6 +171,7 @@ public class Executor {
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
 			index--;
+			
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -229,24 +223,22 @@ public class Executor {
 		for (int i = 0; i < taskId.size(); i++) {
 			int index = taskId.get(i);
 			index--;
+
 			try {
 				fb.setResult(Storage.update(index, updateIndicator.get(i),
 						updateKeyValue.get(i)));
-				if (fb.getResult()) {
-					index--;
-					Task targetTask = Storage.displayTaskList
-							.getTaskByIndex(index);
 
-					fb.setMessageShowToUser(String.format(
-							MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
-				} else {
-					fb.setMessageShowToUser(ERROR_INVALID_UPDATE);
-				}
+				Task targetTask = Storage.displayTaskList.getTaskByIndex(index);
+
+				fb.setMessageShowToUser(String.format(
+						MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
 			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
+				fb.setMessageShowToUser("update function\n");
 				return fb;
 			}
 		}
+
+		fb.setResult(true);
 
 		return fb;
 	}
@@ -341,7 +333,7 @@ public class Executor {
 					sortKey.get(i)));
 
 		}
-		
+
 		fb.setResult(true);
 
 		return fb;
@@ -377,7 +369,7 @@ public class Executor {
 			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
 					searchValue.get(i), searchIndicator.get(i)));
 		}
-		
+
 		fb.setResult(true);
 
 		return fb;
