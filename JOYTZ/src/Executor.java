@@ -468,7 +468,7 @@ public class Executor {
 		try {
 			Storage.reloadFile();
 		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
+			fb.setMessageShowToUser("Exception in reload.\n");
 			return fb;
 		}
 
@@ -567,6 +567,11 @@ public class Executor {
 		fb.setTaskStringList(Storage.getStringFormatOfList());
 		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
 		fb.setPassEndTimeIndicator(Storage.getPassEndTimeList());
+		try {
+			fb.setListNameIndicator(Storage.listContainsDisplayList());
+		}catch (Exception e){
+			fb.setMessageShowToUser(e.getMessage());
+		}
 	}
 
 	/**

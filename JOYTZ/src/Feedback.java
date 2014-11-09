@@ -10,6 +10,7 @@ public class Feedback {
 
 	// attributes
 	private boolean result;
+	private String listNameIndicator;
 	private String messageShowToUser;
 
 	// ArrayList only for display method.
@@ -61,6 +62,10 @@ public class Feedback {
 	public void setPassEndTimeIndicator (boolean[] indicatorArray){
 		this.passEndTimeTaskIndexIndicator = indicatorArray;
 	}
+	
+	public void setListNameIndicator(String indicator){
+		this.listNameIndicator = indicator;
+	}
 
 	/**
 	 * Get methods
@@ -88,6 +93,10 @@ public class Feedback {
 	
 	public boolean[] getPassEndTimeListIndicator() {
 		return passEndTimeTaskIndexIndicator;
+	}
+	
+	public String getListNameIndicator(){
+		return listNameIndicator;
 	}
 
 }

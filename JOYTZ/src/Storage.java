@@ -127,6 +127,10 @@ public class Storage {
 
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		
+		if (!mainTaskList.containsTaskId(targetTaskId)){
+			throw new Exception(StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
+		}
 
 		mainTaskList.deleteTaskById(targetTaskId);
 		displayTaskList.deleteTaskByIndex(index);
@@ -362,15 +366,15 @@ public class Storage {
 			Date currEndTime = currTask.getEndDateTime();
 			Date currTime = new Date(System.currentTimeMillis());
 
-			if (currStartTime == null) {
-				continue;
-			} else if (currTime.after(currStartTime)) {
-				passStartTimeList[index] = true;
+			if (currStartTime != null) {
+				if (currTime.after(currStartTime)) {
+					passStartTimeList[index] = true;
+				}
 			}
-			if (currEndTime == null) {
-				continue;
-			} else if (currTime.after(currEndTime)) {
-				passEndTimeList[index] = true;
+			if (currEndTime != null) {
+				if (currTime.after(currEndTime)) {
+					passEndTimeList[index] = true;
+				}
 			}
 		}
 	}
@@ -511,6 +515,23 @@ public class Storage {
 			Task currTask = mainTaskList.getTaskByIndex(index);
 			currTask.setTaskId(currId);
 		}
+	}
+	
+	public static String listContainsDisplayList() throws Exception{
+		if (displayTaskList.size() == 0){
+			return StringFormat.MAIN_TASK_LIST;
+		}
+		Task exampleTask = displayTaskList.getTaskByIndex(0);
+		int exampleTaskId = exampleTask.getTaskId();
+		
+		if (mainTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.MAIN_TASK_LIST;
+		} else if (doneTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.DONE_TASK_LIST;
+		} else {	// should not reach this line.
+			throw new Exception(StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
+		}
+		
 	}
 
 	/**
