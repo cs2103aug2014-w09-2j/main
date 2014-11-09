@@ -366,15 +366,15 @@ public class Storage {
 			Date currEndTime = currTask.getEndDateTime();
 			Date currTime = new Date(System.currentTimeMillis());
 
-			if (currStartTime == null) {
-				continue;
-			} else if (currTime.after(currStartTime)) {
-				passStartTimeList[index] = true;
+			if (currStartTime != null) {
+				if (currTime.after(currStartTime)) {
+					passStartTimeList[index] = true;
+				}
 			}
-			if (currEndTime == null) {
-				continue;
-			} else if (currTime.after(currEndTime)) {
-				passEndTimeList[index] = true;
+			if (currEndTime != null) {
+				if (currTime.after(currEndTime)) {
+					passEndTimeList[index] = true;
+				}
 			}
 		}
 	}
