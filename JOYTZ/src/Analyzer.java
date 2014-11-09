@@ -345,7 +345,7 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "add" action
+	 * create an ExecutableCommand object with "undo" action
 	 * 
 	 * @return ExecutableCommand with undo action indicated
 	 */

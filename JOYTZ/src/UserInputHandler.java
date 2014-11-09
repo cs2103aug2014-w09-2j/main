@@ -2,10 +2,19 @@
 
 import static org.junit.Assert.assertNotNull;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class UserInputHandler {
-	
+
+	/**
+	 * Convert the user input into a string array which contains all relevant
+	 * information
+	 * 
+	 * @param input
+	 *            The user input
+	 * @return String array containing all relevant information
+	 */
 	public static String[] convertUserInput(String input) {
 		assertNotNull("User input is null", input);
 
@@ -59,6 +68,16 @@ public class UserInputHandler {
 		return parsedInput;
 	}
 
+	/**
+	 * create an string array with "add" action and contains all relevant
+	 * information input by the user: task name, task description, task start
+	 * time, task end time, task location, task priority. Task name must be
+	 * indicated while the rest can be absent.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleAddInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -294,6 +313,15 @@ public class UserInputHandler {
 		return output;
 	}
 
+	/**
+	 * create an string array with "delete" action and contains all relevant
+	 * information input by the user: task index. Task index must be indicated
+	 * and it can be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleDeleteInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -316,6 +344,15 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
+	/**
+	 * create an string array with "update" action and contains all relevant
+	 * information: task index, update indicator, update key. All attributes
+	 * stated above must be indicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleUpdateInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -342,6 +379,15 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
+	/**
+	 * create an string array with "search" action and contains all relevant
+	 * information:search indicator and search key. Search indicator and search
+	 * key must be indicated and they can be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleSearchInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -502,6 +548,15 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
+	/**
+	 * create an string array with "sort" action and contains all relevant
+	 * information: sort indicator. Sort indicator must be indicated and it can
+	 * be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleSortInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -523,6 +578,15 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
+	/**
+	 * create an string array with "done" action and contains all relevant
+	 * information: task index. Task index must be indicated and it can be
+	 * duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array which contain all relevant information
+	 */
 	private static String[] handleDoneInput(String[] str) {
 		assertNotNull("User input is null", str);
 
@@ -545,6 +609,15 @@ public class UserInputHandler {
 		return output.toArray(outputArr);
 	}
 
+	/**
+	 * create an string array with "display" action and contains all relevant
+	 * information: display indicator. Display indicator can be ignored. In this
+	 * case, default display operation will be executed.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
 	private static String[] handleDisplayInput(String[] str) {
 		assertNotNull("User input is null", str);
 
