@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Label;
 //import com.melloware.jintellitype.IntellitypeListener;
 //import com.melloware.jintellitype.JIntellitype;
 
-public class GUI { // implements HotkeyListener, IntellitypeListener {
+public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
@@ -115,7 +115,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param thisTable     The table the TableItem belongs to
      * @param text          The text to be placed in the TableItem
      *
-     * @return    The table item
+     * @return              The table item
      * 
      */
     private static TableItem newTableItem(Table thisTable, String text){
@@ -131,7 +131,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * @param thisTable     The table the TableItem belongs to
      * @param textArr       An array of strings to be placed in the TableItem
      *
-     * @return    The table item
+     * @return              The table item
      * 
      */
     private static TableItem newTableItem(Table thisTable, String[] textArr){
@@ -251,15 +251,18 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     /**
      * Updates the table in the GUI based on the given parameters
      *
-     * @param taskNumber    	Index number of the task in the table
-     * @param startDate    		Starting time of the given task
-     * @param endDate    		Deadline of the given task
-     * @param name 				Name of the given task
-     * @param location			Location of the given task
-     * @param description		Description for the given task
-     * @param priority			Priority level of the given task
-     * @param action			Action input by the user (add, delete, etc.)
-     * @param isLastRow			Is this the last item 
+     * @param taskNumber    	         Index number of the task in the table
+     * @param startDate    		         Starting time of the given task
+     * @param endDate    		         Deadline of the given task
+     * @param name 				         Name of the given task
+     * @param location			         Location of the given task
+     * @param description		         Description for the given task
+     * @param priority			         Priority level of the given task
+     * @param action			         Action input by the user (add, delete, etc.)
+     * @param taskId                     The taskId of the task given by the user
+     * @param isLastRow			         Is this the last item 
+     * @param isHighlightedPassStart     Has the task passed the start time
+     * @param isHighlightedPassEnd       Has the task passed the end time
      * 
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,
@@ -315,7 +318,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     /**
      * Stops the display timer if the user's action is a sort or search
      *
-     * @param action                    The action executed by the user
+     * @param action       The action executed by the user
      * 
      */
     private static void stopTimerIfSortingOrSearching(String action) {
@@ -460,7 +463,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
     }
     
     /**
-     * Colors the background of a row grey
+     * Colors the background of a row green
      * 
      * @param item      The table row to be colored
      * 
@@ -494,7 +497,8 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
 
     /**
      * Resizes the columns in the table based 
-     * on the width of the application.
+     * on the width of the application, as well as
+     * the length of the content in the cells.
      * 
      */
     private static void resizeTable() {
@@ -532,7 +536,7 @@ public class GUI { // implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-        //initJIntellitype();
+//        initJIntellitype();
         initializeVariables();
         getSettings();
         applySettings();
