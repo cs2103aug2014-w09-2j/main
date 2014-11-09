@@ -193,7 +193,7 @@ public class Controller {
                 boolean isFeedbackSuccess = feedback.getResult();
                 assert outputString != null;
                 
-                if (outputString.equals(StringFormat.MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
+                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
                     GUI.openTutorial();
                 }
                 

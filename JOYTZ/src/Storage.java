@@ -127,6 +127,10 @@ public class Storage {
 
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		
+		if (!mainTaskList.containsTaskId(targetTaskId)){
+			throw new Exception(StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
+		}
 
 		mainTaskList.deleteTaskById(targetTaskId);
 		displayTaskList.deleteTaskByIndex(index);

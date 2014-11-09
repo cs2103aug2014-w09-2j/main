@@ -465,7 +465,7 @@ public class Executor {
 		try {
 			Storage.reloadFile();
 		} catch (Exception e) {
-			fb.setMessageShowToUser(e.getMessage());
+			fb.setMessageShowToUser("Exception in reload.\n");
 			return fb;
 		}
 

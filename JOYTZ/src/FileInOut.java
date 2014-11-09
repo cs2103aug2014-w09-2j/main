@@ -56,7 +56,7 @@ public class FileInOut {
 		List resultList = new List();
 
 		if (!file.exists()) {
-			throw new Exception(StringFormat.MESSAGE_TASK_LIST_FILE_NOT_EXIST);
+			throw new Exception(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST);
 		}
 
 		fileReader = new FileReader(file);
@@ -65,10 +65,9 @@ public class FileInOut {
 		String messageLine = bufferedReader.readLine();
 		String taskString = bufferedReader.readLine();
 		while (taskString != null) {
+			System.out.println("task Strng : " + taskString);
 			Task task = converStringToTask(taskString);
 			resultList.addTask(task);
-
-			System.out.println(messageLine);
 			taskString = bufferedReader.readLine();
 		}
 
@@ -86,8 +85,8 @@ public class FileInOut {
 	 */
 	public String getFirstLineMsg() {
 		Date now = new Date();
-		String msgString = StringFormat.MESSAGE_SAVED_IN_FILE;
-		String dateString = StringFormat.DATE_FORMAT_SAVED_IN_FILE.format(now)
+		String msgString = StringFormat.IO_MESSAGE_SAVED_IN_FILE;
+		String dateString = StringFormat.IO_DATE_FORMAT_SAVED_IN_FILE.format(now)
 				+ "\n";
 
 		return msgString + dateString;
@@ -100,8 +99,37 @@ public class FileInOut {
 	 * @return
 	 */
 	public String convertTaskToString(Task task) {
-		String result = task.toString();
-		return result;
+		String emptySpace = " ";
+		String resultString = task.getTaskName().concat("~");
+		
+		// add in description information.
+		
+		resultString = resultString.concat(task.getTaskDescription());
+		
+		resultString = resultString.concat("~");
+		
+		// add in start date time information.
+		if (task.getStartDateTime() != null){
+			resultString = resultString.concat(task.getLongStringFormatStartDateTime());
+		}
+		resultString = resultString.concat("~");
+		
+		// add in end date time information.
+		if (task.getEndDateTime() != null){
+			resultString = resultString.concat(task.getLongStringFormatEndDateTime());
+		}
+		resultString = resultString.concat("~");
+		
+		// add in location information.
+		resultString = resultString.concat(task.getTaskLocation());
+		resultString = resultString.concat("~");
+		
+		// add in priority information.
+		resultString = resultString.concat(task.getTaskPriority());
+		resultString = resultString.concat(emptySpace);
+		
+		resultString = resultString.concat("\n");
+		return resultString;
 	}
 
 	/**
@@ -116,25 +144,26 @@ public class FileInOut {
 		String[] taskAttributes = taskString.split("~");
 
 		if (taskAttributes.length != 6) {
-
 			throw new Exception(String.format(
-					StringFormat.ERROR_INVALID_TASK_RECORD, taskString));
+					StringFormat.IO_ERROR_INVALID_TASK_RECORD, taskString));
 		} else {
 
 			Task task = new Task();
-			task.setTaskName(taskAttributes[0]);
+			task.setTaskName(taskAttributes[0].trim());
 
-			task.setTaskDescription(taskAttributes[1]);
-			if (taskAttributes[2].equals(" ")) {
-			} else {
-				task.setStartDate(new Date(Long.parseLong(taskAttributes[2])));
+			task.setTaskDescription(taskAttributes[1].trim());
+			if (!taskAttributes[2].equals("")) {
+
+				System.out.println(taskAttributes[2]);
+				task.setStartDateTime(new Date(Long.parseLong(taskAttributes[2])));
+
+				System.out.println("exception here");
 			}
-			if (taskAttributes[3].equals(" ")) {
-			} else {
+			if (!taskAttributes[3].equals("")) {
 				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
 			}
-			task.setTaskLocation(taskAttributes[4]);
-			task.setTaskPriority(taskAttributes[5]);
+			task.setTaskLocation(taskAttributes[4].trim());
+			task.setTaskPriority(taskAttributes[5].trim());
 			return task;
 		}
 	}
