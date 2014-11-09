@@ -85,7 +85,7 @@ public class Storage {
 	public static boolean delete(int index) throws Exception {
 		if (index < 0 || index >= displayTaskList.size()) {
 			throw new Exception(String.format(
-					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, (index + 1)));
 		}
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
@@ -127,9 +127,10 @@ public class Storage {
 
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
-		
-		if (!mainTaskList.containsTaskId(targetTaskId)){
-			throw new Exception(StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
+
+		if (!mainTaskList.containsTaskId(targetTaskId)) {
+			throw new Exception(
+					StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
 		}
 
 		mainTaskList.deleteTaskById(targetTaskId);
@@ -154,7 +155,7 @@ public class Storage {
 
 		if (index < 0 || index >= displayTaskList.size()) {
 			throw new Exception(String.format(
-					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, (index + 1)));
 		}
 		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
@@ -304,14 +305,13 @@ public class Storage {
 	 * not valid, tasks are sorted by name(default);
 	 * 
 	 * @return
-	 * @throws Exception
 	 */
 
-	public static boolean sort(String key) throws Exception {
+	public static boolean sort(String key) {
 		return sort(key, displayTaskList);
 	}
 
-	private static boolean sort(String key, List targetList) throws Exception {
+	private static boolean sort(String key, List targetList) {
 		Task.setSortKey(key);
 		targetList.sortList();
 
@@ -324,16 +324,13 @@ public class Storage {
 	 * Search the task in taskList corresponding to parameter key.
 	 * 
 	 * @return
-	 * @throws Exception
 	 */
-
-	public static boolean search(String indicator, String searchValue)
-			throws Exception {
+	public static boolean search(String indicator, String searchValue) {
 		return search(displayTaskList, indicator, searchValue);
 	}
 
 	private static boolean search(List targetList, String indicator,
-			String searchValue) throws Exception {
+			String searchValue){
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
@@ -516,22 +513,23 @@ public class Storage {
 			currTask.setTaskId(currId);
 		}
 	}
-	
-	public static String listContainsDisplayList() throws Exception{
-		if (displayTaskList.size() == 0){
+
+	public static String listContainsDisplayList() throws Exception {
+		if (displayTaskList.size() == 0) {
 			return StringFormat.MAIN_TASK_LIST;
 		}
 		Task exampleTask = displayTaskList.getTaskByIndex(0);
 		int exampleTaskId = exampleTask.getTaskId();
-		
-		if (mainTaskList.containsTaskId(exampleTaskId)){
+
+		if (mainTaskList.containsTaskId(exampleTaskId)) {
 			return StringFormat.MAIN_TASK_LIST;
-		} else if (doneTaskList.containsTaskId(exampleTaskId)){
+		} else if (doneTaskList.containsTaskId(exampleTaskId)) {
 			return StringFormat.DONE_TASK_LIST;
-		} else {	// should not reach this line.
-			throw new Exception(StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
+		} else { // should not reach this line.
+			throw new Exception(
+					StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
 		}
-		
+
 	}
 
 	/**
