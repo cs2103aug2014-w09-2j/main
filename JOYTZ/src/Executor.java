@@ -375,7 +375,6 @@ public class Executor {
 			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
 					searchValue.get(i), searchIndicator.get(i)));
 		}
-
 		fb.setResult(true);
 
 		return fb;
@@ -392,6 +391,7 @@ public class Executor {
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
+		// pre-condition
 		if (commandStack.isEmpty()) {
 			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
 			return fb;
@@ -404,6 +404,7 @@ public class Executor {
 			while (!commandStack.isEmpty()) {
 				temp.push(commandStack.pop());
 			}
+
 			// clean the mainTaskList and doneTaskList.
 			Storage.clean();
 			// reload the data from saved file.
@@ -412,13 +413,20 @@ public class Executor {
 			while (!temp.isEmpty()) {
 				proceedAnalyzedCommand(temp.pop());
 			}
+
 		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 			return fb;
 		}
 
-		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
+		// post-condition
+		if (!commandStack.isEmpty()) {
+			fb.setResult(true);
+			fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
+		} else {
+			fb.setResult(false);
+			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
+		}
 
 		return fb;
 	}
@@ -511,6 +519,7 @@ public class Executor {
 	private static Feedback performDoneAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DONE, false);
 		ArrayList<Integer> targetIndexList = command.getTaskId();
+
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
 			index--;
@@ -521,6 +530,7 @@ public class Executor {
 				return fb;
 			}
 		}
+
 		fb.setResult(true);
 		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
 		return fb;
