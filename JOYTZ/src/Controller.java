@@ -56,6 +56,7 @@ public class Controller {
      * to leave the description and location empty.
      * 
      * @param action	The user's input action (add, delete, etc.)
+     * @param taskId    The id of the task given by the user
      * 
      */
     private static void parseDisplayTasks(String action, int taskId) {
@@ -129,7 +130,7 @@ public class Controller {
     /**
      * Starts the controller, and consequently the execution of 
      * the whole data flow. It is called when the user presses "enter"
-     * after input in the GUI.
+     * after input that requires processing and data manipulation in the GUI.
      * 
      * @param inputCommandString    The user's input
      * 
