@@ -127,6 +127,10 @@ public class Storage {
 
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		
+		if (!mainTaskList.containsTaskId(targetTaskId)){
+			throw new Exception(StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
+		}
 
 		mainTaskList.deleteTaskById(targetTaskId);
 		displayTaskList.deleteTaskByIndex(index);
@@ -148,7 +152,7 @@ public class Storage {
 	public static boolean update(int index, String updateIndicator,
 			String updateKeyValue) throws Exception {
 
-		if (index <= 0 || index > displayTaskList.size()) {
+		if (index < 0 || index >= displayTaskList.size()) {
 			throw new Exception(String.format(
 					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
@@ -511,6 +515,23 @@ public class Storage {
 			Task currTask = mainTaskList.getTaskByIndex(index);
 			currTask.setTaskId(currId);
 		}
+	}
+	
+	public static String listContainsDisplayList() throws Exception{
+		if (displayTaskList.size() == 0){
+			return StringFormat.MAIN_TASK_LIST;
+		}
+		Task exampleTask = displayTaskList.getTaskByIndex(0);
+		int exampleTaskId = exampleTask.getTaskId();
+		
+		if (mainTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.MAIN_TASK_LIST;
+		} else if (doneTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.DONE_TASK_LIST;
+		} else {	// should not reach this line.
+			throw new Exception(StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
+		}
+		
 	}
 
 	/**

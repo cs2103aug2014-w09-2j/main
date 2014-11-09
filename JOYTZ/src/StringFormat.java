@@ -9,13 +9,13 @@ public class StringFormat {
 			"yyyy.MM.dd HH:mm");
 	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
 			"yyyy.MM.dd 'at' HH:mm");
-	public static final SimpleDateFormat DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
+	public static final SimpleDateFormat IO_DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-	public static final String MESSAGE_SAVED_IN_FILE = "Last saved point: ";
+	public static final String IO_MESSAGE_SAVED_IN_FILE = "Last saved point: ";
 	// indicate name-description-start-end-location-priority.
-	public static final String TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
-	public static final String MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
-	public static final String ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
+	public static final String IO_TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
+	public static final String IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
+	public static final String IO_ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
 
 	/**
 	 * Message show to the user in Executor
@@ -51,6 +51,11 @@ public class StringFormat {
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	
+	// In Done Method
+	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "Cannot done a task in done list.\n";
+	
+	// query the display list
+	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
 	//@author A0112162Y
 	/**
 	 * error messages used in Analyzer and TimeHandler
