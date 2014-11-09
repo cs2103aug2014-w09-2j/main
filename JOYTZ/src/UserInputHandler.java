@@ -1,8 +1,14 @@
+//@author A0112162Y
+
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 
 public class UserInputHandler {
-
+	
 	public static String[] convertUserInput(String input) {
+		assertNotNull("User input is null", input);
+
 		int index;
 		String temp1, temp2;
 
@@ -54,6 +60,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleAddInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		String[] output = { StringFormat.ADD, StringFormat.EMPTY,
 				StringFormat.EMPTY, StringFormat.EMPTY, StringFormat.EMPTY,
 				StringFormat.EMPTY, StringFormat.EMPTY };
@@ -287,6 +295,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleDeleteInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 
 		output.add(StringFormat.DELETE);
@@ -307,6 +317,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleUpdateInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 		output.add(StringFormat.UPDATE);
 
@@ -331,6 +343,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleSearchInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 
 		boolean nameExistence = false;
@@ -489,6 +503,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleSortInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 		output.add(StringFormat.SORT);
 
@@ -508,6 +524,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleDoneInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 
 		output.add(StringFormat.DONE);
@@ -528,6 +546,8 @@ public class UserInputHandler {
 	}
 
 	private static String[] handleDisplayInput(String[] str) {
+		assertNotNull("User input is null", str);
+
 		ArrayList<String> output = new ArrayList<String>();
 
 		output.add(StringFormat.DISPLAY);

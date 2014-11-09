@@ -1,3 +1,5 @@
+//@author A0112162Y
+
 import static org.junit.Assert.*;
 
 import java.text.ParseException;
@@ -6,6 +8,7 @@ import java.util.Date;
 import org.junit.Test;
 
 public class TestAnalyzer {
+	
 	private static Date currentDate = new Date(System.currentTimeMillis());
 	private static Date d1 = new Date(115, 9, 14);
 	private static Date d2 = new Date(115, 9, 20);
