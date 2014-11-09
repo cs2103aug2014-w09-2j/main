@@ -361,9 +361,6 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             colorRowBackgroundLightGrey(item2);
         }
         
-        System.out.println("Highlighted start" + isHighlightedPassStart);
-        System.out.println("Highlighted end " + isHighlightedPassEnd);
-        
         // Coloring green
         if (isHighlightedPassStart == true) {
             colorOngoingRow(item);
