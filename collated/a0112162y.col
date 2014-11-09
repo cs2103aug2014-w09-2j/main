@@ -1,0 +1,2837 @@
+//@author: a0112162y
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Analyzer.java
+	 */
+
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Date;
+import java.text.ParseException;
+
+public class Analyzer {
+
+	/**
+	 * run Analyzer and return ExecutableCommand containing all relevant
+	 * information
+	 * 
+	 * @param userInput
+	 *            The user input
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
+	public static ExecutableCommand runAnalyzer(Command userInput)
+			throws ParseException {
+		assertNotNull("User input is null", userInput);
+
+		String userCommand = userInput.getUserCommand();
+		ExecutableCommand outputCommand = new ExecutableCommand();
+
+		if (userCommand == StringFormat.EMPTY) {
+			outputCommand.setErrorMessage(StringFormat.ERROR_NULL_COMMAND);
+			return outputCommand;
+		}
+
+		String[] parsedInput = UserInputHandler.convertUserInput(userCommand);
+		String userAction = getUserAction(parsedInput);
+		String[] commandArgument = getArgument(parsedInput);
+
+		switch (userAction) {
+		case StringFormat.ADD:
+			outputCommand = handleAddCommand(commandArgument);
+			break;
+		case StringFormat.DELETE:
+			outputCommand = handleDeleteCommand(commandArgument);
+			break;
+		case StringFormat.UPDATE:
+			outputCommand = handleUpdateCommand(commandArgument);
+			break;
+		case StringFormat.DISPLAY:
+			outputCommand = handlDisplayCommand(commandArgument);
+			break;
+		case StringFormat.UNDO:
+			outputCommand = handleUndoCommand();
+			break;
+		case StringFormat.REDO:
+			outputCommand = handleRedoCommand();
+			break;
+		case StringFormat.CLEAR:
+			outputCommand = handleClearCommand();
+			break;
+		case StringFormat.SORT:
+			outputCommand = handleSortCommand(commandArgument);
+			break;
+		case StringFormat.SEARCH:
+			outputCommand = handleSearchCommand(commandArgument);
+			break;
+		case StringFormat.DONE:
+			outputCommand = handleDoneCommand(commandArgument);
+			break;
+		case StringFormat.EXIT:
+			outputCommand = handleExitCommand();
+			break;
+		case StringFormat.RELOAD:
+			outputCommand = handleReloadCommand();
+			break;
+		default:
+			outputCommand.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+		}
+
+		return outputCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "add" action and contains all
+	 * relevant information: task name, task description, task start time, task
+	 * end time, task location, task priority. Task name must be indicated while
+	 * the rest can be absent.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
+	private static ExecutableCommand handleAddCommand(String[] arg)
+			throws ParseException {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.ADD);
+		String startTiming = StringFormat.EMPTY;
+		String endTiming = StringFormat.EMPTY;
+		String temp;
+
+		if (arg[0] == StringFormat.EMPTY) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK);
+			return tempCommand;
+		}
+
+		tempCommand.setTaskName(arg[0]);
+
+		if (arg.length >= 2) {
+			tempCommand.setTaskDescription(arg[1]);
+		}
+		if (arg.length >= 3) {
+			temp = arg[2];
+
+			if (temp.equals(StringFormat.INVALID)) {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
+
+				return tempCommand;
+			} else if (temp.equals(StringFormat.NULL)) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
+			}
+
+			startTiming = TimeHandler.inputTimingConvertor(temp);
+
+			if (startTiming == null) {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.START));
+
+				return tempCommand;
+			}
+		}
+		if (arg.length >= 4) {
+			temp = arg[3];
+
+			if (temp.equals(StringFormat.INVALID)) {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
+
+				return tempCommand;
+			} else if (temp.equals(StringFormat.NULL)) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
+			}
+
+			endTiming = TimeHandler.inputTimingConvertor(temp);
+
+			if (endTiming == null) {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_TIME, StringFormat.END));
+
+				return tempCommand;
+			}
+		}
+
+		tempCommand = TimeHandler.timingAnalyzer(startTiming, endTiming,
+				tempCommand);
+
+		if (arg.length >= 5) {
+			tempCommand.setTaskLocation(arg[4]);
+		}
+		if (arg.length >= 6) {
+			temp = arg[5].toLowerCase();
+
+			if (!StringFormat.isValidPriority(temp)
+					&& !temp.equals(StringFormat.EMPTY)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+			} else {
+				tempCommand.setTaskPriority(temp);
+			}
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "delete" action and contains all
+	 * relevant information: task index. Task index must be indicated and it can
+	 * be duplicated to perform multiple delete action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return Executable Command containing all relevant information
+	 */
+	private static ExecutableCommand handleDeleteCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.DELETE);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+				return tempCommand;
+			}
+
+			tempCommand.setTaskId(Integer.parseInt(arg[i]));
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "update" action and contains all
+	 * relevant information: task index, update indicator, update key. All
+	 * attributes stated above must be indicated.
+	 * 
+	 * @param arg
+	 *            The user Argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
+	private static ExecutableCommand handleUpdateCommand(String[] arg)
+			throws ParseException {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.UPDATE);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+			return tempCommand;
+		} else if (!isInteger(arg[0]) || Integer.parseInt(arg[0]) < 1) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+			return tempCommand;
+		} else if (arg.length == 1) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+			return tempCommand;
+		} else if (!StringFormat.isValidIndicator(arg[1])) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			return tempCommand;
+		}
+
+		String taskToBeUpdated = arg[0];
+		tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
+
+		String indicator = arg[1].toLowerCase();
+		String updatedItem;
+
+		tempCommand.setIndicator(indicator);
+
+		if (indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END)) {
+			if (arg.length < 3) {
+				tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+				return tempCommand;
+			}
+			updatedItem = TimeHandler.inputTimingConvertor(arg[2]);
+
+			if (updatedItem == null) {
+				if (indicator.equals(StringFormat.START)) {
+					tempCommand.setErrorMessage(String
+							.format(StringFormat.ERROR_INVALID_TIME,
+									StringFormat.START));
+				} else {
+					tempCommand.setErrorMessage(String.format(
+							StringFormat.ERROR_INVALID_TIME, StringFormat.END));
+				}
+
+				return tempCommand;
+			}
+
+			if (indicator.equals(StringFormat.START)
+					|| indicator.equals(StringFormat.END)) {
+				Date checkUpdatedItem = new Date(Long.valueOf(updatedItem));
+				Date currentDate = new Date(System.currentTimeMillis());
+
+				if (checkUpdatedItem.before(currentDate)) {
+					if (indicator.equals(StringFormat.START)) {
+						tempCommand.setErrorMessage(String.format(
+								StringFormat.ERROR_INVALID_EARLIER_TIME,
+								StringFormat.START));
+					} else {
+
+						tempCommand.setErrorMessage(String.format(
+								StringFormat.ERROR_INVALID_EARLIER_TIME,
+								StringFormat.END));
+					}
+
+					return tempCommand;
+				}
+			}
+		} else if (indicator.equals(StringFormat.PRIORITY)) {
+			String check = arg[2].toLowerCase();
+			if (check.equals(StringFormat.HIGH_PRIORITY)
+					|| check.equals(StringFormat.LOW_PRIORITY)
+					|| check.equals(StringFormat.MEDIUM_PRIORITY)) {
+				updatedItem = check;
+			} else if (check.equals(StringFormat.IMPORTANT)) {
+				updatedItem = StringFormat.HIGH_PRIORITY;
+			} else if (check.equals(StringFormat.UNIMPORTANT)) {
+				updatedItem = StringFormat.LOW_PRIORITY;
+			} else {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+
+				return tempCommand;
+			}
+		} else {
+			updatedItem = arg[2];
+		}
+
+		tempCommand.setKey(updatedItem);
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "display" action and contains all
+	 * relevant information: display indicator. Display indicator can be
+	 * ignored. In this case, default display operation will be executed.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
+	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.DISPLAY);
+
+		if (arg.length == 0) {
+			tempCommand.setIndicator(StringFormat.MAIN_TASK_LIST);
+			return tempCommand;
+		} else {
+			if (arg[0].equals(StringFormat.DONE)) {
+				tempCommand.setIndicator(StringFormat.DONE_TASK_LIST);
+			} else {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			}
+		}
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "undo" action
+	 * 
+	 * @return ExecutableCommand with undo action indicated
+	 */
+	private static ExecutableCommand handleUndoCommand() {
+		return new ExecutableCommand(StringFormat.UNDO);
+	}
+
+	/**
+	 * create an ExecutableCommand object with "redo" action
+	 * 
+	 * @return ExecutableCommand with redo action indicated
+	 */
+	private static ExecutableCommand handleRedoCommand() {
+		return new ExecutableCommand(StringFormat.REDO);
+	}
+
+	/**
+	 * create an ExecutableCommand object with "clear" action
+	 * 
+	 * @return ExecutableCommand with clear action indicated
+	 */
+	private static ExecutableCommand handleClearCommand() {
+		return new ExecutableCommand(StringFormat.CLEAR);
+	}
+
+	/**
+	 * create an ExecutableCommand object with "sort" action and contains all
+	 * relevant information: sort indicator. Sort indicator must be indicated
+	 * and it can be duplicated to perform multiple sort action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
+	private static ExecutableCommand handleSortCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			String sortIndicator = arg[i].toLowerCase();
+
+			if (!StringFormat.isValidIndicator(sortIndicator)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+				return tempCommand;
+			}
+			tempCommand.setIndicator(sortIndicator);
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "search" action and contains all
+	 * relevant information:search indicator and search key. Search indicator
+	 * and search key must be indicated and they can be duplicated to perform
+	 * multiple search action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 * @throws ParseException
+	 *             If there is an error during parsing operation
+	 */
+	private static ExecutableCommand handleSearchCommand(String[] arg)
+			throws ParseException {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(
+				StringFormat.SEARCH);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1 && arg[0].equals(StringFormat.INVALID)) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+			return tempCommand;
+		} else if (arg.length == 1) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+			return tempCommand;
+		}
+
+		boolean priorityExistence = false;
+
+		for (int i = 0; i < arg.length; i++) {
+			String temp = arg[i];
+			boolean indicatorExistence = i % 2 == 0 ? true : false;
+			boolean argumentExistence = i % 2 != 0 ? true : false;
+
+			if (temp.equals(StringFormat.INVALID)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+				return tempCommand;
+			}
+
+			if (indicatorExistence) {
+				tempCommand.setIndicator(temp.toLowerCase());
+
+				if (temp.equals(StringFormat.PRIORITY)) {
+					priorityExistence = true;
+				}
+			} else if (argumentExistence) {
+				if (StringFormat.isTimeOrDate(temp)) {
+					String indicator = arg[i - 1];
+					String searchKey = TimeHandler.inputTimingConvertor(temp);
+
+					if (searchKey == null) {
+						if (indicator.equals(StringFormat.START)) {
+							tempCommand.setErrorMessage(String.format(
+									StringFormat.ERROR_INVALID_TIME,
+									StringFormat.START));
+						} else {
+							tempCommand.setErrorMessage(String.format(
+									StringFormat.ERROR_INVALID_TIME,
+									StringFormat.END));
+						}
+
+						return tempCommand;
+					} else {
+						tempCommand.setKey(searchKey);
+					}
+				} else if (priorityExistence) {
+					if (!StringFormat.isValidPriority(temp)) {
+						tempCommand
+								.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+
+						return tempCommand;
+					} else {
+						switch (temp) {
+						case StringFormat.IMPORTANT:
+							tempCommand.setKey(StringFormat.HIGH_PRIORITY);
+							break;
+						case StringFormat.UNIMPORTANT:
+							tempCommand.setKey(StringFormat.LOW_PRIORITY);
+							break;
+						default:
+							tempCommand.setKey(temp.toLowerCase());
+						}
+					}
+				} else {
+					tempCommand.setKey(temp);
+				}
+			}
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "done" action and contains all
+	 * relevant information: task index. Task index must be indicated and it can
+	 * be duplicated to perform multiple done action.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
+	private static ExecutableCommand handleDoneCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DONE);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			if (!isInteger(arg[i]) || Integer.parseInt(arg[i]) < 1) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+				return tempCommand;
+			}
+
+			tempCommand.setTaskId(Integer.parseInt(arg[i]));
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * create an ExecutableCommand object with "exit" action
+	 * 
+	 * @return ExecutableCommand with exit action indicated
+	 */
+	private static ExecutableCommand handleExitCommand() {
+		return new ExecutableCommand(StringFormat.EXIT);
+	}
+
+	private static ExecutableCommand handleReloadCommand() {
+		return new ExecutableCommand(StringFormat.RELOAD);
+	}
+
+	private static boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private static String getUserAction(String[] parsedInput) {
+		return parsedInput[0].toLowerCase();
+	}
+
+	private static String[] getArgument(String[] parsedInput) {
+		String[] arg = new String[parsedInput.length - 1];
+
+		for (int i = 1; i < parsedInput.length; i++) {
+			arg[i - 1] = parsedInput[i].trim();
+		}
+
+		return arg;
+	}
+
+}
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Analyzer.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\ExecutableCommand.java
+	 */
+
+import java.util.ArrayList;
+
+public class ExecutableCommand {
+	
+	// attributes in this object.
+	private String action;
+
+	// Task Class attributes for (add and update).
+	private String taskName;
+	private String taskDescription;
+	private String taskStart;
+	private String taskEnd;
+	private String taskLocation;
+	private String taskPriority;
+
+	// this is for identification of task.
+	private ArrayList<Integer> taskId;
+
+	// errorMessage is used for Analyzer to report error to controller.
+	private String errorMessage;
+
+	// these are for display, update, sort or search method.
+	private ArrayList<String> indicator;
+	private ArrayList<String> key;
+
+	/**
+	 * Constructor
+	 */
+
+	ExecutableCommand() {
+		this.taskId = new ArrayList<Integer>();
+		this.indicator = new ArrayList<String>();
+		this.key = new ArrayList<String>();
+		
+		this.action = "";
+
+		this.taskName = "";
+		this.taskDescription = "";
+		this.taskStart = "";
+		this.taskEnd = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+
+		this.errorMessage = "";
+	}
+
+	ExecutableCommand(String action) {
+		this.taskId = new ArrayList<Integer>();
+		this.indicator = new ArrayList<String>();
+		this.key = new ArrayList<String>();
+		
+		this.action = action;
+
+		this.taskName = "";
+		this.taskDescription = "";
+		this.taskStart = "";
+		this.taskEnd = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+
+		this.errorMessage = "";
+	}
+
+	/**
+	 * set methods
+	 */
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public void setTaskName(String name) {
+		this.taskName = name;
+	}
+
+	public void setTaskDescription(String description) {
+		this.taskDescription = description;
+	}
+
+	public void setTaskStart(String timing) {
+		this.taskStart = timing;
+	}
+
+	public void setTaskEnd(String timing) {
+		this.taskEnd = timing;
+	}
+
+	public void setTaskLocation(String location) {
+		this.taskLocation = location;
+	}
+
+	public void setTaskPriority(String priority) {
+		this.taskPriority = priority;
+	}
+
+	public void setTaskId(int id) {
+		this.taskId.add(id);
+	}
+
+	public void setErrorMessage(String message) {
+		this.errorMessage = message;
+	}
+
+	public void setIndicator(String indicator) {
+		this.indicator.add(indicator);
+	}
+
+	public void setKey(String key) {
+		this.key.add(key);
+	}
+
+	/**
+	 * get methods
+	 */
+
+	public String getAction() {
+		return action;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public String getTaskStart() {
+		return taskStart;
+	}
+
+	public String getTaskEnd() {
+		return taskEnd;
+	}
+
+	public String getTaskLocation() {
+		return taskLocation;
+	}
+
+	public String getTaskPriority() {
+		return taskPriority;
+	}
+
+	public ArrayList<Integer> getTaskId() {
+		return taskId;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public ArrayList<String> getIndicator() {
+		return indicator;
+	}
+
+	public ArrayList<String> getKey() {
+		return key;
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\ExecutableCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 */
+
+	/**
+	 * error messages used in Analyzer and TimeHandler
+	 */
+	public static final String ERROR_NULL_COMMAND = "Command is not inserted.\n";
+	public static final String ERROR_NULL_TASK_INDEX = "Task index is not inserted.\n";
+	public static final String ERROR_NULL_TASK = "Task name is not inserted.\n";
+	public static final String ERROR_NULL_INDICATOR = "Indicator is not inserted.\n";
+	public static final String ERROR_NULL_ARGUMENT = "Argument is not inserted.\n";
+	public static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+	public static final String ERROR_INVALID_TASK_INDEX = "Task index indicated is invalid.\n";
+	public static final String ERROR_INVALID_INDICATOR = "Input indicator is invalid.\n";
+	public static final String ERROR_INVALID_PRIORITY = "Input priority is invalid.\n";
+	public static final String ERROR_INVALID_TIME = "Format of input %s time is invalid.\n";
+	public static final String ERROR_INVALID_EARLIER_TIME = "Input %s time is earlier than current time.\n";
+	public static final String ERROR_INVALID_END_EARLIER_THAN_START = "End time is earlier than start time.\n";
+
+	/**
+	 * action
+	 */
+	public static final String ADD = "add";
+	public static final String DELETE = "delete";
+	public static final String DISPLAY = "display";
+	public static final String UPDATE = "update";
+	public static final String SEARCH = "search";
+	public static final String CLEAR = "clear";
+	public static final String SORT = "sort";
+	public static final String UNDO = "undo";
+	public static final String REDO = "redo";
+	public static final String DONE = "done";
+	public static final String EXIT = "exit";
+	public static final String RELOAD = "reload";
+	public static final String HELP = "help";
+	public static final String TUTORIAL = "tutorial";
+	public static final String SETTINGS = "settings";
+
+	/**
+	 * sort, search and update indicators
+	 */
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
+	public static final String LOCATION = "location";
+	public static final String PRIORITY = "priority";
+	public static final String START = "start";
+	public static final String END = "end";
+	public static final String START_TIME = "start time";
+	public static final String END_TIME = "end time";
+	public static final String START_DATE = "start date";
+	public static final String END_DATE = "end date";
+	public static final String HIGH_PRIORITY = "high";
+	public static final String MEDIUM_PRIORITY = "medium";
+	public static final String LOW_PRIORITY = "low";
+
+	/**
+	 * user input indicators
+	 */
+	public static final String PRIORITY_INDICATOR = "#";
+	public static final String LOCATION_INDICATOR = "@";
+	public static final String TIME_INDICATOR = ":";
+	public static final String SEPARATE_INDICATOR = ";";
+	public static final String DATE_INDICATOR = "/";
+	public static final String SPACE_INDICATOR = " ";
+	public static final String DUE_INDICATOR = "due";
+	public static final String DUE_ON_INDICATOR = "dueon";
+	public static final String DUE_AT_INDICATOR = "dueat";
+	public static final String TO_INDICATOR = "to";
+	public static final String AT_INDICATOR = "at";
+	public static final String ON_INDICATOR = "on";
+	public static final String AM_INDICATOR = "am";
+	public static final String PM_INDICATOR = "pm";
+	public static final String FROM_INDICATOR = "from";
+	public static final String IMPORTANT = "important";
+	public static final String UNIMPORTANT = "unimportant";
+
+	/**
+	 * current task list and done task list indicators
+	 */
+	public static final String MAIN_TASK_LIST = "main task list";
+	public static final String DONE_TASK_LIST = "done task list";
+
+	/**
+	 * invalid and null indicators
+	 */
+	public static final String INVALID = "invalid";
+	public static final String NULL = "null";
+
+	/**
+	 * empty indicator
+	 */
+	public static final String EMPTY = "";
+
+	/**
+	 * check valid indicator
+	 */
+	public static boolean isValidIndicator(String indicator) {
+		return indicator.equals(StringFormat.NAME)
+				|| indicator.equals(StringFormat.DESCRIPTION)
+				|| indicator.equals(StringFormat.LOCATION)
+				|| indicator.equals(StringFormat.PRIORITY)
+				|| indicator.equals(StringFormat.START)
+				|| indicator.equals(StringFormat.END);
+	}
+
+	/**
+	 * check valid priority
+	 */
+	public static boolean isValidPriority(String priority) {
+		return priority.equals(HIGH_PRIORITY)
+				|| priority.equals(MEDIUM_PRIORITY)
+				|| priority.equals(LOW_PRIORITY) || priority.equals(IMPORTANT)
+				|| priority.equals(UNIMPORTANT);
+	}
+
+	/**
+	 * check input indicator
+	 */
+	public static boolean isInputIndicator(String indicator) {
+		return indicator.equals(StringFormat.TIME_INDICATOR)
+				|| indicator.equals(StringFormat.DUE_AT_INDICATOR)
+				|| indicator.equals(StringFormat.DUE_ON_INDICATOR)
+				|| indicator.contains(StringFormat.LOCATION_INDICATOR)
+				|| indicator.contains(StringFormat.PRIORITY_INDICATOR);
+	}
+
+	public static boolean isAmbiguousInputIndicator(String indicator) {
+		return indicator.equals(StringFormat.TO_INDICATOR)
+				|| indicator.equals(StringFormat.FROM_INDICATOR)
+				|| indicator.equals(StringFormat.AT_INDICATOR)
+				|| indicator.equals(StringFormat.ON_INDICATOR);
+	}
+
+	/**
+	 * check existence of date or time or both
+	 */
+	public static boolean isTimeOrDate(String temp) {
+		return temp.contains(StringFormat.TIME_INDICATOR)
+				|| temp.contains(StringFormat.DATE_INDICATOR);
+	}
+
+	public static boolean isDate(String temp) {
+		return temp.contains(StringFormat.DATE_INDICATOR);
+	}
+
+	public static boolean isTime(String temp) {
+		return temp.contains(StringFormat.TIME_INDICATOR);
+	}
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestAnalyzer.java
+	 */
+
+
+import static org.junit.Assert.*;
+
+import java.text.ParseException;
+import java.util.Date;
+
+import org.junit.Test;
+
+public class TestAnalyzer {
+	
+	private static Date currentDate = new Date(System.currentTimeMillis());
+	private static Date d1 = new Date(115, 9, 14);
+	private static Date d2 = new Date(115, 9, 20);
+	private static Date d3 = new Date(115, 9, 14, 0, 0);
+	private static Date d4 = new Date(115, 9, 20, 23, 59);
+	private static Date d5 = new Date(115, 9, 20, 2, 38);
+	private static int currentYear = currentDate.getYear();
+	private static int currentMonth = currentDate.getMonth();
+	private static int currentDay = currentDate.getDate();
+	private static Date d6 = new Date(currentYear, currentMonth, currentDay,
+			23, 59);
+	private static Date d7 = new Date(115, 9, 20, 16, 50);
+
+	@Test
+	public void testHandleAddCommand() throws ParseException {
+		Command test1 = new Command("add");
+		Command test2 = new Command("add meeting with friends");
+		Command test3 = new Command(
+				"add meeting with friends; discuss about CS2103T project");
+		Command test4 = new Command(
+				"add meeting with friends; discuss about CS2103T project on 14/10/2015");
+		Command test5 = new Command(
+				"add meeting with friends; discuss about CS2103T project on 14/10/2015 @NUS");
+		Command test6 = new Command(
+				"add meeting with friends; discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
+		Command test7 = new Command(
+				"add meeting with friends; discuss about CS2103T project from 14/10/2015 to 20/10/2015 @NUS #medium");
+		Command test8 = new Command("add assignment on 14/10/2015 @NUS #medium");
+		Command test9 = new Command(
+				"add jogging due on 20/10/2015 @NUS #medium");
+		Command test10 = new Command(
+				"add project from 14/10/2015 to 20/10/2015 @NUS #medium");
+		Command test11 = new Command(
+				"add project from 14/10/2015 to 20/10/2015 2:38AM @NUS #medium");
+		Command test12 = new Command("add trial on 32/2/2015");
+		Command test13 = new Command("add trial on 25/13/2015");
+		Command test14 = new Command("add trial on 29/2/2017");
+		Command test15 = new Command("add trial on 31/4/2015");
+		Command test16 = new Command("add trial on 22/2/2017 13:24PM");
+		Command test17 = new Command("add trial on 22/4/2015 12:60AM");
+		Command test18 = new Command("add trial @nus soc #important");
+		Command test19 = new Command("add trial #kr mrt");
+		Command test20 = new Command("add trial on 3:45pm");
+		Command test21 = new Command("add trial at 11/11/2014");
+		Command test22 = new Command("add trial due at 3/11/2015");
+		Command test23 = new Command("add trial due on 3:45pm");
+		Command test24 = new Command("add trial #high");
+		Command test25 = new Command(
+				"add assignment from 20/10/2015 2:38AM to 4:50pm");
+		Command test26 = new Command("add assignment from Ms Khoo");
+		Command test27 = new Command(
+				"add assignment from Ms Khoo from 20/10/2015 2:38AM to 4:50pm");
+		Command test28 = new Command("add assignment from");
+		Command test29 = new Command("add assignement on");
+		Command test30 = new Command("add assignment from");
+		Command test31 = new Command("add assignement due at");
+		Command test32 = new Command("add assignment due on");
+		Command test33 = new Command("add assignement at");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
+		expected.setTaskName("meeting with friends");
+		expected.setTaskDescription("discuss about CS2103T project");
+		expected.setTaskStart(String.valueOf(d1.getTime()));
+		expected.setTaskEnd(String.valueOf(d2.getTime()));
+		expected.setTaskLocation("NUS");
+		expected.setTaskPriority(StringFormat.MEDIUM_PRIORITY);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.ADD);
+		expected2.setTaskName("assignment from Ms Khoo");
+		expected2.setTaskStart(String.valueOf(d3.getTime()));
+		expected2.setTaskEnd(String.valueOf(d4.getTime()));
+		expected2.setErrorMessage(String.format(
+				StringFormat.ERROR_INVALID_TIME, StringFormat.START));
+		expected2.setTaskLocation("nus soc");
+		expected2.setTaskPriority(StringFormat.HIGH_PRIORITY);
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.ADD);
+		expected3.setTaskStart(String.valueOf(d3.getTime()));
+		expected3.setTaskEnd(String.valueOf(d5.getTime()));
+		expected3.setErrorMessage(String
+				.format(StringFormat.ERROR_INVALID_PRIORITY));
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.ADD);
+		expected4.setErrorMessage(String.format(
+				StringFormat.ERROR_INVALID_TIME, StringFormat.END));
+		expected4.setTaskEnd(String.valueOf(d7.getTime()));
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.ADD);
+		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+
+		// test case 1: test if the error catcher is working
+		assertEquals("null argument case is not handled",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the task name is able to be added
+		assertEquals("fail to get task name to be added",
+				expected.getTaskName(), Analyzer.runAnalyzer(test2)
+						.getTaskName());
+
+		// test case 3: test if the task description is able to be added
+		assertEquals("fail to get task description to be added",
+				expected.getTaskDescription(), Analyzer.runAnalyzer(test3)
+						.getTaskDescription());
+
+		// test case 4: test if the task start timing is able to be added
+		assertEquals("fail to get task start timing to be added",
+				expected.getTaskStart(), Analyzer.runAnalyzer(test4)
+						.getTaskStart());
+
+		// test case 5: test if the task location is able to be added
+		assertEquals("fail to get task location to be added",
+				expected.getTaskLocation(), Analyzer.runAnalyzer(test5)
+						.getTaskLocation());
+
+		// test case 6: test if the task priority is able to be added
+		assertEquals("fail to get task priority to be added",
+				expected.getTaskPriority(), Analyzer.runAnalyzer(test6)
+						.getTaskPriority());
+
+		// test case 7: test if the task end timing is able to be added
+		assertEquals("fail to get task end timing to be added",
+				expected.getTaskEnd(), Analyzer.runAnalyzer(test7).getTaskEnd());
+
+		// test case 8: test if the task start timing is able to be added
+		// correctly without the presence of task end timing
+		assertEquals("fail to get only task start timing to be added",
+				expected.getTaskStart(), Analyzer.runAnalyzer(test8)
+						.getTaskStart());
+
+		// test case 9: test if the task end timing is able to be added
+		// correctly without the presence of task start timing
+		assertEquals("fail to get only task end timing to be added",
+				expected.getTaskEnd(), Analyzer.runAnalyzer(test9).getTaskEnd());
+
+		// test case 10: test if the task start time will be recorded into task
+		// start timing correctly
+		assertEquals("fail to get task start timing (with time) to be added",
+				expected2.getTaskStart(), Analyzer.runAnalyzer(test10)
+						.getTaskStart());
+
+		// test case 11: test if the task end time will be recorded into task
+		// end timing correctly
+		assertEquals("fail to get task end timing (with time) to be added",
+				expected3.getTaskEnd(), Analyzer.runAnalyzer(test11)
+						.getTaskEnd());
+
+		// test case 12: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test12)
+						.getErrorMessage());
+
+		// test case 13: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test13)
+						.getErrorMessage());
+
+		// test case 14: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test14)
+						.getErrorMessage());
+
+		// test case 15: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test15)
+						.getErrorMessage());
+
+		// test case 16: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test16)
+						.getErrorMessage());
+
+		// test case 17: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start timing",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test17)
+						.getErrorMessage());
+
+		// test case 18: test if the task location is able to be added correctly
+		// with space within
+		assertEquals("fail to get task location to be added",
+				expected2.getTaskLocation(), Analyzer.runAnalyzer(test18)
+						.getTaskLocation());
+
+		// test case 19: test if the invalid priority is able to be detected
+		assertEquals("fail to detect invalid task priority",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test19)
+						.getErrorMessage());
+
+		// test case 20: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test20)
+						.getErrorMessage());
+
+		// test case 21: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test21)
+						.getErrorMessage());
+
+		// test case 22: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test22)
+						.getErrorMessage());
+
+		// test case 23: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test23)
+						.getErrorMessage());
+
+		// test case 24: test if the task priority will be recorded correctly
+		assertEquals("fail to get task priority to be added",
+				expected2.getTaskPriority(), Analyzer.runAnalyzer(test24)
+						.getTaskPriority());
+
+		// test case 25: test if timed task will be added correctly
+		assertEquals("fail to get timed task to be added correctly",
+				expected4.getTaskEnd(), Analyzer.runAnalyzer(test25)
+						.getTaskEnd());
+
+		// test case 26: test if the task name is able to be added
+		assertEquals("fail to get task name to be added",
+				expected2.getTaskName(), Analyzer.runAnalyzer(test26)
+						.getTaskName());
+
+		// test case 27: test if the task name is able to be added
+		assertEquals("fail to get task name to be added",
+				expected2.getTaskName(), Analyzer.runAnalyzer(test27)
+						.getTaskName());
+
+		// test case 28: test if timed task will be added correctly
+		assertEquals("fail to get timed task to be added correctly",
+				expected4.getTaskEnd(), Analyzer.runAnalyzer(test27)
+						.getTaskEnd());
+		
+		// test case 29: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test28)
+						.getErrorMessage());
+		
+		// test case 30: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test29)
+						.getErrorMessage());
+		
+		// test case 31: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test30)
+						.getErrorMessage());
+		
+		// test case 32: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test31)
+						.getErrorMessage());
+		
+		// test case 33: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test32)
+						.getErrorMessage());
+		
+		// test case 34: test if the null argument is able to be detected
+		assertEquals("fail to detect null argument",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test33)
+						.getErrorMessage());
+	}
+
+	@Test
+	public void testHandleDeleteCommand() throws ParseException {
+		Command test1 = new Command("delete");
+		Command test2 = new Command("delete 0");
+		Command test3 = new Command("delete meeting with friends");
+		Command test4 = new Command("delete 1; 3");
+		Command test5 = new Command("delete 1; 0; 3");
+		Command test6 = new Command("delete 1; meeting with friends");
+		Command test7 = new Command("delete 1; 3; -3");
+		Command test8 = new Command("delete 1 3 ");
+		Command test9 = new Command("delete 1; 3 4");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DELETE);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+		expected.setTaskId(1);
+		expected.setTaskId(3);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DELETE);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+		expected2.setTaskId(1);
+		expected2.setTaskId(3);
+		expected2.setTaskId(4);
+
+		// test case 1: test if the error catcher for null argument is working
+		assertEquals("null argument case is not handled",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if multiple delete can be analyzed correctly
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test4).getTaskId());
+
+		// test case 5: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 7: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+
+		// test case 7: test if multiple delete can be analyzed correctly
+		// without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test8).getTaskId());
+
+		// test case 8: test if multiple delete can be analyzed correctly with
+		// or without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
+
+	}
+
+	@Test
+	public void testHandleUpdateCommand() throws ParseException {
+		Command test1 = new Command("update");
+		Command test2 = new Command("update 2");
+		Command test3 = new Command("update meeting");
+		Command test4 = new Command("update 2 name dating");
+		Command test5 = new Command("update 0 location nus");
+		Command test6 = new Command("update 1 importance high");
+		Command test7 = new Command("update 1 start");
+		Command test8 = new Command("update 1 start 20/10/2015 2:38AM");
+		Command test9 = new Command("update 1 end 14/10/2015");
+		Command test10 = new Command("update 1 start time 11:59pm");
+		Command test11 = new Command("update 1 task to be updated");
+		Command test12 = new Command("update 1 name new task");
+		Command test13 = new Command("update 1 description new task");
+		Command test14 = new Command("update 1 location nus mrt");
+		Command test15 = new Command("update 1 priority yes");
+		Command test16 = new Command("update 1 priority important");
+		Command test17 = new Command("update 1 priority high");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.UPDATE);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+		expected.setKey(String.valueOf(d5.getTime()));
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.UPDATE);
+		expected2.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+		expected2.setKey(String.valueOf(d1.getTime()));
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.UPDATE);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+		expected3.setKey(String.valueOf(d6.getTime()));
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.UPDATE);
+		expected4.setKey("dating");
+		expected4.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.UPDATE);
+		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+		expected5.setKey("new task");
+
+		ExecutableCommand expected6 = new ExecutableCommand(StringFormat.UPDATE);
+		expected6.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+		expected6.setKey("nus mrt");
+
+		ExecutableCommand expected7 = new ExecutableCommand(StringFormat.UPDATE);
+		expected7.setKey(StringFormat.HIGH_PRIORITY);
+
+		// test case 1: test if the error catcher for null argument is working
+		assertEquals("null argument case is not handled",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for null update indicator is
+		// working
+		assertEquals("null update indicator case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid input argument is
+		// working
+		assertEquals("invalid input argument case is not handled",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if the task name to be updated is stored correctly
+		assertEquals("fail to get task name to be updated", expected4.getKey(),
+				Analyzer.runAnalyzer(test4).getKey());
+
+		// test case 5: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid update indicator
+		// is working
+		assertEquals("invalid update indicator is not detected",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 7: test if the error catcher for null argument case is
+		// working
+		assertEquals("null argument error is not detected",
+				expected5.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+
+		// test case 8: test if the new time to be updated is stored correctly
+		assertEquals("new time to be updated is unable to be stored correctly",
+				expected.getKey(), Analyzer.runAnalyzer(test8).getKey());
+
+		// test case 9: test if the new time to be updated is stored correctly
+		assertEquals("new time to be updated is unable to be stored correctly",
+				expected2.getKey(), Analyzer.runAnalyzer(test9).getKey());
+
+		// test case 10: test when the user input something unexpected, but
+		// required key words are all existed in valid format, it still work
+		assertEquals("new time to be updated is unable to stored correctly",
+				expected3.getKey(), Analyzer.runAnalyzer(test10).getKey());
+
+		// test case 11: test if the error catcher for invalid update indicator
+		// is working
+		assertEquals("invalid update indicator is not detected",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test11)
+						.getErrorMessage());
+
+		// test case 12: test if the new task name to be updated is stored
+		// correctly
+		assertEquals(
+				"new task name to be updated is unable to be stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test12).getKey());
+
+		// test case 13: test if the new task description to be updated is
+		// stored correctly
+		assertEquals(
+				"new task description to be updated is unable to be stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test13).getKey());
+
+		// test case 14: test if the new task location to be updated is stored
+		// correctly
+		assertEquals(
+				"new task location to be updated is unable to be stored correctly",
+				expected6.getKey(), Analyzer.runAnalyzer(test14).getKey());
+
+		// test case 15: test if the error catcher for invalid priority
+		// is working
+		assertEquals(
+				"new task name to be updated is unable to be stored correctly",
+				expected6.getErrorMessage(), Analyzer.runAnalyzer(test15)
+						.getErrorMessage());
+
+		// test case 16: test if the new task priority to be updated is
+		// stored correctly
+		assertEquals(
+				"new task priority to be updated is unable to be stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test16).getKey());
+
+		// test case 16: test if the new task priority to be updated is
+		// stored correctly
+		assertEquals(
+				"new task priority to be updated is unable to be stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test17).getKey());
+
+	}
+
+	@Test
+	public void testHandleDisplayCommand() throws ParseException {
+		Command test1 = new Command("display");
+		Command test2 = new Command("displayy");
+		Command test3 = new Command("DISPLAY");
+		Command test4 = new Command("display asdasdaooxcj");
+		Command test5 = new Command("display done");
+		Command test6 = new Command("display DONE");
+		Command test7 = new Command("display donne");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DISPLAY);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+		expected.setIndicator(StringFormat.DONE_TASK_LIST);
+
+		ExecutableCommand expected2 = new ExecutableCommand(
+				StringFormat.DISPLAY);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+		// test case 1: test if the display action is processed correctly
+		assertEquals("display action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid display command is
+		// working
+		assertEquals("unable to detect invalid display command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the error catcher for invalid display indicator
+		// is working
+		assertEquals("unable to detect invalid display indicator",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4)
+						.getErrorMessage());
+
+		// test case 5: test if the user is able to perform display done list
+		// command
+		assertEquals("user is unable to perform display done list command",
+				expected.getIndicator(), Analyzer.runAnalyzer(test5)
+						.getIndicator());
+
+		// test case 6: test if the user is able to perform display done list
+		// command with the capitalized done indicator
+		assertEquals("unable to detect invalid display indicator",
+				expected.getIndicator(), Analyzer.runAnalyzer(test6)
+						.getIndicator());
+
+		// test case 7: test if the error catcher for invalid display indicator
+		// is working
+		assertEquals("unable to detect invalid display indicator",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+	}
+
+	@Test
+	public void testHandleSearchCommand() throws ParseException {
+		Command test1 = new Command("search");
+		Command test2 = new Command("search name");
+		Command test3 = new Command("search task meeting");
+		Command test4 = new Command("search name meeting");
+		Command test5 = new Command("search name meeting with friends");
+		Command test6 = new Command("search start 14/10/2015");
+		Command test7 = new Command("search start 11:59pm");
+		Command test8 = new Command("search end 20/10/2015 2:38AM");
+		Command test9 = new Command("search end time 11:59pm");
+		Command test10 = new Command("search description new");
+		Command test11 = new Command("search description new task");
+		Command test12 = new Command("search location nus");
+		Command test13 = new Command("search location kr mrt");
+		Command test14 = new Command("search priority yes");
+		Command test15 = new Command("search priority unimportant");
+		Command test16 = new Command("search priority low");
+		Command test17 = new Command("search name meeting; desc new");
+		Command test18 = new Command("search name meeting; description new");
+		Command test19 = new Command(
+				"search name meeting with friends; description new task");
+		Command test20 = new Command(
+				"search name meeting with friends; description new task; location kr mrt");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.SEARCH);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+		expected.setKey("meeting");
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SEARCH);
+		expected2.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+		expected2.setKey("meeting with friends");
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SEARCH);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+		expected3.setKey(String.valueOf(d1.getTime()));
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SEARCH);
+		expected4.setErrorMessage(StringFormat.ERROR_INVALID_PRIORITY);
+		expected4.setKey(String.valueOf(d6.getTime()));
+
+		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.SEARCH);
+		expected5.setKey(String.valueOf(d5.getTime()));
+
+		ExecutableCommand expected6 = new ExecutableCommand(StringFormat.SEARCH);
+		expected6.setKey("new");
+
+		ExecutableCommand expected7 = new ExecutableCommand(StringFormat.SEARCH);
+		expected7.setKey("new task");
+
+		ExecutableCommand expected8 = new ExecutableCommand(StringFormat.SEARCH);
+		expected8.setKey("nus");
+
+		ExecutableCommand expected9 = new ExecutableCommand(StringFormat.SEARCH);
+		expected9.setKey("kr mrt");
+
+		ExecutableCommand expected10 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected10.setKey(StringFormat.LOW_PRIORITY);
+
+		ExecutableCommand expected11 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected11.setKey("meeting");
+		expected11.setKey("new");
+
+		ExecutableCommand expected12 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected12.setKey("meeting with friends");
+		expected12.setKey("new task");
+
+		ExecutableCommand expected13 = new ExecutableCommand(
+				StringFormat.SEARCH);
+		expected13.setKey("meeting with friends");
+		expected13.setKey("new task");
+		expected13.setKey("kr mrt");
+
+		// test case 1: test if the error catcher for null indicator is working
+		// correctly
+		assertEquals("unable to detect null indicator error",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for null argument is working
+		// correctly
+		assertEquals("unable to detect null argument error",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid search indicator
+		// is able to work correctly
+		assertEquals("unable to detect invalid search indicator",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if the task name to be searched is stored correctly
+		assertEquals("task name to be searched is not stored correctly",
+				expected.getKey(), Analyzer.runAnalyzer(test4).getKey());
+
+		// test case 5: test if the task name to be searched is stored correctly
+		assertEquals("task name to be searched is not stored correctly",
+				expected2.getKey(), Analyzer.runAnalyzer(test5).getKey());
+
+		// test case 6: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected3.getKey(), Analyzer.runAnalyzer(test6).getKey());
+
+		// test case 7: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected4.getKey(), Analyzer.runAnalyzer(test7).getKey());
+
+		// test case 8: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected5.getKey(), Analyzer.runAnalyzer(test8).getKey());
+
+		// test case 9: test if the time to be searched is stored correctly
+		assertEquals("time to be searched is not stored correctly",
+				expected4.getKey(), Analyzer.runAnalyzer(test9).getKey());
+
+		// test case 10: test if the task description to be searched is stored
+		// correctly
+		assertEquals("task description to be searched is not stored correctly",
+				expected6.getKey(), Analyzer.runAnalyzer(test10).getKey());
+
+		// test case 11: test if the task description to be searched is stored
+		// correctly
+		assertEquals("task description to be searched is not stored correctly",
+				expected7.getKey(), Analyzer.runAnalyzer(test11).getKey());
+
+		// test case 12: test if the task location to be searched is stored
+		// correctly
+		assertEquals("task location to be searched is not stored correctly",
+				expected8.getKey(), Analyzer.runAnalyzer(test12).getKey());
+
+		// test case 13: test if the task location to be searched is stored
+		// correctly
+		assertEquals("task location to be searched is not stored correctly",
+				expected9.getKey(), Analyzer.runAnalyzer(test13).getKey());
+
+		// test case 14: test if the error catcher for invalid priority is able
+		// to work correctly
+		assertEquals("unable to detect invalid priority",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test14)
+						.getErrorMessage());
+
+		// test case 15: test if the task priority to be searched is stored
+		// correctly
+		assertEquals("task priority to be searched is not stored correctly",
+				expected10.getKey(), Analyzer.runAnalyzer(test15).getKey());
+
+		// test case 16: test if the task priority to be searched is stored
+		// correctly
+		assertEquals("task priority to be searched is not stored correctly",
+				expected10.getKey(), Analyzer.runAnalyzer(test16).getKey());
+
+		// test case 17: test if the error catcher for invalid search indicator
+		// is able to work correctly
+		assertEquals("unable to detect invalid search indicator",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test17)
+						.getErrorMessage());
+
+		// test case 18: test if the multiple search indicators and keys are
+		// able to stored correctly correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected11.getKey(), Analyzer.runAnalyzer(test18).getKey());
+
+		// test case 19: test if the multiple search indicators and keys are
+		// able to stored correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected12.getKey(), Analyzer.runAnalyzer(test19).getKey());
+
+		// test case 20: test if the multiple search indicators and keys are
+		// able to stored correctly
+		assertEquals(
+				"unable to get multiple search indicators and keys to be stored correctly",
+				expected13.getKey(), Analyzer.runAnalyzer(test20).getKey());
+
+	}
+
+	@Test
+	public void testHandleSortCommand() throws ParseException {
+		Command test1 = new Command("sort");
+		Command test2 = new Command("sort name");
+		Command test3 = new Command("sort priority; location");
+		Command test4 = new Command("sort place");
+		Command test5 = new Command("sort priority; place");
+		Command test6 = new Command("sortS name");
+		Command test7 = new Command("SORT start");
+		Command test8 = new Command("sort asdasdaooxcj");
+		Command test9 = new Command("sort end time");
+		Command test10 = new Command("sort priority location");
+		Command test11 = new Command("sort priority location; name");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.SORT);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+		expected.setIndicator(StringFormat.NAME);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.SORT);
+		expected2.setIndicator(StringFormat.PRIORITY);
+		expected2.setIndicator(StringFormat.LOCATION);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+		ExecutableCommand expected3 = new ExecutableCommand(StringFormat.SORT);
+		expected3.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+		expected3.setIndicator(StringFormat.START);
+
+		ExecutableCommand expected4 = new ExecutableCommand(StringFormat.SORT);
+		expected4.setIndicator(StringFormat.PRIORITY);
+		expected4.setIndicator(StringFormat.LOCATION);
+		expected4.setIndicator(StringFormat.NAME);
+
+		// test case 1: test if the error catcher for null indicator is working
+		assertEquals("null indicator is not detected",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the user is able to sort by single indicator
+		assertEquals("unable to get the sort indicator correctly",
+				expected.getIndicator(), Analyzer.runAnalyzer(test2)
+						.getIndicator());
+
+		// test case 3: test if the user is able to sort by multiple indicators
+		assertEquals("unable to get multiple sort indicators correctly",
+				expected2.getIndicator(), Analyzer.runAnalyzer(test3)
+						.getIndicator());
+
+		// test case 4: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test4)
+						.getErrorMessage());
+
+		// test case 5: test if the error catcher for invalid sort indicator in
+		// multiple indicators is working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid sort command is
+		// working
+		assertEquals("unable to detect invalid sort command",
+				expected3.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 7: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected3.getIndicator(), Analyzer.runAnalyzer(test7)
+						.getIndicator());
+
+		// test case 8: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test8)
+						.getErrorMessage());
+
+		// test case 9: test if the error catcher for invalid sort indicator is
+		// working
+		assertEquals("invalid sort indicator is not detected",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test9)
+						.getErrorMessage());
+
+		// test case 10: test if multiple sort can be analyzed correctly without
+		// the indicator
+		assertEquals("multiple sort action is not analyzed correctly",
+				expected2.getIndicator(), Analyzer.runAnalyzer(test10)
+						.getIndicator());
+
+		// test case 11: test if multiple sort can be analyzed correctly with or
+		// without the indicator
+		assertEquals("multiple sort action is not analyzed correctly",
+				expected4.getIndicator(), Analyzer.runAnalyzer(test11)
+						.getIndicator());
+	}
+
+	@Test
+	public void testHandleUndoCommand() throws ParseException {
+		Command test1 = new Command("undo");
+		Command test2 = new Command("undoa");
+		Command test3 = new Command("UNdo");
+		Command test4 = new Command("undo asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.UNDO);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the undo action is processed correctly
+		assertEquals("undo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid undo command is
+		// working
+		assertEquals("unable to detect invalid undo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the undo action is processed correctly
+		assertEquals("undo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleRedoCommand() throws ParseException {
+		Command test1 = new Command("redo");
+		Command test2 = new Command("redopls");
+		Command test3 = new Command("ReDo");
+		Command test4 = new Command("ReDO asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.REDO);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the redo action is processed correctly
+		assertEquals("redo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid redo command is
+		// working
+		assertEquals("unable to detect invalid redo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the redo action is processed correctly
+		assertEquals("redo action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleClearCommand() throws ParseException {
+		Command test1 = new Command("clear");
+		Command test2 = new Command("clearS");
+		Command test3 = new Command("CLEar");
+		Command test4 = new Command("CLEAr asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.CLEAR);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the clear action is processed correctly
+		assertEquals("clear action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid clear command is
+		// working
+		assertEquals("unable to detect invalid clear command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the clear action is processed correctly
+		assertEquals("clear action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+
+	@Test
+	public void testHandleDoneCommand() throws ParseException {
+		Command test1 = new Command("done");
+		Command test2 = new Command("done 0");
+		Command test3 = new Command("done meeting with friends");
+		Command test4 = new Command("done 1; 3");
+		Command test5 = new Command("done 1; 0; 3");
+		Command test6 = new Command("done 1; meeting with friends");
+		Command test7 = new Command("done 1; 3; -3");
+		Command test8 = new Command("done 1 3 ");
+		Command test9 = new Command("done 1; 3 4");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.DONE);
+		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
+		expected.setTaskId(1);
+		expected.setTaskId(3);
+
+		ExecutableCommand expected2 = new ExecutableCommand(StringFormat.DONE);
+		expected2.setErrorMessage(StringFormat.ERROR_INVALID_TASK_INDEX);
+		expected2.setTaskId(1);
+		expected2.setTaskId(3);
+		expected2.setTaskId(4);
+
+		// test case 1: test if the error catcher for null argument is working
+		assertEquals("null argument case is not handled",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test1)
+						.getErrorMessage());
+
+		// test case 2: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test3)
+						.getErrorMessage());
+
+		// test case 4: test if multiple done can be analyzed correctly
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test4).getTaskId());
+
+		// test case 5: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test5)
+						.getErrorMessage());
+
+		// test case 7: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test6)
+						.getErrorMessage());
+
+		// test case 6: test if the error catcher for invalid task index is
+		// working
+		assertEquals("invalid task index case is not handled",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test7)
+						.getErrorMessage());
+
+		// test case 7: test if multiple done can be analyzed correctly
+		// without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected.getTaskId(), Analyzer.runAnalyzer(test8).getTaskId());
+
+		// test case 8: test if multiple done can be analyzed correctly with
+		// or without the indicator
+		assertEquals("multiple delete action is not analyzed correctly",
+				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
+
+	}
+
+	@Test
+	public void testHandleExitCommand() throws ParseException {
+		Command test1 = new Command("exit");
+		Command test2 = new Command("exitS");
+		Command test3 = new Command("ExIT");
+		Command test4 = new Command("EXIT asdasdaooxcj");
+
+		ExecutableCommand expected = new ExecutableCommand(StringFormat.EXIT);
+		expected.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
+
+		// test case 1: test if the exit action is processed correctly
+		assertEquals("exit action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test1).getAction());
+
+		// test case 2: test if the error catcher for invalid exit command is
+		// working
+		assertEquals("unable to detect invalid redo command",
+				expected.getErrorMessage(), Analyzer.runAnalyzer(test2)
+						.getErrorMessage());
+
+		// test case 3: test if the user is able to type in command with
+		// capitalized letter
+		assertEquals(
+				"user is unable to type in command with capitalized letter",
+				expected.getAction(), Analyzer.runAnalyzer(test3).getAction());
+
+		// test case 4: test if the exit action is processed correctly
+		assertEquals("exit action is not processed correctly",
+				expected.getAction(), Analyzer.runAnalyzer(test4).getAction());
+
+	}
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestAnalyzer.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TimeHandler.java
+	 */
+
+
+import java.util.Date;
+
+public class TimeHandler {
+	
+	public static ExecutableCommand timingAnalyzer(String start, String end,
+			ExecutableCommand tempCommand) {
+		Long startTiming = (long) 0;
+		Long endTiming = (long) 0;
+		Date tempStartDate = new Date();
+		Date tempEndDate = new Date();
+		Date currentDate = new Date(System.currentTimeMillis());
+
+		if (!start.equals(StringFormat.EMPTY)) {
+			startTiming = Long.valueOf(start);
+			tempStartDate = new Date(startTiming);
+		}
+
+		if (!end.equals(StringFormat.EMPTY)) {
+			endTiming = Long.valueOf(end);
+			tempEndDate = new Date(endTiming);
+		}
+
+		if (startTiming != 0 && endTiming != 0) {
+			if ((tempStartDate.after(currentDate) || tempStartDate
+					.equals(currentDate))
+					&& tempEndDate.after(currentDate)
+					&& tempStartDate.before(tempEndDate)) {
+				tempCommand.setTaskStart(String.valueOf(startTiming));
+				tempCommand.setTaskEnd(String.valueOf(endTiming));
+			} else {
+				if (tempStartDate.before(currentDate)) {
+					tempCommand.setErrorMessage(String.format(
+							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+				} else if (tempEndDate.before(currentDate)) {
+					tempCommand.setErrorMessage(String.format(
+							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+				} else {
+					tempCommand
+							.setErrorMessage(StringFormat.ERROR_INVALID_END_EARLIER_THAN_START);
+				}
+			}
+		} else if (startTiming != 0) {
+			if (tempStartDate.after(currentDate)
+					|| tempStartDate.equals(currentDate)) {
+				tempCommand.setTaskStart(String.valueOf(startTiming));
+			} else {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+			}
+		} else if (endTiming != 0) {
+			if (tempEndDate.after(currentDate)) {
+				tempCommand.setTaskEnd(String.valueOf(endTiming));
+			} else {
+				tempCommand.setErrorMessage(String.format(
+						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+			}
+		}
+
+		return tempCommand;
+	}
+
+	public static String inputTimingConvertor(String timing) {
+		if (timing.equals(StringFormat.EMPTY)) {
+			return StringFormat.EMPTY;
+		}
+
+		String[] dateTime = timing.trim().split(StringFormat.SPACE_INDICATOR);
+		int[] result = { -1, -1, -1, -1, -1 };
+
+		Date convertedDate;
+
+		if (dateTime.length >= 1) {
+			result = dateTimeSeparator(dateTime[0], result);
+			if (result == null) {
+				return null;
+			}
+		}
+
+		if (dateTime.length == 2) {
+			result = dateTimeSeparator(dateTime[1], result);
+			if (result == null) {
+				return null;
+			}
+		}
+
+		boolean dateExistence = checkDateExistence(result);
+		boolean timeExistence = checkTimeExistence(result);
+
+		if (dateExistence && timeExistence) {
+			convertedDate = new Date(result[0] - 1900, result[1] - 1,
+					result[2], result[3], result[4]);
+		} else if (dateExistence) {
+			convertedDate = new Date(result[0] - 1900, result[1] - 1, result[2]);
+		} else {
+			Date currentDate = new Date(System.currentTimeMillis());
+			int currentYear = currentDate.getYear();
+			int currentMonth = currentDate.getMonth();
+			int currentDay = currentDate.getDate();
+
+			convertedDate = new Date(currentYear, currentMonth, currentDay,
+					result[3], result[4]);
+		}
+
+		return String.valueOf(convertedDate.getTime());
+	}
+
+	private static boolean isValidTiming(int[] input) {
+		int year = input[0];
+		int month = input[1];
+		int day = input[2];
+		int hour = input[3];
+		int minute = input[4];
+		boolean leapYear = isLeapYear(year);
+
+		if (year != -1 && month != -1 && day != -1) {
+			if (year < 0 || month < 0 || month > 12 || day < 1 || day > 31) {
+				return false;
+			}
+			if (month == 2) {
+				if (leapYear && day > 29) {
+					return false;
+				} else if (day > 28) {
+					return false;
+				}
+			} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+				if (day > 30) {
+					return false;
+				}
+			}
+		}
+
+		if (hour != -1 && minute != -1) {
+			if (hour < 0 || hour > 24 || minute < 0 || minute > 59) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean isLeapYear(int year) {
+		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+	}
+
+	private static boolean isSameDate(Date first, Date second) {
+		return first.getYear() == second.getYear()
+				&& first.getMonth() == second.getMonth()
+				&& first.getDay() == second.getDay();
+	}
+
+	private static boolean isTimeIndicated(Date d) {
+		return d.getHours() != 0 || d.getMinutes() != 0;
+	}
+
+	private static boolean checkTimeExistence(int[] result) {
+		return result[3] != -1 && result[4] != -1;
+	}
+
+	private static boolean checkDateExistence(int[] result) {
+		return result[0] != -1 && result[1] != -1 && result[2] != -1;
+	}
+
+	private static int[] dateTimeSeparator(String dateTime, int[] result) {
+		String[] temp;
+		int year = result[0];
+		int month = result[1];
+		int day = result[2];
+		int hour = result[3];
+		int minute = result[4];
+		String indicator = StringFormat.EMPTY;
+
+		if (dateTime.contains(StringFormat.DATE_INDICATOR)) {
+			temp = dateTime.trim().split(StringFormat.DATE_INDICATOR);
+			day = Integer.parseInt(temp[0]);
+			month = Integer.parseInt(temp[1]);
+			year = Integer.parseInt(temp[2]);
+		} else if (dateTime.contains(StringFormat.TIME_INDICATOR)) {
+			if (dateTime.length() == 7) {
+				hour = Integer.parseInt(dateTime.substring(0, 2));
+				minute = Integer.parseInt(dateTime.substring(3, 5));
+				indicator = dateTime.substring(5).toLowerCase();
+
+				if (indicator.equals(StringFormat.PM_INDICATOR) && hour != 12) {
+					if (hour == -1) {
+						hour = hour + 13;
+					} else {
+						hour = hour + 12;
+					}
+				} else if (indicator.equals(StringFormat.AM_INDICATOR) && hour == 12) {
+					hour = 0;
+				}
+			} else {
+				hour = Integer.parseInt(dateTime.substring(0, 1));
+				minute = Integer.parseInt(dateTime.substring(2, 4));
+				indicator = dateTime.substring(4).toLowerCase();
+
+				if (indicator.equals(StringFormat.PM_INDICATOR)) {
+					if (hour == -1) {
+						hour = hour + 13;
+					} else {
+						hour = hour + 12;
+					}
+				}
+			}
+		}
+
+		result[0] = year;
+		result[1] = month;
+		result[2] = day;
+		result[3] = hour;
+		result[4] = minute;
+
+		if (!isValidTiming(result)) {
+			return null;
+		}
+
+		return result;
+	}
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TimeHandler.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\UserInputHandler.java
+	 */
+
+
+import static org.junit.Assert.assertNotNull;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+
+public class UserInputHandler {
+
+	/**
+	 * Convert the user input into a string array which contains all relevant
+	 * information
+	 * 
+	 * @param input
+	 *            The user input
+	 * @return String array containing all relevant information
+	 */
+	public static String[] convertUserInput(String input) {
+		assertNotNull("User input is null", input);
+
+		int index;
+		String temp1, temp2;
+
+		if (input.contains(StringFormat.DUE_INDICATOR)) {
+			index = input.indexOf(StringFormat.DUE_INDICATOR);
+			temp1 = input.substring(index + 4, index + 6);
+			temp2 = input.substring(index + 6);
+			input = input.substring(0, index + 3);
+			if (temp1.equals(StringFormat.ON_INDICATOR)) {
+				input = input.concat(StringFormat.ON_INDICATOR);
+			} else {
+				input = input.concat(StringFormat.AT_INDICATOR);
+			}
+			input = input.concat(temp2);
+		}
+
+		String[] arg = input.trim().split(StringFormat.SPACE_INDICATOR);
+		String[] parsedInput;
+		String userAction = arg[0].toLowerCase();
+
+		switch (userAction) {
+		case StringFormat.ADD:
+			parsedInput = handleAddInput(arg);
+			break;
+		case StringFormat.DELETE:
+			parsedInput = handleDeleteInput(arg);
+			break;
+		case StringFormat.UPDATE:
+			parsedInput = handleUpdateInput(arg);
+			break;
+		case StringFormat.SORT:
+			parsedInput = handleSortInput(arg);
+			break;
+		case StringFormat.SEARCH:
+			parsedInput = handleSearchInput(arg);
+			break;
+		case StringFormat.DONE:
+			parsedInput = handleDoneInput(arg);
+			break;
+		case StringFormat.DISPLAY:
+			parsedInput = handleDisplayInput(arg);
+			break;
+		default:
+			parsedInput = new String[1];
+			parsedInput[0] = arg[0];
+		}
+
+		return parsedInput;
+	}
+
+	/**
+	 * create an string array with "add" action and contains all relevant
+	 * information input by the user: task name, task description, task start
+	 * time, task end time, task location, task priority. Task name must be
+	 * indicated while the rest can be absent.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleAddInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		String[] output = { StringFormat.ADD, StringFormat.EMPTY,
+				StringFormat.EMPTY, StringFormat.EMPTY, StringFormat.EMPTY,
+				StringFormat.EMPTY, StringFormat.EMPTY };
+		boolean nameExistence = false;
+		boolean descriptionExistence = false;
+		boolean startTimeExistence = false;
+		boolean startDateExistence = false;
+		boolean endTimeExistence = false;
+		boolean endDateExistence = false;
+		boolean locationExistence = false;
+		boolean fromIndicatorExistence = false;
+		boolean toIndicatorExistence = false;
+		String tempStartDate = "";
+
+		for (int i = 1; i < str.length; i++) {
+			String temp = str[i];
+
+			if (nameExistence) {
+				output[1] = output[1].concat(temp);
+				output[1] = output[1].concat(StringFormat.SPACE_INDICATOR);
+				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+					output[1] = output[1].substring(0, output[1].length() - 2);
+					nameExistence = false;
+					descriptionExistence = true;
+				} else if (str.length > i + 1) {
+					if (StringFormat.isInputIndicator(str[i + 1])
+							|| (StringFormat
+									.isAmbiguousInputIndicator(str[i + 1])
+									&& str.length > i + 2 && StringFormat
+										.isTimeOrDate(str[i + 2]))) {
+						nameExistence = false;
+					}
+				}
+			} else if (descriptionExistence) {
+				output[2] = output[2].concat(temp);
+				output[2] = output[2].concat(StringFormat.SPACE_INDICATOR);
+
+				if (str.length > i + 1) {
+					if (StringFormat.isInputIndicator(str[i + 1])
+							|| (StringFormat
+									.isAmbiguousInputIndicator(str[i + 1])
+									&& str.length > i + 2 && StringFormat
+										.isTimeOrDate(str[i + 2]))) {
+						descriptionExistence = false;
+					}
+				}
+			} else if (startDateExistence) {
+				output[3] = temp;
+				startDateExistence = false;
+
+				if (str.length > i + 1
+						&& str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+					startTimeExistence = true;
+				}
+			} else if (startTimeExistence) {
+				if (output[3].contains(StringFormat.DATE_INDICATOR)) {
+					output[3] = output[3].concat(StringFormat.SPACE_INDICATOR);
+					output[3] = output[3].concat(temp);
+				} else {
+					output[3] = temp;
+				}
+				startTimeExistence = false;
+			} else if (endDateExistence) {
+				output[4] = temp;
+				endDateExistence = false;
+				if (str.length > i + 1
+						&& str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+					endTimeExistence = true;
+				}
+
+			} else if (endTimeExistence) {
+				if (output[4].contains(StringFormat.DATE_INDICATOR)) {
+					output[4] = output[4].concat(StringFormat.SPACE_INDICATOR);
+					output[4] = output[4].concat(temp);
+				} else {
+					if (fromIndicatorExistence && toIndicatorExistence) {
+						output[4] = output[4].concat(tempStartDate);
+						output[4] = output[4].concat(" ");
+						output[4] = output[4].concat(temp);
+
+						fromIndicatorExistence = false;
+						toIndicatorExistence = false;
+					} else {
+						output[4] = temp;
+					}
+				}
+
+				endTimeExistence = false;
+			} else if (locationExistence) {
+				if (!output[5].equals(StringFormat.EMPTY)) {
+					output[5] = output[5].concat(StringFormat.SPACE_INDICATOR);
+					output[5] = output[5].concat(temp);
+				} else {
+					output[5] = temp.substring(1);
+				}
+
+				if (str.length > i + 1
+						&& StringFormat.isInputIndicator(str[i + 1])) {
+					locationExistence = false;
+				}
+			} else if (temp.equals(StringFormat.TO_INDICATOR)) {
+				toIndicatorExistence = true;
+				if (str.length > i + 1) {
+					if (StringFormat.isTimeOrDate(str[i + 1])) {
+						if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+							endTimeExistence = true;
+						} else {
+							endDateExistence = true;
+						}
+					}
+				} else {
+					output[4] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.equals(StringFormat.DUE_ON_INDICATOR)) {
+				if (str.length > i + 1) {
+					if (StringFormat.isDate(str[i + 1])) {
+						endDateExistence = true;
+					} else if (StringFormat.isTime(str[i + 1])) {
+						output[4] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.equals(StringFormat.FROM_INDICATOR)) {
+				fromIndicatorExistence = true;
+				if (str.length > i + 1) {
+					if (StringFormat.isTimeOrDate(str[i + 1])) {
+						if (str[i + 1].contains(StringFormat.TIME_INDICATOR)) {
+							startTimeExistence = true;
+						} else {
+							tempStartDate = str[i + 1];
+							startDateExistence = true;
+						}
+					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.equals(StringFormat.ON_INDICATOR)) {
+				if (str.length > i + 1) {
+					if (StringFormat.isDate(str[i + 1])) {
+						startDateExistence = true;
+					} else if (StringFormat.isTime(str[i + 1])) {
+						output[3] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.equals(StringFormat.DUE_AT_INDICATOR)) {
+				if (str.length > i + 1) {
+					if (StringFormat.isTime(str[i + 1])) {
+						endTimeExistence = true;
+					} else if (StringFormat.isDate(str[i + 1])) {
+						output[4] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.equals(StringFormat.AT_INDICATOR)) {
+				if (str.length > i + 1) {
+					if (StringFormat.isTime(str[i + 1])) {
+						startTimeExistence = true;
+					} else if (StringFormat.isDate(str[i + 1])) {
+						output[3] = StringFormat.INVALID;
+						break;
+					}
+				} else {
+					output[3] = StringFormat.NULL;
+					break;
+				}
+			} else if (temp.contains(StringFormat.LOCATION_INDICATOR)) {
+				output[5] = temp.substring(1);
+
+				if (str.length > i + 1) {
+					if (StringFormat.isAmbiguousInputIndicator(str[i + 1])) {
+						if (str.length > i + 2
+								&& !StringFormat.isTimeOrDate(str[i + 2])) {
+							locationExistence = true;
+						}
+					} else if (!StringFormat.isInputIndicator(str[i + 1])) {
+						locationExistence = true;
+					}
+				}
+			} else if (temp.contains(StringFormat.PRIORITY_INDICATOR)) {
+				String priority = temp.substring(1).toLowerCase();
+
+				if (priority.equals(StringFormat.IMPORTANT)
+						|| priority.equals(StringFormat.HIGH_PRIORITY)) {
+					output[6] = StringFormat.HIGH_PRIORITY;
+				} else if (priority.equals(StringFormat.UNIMPORTANT)
+						|| priority.equals(StringFormat.LOW_PRIORITY)) {
+					output[6] = StringFormat.LOW_PRIORITY;
+				} else if (priority.equals(StringFormat.MEDIUM_PRIORITY)) {
+					output[6] = StringFormat.MEDIUM_PRIORITY;
+				} else {
+					output[6] = StringFormat.INVALID;
+				}
+			} else {
+				output[1] = output[1].concat(temp);
+				output[1] = output[1].concat(StringFormat.SPACE_INDICATOR);
+
+				if (str.length > i + 1) {
+					if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+						output[1] = output[1].substring(0,
+								output[1].length() - 2);
+						descriptionExistence = true;
+					} else if (StringFormat
+							.isAmbiguousInputIndicator(str[i + 1])) {
+						if (str.length > i + 2) {
+							if (StringFormat.isTimeOrDate(str[i + 2])) {
+								nameExistence = false;
+							} else {
+								nameExistence = true;
+							}
+						}
+					} else if (!StringFormat.isInputIndicator(str[i + 1])) {
+						nameExistence = true;
+					}
+				}
+			}
+		}
+
+		return output;
+	}
+
+	/**
+	 * create an string array with "delete" action and contains all relevant
+	 * information input by the user: task index. Task index must be indicated
+	 * and it can be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleDeleteInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+
+		output.add(StringFormat.DELETE);
+
+		if (str.length > 1) {
+			for (int i = 1; i < str.length; i++) {
+				String temp = str[i];
+				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+					output.add(temp.substring(0, temp.length() - 1));
+				} else {
+					output.add(temp);
+				}
+			}
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+	/**
+	 * create an string array with "update" action and contains all relevant
+	 * information: task index, update indicator, update key. All attributes
+	 * stated above must be indicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleUpdateInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+		output.add(StringFormat.UPDATE);
+
+		if (str.length > 1) {
+			output.add(str[1]);
+		}
+		if (str.length > 2) {
+			output.add(str[2]);
+		}
+		if (str.length > 3) {
+			String itemToBeUpdated = StringFormat.EMPTY;
+			for (int i = 3; i < str.length; i++) {
+				itemToBeUpdated = itemToBeUpdated.concat(str[i]);
+				itemToBeUpdated = itemToBeUpdated
+						.concat(StringFormat.SPACE_INDICATOR);
+			}
+			output.add(itemToBeUpdated);
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+	/**
+	 * create an string array with "search" action and contains all relevant
+	 * information:search indicator and search key. Search indicator and search
+	 * key must be indicated and they can be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleSearchInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+
+		boolean nameExistence = false;
+		boolean descriptionExistence = false;
+		boolean dateTimeExistence = false;
+		boolean locationExistence = false;
+		boolean priorityExistence = false;
+		boolean startExistence = false;
+		boolean endExistence = false;
+
+		String key = StringFormat.EMPTY;
+
+		output.add(StringFormat.SEARCH);
+
+		if (str.length > 1) {
+			for (int i = 1; i < str.length; i++) {
+				String temp = str[i];
+
+				if (nameExistence) {
+					key = key.concat(temp);
+
+					if (str.length > i + 1) {
+						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							key = StringFormat.EMPTY;
+							nameExistence = false;
+						} else {
+							key = key.concat(StringFormat.SPACE_INDICATOR);
+						}
+					} else {
+						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							nameExistence = false;
+						} else {
+							output.add(key);
+						}
+					}
+				} else if (descriptionExistence) {
+					key = key.concat(temp);
+
+					if (str.length > i + 1) {
+						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							key = StringFormat.EMPTY;
+							descriptionExistence = false;
+						} else {
+							key = key.concat(StringFormat.SPACE_INDICATOR);
+						}
+					} else {
+						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							descriptionExistence = false;
+						} else {
+							output.add(key);
+						}
+					}
+				} else if (dateTimeExistence) {
+					output.add(temp);
+					dateTimeExistence = false;
+				} else if (startExistence) {
+					key = key.concat(temp);
+
+					if (str.length > i + 1) {
+						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							key = StringFormat.EMPTY;
+							startExistence = false;
+						} else {
+							key = key.concat(StringFormat.SPACE_INDICATOR);
+						}
+					} else {
+						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							startExistence = false;
+						} else {
+							output.add(key);
+						}
+					}
+				} else if (endExistence) {
+					key = key.concat(temp);
+
+					if (str.length > i + 1) {
+						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							key = StringFormat.EMPTY;
+							endExistence = false;
+						} else {
+							key = key.concat(StringFormat.SPACE_INDICATOR);
+						}
+					} else {
+						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							endExistence = false;
+						} else {
+							output.add(key);
+						}
+					}
+				} else if (locationExistence) {
+					key = key.concat(temp);
+
+					if (str.length > i + 1) {
+						if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							key = StringFormat.EMPTY;
+							locationExistence = false;
+						} else {
+							key = key.concat(StringFormat.SPACE_INDICATOR);
+						}
+					} else {
+						if (key.contains(StringFormat.SEPARATE_INDICATOR)) {
+							output.add(key.substring(0, key.length() - 1));
+							locationExistence = false;
+						} else {
+							output.add(key);
+						}
+					}
+				} else if (priorityExistence) {
+					output.add(temp);
+					priorityExistence = false;
+				} else if (StringFormat.isValidIndicator(temp.toLowerCase())) {
+					switch (temp) {
+					case StringFormat.NAME:
+						output.add(StringFormat.NAME);
+						nameExistence = true;
+						break;
+					case StringFormat.DESCRIPTION:
+						output.add(StringFormat.DESCRIPTION);
+						descriptionExistence = true;
+						break;
+					case StringFormat.START:
+						output.add(StringFormat.START);
+						startExistence = true;
+						break;
+					case StringFormat.END:
+						output.add(StringFormat.END);
+						endExistence = true;
+						break;
+					case StringFormat.LOCATION:
+						output.add(StringFormat.LOCATION);
+						locationExistence = true;
+						break;
+					default:
+						output.add(StringFormat.PRIORITY);
+						priorityExistence = true;
+						break;
+					}
+				} else {
+					output.add(StringFormat.INVALID);
+					break;
+				}
+			}
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+	/**
+	 * create an string array with "sort" action and contains all relevant
+	 * information: sort indicator. Sort indicator must be indicated and it can
+	 * be duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleSortInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+		output.add(StringFormat.SORT);
+
+		if (str.length > 1) {
+			for (int i = 1; i < str.length; i++) {
+				String temp = str[i];
+				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+					output.add(temp.substring(0, temp.length() - 1));
+				} else {
+					output.add(temp);
+				}
+			}
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+	/**
+	 * create an string array with "done" action and contains all relevant
+	 * information: task index. Task index must be indicated and it can be
+	 * duplicated.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array which contain all relevant information
+	 */
+	private static String[] handleDoneInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+
+		output.add(StringFormat.DONE);
+
+		if (str.length > 1) {
+			for (int i = 1; i < str.length; i++) {
+				String temp = str[i];
+				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
+					output.add(temp.substring(0, temp.length() - 1));
+				} else {
+					output.add(temp);
+				}
+			}
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+	/**
+	 * create an string array with "display" action and contains all relevant
+	 * information: display indicator. Display indicator can be ignored. In this
+	 * case, default display operation will be executed.
+	 * 
+	 * @param str
+	 *            The user input which stored in string array
+	 * @return String array containing all relevant information
+	 */
+	private static String[] handleDisplayInput(String[] str) {
+		assertNotNull("User input is null", str);
+
+		ArrayList<String> output = new ArrayList<String>();
+
+		output.add(StringFormat.DISPLAY);
+
+		if (str.length > 1) {
+			output.add(str[1].toLowerCase());
+		}
+
+		String[] outputArr = new String[output.size()];
+		return output.toArray(outputArr);
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\UserInputHandler.java
+
+
+
+
+

@@ -305,14 +305,13 @@ public class Storage {
 	 * not valid, tasks are sorted by name(default);
 	 * 
 	 * @return
-	 * @throws Exception
 	 */
 
-	public static boolean sort(String key) throws Exception {
+	public static boolean sort(String key) {
 		return sort(key, displayTaskList);
 	}
 
-	private static boolean sort(String key, List targetList) throws Exception {
+	private static boolean sort(String key, List targetList) {
 		Task.setSortKey(key);
 		targetList.sortList();
 
@@ -325,16 +324,13 @@ public class Storage {
 	 * Search the task in taskList corresponding to parameter key.
 	 * 
 	 * @return
-	 * @throws Exception
 	 */
-
-	public static boolean search(String indicator, String searchValue)
-			throws Exception {
+	public static boolean search(String indicator, String searchValue) {
 		return search(displayTaskList, indicator, searchValue);
 	}
 
 	private static boolean search(List targetList, String indicator,
-			String searchValue) throws Exception {
+			String searchValue){
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);

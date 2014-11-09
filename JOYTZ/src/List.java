@@ -18,15 +18,28 @@ public class List {
 	/**
 	 * Methods
 	 */
-
+	
+	/**
+	 * Set the nameString of this List.
+	 * @param name
+	 */
 	public void setListName(String name) {
 		this.taskListName = name;
 	}
-
+	
+	/**
+	 * Get the size of taskList.
+	 * @return
+	 */
 	public int size() {
 		return taskList.size();
 	}
-
+	
+	/**
+	 * Add a new task into the taskList.
+	 * @param t
+	 * @return
+	 */
 	public boolean addTask(Task t) {
 		if (t == null) {
 			return false;
@@ -35,6 +48,12 @@ public class List {
 		return true;
 	}
 
+	/**
+	 * Delete a task by the index of the task in the ArrayList.
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public boolean deleteTaskByIndex(int index) {
 		if (index < 0 || index >= taskList.size()) {
 			return false;
@@ -43,6 +62,12 @@ public class List {
 		return true;
 	}
 
+	/**
+	 * Delete a task by it unique taskId.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public boolean deleteTaskById(int id) {
 		for (int index = 0; index < taskList.size(); index++) {
 			Task currTask = taskList.get(index);
@@ -53,7 +78,12 @@ public class List {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * Return the Task object in the given position of taskList.
+	 * @param index
+	 * @return
+	 */
 	public Task getTaskByIndex(int index) {
 		if (index < 0 || index >= taskList.size()) {
 			return null;
@@ -61,10 +91,21 @@ public class List {
 		return taskList.get(index);
 	}
 
+	/**
+	 * Sort the taskList array. The key is in the Task object.
+	 */
 	public void sortList() {
 		Collections.sort(taskList);
 	}
 
+	/**
+	 * Add in a task to a certain position in taskList array, and remove the
+	 * original one.
+	 * 
+	 * @param index
+	 * @param task
+	 * @return
+	 */
 	public boolean setTask(int index, Task task) {
 		if (index < 0 || index >= taskList.size()) {
 			return false;
@@ -73,6 +114,9 @@ public class List {
 		return true;
 	}
 
+	/**
+	 * Delete all tasks in this list.
+	 */
 	public void clean() {
 		taskList.clear();
 	}
@@ -94,6 +138,11 @@ public class List {
 		return false;
 	}
 
+	/**
+	 * Return a new list contains the same task objects.
+	 * 
+	 * @return
+	 */
 	public List copy() {
 		List copyList = new List();
 		for (int index = 0; index < size(); index++) {
@@ -102,6 +151,12 @@ public class List {
 		return copyList;
 	}
 
+	/**
+	 * Return an arrayList contains the String format of every task inside the
+	 * taskList.
+	 * 
+	 * @return
+	 */
 	public ArrayList<String> convertToString() {
 		ArrayList<String> resultList = new ArrayList<String>();
 
