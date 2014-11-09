@@ -39,7 +39,7 @@ public class Executor {
 	/**
 	 * Called by Controller to initialize Executor.
 	 *
-	 * Split into cases for processing in Executor component
+	 * Splits into cases for processing in Executor component
 	 * 
 	 * @param command
 	 * @return
@@ -274,8 +274,10 @@ public class Executor {
 	}
 
 	/**
-	 * Display the current taskList to the user using a arrayList. Display the
-	 * passed time task using two boolean array.
+	 * Displays the current taskList to a user using an arrayList. 
+	 * Displays the passed time task using two boolean arrays.
+	 * 
+	 * @para command
 	 * 
 	 * @return
 	 */
@@ -371,7 +373,7 @@ public class Executor {
 	}
 
 	/**
-	 * Performs an/multiple undo action(s), which reverses previous steps
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps
 	 * 
 	 * Can perform undo multiple-steps.
 	 * 
@@ -443,7 +445,7 @@ public class Executor {
 	}
 
 	/**
-	 * Obtains the result and message of the reloadFile from Storage
+	 * Obtains a result and message of the reloadFile from Storage
 	 * 
 	 * @return
 	 */
@@ -512,7 +514,7 @@ public class Executor {
 	}
 
 	/**
-	 * Return feedback to user
+	 * Return a feedback object to user
 	 * 
 	 * @return
 	 */
@@ -521,7 +523,7 @@ public class Executor {
 	}
 
 	/**
-	 * Save user's commands in Stack
+	 * Saves user's commands in a Stack
 	 * 
 	 * @param command
 	 */
@@ -546,7 +548,7 @@ public class Executor {
 	}
 
 	/**
-	 * Convert String format of Date to actual date.
+	 * Converts a String of Date to the actual date.
 	 * 
 	 * @param dateTimeString
 	 * @return
@@ -562,7 +564,7 @@ public class Executor {
 	}
 
 	/**
-	 * Create a new Task Object based on the attributes.
+	 * Creates a new Task Object based on the attributes.
 	 * 
 	 * @param name
 	 * @param description
