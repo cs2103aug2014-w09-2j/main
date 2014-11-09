@@ -152,7 +152,7 @@ public class Storage {
 	public static boolean update(int index, String updateIndicator,
 			String updateKeyValue) throws Exception {
 
-		if (index <= 0 || index > displayTaskList.size()) {
+		if (index < 0 || index >= displayTaskList.size()) {
 			throw new Exception(String.format(
 					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
 		}
