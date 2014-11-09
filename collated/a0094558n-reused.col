@@ -1,0 +1,801 @@
+//@author: a0094558n-reused
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\ColorCache.java
+	 */
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * Class for caching colors
+ * 
+ */
+public final class ColorCache {
+
+    public static final RGB        BLACK = new RGB(0, 0, 0);
+    public static final RGB        WHITE = new RGB(255, 255, 255);
+
+    private static Map<RGB, Color> _colorTable;
+    private static ColorCache      _instance;
+
+    static {
+        _colorTable = new HashMap<RGB, Color>();
+        new ColorCache();
+    }
+
+    private ColorCache() {
+        _instance = this;
+    }
+
+    public static ColorCache getInstance() {
+        return _instance;
+    }
+
+    /**
+     * Disposes of all colors. DO ONLY CALL THIS WHEN YOU ARE SHUTTING DOWN YOUR
+     * APPLICATION!
+     */
+    public static void disposeColors() {
+        Iterator<Color> e = _colorTable.values().iterator();
+        while (e.hasNext())
+            e.next().dispose();
+
+        _colorTable.clear();
+    }
+
+    public static Color getWhite() {
+        return getColorFromRGB(new RGB(255, 255, 255));
+    }
+
+    public static Color getBlack() {
+        return getColorFromRGB(new RGB(0, 0, 0));
+    }
+
+    public static Color getColorFromRGB(RGB rgb) {
+        Color color = _colorTable.get(rgb);
+
+        if (color == null) {
+            color = new Color(Display.getCurrent(), rgb);
+            _colorTable.put(rgb, color);
+        }
+
+        return color;
+    }
+
+    public static Color getColor(int r, int g, int b) {
+        RGB rgb = new RGB(r, g, b);
+        Color color = _colorTable.get(rgb);
+
+        if (color == null) {
+            color = new Color(Display.getCurrent(), rgb);
+            _colorTable.put(rgb, color);
+        }
+
+        return color;
+    }
+
+}
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\ColorCache.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FontCache.java
+	 */
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * Caching class for fonts. Also deals with re-creating fonts should they have been disposed when the 
+ * caller asks for a font.
+ *
+ */
+public class FontCache {
+
+    private static List<OneFont> _existing = new ArrayList<OneFont>();
+
+    /**
+     * Disposes all fonts and clears out the cache. Never call this unless you are shutting down your 
+     * code/client/etc.
+     */
+    public static void disposeAll() {
+        for (OneFont of : _existing) {
+            if (of.getFont() != null && !of.getFont().isDisposed()) {
+                of.getFont().dispose();
+            }
+        }
+        
+        _existing.clear();
+    }
+    
+    /**
+     * Gets a font from existing FontData
+     * 
+     * @param fd        FontData
+     * @return Font     or null on error
+     */
+    public static Font getFont(FontData fd) {
+        try {
+            boolean disposed = false;
+            OneFont toRemove = null;
+            for (OneFont of : _existing) {
+                if (of.matches(fd)) {
+                    if (of.getFont().isDisposed()) {
+                        disposed = true;
+                        toRemove = of;
+                        break;
+                    }
+                        
+                    return of.getFont(); 
+                }
+            }
+            if (disposed) {
+                _existing.remove(toRemove);
+            }
+            
+            OneFont of = new OneFont(fd);
+            _existing.add(of);
+            return of.getFont();
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static int getCount() {
+        return _existing.size();
+    }
+    
+    /**
+     * Gets a font from an existing fonts data.
+     * 
+     * @param font      Font
+     * 
+     * @return Font     or null on error
+     */
+    public static Font getFont(Font font) {
+        try {
+            if (font == null || font.isDisposed()) return null;
+
+            FontData fd = font.getFontData()[0];
+            return getFont(fd);
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a font for a given font name and style.
+     * 
+     * @param fontName      Name of font
+     * @param height        Height of font
+     * @param style         Style of font
+     * 
+     * @return Font         or null on error
+     */
+    public static Font getFont(String fontName, int height, int style) {
+        try {
+            boolean disposed = false;
+            OneFont toRemove = null;
+            for (OneFont of : _existing) {
+                if (of.getName().equals(fontName) && of.getHeight() == height && of.getStyle() == style) {
+                    if (of.getFont().isDisposed()) {
+                        disposed = true;
+                        toRemove = of;
+                        break;
+                    }
+                    return of.getFont();
+                }
+            }
+            if (disposed) {
+                _existing.remove(toRemove);
+            }
+            
+            OneFont of = new OneFont(fontName, height, style);
+            _existing.add(of);
+            return of.getFont();
+        }
+        catch (Exception err) {
+            err.printStackTrace();
+        }
+        
+        return null;
+    }
+
+}
+
+class OneFont {
+
+    private String _name;
+    private int    _height;
+    private int    _style;
+    private Font   _font;
+
+    public OneFont(String name, int height, int style) {
+        _name = name;
+        _height = height;
+        _style = style;
+        _font = new Font(Display.getDefault(), name, height, style);
+    }
+
+    public OneFont(FontData fd) {
+        _name = fd.getName();
+        _height = fd.getHeight();
+        _style = fd.getStyle();
+        _font = new Font(Display.getDefault(), fd);
+    }
+
+    public String getName() {
+        return _name;
+    }
+
+    public int getHeight() {
+        return _height;
+    }
+
+    public int getStyle() {
+        return _style;
+    }
+
+    public void setFont(Font font) {
+        _font = font;
+    }
+
+    public Font getFont() {
+        return _font;
+    }
+
+    public boolean matches(FontData fd) {
+        return (fd.getName().equals(_name) && fd.getHeight() == _height && fd.getStyle() == _style);
+    }
+
+    @Override
+    public String toString() {
+        return "Font: " + _name + " " + _height + " " + _style;
+    }
+}
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FontCache.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+	 */
+
+//    /*
+//     * (non-Javadoc)
+//     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
+//     */
+//    public void onHotKey(int aIdentifier) {
+//        if (aIdentifier == 1) {
+//           System.out.println("WINDOWS+A hotkey pressed");
+//           
+//           // Ensure that the following code runs in the 
+//           // same thread as the application itself
+//           Display.getDefault().syncExec(new Runnable() {
+//               public void run() {
+//                   if (shell.getMaximized() == true) { 
+//                       shell.forceActive();     // Bring application to front
+//                       shell.setMaximized(true);
+//                   } else if (shell.getMaximized() == false) { 
+//                       shell.forceActive();     // Bring application to front
+//                       shell.setMinimized(false);
+//                   }
+//               }
+//           });
+//        }
+//        if (aIdentifier == 2) {
+//            System.out.println("WINDOWS+Z hotkey pressed");
+//            
+//            // Ensure that the following code runs in the 
+//            // same thread as the application itself
+//            Display.getDefault().syncExec(new Runnable() {
+//                public void run() {
+//                    shell.setMinimized(true);
+//                }
+//            });
+//         }
+//     }
+//    
+//    /**
+//     * Initialize the JInitellitype library making sure the DLL is located.
+//     */
+//    public static void initJIntellitype() {
+//        mainFrame = new GUI();
+//        
+//        try {
+//           // initialize JIntellitype with the frame so all windows commands can
+//           // be attached to this window
+//           JIntellitype.getInstance().addHotKeyListener(mainFrame);
+//           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
+//           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
+//           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
+//           System.out.println("JIntellitype initialized");
+//        } catch (RuntimeException ex) {
+//           System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
+//        }
+//     }
+//    
+//    /*
+//     * (non-Javadoc)
+//     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
+//     */
+//    public void onIntellitype(int aCommand) {
+//
+//       switch (aCommand) {
+//       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
+//           System.out.println("BROWSER_BACKWARD message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
+//           System.out.println("BROWSER_FAVOURITES message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
+//           System.out.println("BROWSER_FORWARD message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_HOME:
+//           System.out.println("BROWSER_HOME message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
+//           System.out.println("BROWSER_REFRESH message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
+//           System.out.println("BROWSER_SEARCH message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_BROWSER_STOP:
+//           System.out.println("BROWSER_STOP message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
+//           System.out.println("LAUNCH_APP1 message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
+//           System.out.println("LAUNCH_APP2 message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
+//           System.out.println("LAUNCH_MAIL message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+//           System.out.println("MEDIA_NEXTTRACK message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+//           System.out.println("MEDIA_PLAY_PAUSE message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+//           System.out.println("MEDIA_PREVIOUSTRACK message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_MEDIA_STOP:
+//           System.out.println("MEDIA_STOP message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
+//           System.out.println("VOLUME_DOWN message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_VOLUME_UP:
+//           System.out.println("VOLUME_UP message received " + Integer.toString(aCommand));
+//          break;
+//       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
+//           System.out.println("VOLUME_MUTE message received " + Integer.toString(aCommand));
+//          break;
+//       default:
+//           System.out.println("Undefined INTELLITYPE message caught " + Integer.toString(aCommand));
+//          break;
+//       }
+//    }
+}
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\NotifierDialog.java
+	 */
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+
+public class NotifierDialog {
+
+    // how long the the tray popup is displayed after fading in (in milliseconds)
+    private static final int   DISPLAY_TIME  = 4500;
+    // how long each tick is when fading in (in ms)
+    private static final int   FADE_TIMER    = 50;
+    // how long each tick is when fading out (in ms)
+    private static final int   FADE_IN_STEP  = 30;
+    // how many tick steps we use when fading out 
+    private static final int   FADE_OUT_STEP = 8;
+
+    // how high the alpha value is when we have finished fading in 
+    private static final int   FINAL_ALPHA   = 225;
+
+    // title foreground color
+    private static Color       _titleFgColor = ColorCache.getColor(40, 73, 97);
+    // text foreground color
+    private static Color       _fgColor      = _titleFgColor;
+
+    // shell gradient background color - top
+    private static Color       _bgFgGradient = ColorCache.getColor(226, 239, 249);
+    // shell gradient background color - bottom    
+    private static Color       _bgBgGradient = ColorCache.getColor(177, 211, 243);
+    // shell border color
+    private static Color       _borderColor  = ColorCache.getColor(40, 73, 97);
+
+    // contains list of all active popup shells
+    private static List<Shell> _activeShells = new ArrayList<Shell>();
+
+    // image used when drawing
+    private static Image       _oldImage;
+
+    private static Shell       _shell;
+
+    /**
+     * Creates and shows a notification dialog with a specific title, message and a
+     * 
+     * @param title
+     * @param message
+     * @param type
+     */
+    public static void notify(String title, String message) {
+        _shell = new Shell(Display.getDefault(), SWT.ON_TOP | SWT.NO_TRIM);
+        _shell.setLayout(new FillLayout());
+        _shell.setForeground(_fgColor);
+        _shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
+        _shell.addListener(SWT.Dispose, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                _activeShells.remove(_shell);
+            }
+        });
+
+        final Composite inner = new Composite(_shell, SWT.NONE);
+
+        GridLayout gl = new GridLayout(2, false);
+        gl.marginLeft = 5;
+        gl.marginTop = 0;
+        gl.marginRight = 5;
+        gl.marginBottom = 5;
+
+        inner.setLayout(gl);
+        _shell.addListener(SWT.Resize, new Listener() {
+
+            @Override
+            public void handleEvent(Event e) {
+                try {
+                    // get the size of the drawing area
+                    Rectangle rect = _shell.getClientArea();
+                    // create a new image with that size
+                    Image newImage = new Image(Display.getDefault(), Math.max(1, rect.width), rect.height);
+                    // create a GC object we can use to draw with
+                    GC gc = new GC(newImage);
+
+                    // fill background
+                    gc.setForeground(_bgFgGradient);
+                    gc.setBackground(_bgBgGradient);
+                    gc.fillGradientRectangle(rect.x, rect.y, rect.width, rect.height, true);
+
+                    // draw shell edge
+                    gc.setLineWidth(2);
+                    gc.setForeground(_borderColor);
+                    gc.drawRectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
+                    // remember to dipose the GC object!
+                    gc.dispose();
+
+                    // now set the background image on the shell
+                    _shell.setBackgroundImage(newImage);
+
+                    // remember/dispose old used iamge
+                    if (_oldImage != null) {
+                        _oldImage.dispose();
+                    }
+                    _oldImage = newImage;
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }
+        });
+
+        GC gc = new GC(_shell);
+
+        String lines[] = message.split("\n");
+        Point longest = null;
+        int typicalHeight = gc.stringExtent("X").y;
+
+        for (String line : lines) {
+            Point extent = gc.stringExtent(line);
+            if (longest == null) {
+                longest = extent;
+                continue;
+            }
+
+            if (extent.x > longest.x) {
+                longest = extent;
+            }
+        }
+        gc.dispose();
+
+        int minHeight = typicalHeight * lines.length;
+
+        CLabel imgLabel = new CLabel(inner, SWT.NONE);
+        imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
+
+        CLabel titleLabel = new CLabel(inner, SWT.NONE);
+        titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
+        titleLabel.setText(title);
+        titleLabel.setForeground(_titleFgColor);
+        Font f = titleLabel.getFont();
+        FontData fd = f.getFontData()[0];
+        fd.setStyle(SWT.BOLD);
+        fd.height = 11;
+        titleLabel.setFont(FontCache.getFont(fd));
+
+        Label text = new Label(inner, SWT.WRAP);
+        Font tf = text.getFont();
+        FontData tfd = tf.getFontData()[0];
+        tfd.setStyle(SWT.BOLD);
+        tfd.height = 8;
+        text.setFont(FontCache.getFont(tfd));
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        gd.horizontalSpan = 2;
+        text.setLayoutData(gd);
+        text.setForeground(_fgColor);
+        text.setText(message);
+
+        minHeight = 50;
+        int minWidth = 350;
+
+        _shell.setSize(minWidth, minHeight);
+
+        Rectangle clientArea = Display.getDefault().getClientArea();
+
+        int startX = clientArea.x + clientArea.width - minWidth - 2;
+        int startY = clientArea.y + clientArea.height - minHeight - 2;
+
+        // move other shells up
+        if (!_activeShells.isEmpty()) {
+            List<Shell> modifiable = new ArrayList<Shell>(_activeShells);
+            Collections.reverse(modifiable);
+            for (Shell shell : modifiable) {
+                Point curLoc = shell.getLocation();
+                shell.setLocation(curLoc.x, curLoc.y - minHeight);
+                if (curLoc.y - minHeight < 0) {
+                    _activeShells.remove(shell);
+                    shell.dispose();
+                }
+            }
+        }
+
+        _shell.setLocation(startX, startY);
+        _shell.setAlpha(0);
+        _shell.setVisible(true);
+
+        _activeShells.add(_shell);
+
+        fadeIn(_shell);
+    }
+
+    private static void fadeIn(final Shell _shell) {
+        Runnable run = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (_shell == null || _shell.isDisposed()) { return; }
+
+                    int cur = _shell.getAlpha();
+                    cur += FADE_IN_STEP;
+
+                    if (cur > FINAL_ALPHA) {
+                        _shell.setAlpha(FINAL_ALPHA);
+                        startTimer(_shell);
+                        return;
+                    }
+
+                    _shell.setAlpha(cur);
+                    Display.getDefault().timerExec(FADE_TIMER, this);
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }
+
+        };
+        Display.getDefault().timerExec(FADE_TIMER, run);
+    }
+
+    private static void startTimer(final Shell _shell) {
+        Runnable run = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (_shell == null || _shell.isDisposed()) { return; }
+
+                    fadeOut(_shell);
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }
+
+        };
+        Display.getDefault().timerExec(DISPLAY_TIME, run);
+
+    }
+
+    private static void fadeOut(final Shell _shell) {
+        final Runnable run = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (_shell == null || _shell.isDisposed()) { return; }
+
+                    int cur = _shell.getAlpha();
+                    cur -= FADE_OUT_STEP;
+
+                    if (cur <= 0) {
+                        _shell.setAlpha(0);
+                        if (_oldImage != null) {
+                            _oldImage.dispose();
+                        }
+                        _shell.dispose();
+                        _activeShells.remove(_shell);
+                        return;
+                    }
+
+                    _shell.setAlpha(cur);
+
+                    Display.getDefault().timerExec(FADE_TIMER, this);
+
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }
+
+        };
+        Display.getDefault().timerExec(FADE_TIMER, run);
+    }
+}
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\NotifierDialog.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\org\eclipse\wb\swt\SWTResourceManager.java
+	 */
+
+/*******************************************************************************
+ * Copyright (c) 2011 Google, Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Google, Inc. - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.wb.swt;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * Utility class for managing OS resources associated with SWT controls such as colors, fonts, images, etc.
+ * <p>
+ * !!! IMPORTANT !!! Application code must explicitly invoke the <code>dispose()</code> method to release the
+ * operating system resources managed by cached objects when those objects and OS resources are no longer
+ * needed (e.g. on application shutdown)
+ * <p>
+ * This class may be freely distributed as part of any application or plugin.
+ * <p>
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\org\eclipse\wb\swt\SWTResourceManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\org\eclipse\wb\swt\SWTResourceManager.java
+	 */
+
+/*******************************************************************************
+ * Copyright (c) 2011 Google, Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Google, Inc. - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.wb.swt;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * Utility class for managing OS resources associated with SWT controls such as colors, fonts, images, etc.
+ * <p>
+ * !!! IMPORTANT !!! Application code must explicitly invoke the <code>dispose()</code> method to release the
+ * operating system resources managed by cached objects when those objects and OS resources are no longer
+ * needed (e.g. on application shutdown)
+ * <p>
+ * This class may be freely distributed as part of any application or plugin.
+ * <p>
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\org\eclipse\wb\swt\SWTResourceManager.java
+
+
+
+
+
