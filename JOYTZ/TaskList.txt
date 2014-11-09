@@ -1,7 +1,7 @@
-Last saved point: Sun 2014.11.09 at 05:51:47 PM SGT
+Last saved point: Sun 2014.11.09 at 07:48:57 PM SGT
 complete financial report~~~1415955600000~office~high 
 complete presentation~~~1416175200000~~high 
-watch football match 10/01/2015 03:00am~~~~home~high 
-demo the display function 12/11/2014 10:00am~~~~lab~high 
 buy bananas~~1415548800000~1415869200000~NTUC~medium 
 buy milk~~1415548800000~1415869200000~NTUC~low 
+watch football match~~1420830000000~~home~high 
+demo the display function~~1415757600000~~lab~high 
