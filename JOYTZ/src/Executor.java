@@ -12,10 +12,10 @@ public class Executor {
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
 
 	// these are for Sort Method
-	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
+	private static final String MESSAGE_SORT_SUCCESSFUL = "Categories are sorted successfully.\n";
 
 	// these are for Search Method
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "\"%s\" in \"%s\" is searched successfully.\n";
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
@@ -329,10 +329,9 @@ public class Executor {
 		// check what category user want to sort
 		for (int i = 0; i < sortKey.size(); i++) {
 			fb.setResult(Storage.sort(sortKey.get(i)));
-			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
-					sortKey.get(i)));
 		}
 		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
 
 		return fb;
 	}
@@ -368,11 +367,10 @@ public class Executor {
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			Storage.search(searchIndicator.get(i), searchValue.get(i));
-			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
-					searchValue.get(i), searchIndicator.get(i)));
 		}
 
 		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
 		return fb;
 	}
