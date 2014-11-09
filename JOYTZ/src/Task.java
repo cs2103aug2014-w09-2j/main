@@ -14,7 +14,7 @@ public class Task implements Comparable<Task>{
 	public boolean passStartDateTime = false;
 	public boolean passEndDateTime = false;
 	
-	private int taskId = -1;
+	private int taskId;
 	
 	// the sortKey is name by default;
 	private static String sortKey = "name";
@@ -349,21 +349,14 @@ public class Task implements Comparable<Task>{
 			return "d";
 		}
 	}
-
+	
+	/**
+	 * Task Id is unique.
+	 */
 	@Override
 	public boolean equals(Object o){
 		Task that = (Task) o;
-		if (!that.getTaskName().equals(taskName)){
-			return false;
-		}else if(!that.getStartDateTime().equals(getStartDateTime())){
-			return false;
-		}else if(!that.getEndDateTime().equals(getEndDateTime())){
-			return false;
-		}else if(!that.getTaskDescription().equals(taskDescription)){
-			return false;
-		}else if(!that.getTaskLocation().equals(taskLocation)){
-			return false;
-		}else if(!that.getTaskPriority().equals(taskPriority)){
+		if (this.taskId != that.taskId){
 			return false;
 		}
 		return true;

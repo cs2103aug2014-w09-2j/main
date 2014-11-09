@@ -4,7 +4,7 @@ public class Executor {
 
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
-
+	// @author A0119378U
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
 
@@ -30,7 +30,6 @@ public class Executor {
 	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
 	private static final String MESSAGE_RELOAD_SUCCESSFULLY = "The Storage is reloaded successfully.\n";
 
-	// @author A0119378U
 	public static Feedback feedback;
 
 	// @author A0119378U
@@ -170,7 +169,7 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
-		sort(targetTaskIndex); // from big to small.
+		sortFromBigToSmall(targetTaskIndex); // from big to small.
 
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
@@ -200,7 +199,7 @@ public class Executor {
 	 *            small index is deleted.
 	 * 
 	 */
-	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
+	private static void sortFromBigToSmall(ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
@@ -262,7 +261,7 @@ public class Executor {
 
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
 		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
-			int index = i - 1;
+			int index = i - 1;	// index in storage start from zero.
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -311,6 +310,7 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Performs a/multiple sort action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
@@ -320,11 +320,10 @@ public class Executor {
 	 * @return
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performSortAction(ExecutableCommand command) {
-		ArrayList<String> sortKey = command.getIndicator();
-		sortKey = reverse(sortKey);
 		Feedback fb = new Feedback(StringFormat.SORT, false);
+		ArrayList<String> sortKey = command.getIndicator();
+		Collections.reverse(sortKey);
 		
 		// check what category user want to sort
 		for (int i = 0; i < sortKey.size(); i++) {
@@ -334,14 +333,6 @@ public class Executor {
 		fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
 
 		return fb;
-	}
-	
-	private static ArrayList<String> reverse(ArrayList<String> sortKeyList){
-		ArrayList<String> newKeyList = new ArrayList<String>();
-		for (int i=0; i<sortKeyList.size(); i++){
-			newKeyList.set(i, sortKeyList.get(sortKeyList.size() - i));
-		}
-		return newKeyList;
 	}
 	
 
@@ -518,7 +509,7 @@ public class Executor {
 
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
-			index--;
+			index--;	// index in storage start from zero.
 			try {
 				fb.setResult(Storage.done(index));
 			} catch (Exception e) {
@@ -625,8 +616,7 @@ public class Executor {
 		}
 
 		Task newTask = new Task(name);
-		newTask.setTaskId(Storage.obtainNewTaskId());
-
+		
 		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
 		}
