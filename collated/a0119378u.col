@@ -1,0 +1,1500 @@
+//@author: a0119378u
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
+		feedback = new Feedback(false);
+
+		if (command.equals(null)) {
+			feedback.setMessageShowToUser(StringFormat.EXE_ERROR_NULL_EXECUTABLE_COMMAND);
+			return feedback;
+		}
+
+		switch (command.getAction()) {
+		case StringFormat.ADD:
+			feedback = performAddAction(command);
+			break;
+
+		case StringFormat.DELETE:
+			feedback = performDeleteAction(command);
+			break;
+
+		case StringFormat.UPDATE:
+			feedback = performUpdateAction(command);
+			break;
+
+		case StringFormat.CLEAR:
+			feedback = performClearAction(command);
+			break;
+
+		case StringFormat.DISPLAY:
+			feedback = performDisplayAction(command);
+			break;
+
+		case StringFormat.SORT:
+			feedback = performSortAction(command);
+			break;
+
+		case StringFormat.SEARCH:
+			feedback = performSearchAction(command);
+			break;
+
+		case StringFormat.UNDO:
+			feedback = performUndoAction();
+			break;
+
+		case StringFormat.REDO:
+			feedback = performRedoAction();
+			break;
+
+		case StringFormat.RELOAD:
+			feedback = performReloadAction();
+			break;
+
+		case StringFormat.EXIT:
+			feedback = performExitAction();
+			break;
+
+		case StringFormat.DONE:
+			feedback = performDoneAction(command);
+			break;
+
+		default:
+			feedback.setMessageShowToUser(String.format(
+					StringFormat.EXE_ERROR_INVALID_COMMAND_ACTION,
+					command.getAction()));
+			return feedback;
+		}
+
+		if (feedback.getResult()) {
+			saveUserCommand(command);
+		}
+		addInDisplayMessage(feedback);
+
+		return feedback;
+	}
+
+	/**
+	 * Adds a Task object to Storage. Returns a Feedback object to show to a
+	 * user.
+	 *
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performAddAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.ADD, false);
+
+		String name = command.getTaskName();
+		String description = command.getTaskDescription();
+		String location = command.getTaskLocation();
+		String priority = command.getTaskPriority();
+		String startDateTimeString = command.getTaskStart();
+		String endDateTimeString = command.getTaskEnd();
+
+		Date startDateTime = convertStringToDate(startDateTimeString);
+		Date endDateTime = convertStringToDate(endDateTimeString);
+
+		try {
+			Task newTask = createNewTask(name, description, startDateTime,
+					endDateTime, location, priority);
+			fb.setResult(Storage.add(newTask));
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+		}
+
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(String.format(
+					StringFormat.EXE_MSG_ADD_SUCCESSFUL, name));
+		}
+
+		return fb;
+	}
+
+	/**
+	 * Deletes several tasks at the same time according to indices
+	 *
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
+		Comparator<Integer> reverseComparator = Collections.reverseOrder();
+		Collections.sort(targetTaskIndexArray, reverseComparator);
+	}
+
+	/**
+	 * Performs an/multiple update action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performClearAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.CLEAR, false);
+
+		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
+		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
+			int index = i - 1;
+			try {
+				fb.setResult(Storage.delete(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(StringFormat.EXE_MSG_CLEAR_SUCCESSFUL);
+		}
+
+		return fb;
+	}
+
+	/**
+	 * Displays the current taskList to a user using an arrayList. Displays the
+	 * passed time task using two boolean arrays.
+	 * 
+	 * @para command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performDisplayAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
+		if (command.getIndicator().size() != 1) {
+			fb.setMessageShowToUser(StringFormat.EXE_ERROR_NO_TASK_LIST_INDICATOR);
+			return fb;
+		}
+
+		String targetListIndicator = command.getIndicator().get(0);
+		try {
+			fb.setResult(Storage.display(targetListIndicator));
+		} catch (Exception e) {
+			fb.setResult(false);
+			fb.setMessageShowToUser(e.getMessage());
+		}
+
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
+		}
+
+		return fb;
+	}
+
+	/**
+	 * Performs a/multiple sort action(s) with a command object passed from the
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
+	 * @return
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performDoneAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DONE, false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+
+		for (int i = 0; i < targetIndexList.size(); i++) {
+			int index = targetIndexList.get(i);
+			index--;
+			try {
+				fb.setResult(Storage.done(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+
+		fb.setResult(true);
+		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
+
+		return fb;
+	}
+
+	/**
+	 * Return a feedback object to user
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	public static Feedback getFeedback() {
+		return feedback;
+	}
+
+	/**
+	 * Saves user's commands in a Stack
+	 * 
+	 * @param command
+	 * 
+	 */
+	private static void saveUserCommand(ExecutableCommand command) {
+		if (!command.getAction().equals("undo")
+				&& !command.getAction().equals("redo")
+				&& !command.getAction().equals("reload")) {
+			commandStack.push(command);
+		}
+	}
+
+	/**
+	 * Set displayed messages passed from Storage.
+	 * 
+	 * @param fb
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static void addInDisplayMessage(Feedback fb) {
+		fb.setTaskStringList(Storage.getStringFormatOfList());
+		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
+		fb.setPassEndTimeIndicator(Storage.getPassEndTimeList());
+		try {
+			fb.setListNameIndicator(Storage.listContainsDisplayList());
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+		}
+	}
+
+	/**
+	 * Converts a String of Date to the actual date.
+	 * 
+	 * @param dateTimeString
+	 * 
+	 * @return
+	 * 
+	 */
+	private static Date convertStringToDate(String dateTimeString) {
+		if (dateTimeString.equals("")) {
+			return null;
+		}
+
+		Long dateTimeLong = Long.parseLong(dateTimeString);
+		Date dateTimeDate = new Date(dateTimeLong);
+
+		return dateTimeDate;
+	}
+
+	/**
+	 * Creates a new Task Object based on the attributes.
+	 * 
+	 * @param name
+	 * @param description
+	 * @param location
+	 * @param priority
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @throws Exception
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Task createNewTask(String name, String description,
+			Date startDateTime, Date endDateTime, String location,
+			String priority) throws Exception {
+
+		if (name.equals(null)) {
+			throw new Exception("Null task name");
+		}
+
+		Task newTask = new Task(name);
+		newTask.setTaskId(Storage.obtainNewTaskId());
+
+		if (!(description.equals(""))) {
+			newTask.setTaskDescription(description);
+		}
+		if (!(startDateTime == null)) {
+			newTask.setStartDateTime(startDateTime);
+		}
+		if (!(endDateTime == null)) {
+			newTask.setEndDateTime(endDateTime);
+		}
+		if (!(location.equals(""))) {
+			newTask.setTaskLocation(location);
+		}
+		if (!(priority.equals(""))) {
+			newTask.setTaskPriority(priority);
+		}
+
+		return newTask;
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Feedback.java
+	 */
+
+import java.util.ArrayList;
+
+
+
+public class Feedback {
+	
+	// action that trigger the feedback
+	private String action;
+
+	// attributes
+	private boolean result;
+	private String listNameIndicator;
+	private String messageShowToUser;
+
+	// ArrayList only for display method.
+	private ArrayList<String> taskStringListShowToUser = new ArrayList<String>();
+	
+	// boolean arrays for task pass the date
+	private boolean[] passStartTimeTaskIndexIndicator = {};
+	private boolean[] passEndTimeTaskIndexIndicator = {};
+
+	/**
+	 * Constructor
+	 */
+	
+	Feedback(boolean result) {
+		this.action = "";
+		this.result = result;
+		this.messageShowToUser = "";
+	}
+	Feedback(String action, boolean result){
+		this.action = action;
+		this.result = result;
+		this.messageShowToUser = "";
+	}
+
+	/**
+	 * Set methods
+	 */
+	
+	public void setAction(String action){
+		this.action = action;
+	}
+
+	public void setResult(boolean result) {
+		this.result = result;
+	}
+
+	public void setMessageShowToUser(String message) {
+		this.messageShowToUser = message;
+	}
+
+	public void setTaskStringList(ArrayList<String> taskList) {
+		this.taskStringListShowToUser = taskList;
+	}
+	
+	public void setPassStartTimeIndicator(boolean[] indicatorArray){
+		this.passStartTimeTaskIndexIndicator = indicatorArray;
+	}
+	
+	public void setPassEndTimeIndicator (boolean[] indicatorArray){
+		this.passEndTimeTaskIndexIndicator = indicatorArray;
+	}
+	
+	public void setListNameIndicator(String indicator){
+		this.listNameIndicator = indicator;
+	}
+
+	/**
+	 * Get methods
+	 */
+	
+	public String getAction(){
+		return action;
+	}
+
+	public boolean getResult() {
+		return result;
+	}
+
+	public String getMessageShowToUser() {
+		return messageShowToUser;
+	}
+
+	public ArrayList<String> getTaskStringList() {
+		return taskStringListShowToUser;
+	}
+	
+	public boolean[] getPassStartTimeIndicator (){
+		return passStartTimeTaskIndexIndicator;
+	}
+	
+	public boolean[] getPassEndTimeListIndicator() {
+		return passEndTimeTaskIndexIndicator;
+	}
+	
+	public String getListNameIndicator(){
+		return listNameIndicator;
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Feedback.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
+	 */
+
+
+import java.io.*;
+import java.util.*;
+import java.util.logging.Logger;
+
+public class Storage {
+
+	private static final Logger LOGGER = Logger.getLogger(Storage.class
+			.getName());
+
+	// this is the two list of tasks.
+	private static List mainTaskList = new List("Main task List");
+	private static List doneTaskList = new List("History task List");
+	private static Integer taskId = -1; // Unique taskId start from 0.
+
+	// these are for display.
+	public static List displayTaskList = new List();
+	public static boolean[] passStartTimeList = {};
+	public static boolean[] passEndTimeList = {};
+
+	// the file that used to save current tasks when user exit the program.
+	private static String mainTaskListFileName = "taskList.txt";
+	private static String doneTaskListFileName = "doneList.txt";
+	private static FileInOut fileProcesser = new FileInOut();
+
+	/**
+	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
+	 * 
+	 * @param Task
+	 * @throws Exception
+	 */
+
+	public static boolean add(Task task) throws Exception {
+		// check whether the task object is null.
+		if (task == null) {
+			throw new Exception(StringFormat.STR_ERROR_NULL_TASK_OBJECT);
+		}
+		// check whether task has task name.
+		if (task.getTaskName().equals("")) {
+			throw new Exception(StringFormat.STR_ERROR_NO_TASK_NAME);
+		}
+		// check the validity of Start & End time.
+		if (task.getStartDateTime() != null && task.getEndDateTime() != null
+				&& task.getStartDateTime().after(task.getEndDateTime())) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_START_TIME_AFTER_END_TIME,
+					task.getFormatStartDateTime(), task.getFormatEndDateTime()));
+		}
+		// check the validity of Start time.
+		if (task.getStartDateTime() != null
+				&& task.getStartDateTime().before(new Date())) {
+
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_START_TIME_BEFORE_CURRENT_TIME,
+					task.getFormatStartDateTime()));
+		}
+		// check the validity of End time.
+		if (task.getEndDateTime() != null
+				&& task.getEndDateTime().before(new Date())) {
+
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_END_TIME_BEFORE_CURRENT_TIME,
+					task.getFormatEndDateTime()));
+		}
+
+		mainTaskList.addTask(task);
+		setDisplayList(mainTaskList);
+
+		LOGGER.info("==============\n" + "Storage : Add \n"
+				+ "	Add a new task " + "\n" + "	task id : " + task.getTaskId()
+				+ "\n" + "====================\n");
+
+		return true;
+	}
+
+	/**
+	 * Delete a task from taskList, and move it to history. Invalid taskId will
+	 * throw NullPointerException;
+	 * 
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean delete(int index) throws Exception {
+		if (index < 0 || index >= displayTaskList.size()) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, (index + 1)));
+		}
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+
+		if (mainTaskList.containsTaskId(targetTaskId)) {
+			mainTaskList.deleteTaskById(targetTaskId);
+		} else if (doneTaskList.containsTaskId(targetTaskId)) {
+			doneTaskList.deleteTaskById(targetTaskId);
+		} else { // not supposed to reach this line;
+			throw new Exception(
+					"No Task with same taskId in either mainTaskList nor History.");
+		}
+		displayTaskList.deleteTaskByIndex(index);
+
+		setDisplayList(displayTaskList);
+
+		LOGGER.info("==============\n" + "Storage : Delete \n"
+				+ "	Delete a task. " + "Task index : " + index + "\n"
+				+ "   current Task size. " + "\n" + "	displaytasklist size : "
+				+ displayTaskList.size() + "\n" + "	maintasklist size : "
+				+ mainTaskList.size() + "\n" + "====================\n");
+
+		return true;
+	}
+
+	/**
+	 * Move the targetTask from mainTaskList to historyTaskList.
+	 * 
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static boolean done(int index) throws Exception {
+		if (index < 0 || index >= displayTaskList.size()) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, index));
+		}
+
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+
+		if (!mainTaskList.containsTaskId(targetTaskId)) {
+			throw new Exception(
+					StringFormat.STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST);
+		}
+
+		mainTaskList.deleteTaskById(targetTaskId);
+		displayTaskList.deleteTaskByIndex(index);
+
+		doneTaskList.addTask(targetTask);
+		return true;
+	}
+
+	/**
+	 * Update a task's certain attributes
+	 * 
+	 * @param taskId
+	 * @param updateIndicator
+	 * @param updateKeyValue
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static boolean update(int index, String updateIndicator,
+			String updateKeyValue) throws Exception {
+
+		if (index < 0 || index >= displayTaskList.size()) {
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_INDEX, (index + 1)));
+		}
+		// remove the old task in both display list and main list.
+		Task targetTask = displayTaskList.getTaskByIndex(index);
+		int targetTaskId = targetTask.getTaskId();
+		mainTaskList.deleteTaskById(targetTaskId);
+		// update the old task.
+		update(targetTask, updateIndicator, updateKeyValue);
+		// add the new task back.
+		displayTaskList.setTask(index, targetTask);
+		mainTaskList.addTask(targetTask);
+
+		setDisplayList(displayTaskList);
+		return true;
+	}
+
+	/**
+	 * Update a task Object with specified indicator and value.
+	 * 
+	 * @param targetTask
+	 * @param updateIndicator
+	 * @param updateKeyValue
+	 * @throws Exception
+	 */
+	private static void update(Task targetTask, String updateIndicator,
+			String updateKeyValue) throws Exception {
+		switch (updateIndicator) {
+		case StringFormat.NAME:
+			targetTask.setTaskName(updateKeyValue);
+			break;
+		case StringFormat.DESCRIPTION:
+			targetTask.setTaskDescription(updateKeyValue);
+			break;
+		case StringFormat.START:
+			Date newStartDateTime = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setStartDateTime(newStartDateTime);
+			break;
+		case StringFormat.END:
+			Date newEndDateTime = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setEndDateTime(newEndDateTime);
+			break;
+		case StringFormat.START_DATE:
+			Date newStartDate = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setStartDate(newStartDate);
+			break;
+		case StringFormat.START_TIME:
+			Date newStartTime = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setStartTime(newStartTime);
+			break;
+		case StringFormat.END_DATE:
+			Date newEndDate = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setEndDate(newEndDate);
+			break;
+		case StringFormat.END_TIME:
+			Date newEndTime = new Date(Long.parseLong(updateKeyValue));
+			targetTask.setEndTime(newEndTime);
+			break;
+		case StringFormat.LOCATION:
+			targetTask.setTaskLocation(updateKeyValue);
+			break;
+		case StringFormat.PRIORITY:
+			targetTask.setTaskPriority(updateKeyValue);
+			break;
+
+		default:
+			assert false : updateIndicator;
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_INDICATOR, updateIndicator));
+
+		}
+	}
+
+	/**
+	 * Clean all the tasks inside mainTaskList and doneTaskList.
+	 * 
+	 * @return
+	 */
+	public static boolean clean() {
+		clean(mainTaskList);
+		clean(doneTaskList);
+
+		return true;
+	}
+
+	/**
+	 * Clean tasks inside taskList with targetListName.
+	 * 
+	 * @param targetListName
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean clean(String targetListName) throws Exception {
+		switch (targetListName) {
+		case StringFormat.MAIN_TASK_LIST:
+			clean(mainTaskList);
+			break;
+		case StringFormat.DONE_TASK_LIST:
+			clean(doneTaskList);
+			break;
+		default:
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
+					targetListName));
+		}
+
+		return clean(displayTaskList);
+	}
+
+	/**
+	 * Clear tasks inside target TaskList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
+	private static boolean clean(List targetList) {
+		targetList.clean();
+		setDisplayList(displayTaskList);
+
+		return true;
+	}
+
+	/**
+	 * Set displayList to be task list indicate by targetListIndicator.
+	 * 
+	 * @param targetListIndicator
+	 * @return
+	 * @throws Exception
+	 */
+
+	public static boolean display(String targetListIndicator) throws Exception {
+		switch (targetListIndicator) {
+		case StringFormat.MAIN_TASK_LIST:
+			setDisplayList(mainTaskList);
+			break;
+		case StringFormat.DONE_TASK_LIST:
+			setDisplayList(doneTaskList);
+			break;
+		default:
+			throw new Exception(String.format(
+					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
+					targetListIndicator));
+		}
+		return true;
+	}
+
+	/**
+	 * Sort the task in taskList corresponding to parameter key. if the key is
+	 * not valid, tasks are sorted by name(default);
+	 * 
+	 * @return
+	 */
+
+	public static boolean sort(String key) {
+		return sort(key, displayTaskList);
+	}
+
+	private static boolean sort(String key, List targetList) {
+		Task.setSortKey(key);
+		targetList.sortList();
+
+		setDisplayList(displayTaskList);
+
+		return true;
+	}
+
+	/**
+	 * Search the task in taskList corresponding to parameter key.
+	 * 
+	 * @return
+	 */
+	public static boolean search(String indicator, String searchValue) {
+		return search(displayTaskList, indicator, searchValue);
+	}
+
+	private static boolean search(List targetList, String indicator,
+			String searchValue){
+		List newList = new List();
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			if (currTask.get(indicator).toLowerCase()
+					.contains(searchValue.toLowerCase())) {
+				newList.addTask(currTask);
+			}
+		}
+
+		setDisplayList(newList);
+
+		return true;
+	}
+
+	/**
+	 * Check which task is passed the start and end time. Task that pass
+	 * start(or end) time will be recorded in boolean array.
+	 */
+	private static void checkTime() {
+		checkTime(displayTaskList);
+	}
+
+	private static void checkTime(List targetList) {
+		passStartTimeList = new boolean[targetList.size()];
+		passEndTimeList = new boolean[targetList.size()];
+
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			Date currStartTime = currTask.getStartDateTime();
+			Date currEndTime = currTask.getEndDateTime();
+			Date currTime = new Date(System.currentTimeMillis());
+
+			if (currStartTime != null) {
+				if (currTime.after(currStartTime)) {
+					passStartTimeList[index] = true;
+				}
+			}
+			if (currEndTime != null) {
+				if (currTime.after(currEndTime)) {
+					passEndTimeList[index] = true;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get the Pass Start Time indicator array of displayTaskList.
+	 * 
+	 * @return
+	 */
+	public static boolean[] getPassStartTimeList() {
+		checkTime();
+		return passStartTimeList;
+	}
+
+	/**
+	 * Get the Pass Start Time indicator array of targetList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
+	public static boolean[] getPassStartTimeList(List targetList) {
+		checkTime(targetList);
+		return passStartTimeList;
+	}
+
+	/**
+	 * Get the Pass End Time indicator array of displayTaskList.
+	 * 
+	 * @return
+	 */
+	public static boolean[] getPassEndTimeList() {
+		checkTime();
+		return passEndTimeList;
+	}
+
+	/**
+	 * Get the Pass End Time indicator array of targetList.
+	 * 
+	 * @param targetList
+	 * @return
+	 */
+	public static boolean[] getPassEndTimeList(List targetList) {
+		checkTime(targetList);
+		return passEndTimeList;
+	}
+
+	/**
+	 * get the string format of all tasks in taskList and store in arrayList.
+	 * 
+	 * @return
+	 */
+	public static ArrayList<String> getStringFormatOfList() {
+		return getStringFormatOfList(displayTaskList);
+	}
+
+	private static ArrayList<String> getStringFormatOfList(List targetList) {
+		ArrayList<String> resultList = new ArrayList<String>();
+
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			resultList.add(currTask.toString());
+		}
+		LOGGER.info("==============\n" + "Storage : getDisplayList \n"
+				+ "	resultList size " + resultList.size() + "\n"
+				+ "====================\n");
+
+		return resultList;
+	}
+
+	/**
+	 * Save the mainTaskList and doneTaskList to .txt file.
+	 * 
+	 * @throws IOException
+	 */
+
+	public static void saveFile() throws Exception {
+		fileProcesser.saveTaskList(mainTaskList, mainTaskListFileName);
+		fileProcesser.saveTaskList(doneTaskList, doneTaskListFileName);
+	}
+
+	/**
+	 * reload mainTaskList and doneTaskList from .txt file
+	 * 
+	 * @throws Exception
+	 */
+
+	public static void reloadFile() throws Exception {
+		mainTaskList.clean();
+		doneTaskList.clean();
+		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
+		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
+
+		setDisplayList(mainTaskList);
+	}
+
+	private static void setDisplayList(List targetList) {
+		displayTaskList = targetList.copy();
+		checkTime();
+	}
+
+	/**
+	 * Return a unique taskId for new Task. And reset TaskId is necessary.
+	 * 
+	 * @return
+	 */
+	public static int obtainNewTaskId() {
+		if (taskId == Integer.MAX_VALUE) {
+			resetTaskId();
+		}
+		taskId++;
+
+		return taskId;
+	}
+
+	/**
+	 * Get the size of displayTaskList.
+	 * 
+	 * @return
+	 */
+	public static int getDisplayTaskListSize() {
+		return displayTaskList.size();
+	}
+
+	/**
+	 * There will become a lot unused TaskId after a lot of delete action. If
+	 * Integer TaskId is out of range when create a new Task, this method will
+	 * reset the TaskId to fill the empty holes.
+	 */
+	private static void resetTaskId() {
+		taskId = -1; // set the start taskId to be 0;
+		for (int index = 0; index < doneTaskList.size(); index++) {
+			int currId = obtainNewTaskId();
+			Task currTask = doneTaskList.getTaskByIndex(index);
+			currTask.setTaskId(currId);
+		}
+		for (int index = 0; index < mainTaskList.size(); index++) {
+			int currId = obtainNewTaskId();
+			Task currTask = mainTaskList.getTaskByIndex(index);
+			currTask.setTaskId(currId);
+		}
+	}
+
+	public static String listContainsDisplayList() throws Exception {
+		if (displayTaskList.size() == 0) {
+			return StringFormat.MAIN_TASK_LIST;
+		}
+		Task exampleTask = displayTaskList.getTaskByIndex(0);
+		int exampleTaskId = exampleTask.getTaskId();
+
+		if (mainTaskList.containsTaskId(exampleTaskId)) {
+			return StringFormat.MAIN_TASK_LIST;
+		} else if (doneTaskList.containsTaskId(exampleTaskId)) {
+			return StringFormat.DONE_TASK_LIST;
+		} else { // should not reach this line.
+			throw new Exception(
+					StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
+		}
+
+	}
+
+	/**
+	 * These method is only for Unit Test.
+	 */
+	public static List getMainTaskList() {
+		return mainTaskList;
+	}
+
+	public static List getDoneTaskList() {
+		return doneTaskList;
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Task.java
+	 */
+
+import java.util.Date;
+
+public class Task implements Comparable<Task>{
+
+	// task attributes.
+	private String taskName;
+	private Date startDateTime;
+	private Date endDateTime;
+	private String taskDescription;
+	private String taskLocation;
+	private String taskPriority;
+	
+	public boolean passStartDateTime = false;
+	public boolean passEndDateTime = false;
+	
+	private int taskId = -1;
+	
+	// the sortKey is name by default;
+	private static String sortKey = "name";
+
+	/**
+	 * Constructor
+	 */
+	Task (){
+		this.taskName = "";
+		this.startDateTime = null;
+		this.endDateTime = null;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+	}
+	Task (String nameString){
+		this.taskName = nameString;
+		this.startDateTime = null;
+		this.endDateTime = null;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+	}
+	Task (String nameString, int taskId){
+		this.taskName = nameString;
+		this.startDateTime = null;
+		this.endDateTime = null;
+		this.taskDescription = "";
+		this.taskLocation = "";
+		this.taskPriority = "";
+		this.taskId = taskId;
+	}
+
+	/**
+	 * Set methods
+	 */
+
+	public void setTaskName(String name) {
+		this.taskName = name;
+	}
+	
+	/**
+	 * Set startDateTime from a given Date Object.
+	 * @param date
+	 */
+	public void setStartDateTime(Date date) {
+		this.startDateTime = date;
+	}
+	
+	/**
+	 * Set endDateTime from a given Date Object.
+	 * @param date
+	 */
+	public void setEndDateTime(Date date){
+		this.endDateTime = date;
+	}
+	
+	/**
+	 * Set startDate from a given Date Object.
+	 * @param date
+	 */
+	public void setStartDate(Date date){
+		this.startDateTime.setYear(date.getYear());
+		this.startDateTime.setMonth(date.getMonth());
+		this.startDateTime.setDate(date.getDate());
+	}
+	
+	/**
+	 * Set endDate from a given Date Object.
+	 * @param date
+	 */
+	public void setEndDate(Date date){
+		this.endDateTime.setYear(date.getYear());
+		this.endDateTime.setMonth(date.getMonth());
+		this.endDateTime.setDate(date.getDate());
+	}
+	
+	/**
+	 * Set startTime from a given Date Object.
+	 * @param date
+	 */
+	public void setStartTime(Date date){
+		this.startDateTime.setHours(date.getHours());
+		this.startDateTime.setMinutes(date.getMinutes());
+	}
+	
+	/**
+	 * Set endTime from a given Date Object.
+	 * @param date
+	 */
+	public void setEndTime(Date date){
+		this.endDateTime.setHours(date.getHours());
+		this.endDateTime.setMinutes(date.getMinutes());
+	}
+
+	public void setTaskDescription(String des) {
+		this.taskDescription = des.trim();
+	}
+
+	public void setTaskLocation(String loc) {
+		this.taskLocation = loc.trim();
+	}
+
+	public void setTaskPriority(String prio) {
+		this.taskPriority = prio.trim();
+	}
+	
+	public void setTaskId(int taskId){
+		this.taskId = taskId;
+	}
+
+	/**
+	 * Get methods
+	 */
+
+	public String getTaskName() {
+		return this.taskName;
+	}
+	
+	/**
+	 * return null is there is not startDateTime.
+	 * @return
+	 */
+	public Date getStartDateTime() {
+		return this.startDateTime;
+	}
+	
+	/**
+	 * return null is there is not endDateTime.
+	 * @return
+	 */
+	public Date getEndDateTime(){
+		return this.endDateTime;
+	}
+	
+	/**
+	 * Return String format of endDateTime.
+	 * @return
+	 */
+	public String getFormatEndDateTime(){
+		if (endDateTime == null){
+			return "";
+		}
+		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(endDateTime);
+	}
+	
+	/**
+	 * Return String format of startDateTime.
+	 * @return
+	 */
+	public String getFormatStartDateTime(){
+		if (startDateTime == null){
+			return "";
+		}
+		return StringFormat.DATE_FORMAT_SHOWN_TO_USER.format(startDateTime);
+	}
+	
+	/**
+	 * Return Long String to represent startDateTime.
+	 * @return
+	 */
+	public String getLongStringFormatStartDateTime(){
+		if (startDateTime == null){
+			return "";
+		}
+		return startDateTime.getTime() + "";
+	}
+	
+	/**
+	 * Return Long String to represent endDateTime.
+	 * @return
+	 */
+	public String getLongStringFormatEndDateTime(){
+		if (endDateTime == null){
+			return "";
+		}
+		return endDateTime.getTime() + "";
+	}
+	
+	public String getLongStringFormatStartDate(){
+		if (startDateTime == null){
+			return "";
+		}
+		Date currDate = new Date();
+		currDate.setYear(startDateTime.getYear());
+		currDate.setMonth(startDateTime.getMonth());
+		currDate.setDate(startDateTime.getDate());
+		
+		currDate.setHours(0);
+		currDate.setMinutes(0);
+		return currDate.getTime() + "";
+	}
+	
+	public String getLongStringFormatStartTime(){
+		if (startDateTime == null){
+			return "";
+		}
+		Date currDate = new Date();
+		currDate.setYear(0);
+		currDate.setMonth(0);
+		currDate.setDate(0);
+		
+		currDate.setHours(startDateTime.getHours());
+		currDate.setMinutes(startDateTime.getMinutes());
+		return currDate.getTime() + "";
+	}
+	
+	public String getLongStringFormatEndDate(){
+		if (endDateTime == null){
+			return "";
+		}
+		Date currDate = new Date();
+		currDate.setYear(endDateTime.getYear());
+		currDate.setMonth(endDateTime.getMonth());
+		currDate.setDate(endDateTime.getDate());
+		
+		currDate.setHours(0);
+		currDate.setMinutes(0);
+		return currDate.getTime() + "";
+	}
+	
+	public String getLongStringFormatEndTime(){
+		if (endDateTime == null){
+			return "";
+		}
+		Date currDate = new Date();
+		currDate.setYear(0);
+		currDate.setMonth(0);
+		currDate.setDate(0);
+		
+		currDate.setHours(endDateTime.getHours());
+		currDate.setMinutes(endDateTime.getMinutes());
+		return currDate.getTime() + "";
+	}
+
+	public String getTaskDescription() {
+		return this.taskDescription;
+	}
+
+	public String getTaskLocation() {
+		return this.taskLocation;
+	}
+
+	public String getTaskPriority() {
+		return this.taskPriority;
+	}
+	
+	public int getTaskId(){
+		return this.taskId;
+	}
+	
+	/**
+	 * get a certain attribute of the task.
+	 * @param attribute
+	 * @return
+	 */
+	public String get(String attribute){
+		
+		switch(attribute){
+		case StringFormat.NAME: 
+			return getTaskName();
+			
+		case StringFormat.DESCRIPTION:
+			return getTaskDescription();
+			
+		case StringFormat.START:
+			return getLongStringFormatStartDateTime();
+			
+		case StringFormat.END:
+			return getLongStringFormatEndDateTime();
+			
+		case StringFormat.START_DATE:
+			return getLongStringFormatStartDate();
+			
+		case StringFormat.START_TIME:
+			return getLongStringFormatStartTime();
+			
+		case StringFormat.END_DATE:
+			return getLongStringFormatEndDate();
+			
+		case StringFormat.END_TIME:
+			return getLongStringFormatEndTime();
+			
+		case StringFormat.LOCATION:
+			return taskLocation;
+			
+		case StringFormat.PRIORITY:
+			return taskPriority;
+			
+		default:
+			return taskName;
+		}
+	}
+
+	/**
+	 * Set a the static value sortKey.
+	 * @param key
+	 */
+	public static void setSortKey(String key){
+		sortKey = key;
+	}
+	
+	
+	@Override
+	public int compareTo(Task o){
+		Task that = (Task)o;
+		String thisString = this.get(sortKey);
+		String thatString = that.get(sortKey);
+		
+		if (sortKey.equals(StringFormat.PRIORITY)){			
+			thisString = convertPriority(thisString);
+			thatString = convertPriority(thatString);
+		}
+		
+		return thisString.compareToIgnoreCase(thatString);
+	}
+	
+	/**
+	 * The user input priority may be ordered in High, Medium, Low.
+	 * This method convert the priority into comparable string.
+	 * @param priority
+	 * @return
+	 */
+	private String convertPriority (String priority){
+		if (priority.equals(StringFormat.HIGH_PRIORITY)){
+			return "a";
+		}else if (priority.equals(StringFormat.MEDIUM_PRIORITY)){
+			return "b";
+		}else if (priority.equals(StringFormat.LOW_PRIORITY)){
+			return "c";
+		}else {
+			return "d";
+		}
+	}
+
+	@Override
+	public boolean equals(Object o){
+		Task that = (Task) o;
+		if (!that.getTaskName().equals(taskName)){
+			return false;
+		}else if(!that.getStartDateTime().equals(getStartDateTime())){
+			return false;
+		}else if(!that.getEndDateTime().equals(getEndDateTime())){
+			return false;
+		}else if(!that.getTaskDescription().equals(taskDescription)){
+			return false;
+		}else if(!that.getTaskLocation().equals(taskLocation)){
+			return false;
+		}else if(!that.getTaskPriority().equals(taskPriority)){
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString(){
+		String emptySpace = " ";
+		String resultString = taskName.concat("~");
+		
+		// add in description information.
+		if (!getTaskDescription().equals("")){
+			resultString = resultString.concat(taskDescription);
+		}else {
+			resultString = resultString.concat(emptySpace);
+		}
+		resultString = resultString.concat("~");
+		
+		// add in start date time information.
+		if (!(getStartDateTime() == null)){
+			resultString = resultString.concat(getFormatStartDateTime());
+		}else {
+			resultString = resultString.concat(emptySpace);
+		}
+		resultString = resultString.concat("~");
+		
+		// add in end date time information.
+		if (!(getEndDateTime() == null)){
+			resultString = resultString.concat(getFormatEndDateTime());
+		}else {
+			resultString = resultString.concat(emptySpace);
+		}
+		resultString = resultString.concat("~");
+		
+		// add in location information.
+		if (!getTaskLocation().equals("")){
+			resultString = resultString.concat(getTaskLocation());
+		}else {
+			resultString = resultString.concat(emptySpace);
+		}
+		resultString = resultString.concat("~");
+		
+		// add in priority information.
+		if (!getTaskPriority().equals("")){
+			resultString = resultString.concat(getTaskPriority());
+		}else {
+			resultString = resultString.concat(emptySpace);
+		}
+		
+		resultString = resultString.concat("\n");
+		return resultString;
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Task.java
+
+
+
+
+

@@ -1,0 +1,2205 @@
+//@author: a0094558n
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Controller.java
+	 */
+
+import java.text.ParseException;
+import java.util.logging.Logger;
+
+public class Controller {
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+
+    private static final String ERROR_INVALID_COMMAND = "Invalid command. Need help? " +
+                                                        "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
+                                                          "Type \"help\" or \"tutorial\".\n";
+    private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
+    public static final String EMPTY_LIST = "null";
+
+    private static Command inputCommandObject;
+    private static Feedback feedback;
+    private static String outputString;
+    private static ExecutableCommand parsedCommand;
+
+    /**
+     * Called at the end of controller runtime to process 
+     * feedback data for display.
+     *
+     * @param outputFeedbackString	    Feedback string that is shown to the user
+     * 					                after each command
+     * @param command			        ExecutableCommand object containing the
+     * 					                user's action and taskId
+     * 
+     */
+    private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
+                                     boolean isSuccessful) {
+        assert outputFeedbackString != null;
+        assert command != null;
+        assert outputFeedbackString.length() != 0;
+        int taskId = 0;
+        
+        GUI.displayOutput(outputFeedbackString, isSuccessful);
+
+        // If there is no error message
+        if (isSuccessful == true) {
+            String action = command.getAction().trim();
+            if (command.getTaskId().isEmpty() == false) {
+                taskId = command.getTaskId().get(0);
+            }
+
+            parseDisplayTasks(action, taskId);
+        }
+    }
+
+    /**
+     * Parses the feedback data string from the Executor
+     * 
+     * Precondition: getTaskList() returns a string in the form
+     * of "name~ description~ start date~ end date~ location~ priority". If there are
+     * empty values, leave it blank. For example: "name~~~end date~~priority"
+     * to leave the description and location empty.
+     * 
+     * @param action	The user's input action (add, delete, etc.)
+     * @param taskId    The id of the task given by the user
+     * 
+     */
+    private static void parseDisplayTasks(String action, int taskId) {
+        boolean isLastItem = false;
+        boolean isHighlightedPassStart = false;
+        boolean isHighlightedPassEnd = false;
+
+        if (feedback.getTaskStringList().size() == 0) {
+            isLastItem = true;
+            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
+                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+
+        } else {
+            for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
+                System.out.println("===================\n" +
+                                   "Display string from feedback object: \n" + 
+                                   "    " + feedback.getTaskStringList().get(i) + "\n" +
+                                   "===================\n");
+
+                String[] parameterArr = processDisplayString(i);
+                isHighlightedPassStart = feedback.getPassStartTimeIndicator()[i];
+                isHighlightedPassEnd = feedback.getPassEndTimeListIndicator()[i];
+
+                if (i == feedback.getTaskStringList().size() - 1) {
+                    isLastItem = true;
+                }
+
+                /* Commented because there's too much stuff in the console*/
+				LOGGER.info("==============\n" +
+    						"After splitting: \n" + 
+    						"    Action = " + action + "\n" + 
+    						"    Name = " + parameterArr[0] + "\n" +
+    						"    Start time = " + parameterArr[2] + "\n" + 
+    						"    End time = " + parameterArr[3] + "\n" + 
+    						"    Description = " + parameterArr[1] + "\n" +
+    						"    Location = " + parameterArr[4] + "\n" +
+    						"    Priority = " + parameterArr[5] + "\n" +
+    						"====================\n");
+                 
+
+                /*
+                 * Parameters: updateTable(Table index number, start time, end time, name, 
+                 *                         location, description, priority, action);
+                 */ 
+                assert parameterArr.length == 6;
+                GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
+                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
+                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+            }
+        }
+    }
+
+    /**
+     * Processes the string obtained from the task list that is stored
+     * in the feedback object. This method will split the string
+     * via the '~' token, and then trim it.
+     * 
+     * @param i     The index of the task in the task list
+     * 
+     * @return      A string array containing the parameters to be displayed
+     * 
+     */
+    private static String[] processDisplayString(int i) {
+        String[] parameterArr = feedback.getTaskStringList().get(i).split("~");
+        for(int k = 0; k < parameterArr.length; k++) {
+            parameterArr[k] = parameterArr[k].trim();
+        }
+        return parameterArr;
+    }
+
+    /**
+     * Starts the controller, and consequently the execution of 
+     * the whole data flow. It is called when the user presses "enter"
+     * after input that requires processing and data manipulation in the GUI.
+     * 
+     * @param inputCommandString    The user's input
+     * 
+     * @return                      Feedback object used exclusively for testing
+     * 
+     */
+    public static Feedback startController(String inputCommandString) {
+        assert inputCommandString != null;
+
+        LOGGER.info("==============\n" +
+                    "User Input: \n" + 
+                    "	" + inputCommandString + "\n" + 
+                    "====================\n");
+
+        inputCommandObject = convertStringToCommand(inputCommandString);
+        assert inputCommandObject != null;
+
+        /* Commented because there's too much stuff in the console.
+        LOGGER.info("==============\n" +
+    				"Command object: \n" + 
+    				"	" + inputCommandObject.getUserCommand() + "\n" + 
+    				"====================\n");
+         */
+
+        try {
+            parsedCommand = analyzeInput(inputCommandObject);
+            assert parsedCommand != null;
+
+            // Debugging code
+            LOGGER.info("==============\n" +
+                        "After analyzer: \n" + 
+                        "    Action = " + parsedCommand.getAction() + "\n" + 
+                        "    Name = " + parsedCommand.getTaskName() + "\n" +
+                        "    Start time = " + parsedCommand.getTaskStart() + "\n" + 
+                        "    End time = " + parsedCommand.getTaskEnd() + "\n" + 
+                        "    Description = " + parsedCommand.getTaskDescription() + "\n" +
+                        "    Location = " + parsedCommand.getTaskLocation() + "\n" +
+                        "    Priority = " + parsedCommand.getTaskPriority() + "\n" +
+                        "    Task ID = " + parsedCommand.getTaskId() + "\n" +
+                        "    Search key = " + parsedCommand.getKey() + "\n" +
+                        "    Error message = " + parsedCommand.getErrorMessage() + "\n" +
+                        "    Update indicator = " + parsedCommand.getIndicator() + "\n" +
+                        "====================\n");
+
+            if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
+                outputString = parsedCommand.getErrorMessage();
+                displayInGUI(outputString, parsedCommand, false);
+            } else {	
+
+                if(parsedCommand != null){
+                    feedback = startExecutor(parsedCommand);
+                    assert feedback != null;
+
+                } else {
+                    feedback = new Feedback(false);
+                    feedback.setMessageShowToUser(ERROR_INVALID_COMMAND);
+                }
+
+                outputString = getFeedbackMessage(feedback);
+                boolean isFeedbackSuccess = feedback.getResult();
+                assert outputString != null;
+                
+                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
+                    GUI.openTutorial();
+                }
+                
+                if (outputString.equals(SAVE_SUCCESSFUL)) {
+                    System.exit(0);
+                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
+                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess);
+                }
+            }
+        } catch (ParseException e) {
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
+        }   
+        return feedback;    // used exclusively for JUnit testing
+    }
+
+    /**
+     * Converts the user's input string into a Command object.
+     * 
+     * @param inputCommandString	The user's input
+     * 
+     * @return						Command object containing the user's input 
+     * 
+     */
+    private static Command convertStringToCommand(String inputCommandString) {
+        inputCommandObject = new Command(inputCommandString);
+
+        return inputCommandObject;
+    }
+
+    /**
+     * Starts the analyzer, and passes the Command object to it
+     * 
+     * @param inputCommandObject	Command object containing the user's input
+     * 
+     * @return						ExecutableCommand object with parsed data
+     * 
+     */
+    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+
+        return parsedCommand;
+    }
+
+    /**
+     * Gets the feedback message to show to the user from the feedback object
+     * 
+     * @param feedback		Feedback object containing the feedback message
+     * 
+     * @return				String with feedback to show to user after each command
+     * 
+     */
+    private static String getFeedbackMessage(Feedback feedback) {
+        String outputString = feedback.getMessageShowToUser();  		
+
+        return outputString;	
+    }
+
+    /**
+     * Starts the executor, and passes the ExecutableCommand object to it
+     * 
+     * @param command	ExecutableCommand object containing the parsed data
+     * 
+     * @return			Feedback object with data to display in GUI
+     * 
+     */
+    public static Feedback startExecutor(ExecutableCommand command) {
+        return Executor.proceedAnalyzedCommand(command);
+    }
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Controller.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+	 */
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Logger;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
+import javax.swing.Timer;
+
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Label;
+
+//import com.melloware.jintellitype.HotkeyListener;
+//import com.melloware.jintellitype.IntellitypeListener;
+//import com.melloware.jintellitype.JIntellitype;
+
+public class GUI { //implements HotkeyListener, IntellitypeListener {
+    private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
+
+    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
+    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> from <start date> " +
+    											"to <end time> @<location> #<priority>\n";
+    private static final String HELP_TEXT_DELETE =  "\t    delete <index number>\n";
+    private static final String HELP_TEXT_UPDATE = "\t    update <index number> <attribute> <new data>\n";
+    private static final String HELP_TEXT_SEARCH = "\t    search <attribute> <search for>\n";
+    private static final String HELP_TEXT_SORT = "\t    sort <attribute>\n";
+    private static final String HELP_TEXT_UNDO = "\t    undo\n";
+    private static final String HELP_TEXT_REDO = "\t    redo\n";
+    private static final String HELP_TEXT_DISPLAY ="\t    display\n";
+    private static final String HELP_TEXT_CLEAR = "\t    clear\n";
+    private static final String HELP_TEXT_HELP ="\t    help\n";
+    private static final String HELP_TEXT_TUTORIAL ="\t    tutorial\n";
+    private static final String HELP_TEXT_SETTINGS ="\t    settings\n";
+    private static final String HELP_TEXT_EXIT = "\t    exit\n";
+    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_SHORTCUT_MAXIMIZE = "\t    ALT+A to maximize application";
+    private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
+    private static final String HELP_TEXT_PREVIOUS_COMMAND = "\t    ALT+up to get your previous command";
+    private static final String HELP_TEXT_NEXT_COMMAND = "\t    ALT+down to get your next command";
+	private static final String NOTIFICATION_START = "%s has started!";
+	private static final String NOTIFICATION_OVERDUE = "%s is overdue!";
+	private static final String ERROR_NO_SETTINGS = "No settings set up. Using defaults.";
+	private static final String LABEL_TASKS_INCOMPLETE = "Task List: Incomplete Tasks";
+	private static final String LABEL_TASKS_DONE = "Task List: Done Tasks";
+	private static final int DEFAULT_DEADLINE_COLOR_R = 255;
+	private static final int DEFAULT_DEADLINE_COLOR_G = 0;
+	private static final int DEFAULT_DEADLINE_COLOR_B = 0;
+	private static final int DEFAULT_ONGOING_COLOR_R = 0;
+	private static final int DEFAULT_ONGOING_COLOR_G = 128;
+	private static final int DEFAULT_ONGOING_COLOR_B = 0;
+	private static final int IN_MILLISECONDS_ONE_MINUTE = 60000;
+	private static final int IN_MILLISECONDS_ONE_DAY = 86400000;
+	private static final int NULL_NUMBER = -1;
+	private static final String EMPTY_STRING = "";
+
+	// Variables for settings
+	private static int refreshRate;
+	private static int deadlineRowColorR;
+	private static int deadlineRowColorG;
+	private static int deadlineRowColorB;
+	private static int ongoingRowColorR;
+	private static int ongoingRowColorG;
+	private static int ongoingRowColorB;
+	private static int isNotifcationsOverdueEnabled;
+    private static int isNotifcationsOngoingEnabled;
+	private static List<Integer> settingsStorage;
+	
+    private static StyledText inputField;
+    private static Table taskTable;
+    private static Table feedbackTable;
+    private static TableColumn tblclmnNo;
+    private static TableColumn tblclmnName;
+    private static TableColumn tblclmnStart;
+    private static TableColumn tblclmnEnd;
+    private static TableColumn tblclmnFeedback;
+    private static TableColumn tblclmnPriority;
+    private static boolean isSortingOrSearching;
+    private static Deque<String> previousUserInputStack;
+    private static Deque<String> nextUserInputStack;
+    private static Display display;
+    private static Shell shell;
+    private static Timer displayTimer;
+    private static String beingDisplayed;
+    private static GUI mainFrame;
+    private static Label lblIncompleteTasks;
+    private static Label lblInputBox;
+    
+    
+    /**
+     * Creates and returns a new TableItem containing
+     * the given string
+     * 
+     * @param thisTable     The table the TableItem belongs to
+     * @param text          The text to be placed in the TableItem
+     *
+     * @return              The table item
+     * 
+     */
+    private static TableItem newTableItem(Table thisTable, String text){
+        TableItem item = new TableItem(thisTable, SWT.NONE);
+        item.setText(text);
+        
+        return item;
+    }
+    
+    /**
+     * Creates and returns a new TableItem
+     * 
+     * @param thisTable     The table the TableItem belongs to
+     * @param textArr       An array of strings to be placed in the TableItem
+     *
+     * @return              The table item
+     * 
+     */
+    private static TableItem newTableItem(Table thisTable, String[] textArr){
+        TableItem item = new TableItem(thisTable, SWT.NONE);
+        item.setText(textArr);
+        
+        return item;
+    }
+
+    /**
+     * Returns the shell of the program
+     *
+     * @return    The shell of the program
+     * 
+     */
+    public static Shell getShell(){
+        return shell;
+    }
+    
+    /**
+     * Displays a feedback string in the GUI after each user command
+     *
+     * @param output    The string to be displayed
+     * 
+     */
+    public static void displayOutput(String output, boolean isSuccessful) {
+        TableItem item = newTableItem(feedbackTable, output);
+        if (isSuccessful == false) {
+            colorRowBackgroundRed(item);
+        }
+        
+        // This ensures that the table is always scrolled to the bottom
+        feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
+    }
+
+    /**
+     * Opens the tutorial
+     * 
+     */
+    public static void openTutorial() {
+        GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
+        helpDialog.open();
+    }
+
+    /**
+     * Displays the help text in text box that is found in the middle,
+     * styling it such that the background is colored.
+     * 
+     */
+    private static void displayHelp() {
+    	Color grey = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
+    	TableItem item;
+    	
+    	item = newTableItem(feedbackTable, HELP_TEXT_COMMANDS);
+    	item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_ADD);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_DELETE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_UPDATE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SEARCH);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SORT);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_UNDO);
+        item.setBackground(grey);
+
+        item = newTableItem(feedbackTable, HELP_TEXT_REDO);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_DISPLAY);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_CLEAR);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_HELP);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_TUTORIAL);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SETTINGS);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_EXIT);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_TIME_GUIDE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_ATTRIBUTES_GUIDE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SHORTCUT_MAXIMIZE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_SHORTCUT_MINIMIZE);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_PREVIOUS_COMMAND);
+        item.setBackground(grey);
+        
+        item = newTableItem(feedbackTable, HELP_TEXT_NEXT_COMMAND);
+        item.setBackground(grey);
+
+        feedbackTable.setTopIndex(feedbackTable.getItemCount() - 1);
+    }
+
+    /**
+     * Updates the table in the GUI based on the given parameters
+     *
+     * @param taskNumber    	         Index number of the task in the table
+     * @param startDate    		         Starting time of the given task
+     * @param endDate    		         Deadline of the given task
+     * @param name 				         Name of the given task
+     * @param location			         Location of the given task
+     * @param description		         Description for the given task
+     * @param priority			         Priority level of the given task
+     * @param action			         Action input by the user (add, delete, etc.)
+     * @param taskId                     The taskId of the task given by the user
+     * @param isLastRow			         Is this the last item 
+     * @param isHighlightedPassStart     Has the task passed the start time
+     * @param isHighlightedPassEnd       Has the task passed the end time
+     * 
+     */
+    public static void updateTable(int taskNumber, String startDate, String endDate,
+                                   String name, String location, 
+                                   String description, String priority,
+                                   String action, int taskId, boolean isLastRow,
+                                   boolean isHighlightedPassStart,
+                                   boolean isHighlightedPassEnd) {
+        
+        stopTimerIfSortingOrSearching(action);
+
+        // To prevent multiple of the same entries, we clear the whole table first
+        if (taskNumber == 0 || action.equals("null")) {
+            taskTable.removeAll();
+            assert taskTable.getItemCount() == 0;
+        }
+
+        if (!action.equals(StringFormat.CLEAR) && !startDate.equals(Controller.EMPTY_LIST)) {
+            // Debugging code
+            LOGGER.info("==============\n" +
+                        "Writing to table (GUI):  \n" + 
+                        "	Action = " + action + "\n" + 
+                        "	Name = " + name + "\n" +
+                        "	Start time = " + startDate + "\n" + 
+                        "	End time = " + endDate + "\n" + 
+                        "	Description = " + description + "\n" +
+                        "	Location = " + location + "\n" +
+                        "	Priority = " + priority + "\n" +
+                        "====================\n");
+
+            // 1 row = 1 TableItem
+            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
+                                                                     startDate, endDate, priority});
+            
+            TableItem item2;
+            if (location.equals(EMPTY_STRING)) {
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location });
+            } else {
+                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location });
+            }
+            taskTable.setTopIndex(taskTable.getItemCount() - 1);
+            
+            displayGUIFeedback(name, action, taskId, isLastRow, isHighlightedPassStart,
+                               isHighlightedPassEnd, item, item2, taskNumber, priority);
+            
+        }
+
+        if (isLastRow == true) {
+            resizeTable();
+        }
+    }
+
+    /**
+     * Stops the display timer if the user's action is a sort or search
+     *
+     * @param action       The action executed by the user
+     * 
+     */
+    private static void stopTimerIfSortingOrSearching(String action) {
+        if (action.equals(StringFormat.SORT) || action.equals(StringFormat.SEARCH)) {
+        	isSortingOrSearching = true;
+        	stopDisplayTimer();
+        } else {
+        	isSortingOrSearching = false;
+        	startDisplayTimer();
+        }
+    }
+    
+    /**
+     * Processes the rows to color, when to display notifications,
+     * scrolling the table to the newly edited row, and
+     * making tasks with high priority bold.
+     * 
+     * @param name                      The name of the task
+     * @param action                    The action executed by the user
+     * @param taskId                    The index of the task in the table
+     * @param isLastRow                 Is this the last row?
+     * @param isHighlightedPassStart    Has the start timing passed?
+     * @param isHighlitedPassEnd        Has the end timing passed?
+     * @param item                      The upper table row of the task
+     * @param item2                     The lower table row of the task
+     * @param taskNumber                The index number of the task in the table
+     * @param priority                  The priority of the task
+     * 
+     */
+    private static void displayGUIFeedback(String name, String action, int taskId,
+                                           boolean isLastRow, boolean isHighlightedPassStart,
+                                           boolean isHighlightedPassEnd, TableItem item, 
+                                           TableItem item2, int taskNumber, String priority) {
+        // Alternate task colors
+        if (taskNumber % 2 == 1) {
+            colorRowBackgroundYellow(item);
+            colorRowBackgroundYellow(item2);
+        } else {
+            colorRowBackgroundLightGrey(item);
+            colorRowBackgroundLightGrey(item2);
+        }
+        
+        // Coloring green
+        if (isHighlightedPassStart == true) {
+            colorOngoingRow(item);
+            colorOngoingRow(item2);
+            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOngoingEnabled == 1) {
+                NotifierDialog.notify(String.format(NOTIFICATION_START, name), EMPTY_STRING);
+            }
+        }
+        
+        // Coloring red
+        if (isHighlightedPassEnd == true) {
+            colorDeadlineRow(item);
+            colorDeadlineRow(item2);
+            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {
+                NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), EMPTY_STRING);
+            }
+        }
+        
+        // Coloring newly edited row
+        if (isLastRow == true && action.equals(StringFormat.ADD)) {
+            colorRowBackgroundGreen(item);
+            colorRowBackgroundGreen(item2);
+        } else if (action.equals(StringFormat.UPDATE) && taskNumber+1 == taskId) {
+            colorRowBackgroundGreen(item);
+            colorRowBackgroundGreen(item2);
+        } 
+        
+        // Scrolling of table to the newly edited row
+        if (isLastRow == true && action.equals(StringFormat.UPDATE)) {
+            if ((taskId - 1) <= taskTable.getItemCount()) {
+                taskTable.showItem(taskTable.getItem(taskId-1));
+            }
+        }
+        
+        // Making tasks with high priority bold
+        if (priority.trim().equals("high")) {
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.BOLD));
+            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.BOLD));
+        } else {
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
+        }
+    } 
+    
+    /**
+     * Colors the row based on the colors used for tasks that
+     * have passed the deadline (colors are based on user settings)
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorDeadlineRow(TableItem item) {
+        Color color;
+        if (deadlineRowColorR == NULL_NUMBER) {
+            color = SWTResourceManager.getColor(DEFAULT_DEADLINE_COLOR_R, 
+                                                DEFAULT_DEADLINE_COLOR_G, 
+                                                DEFAULT_DEADLINE_COLOR_B);
+        } else {
+            color = SWTResourceManager.getColor(deadlineRowColorR, 
+                                                deadlineRowColorG, 
+                                                deadlineRowColorB);
+        }
+        item.setForeground(color);
+    }
+    
+    /**
+     * Colors the background in a row red.
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundRed(TableItem item) {
+        Color red = display.getSystemColor(SWT.COLOR_RED);
+        item.setBackground(red);
+    }
+    
+    /**
+     * Colors the row based on the colors used for tasks that
+     * are still ongoing  (colors are based on user settings)
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorOngoingRow(TableItem item) {
+        Color color;
+        if (ongoingRowColorR == NULL_NUMBER) {
+            color = SWTResourceManager.getColor(DEFAULT_ONGOING_COLOR_R, 
+                                                DEFAULT_ONGOING_COLOR_G, 
+                                                DEFAULT_ONGOING_COLOR_B);
+        } else {
+            color = SWTResourceManager.getColor(ongoingRowColorR, 
+                                                ongoingRowColorG, 
+                                                ongoingRowColorB);
+        }
+        item.setForeground(color);
+    }
+    
+    /**
+     * Colors the background of a row green
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundGreen(TableItem item) {
+        Color color = SWTResourceManager.getColor(32,178,170);
+        item.setBackground(color);
+    }
+    
+    /**
+     * Colors the background of a row light grey
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundLightGrey(TableItem item) {
+        Color grey = display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT);
+        item.setBackground(grey);
+    }
+    
+    /**
+     * Colors the background of a row yellow
+     * 
+     * @param item      The table row to be colored
+     * 
+     */
+    private static void colorRowBackgroundYellow(TableItem item) {
+        Color color = SWTResourceManager.getColor(255,255,240);
+        item.setBackground(color);
+    }
+
+    /**
+     * Resizes the columns in the table based 
+     * on the width of the application, as well as
+     * the length of the content in the cells.
+     * 
+     */
+    private static void resizeTable() {
+        int scrollbarWidth = 0;
+        int padding = 5;
+        int tableWidth = taskTable.getSize().x;
+        
+        if (taskTable.getVerticalBar().isVisible()) {
+            scrollbarWidth = taskTable.getVerticalBar().getSize().x;
+        } else {
+            scrollbarWidth = 0;
+        }
+        
+        // Resize all the columns to fit the data
+        tblclmnStart.pack();
+        tblclmnEnd.pack();
+        
+        int widthLeft = tableWidth - scrollbarWidth - tblclmnNo.getWidth() - 
+                        tblclmnStart.getWidth() - tblclmnEnd.getWidth() - 
+                        tblclmnPriority.getWidth();
+
+        tblclmnName.setWidth(widthLeft - padding);
+    }
+    
+    /** 
+     * Begin startup procedures. Things done:
+     * 1. Initialize and start JIntellitype
+     * 2. Initialize variables
+     * 3. Load and apply settings
+     * 4. Initialize the timer
+     * 5. Display the help messages
+     * 6. Load the contents of the database
+     * 7. Display loaded tasks
+     * 8. Place typing cursor into the input text field
+     * 
+     */
+    private static void startupProgram() {
+//        initJIntellitype();
+        initializeVariables();
+        getSettings();
+        applySettings();
+        initializeDisplayRefreshTimer(refreshRate);   // Timer delay in milliseconds
+        
+        displayHelp();
+        Controller.startController(StringFormat.RELOAD);
+        Controller.startController(StringFormat.DISPLAY);
+        inputField.setFocus();
+    }
+
+    /** 
+     * Initialize some variables used by the program
+     * 
+     */
+    private static void initializeVariables() {
+        isSortingOrSearching = false;
+        settingsStorage = new ArrayList<Integer>();
+        previousUserInputStack = new ArrayDeque<String>();
+        nextUserInputStack = new ArrayDeque<String>();
+        beingDisplayed = EMPTY_STRING;
+        deadlineRowColorR = NULL_NUMBER;
+        deadlineRowColorG = NULL_NUMBER;
+        deadlineRowColorB = NULL_NUMBER;
+        ongoingRowColorR = NULL_NUMBER;
+        ongoingRowColorG = NULL_NUMBER;
+        ongoingRowColorB = NULL_NUMBER;
+        isNotifcationsOverdueEnabled = NULL_NUMBER;
+        isNotifcationsOngoingEnabled = NULL_NUMBER;
+    }
+    
+    /** 
+     * Setup the listeners necessary for the program to work.
+     * Listeners used:
+     * 1. Key listener for keyboard commands
+     * 2. Listener for when the application is closed without using "exit"
+     * 3. Listener for when the feedback table is resized
+     * 
+     */
+    private static void setupListeners() {
+        
+        inputField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.character == SWT.CR) {                        // "enter" key
+                    restorePreviousInputStack();
+                    handleUserInput();
+                }
+                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {  // Ctrl+A     
+                    inputField.selectAll();
+                }
+                if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_UP) {    // Alt+Up arrow
+                    getNextInput();
+                }
+                if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_DOWN) {  // Alt+Down arrow
+                    getPreviousInput();
+                }
+            }
+
+            private void restorePreviousInputStack() {
+                if (beingDisplayed.equals(EMPTY_STRING) == false) {
+                    previousUserInputStack.push(beingDisplayed);
+                    beingDisplayed = EMPTY_STRING;
+                }
+                
+                while (nextUserInputStack.isEmpty() == false) {
+                    previousUserInputStack.push(nextUserInputStack.pop());
+                }
+            }
+
+            private void getNextInput() {
+                if (previousUserInputStack.isEmpty() == false) {
+                    if (beingDisplayed.equals(EMPTY_STRING) == false) {
+                        nextUserInputStack.push(beingDisplayed);
+                    }
+                    beingDisplayed = previousUserInputStack.pop();
+                    inputField.setText(beingDisplayed);
+                    inputField.setSelection(inputField.getCharCount());
+                }
+            }
+
+            private void getPreviousInput() {
+                if (nextUserInputStack.isEmpty() == false) {
+                    previousUserInputStack.push(beingDisplayed);
+                    beingDisplayed = nextUserInputStack.pop();
+                    inputField.setText(beingDisplayed);
+                    inputField.setSelection(inputField.getCharCount());
+                }
+            }
+
+            private void handleUserInput() {
+                String userInput = inputField.getText().trim();
+                userInput = userInput.replaceAll("[\n\r]", EMPTY_STRING);
+                
+                if (userInput.equals(StringFormat.HELP)) {
+                    displayHelp();
+                    inputField.setText(EMPTY_STRING);
+                } else if (userInput.equals(StringFormat.TUTORIAL)) {    
+                    GUIExtraHelp helpDialog = new GUIExtraHelp(shell, SWT.NONE);
+                    inputField.setText(EMPTY_STRING);
+                    helpDialog.open();
+                } else if (userInput.equals(StringFormat.SETTINGS)) {    
+                    GUISettings settingsDialog = new GUISettings(shell, SWT.NONE);
+                    inputField.setText(EMPTY_STRING);
+                    settingsDialog.open();
+                    applySettings();
+                    initializeDisplayRefreshTimer(refreshRate);
+                    Controller.startController(StringFormat.DISPLAY);
+                } else {
+                    if (userInput.equals("display done")) { 
+                        lblIncompleteTasks.setText(LABEL_TASKS_DONE);
+                    } else if (userInput.equals("display")) {
+                        lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
+                    }
+                    
+                    previousUserInputStack.push(userInput);
+                    Controller.startController(userInput);
+
+                    inputField.setText(EMPTY_STRING);
+                }
+            }
+        });
+                
+        // This catches the close event generated when the user closes 
+        // the application in any way other than typing "exit"
+        shell.addListener(SWT.Close, new Listener() {
+            public void handleEvent(Event event) {
+                Controller.startController(StringFormat.EXIT);
+            }
+        });
+        
+        // To scale the width of the columns in the tables with
+        // respect to the window size
+        feedbackTable.addListener(SWT.Resize, new Listener() {
+            public void handleEvent(Event event) {
+                tblclmnFeedback.setWidth(feedbackTable.getClientArea().width);
+                resizeTable();
+            }
+        });
+    }
+    
+    /** 
+     * Gets the settings from the settings text file.
+     * The settings are stored in an array list once loaded
+     * 
+     */
+    public static void getSettings() {
+        readFile(GUISettings.FILENAME);
+    }
+    
+    /** 
+     * Saves the settings into variables that are 
+     * being used by the GUI
+     * 
+     */
+    private static void applySettings() {
+        if (settingsStorage.size() != 0) {
+            LOGGER.info("==============\n" +
+                        "Loading settings from file.\n" +
+                        "====================\n");
+            refreshRate = settingsStorage.get(GUISettings.SETTINGS_NOTIF_FREQ_INDEX);
+            refreshRate *= IN_MILLISECONDS_ONE_MINUTE;
+            deadlineRowColorR = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_R_INDEX);
+            deadlineRowColorG = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_G_INDEX);
+            deadlineRowColorB = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_B_INDEX);
+            ongoingRowColorR = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_R_INDEX);
+            ongoingRowColorG = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_G_INDEX);
+            ongoingRowColorB = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_B_INDEX);
+            isNotifcationsOverdueEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
+            isNotifcationsOngoingEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+        } else {
+            LOGGER.info("==============\n" +
+                        "No settings found. Using default settings.\n" +
+                        "====================\n");
+            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
+            deadlineRowColorR = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_R;
+            deadlineRowColorG = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_G;
+            deadlineRowColorB = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_B;
+            
+            ongoingRowColorR = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_R;
+            ongoingRowColorG = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_G;
+            ongoingRowColorB = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_B;
+            
+            isNotifcationsOverdueEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_OVERDUE;
+            isNotifcationsOngoingEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_ONGOING;
+        }
+    }
+    
+    /** 
+     * Read the contents of a file and stores it in an array list
+     * 
+     * @param filename     The name of the file
+     * 
+     */
+    private static void readFile (String filename) {
+        try {
+            String temp;
+            File settingsFile = new File(filename);
+            BufferedReader in = new BufferedReader(new FileReader(settingsFile));
+            // Read the file line by line and add each line
+            // into an index of settingsStorage
+            if (settingsStorage.isEmpty()) {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    settingsStorage.add(value);
+                }
+            } else {
+                int i = 0;
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    settingsStorage.set(i, value);
+                    i++;
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            System.out.print(GUI.ERROR_NO_SETTINGS);
+        }
+    }
+    
+    /** 
+     * Initializes the timer used for the periodic display function
+     * 
+     * @param delay     The delay used for the timer
+     * 
+     */
+    private static void initializeDisplayRefreshTimer(int delay) {
+        assert delay >= IN_MILLISECONDS_ONE_MINUTE; 
+        assert delay <= IN_MILLISECONDS_ONE_DAY;
+        displayTimer = new Timer(delay, null);
+        displayTimer.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                // Ensure that the following code runs in the 
+                // same thread as the application itself
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        Controller.startController(StringFormat.DISPLAY);
+                    }
+                });
+            }
+        });
+        // The timer will continuously repeat with the given delay
+        displayTimer.setRepeats(true);
+    }
+    
+    /** 
+     * Starts the timer used for the periodic display function
+     * 
+     */
+    private static void startDisplayTimer() {
+        displayTimer.start();
+    }
+    
+    /** 
+     * Stops the timer used for the periodic display function
+     * 
+     */
+    private static void stopDisplayTimer() {
+        displayTimer.stop();
+    }
+
+    public static void main(String[] args) {
+        createUI();
+        
+        startupProgram();
+        setupListeners();
+      
+        openUI();
+
+        readingAndDispatching();    
+        cleanupUI();
+    }
+
+    /** 
+     * Frees the resources used for the GUI
+     * 
+     */
+    private static void cleanupUI() {
+        display.dispose();
+    }
+
+    /** 
+     * Opens the window of the application. The application design
+     * and setup must be done before this.
+     * 
+     */
+    private static void openUI() {
+        shell.open();
+        shell.layout();
+    }
+
+    /** 
+     * Main loop of the GUI. The GUI will be constantly listening
+     * for events and actions performed on the GUI here. 
+     * 
+     */
+    private static void readingAndDispatching() {
+        while(!shell.isDisposed()) {
+
+            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
+                startDisplayTimer();
+            }
+
+            display.readAndDispatch();
+        }
+    }
+    
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	 */
+
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.graphics.Point;
+
+public class GUIExtraHelp extends Dialog {
+
+    private static final int PAGE_LAST = 10;
+    private static final int PAGE_FIRST = 1;
+    private static final String PAGE_ONE_TEXT = "Welcome to JOYTZ task manager!\n\nHere, you will be " +
+                                                "brought through a step by step guide on the available " +
+                                                "functions that are available.\n\nTo come back to this " +
+                                                "tutorial next time, type \"tutorial\". If you need a " +
+                                                "quick help, just type \"help\".\n\n In general, the commands used " +
+                                                "for input is usually first preceded by the action command, " +
+                                                "followed by the necessary attributes needed for the action.\n\n" +
+                                                "Click \"Next\" to continue.";
+    private static final String PAGE_TWO_TEXT = "How to add tasks:\nJOYTZ allows you to add many attributes " +
+                                                "to your tasks. The available attributes are:\n" +
+                                                "    - Start time\n    - End time\n    - Name\n" +
+                                                "    - Description\n    - Location\n    - Priority\n\n" +
+                                                "To add a task, simply follow this syntax (without typing " +
+                                                "the \"<\" and \">\"):\n" +
+                                                "add <name>; <description> from <start time> to <end time> " +
+                                                "@<location> #<priority>\n\n" +
+                                                "Not all attributes have to be filled when adding a task. " +
+                                                "For example, to only add the task's name, type:\n" +
+                                                "add <name>\n\nThe syntax needed for the time is:\n" +
+                                                "DD/MM/YYYY HH:MMxx, xx being am or pm.\n\nThe priorities " +
+                                                "allowed are:\n    - important\n    - medium\n    - low";
+    private static final String PAGE_THREE_TEXT = "How to edit tasks:\nYou can also edit tasks that have " +
+                                                  "been added. The syntax is (without typing " +
+                                                  "the \"<\" and \">\"):\n" +
+                                                  "update <index> <attribute> <new data>\n\n" +
+                                                  "    - The index can be found " +
+                                                  "on the first column of each task.\n    - The attribute " +
+                                                  "corresponds to the attribute that you want to change. " +
+                                                  "These attributes can be easily referenced from the table " +
+                                                  "headings.\n    - The new data is the what you want to update " +
+                                                  "the current entry to.";
+    private static final String PAGE_FOUR_TEXT = "How to delete tasks:\nThe syntax is (without typing " +
+                                                  "the \"<\" and \">\"):\ndelete <index>\n\n" +
+                                                 "The index can be found on the first column of each task.";
+    private static final String PAGE_FIVE_TEXT = "How to clear tasks:\nThe syntax is:\nclear\n\n" +
+                                                 "WARNING: This command deletes everything in your list.";
+    private static final String PAGE_SIX_TEXT = "How to undo/redo:\nTo undo, type:\nundo\n\nTo redo, type:\n" +
+                                                "redo\n\nNote: You are able to perform multiple undo and redo.";
+    private static final String PAGE_SEVEN_TEXT = "How to sort tasks:\nThe syntax is (without typing " +
+                                                  "the \"<\" and \">\"):\nsort <attribute>\n\n" +
+                                                  "The attribute can be easily referenced from the table headings.\n\n" +
+                                                  "You can also sort using multiple attributes. For example, to sort " +
+                                                  "using priority, then the end date:\n" +
+                                                  "\"sort priority end\".";
+    private static final String PAGE_EIGHT_TEXT = "How to search for tasks:\nThe syntax is (without typing " +
+                                                  "the \"<\" and \">\"):\n" +
+                                                  "search <attribute> <search for>\n\n" +
+                                                  "The attribute to search for can be referenced from the table " +
+                                                  "headings.\n\nYou can also search for multiple items. For example:\n" +
+                                                  "search <attribute1> <search for1>; <attribute2> <search for 2>\n\n" +
+                                                  "Note: searching is case-insensitive.\nAlso, " +                                                   
+                                                  "to bring back all your tasks in view, type \"display\"";
+    private static final String PAGE_NINE_TEXT = "How to display all tasks:\nThe syntax is:\ndisplay\n\n" +
+                                                 "After searching, you are not shown all your tasks. Using " +
+                                                 "this command brings all your tasks back up.";
+    private static final String PAGE_TEN_TEXT = "Extra features:\n\nThis tutorial can be brought back by " +
+                                                 "typing \"tutorial\".\nTo view a quick list of the command " +
+                                                 "syntax, type \"help\".\n\nJOYTZ also features keyboard " +
+                                                 "shortcuts to maximize and minimize the application. " +
+                                                 "To maximize the application, press \"ALT+A\". To " +
+                                                 "minimize the application, press \"ALT+Z\".\n\nColor-coded " +
+                                                 "tasks are also featured. By default, tasks in red have " +
+                                                 "passed the deadline, and those in green are still ongoing. " +
+                                                 "All remaining tasks are in black.\n\nTo change these colors " +
+                                                 "or change the frequency of notifications, type \"settings\".\n\n" +
+                                                 "To begin using JOYTZ, close this window!";
+    
+    
+    protected Object result;
+    protected Shell shell;
+    private int currentPage; 
+    private Button btnBack;
+    private Button btnNext;
+    private StyledText textField;
+    
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	 */
+
+    private void createButtonListeners() {
+        btnNext.addSelectionListener(new SelectionListener() {
+
+          public void widgetSelected(SelectionEvent event) {
+              if (currentPage < PAGE_LAST) {
+                  currentPage += 1;
+              }
+              checkPageAndSetText(currentPage, textField);
+          }
+
+          public void widgetDefaultSelected(SelectionEvent event) {
+              textField.setText("Dummy!");
+          }
+        });
+        
+        btnBack.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent event) {
+                if (currentPage > PAGE_FIRST) {
+                    currentPage -= 1;
+                }
+                checkPageAndSetText(currentPage, textField);
+            }
+
+            public void widgetDefaultSelected(SelectionEvent event) {
+                textField.setText("Dummy!");
+            }
+          });
+    }
+    
+    private void checkPageAndSetText(int currentPage, StyledText label) {
+        switch(currentPage) {
+            case 1:
+                label.setText(PAGE_ONE_TEXT);
+                shell.setText("Tutorial");
+                btnBack.setEnabled(false);
+                break;
+                
+            case 2:
+                label.setText(PAGE_TWO_TEXT);
+                shell.setText("Tutorial: Add");
+                btnBack.setEnabled(true);
+                break;
+                
+            case 3:
+                label.setText(PAGE_THREE_TEXT);
+                shell.setText("Tutorial: Edit");
+                break;
+                
+            case 4:
+                label.setText(PAGE_FOUR_TEXT);
+                shell.setText("Tutorial: Delete");
+                break;
+                
+            case 5:
+                label.setText(PAGE_FIVE_TEXT);
+                shell.setText("Tutorial: Clear");
+                break;
+                
+            case 6:
+                label.setText(PAGE_SIX_TEXT);
+                shell.setText("Tutorial: Undo/Redo");
+                break;
+                
+            case 7:
+                label.setText(PAGE_SEVEN_TEXT);
+                shell.setText("Tutorial: Sort");
+                break;
+                
+            case 8:
+                label.setText(PAGE_EIGHT_TEXT);
+                shell.setText("Tutorial: Search");
+                break;
+                
+            case 9:
+                label.setText(PAGE_NINE_TEXT);
+                shell.setText("Tutorial: Display");
+                btnNext.setEnabled(true);
+                break;
+                
+            case 10:
+                label.setText(PAGE_TEN_TEXT);
+                shell.setText("Tutorial: Extra Features");
+                btnNext.setEnabled(false);
+                break;
+                
+            default:
+                break;
+        }
+    }
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	 */
+
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Button;
+
+
+public class GUISettings extends Dialog {
+    private static final String ERROR_CREATE_FILE = "There was a problem " +
+                                                    "creating a new file: ";
+    private static final String ERROR_READING_FILE = "There was a problem " +
+                                                     "reading from file: ";
+    private static final String ERROR_WRITING_FILE = "There was a problem " +
+                                                     "writing to file: ";
+    public static final String FILENAME = "settings.txt";
+    private static final int SETTINGS_TOTAL_NUMBER = 9;
+    public static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
+    public static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
+    public static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
+    public static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
+    public static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
+    public static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
+    public static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
+    public static final int SETTINGS_NOTIFICATIONS_ONGOING_INDEX = 7;
+    public static final int SETTINGS_NOTIFICATIONS_OVERDUE_INDEX = 8;
+    public static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
+    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
+    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
+    public static final int SETTINGS_DEFAULT_NOTIF_OVERDUE = 1;
+    public static final int SETTINGS_DEFAULT_NOTIF_ONGOING = 1;
+    private static final int COLOR_RED_R = 255;
+    private static final int COLOR_RED_G = 0;
+    private static final int COLOR_RED_B = 0;
+    private static final int COLOR_GREEN_R = 0;
+    private static final int COLOR_GREEN_G = 128;
+    private static final int COLOR_GREEN_B = 0;
+    private static final int COLOR_BLUE_R = 51;
+    private static final int COLOR_BLUE_G = 102;
+    private static final int COLOR_BLUE_B = 255;
+    private static final int COLOR_ORANGE_R = 255;
+    private static final int COLOR_ORANGE_G = 120;
+    private static final int COLOR_ORANGE_B = 0;
+    
+    private static File settingsFile;
+    private static List<Integer> workingStorage;
+    
+    
+    protected Object result;
+    protected static Shell shell;
+    private static Spinner spinnerNotifFreq;
+    private ToolBar toolBarDeadline;
+    private static ToolItem tltmOngoingRed;
+    private static ToolItem tltmOngoingBlue;
+    private static ToolItem tltmOngoingGreen;
+    private static ToolItem tltmOngoingOrange;
+    private static ToolItem tltmDeadlineRed;
+    private static ToolItem tltmDeadlineBlue;
+    private static ToolItem tltmDeadlineGreen;
+    private static ToolItem tltmDeadlineOrange;
+    private static Button btnoverdueNotification;
+    private static Button btnstartedNotification;
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	 */
+
+    private void displaySettingsInSettingsGUI() {
+        spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
+        
+        int loadedNotifOverdue = workingStorage.get(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
+        int loadedNotifOngoing = workingStorage.get(SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+        if (loadedNotifOverdue == 1) {
+            btnoverdueNotification.setSelection(true);
+        } else {
+            btnoverdueNotification.setSelection(false);
+        }
+        
+        if (loadedNotifOngoing == 1) {
+            btnstartedNotification.setSelection(true);
+        } else {
+            btnstartedNotification.setSelection(false);
+        }
+        
+        int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);
+        int loadedDeadlineColorG = workingStorage.get(SETTINGS_DEADLINE_COLOR_G_INDEX);
+        int loadedDeadlineColorB = workingStorage.get(SETTINGS_DEADLINE_COLOR_B_INDEX);
+        if (loadedDeadlineColorR == COLOR_BLUE_R &&
+            loadedDeadlineColorG == COLOR_BLUE_G &&
+            loadedDeadlineColorB == COLOR_BLUE_B) {
+            tltmDeadlineBlue.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_RED_R &&
+                   loadedDeadlineColorG == COLOR_RED_G &&
+                   loadedDeadlineColorB == COLOR_RED_B) {
+            tltmDeadlineRed.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_ORANGE_R &&
+                   loadedDeadlineColorG == COLOR_ORANGE_G &&
+                   loadedDeadlineColorB == COLOR_ORANGE_B) {
+            tltmDeadlineOrange.setSelection(true);
+        } else if (loadedDeadlineColorR == COLOR_GREEN_R &&
+                   loadedDeadlineColorG == COLOR_GREEN_G &&
+                   loadedDeadlineColorB == COLOR_GREEN_B) {
+            tltmDeadlineGreen.setSelection(true);
+        }
+        
+        int loadedOngoingColorR = workingStorage.get(SETTINGS_ONGOING_COLOR_R_INDEX);
+        int loadedOngoingColorG = workingStorage.get(SETTINGS_ONGOING_COLOR_G_INDEX);
+        int loadedOngoingColorB = workingStorage.get(SETTINGS_ONGOING_COLOR_B_INDEX);
+        if (loadedOngoingColorR == COLOR_BLUE_R &&
+            loadedOngoingColorG == COLOR_BLUE_G &&
+            loadedOngoingColorB == COLOR_BLUE_B) {
+            tltmOngoingBlue.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_RED_R &&
+                   loadedOngoingColorG == COLOR_RED_G &&
+                   loadedOngoingColorB == COLOR_RED_B) {
+            tltmOngoingRed.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_ORANGE_R &&
+                   loadedOngoingColorG == COLOR_ORANGE_G &&
+                   loadedOngoingColorB == COLOR_ORANGE_B) {
+            tltmOngoingOrange.setSelection(true);
+        } else if (loadedOngoingColorR == COLOR_GREEN_R &&
+                   loadedOngoingColorG == COLOR_GREEN_G &&
+                   loadedOngoingColorB == COLOR_GREEN_B) {
+            tltmOngoingGreen.setSelection(true);
+        }
+    }
+
+    public static void loadGUISettings() {
+        initializeVariables();
+        createFile(FILENAME);
+        readFile(FILENAME);
+    }
+    
+    private static void initializeVariables() {
+        settingsFile = new File(FILENAME);
+        workingStorage = new ArrayList<Integer>(SETTINGS_TOTAL_NUMBER);
+    }
+    
+    // Checks whether the given file exists, and creates one if it does not
+    public static void createFile (String filename) {
+        // Get the file path directory
+        Path filePath = Paths.get(filename);
+        // Look for the file in the filepath, and create it if it does not exist
+        if (!Files.exists(filePath)) {
+            try {
+                settingsFile.createNewFile();
+                initializeWorkingStorage();
+                writeFile(settingsFile);
+            } catch (IOException e) {
+                System.out.print(ERROR_CREATE_FILE);
+            }
+        }
+    }
+    
+    private static void initializeWorkingStorage() {
+        for (int i = 0; i < SETTINGS_TOTAL_NUMBER; i++) {
+            workingStorage.add(-1);
+        }
+        workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, SETTINGS_DEFAULT_NOTIF_FREQ);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_R);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_G);
+        workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_B);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_R);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_G);
+        workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_B);
+        workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, SETTINGS_DEFAULT_NOTIF_ONGOING);
+        workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, SETTINGS_DEFAULT_NOTIF_OVERDUE);
+    }
+
+    // Reads the contents of the file and stores it in an array list
+    private static void readFile (String filename) {
+        String temp;
+        int i = 0;
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(settingsFile));
+            // Read the file line by line and add each line
+            // into an index of workingStorage
+            if (workingStorage.isEmpty()) {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    workingStorage.add(value);
+                }
+            } else {
+                while ((temp = in.readLine()) != null) {
+                    int value = Integer.parseInt(temp);
+                    workingStorage.set(i, value);
+                    i++;
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            System.out.print(ERROR_READING_FILE);
+        }
+    }
+    
+    // Write the contents of the array list into the file
+    private static void writeFile (File settingsFile) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
+            // Write all contents of workingStorage to the file
+            for (int i = 0; i < workingStorage.size(); i++) {
+                out.write(Integer.toString(workingStorage.get(i)));
+                out.newLine();
+            }
+            out.close();
+        } catch (IOException e) {
+            System.out.print(ERROR_WRITING_FILE);
+            e.printStackTrace();
+        }
+    }
+    
+    private static void setupListeners(){
+        shell.addListener(SWT.Close, new Listener() {
+            public void handleEvent(Event event) {
+                readSettingsFromDialog();
+                writeFile(settingsFile);
+                GUI.getSettings();
+            }
+
+            private void readSettingsFromDialog() {
+                int notificationFreq = Integer.parseInt(spinnerNotifFreq.getText());
+                workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, notificationFreq);
+                
+                if (btnoverdueNotification.getSelection() == true) {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 1);
+                } else {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 0);
+                }
+                
+                if (btnstartedNotification.getSelection() == true) {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 1);
+                } else {
+                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 0);
+                }
+                
+                if (tltmOngoingRed.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_RED_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_RED_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_RED_B);
+                } else if (tltmOngoingBlue.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_BLUE_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_BLUE_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_BLUE_B);
+                } else if (tltmOngoingOrange.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_ORANGE_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_ORANGE_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_ORANGE_B);
+                } else if (tltmOngoingGreen.getSelection() == true) {
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_GREEN_R);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_GREEN_G);
+                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_GREEN_B);
+                } 
+                
+                if (tltmDeadlineRed.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_RED_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_RED_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_RED_B);
+                } else if (tltmDeadlineBlue.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_BLUE_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_BLUE_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_BLUE_B);
+                } else if (tltmDeadlineOrange.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_ORANGE_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_ORANGE_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_ORANGE_B);
+                } else if (tltmDeadlineGreen.getSelection() == true) {
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_GREEN_R);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_GREEN_G);
+                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_GREEN_B);
+                } 
+            }
+        });
+    }
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestController.java
+	 */
+
+import static org.junit.Assert.*;
+
+import java.text.ParseException;
+import org.junit.Test;
+
+public class TestController {
+    private static final String INPUT_INVALID = "sdfsf";
+    
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends; discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS";
+    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends; discuss about CS2103T project " +
+                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am #medium";
+    private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add meeting with friends; " +
+                                                                     "discuss about CS2103T project " +
+                                                                     "from 24/02/2015 11:30am to 25/02/2015 11:45am";
+    private static final String INPUT_ADD_ONLY_NAME = "add meeting with friends";
+    
+    private static final String EXECUTABLECOMMAND_ACTION_ADD = "add";
+    private static final String EXECUTABLECOMMAND_NAME = "meeting with friends";
+    private static final String EXECUTABLECOMMAND_DESCRIPTION = "discuss about CS2103T project";
+    private static final String EXECUTABLECOMMAND_START_TIME = "1424748600000";     // 24/02/2015 11:30am
+    private static final String EXECUTABLECOMMAND_END_TIME = "1424835900000";       // 25/02/2015 11:45am
+    private static final String EXECUTABLECOMMAND_LOCATION = "NUS";
+    private static final String EXECUTABLECOMMAND_PRIORITY = "medium";
+    
+    private static final String ERROR_INVALID_ACTION = "Action is invalid.";
+    private static final String ERROR_INVALID_NAME = "Name is invalid.";
+    private static final String ERROR_INVALID_DESCRIPTION = "Description is invalid.";
+    private static final String ERROR_INVALID_START_TIME = "Start time is invalid.";
+    private static final String ERROR_INVALID_END_TIME = "End time is invalid";
+    private static final String ERROR_INVALID_LOCATION = "Location is invalid";
+    private static final String ERROR_INVALID_PRIORITY = "Priority is invalid";
+    private static final String ERROR_INVALID_COMMAND = "Invalid command.\n";
+    private static final String ERROR_INVALID_COMMAND_ACTION = "Invalid command action: sdfsf.\n";
+    
+    private static final String ERROR_MESSAGE_MISSING = "Error message missing";
+    private static final String ERROR_MESSAGE_WRONG = "Output feedback message wrong";
+    private static final String ERROR_MESSAGE_STRING_WRONG = "Output string for table is wrong";
+    
+    private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
+    
+    private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
+    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about CS2103T project~" +
+                                                     "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~medium\n";
+    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about CS2103T project~" + 
+                                                             "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~ \n";
+    private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
+                                                                          "discuss about CS2103T project~" +
+                                                                          "2015.02.24 at 11:30~2015.02.25 at 11:45~ ~ \n";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30~ ~ ~medium\n";
+    
+    private static final String EMPTY_STRING = "";
+
+    /*
+     * Case with all data filled (valid input partition)
+     */
+    @Test
+    public void unitTestExecutorAdd1() {
+        ExecutableCommand parsedCommand = new ExecutableCommand();
+        parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
+        parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
+        parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
+        parsedCommand.setTaskLocation(EXECUTABLECOMMAND_LOCATION);
+        parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
+
+        Feedback result = Controller.startExecutor(parsedCommand);
+        int listSize = result.getTaskStringList().size();
+
+        // Check if the execution has been successful
+        assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
+        // Check if the output feedback message is correct
+        assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
+        // Check if the display string to be used in the table GUI display is correct
+        assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_ALL, 
+                     result.getTaskStringList().get(listSize - 1));
+    }
+
+    /*
+     * Case with no priority (valid input partition)
+     */
+    @Test
+    public void unitTestExecutorAdd2() {
+        ExecutableCommand parsedCommand = new ExecutableCommand();
+        parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
+        parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
+        parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
+        parsedCommand.setTaskLocation(EXECUTABLECOMMAND_LOCATION);
+
+        Feedback result = Controller.startExecutor(parsedCommand);
+        int listSize = result.getTaskStringList().size();
+
+        // Check if the execution has been successful
+        assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
+        // Check if the output feedback message is correct
+        assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
+        // Check if the display string to be used in the table GUI display is correct
+        assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_NO_PRIORITY, 
+                     result.getTaskStringList().get(listSize - 1));
+    }
+
+    /*
+     * Case with no priority and no location (valid input partition)
+     */
+    @Test
+    public void unitTestExecutorAdd3() {
+        ExecutableCommand parsedCommand = new ExecutableCommand();
+        parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
+        parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
+        parsedCommand.setTaskDescription(EXECUTABLECOMMAND_DESCRIPTION);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskEnd(EXECUTABLECOMMAND_END_TIME);
+
+        Feedback result = Controller.startExecutor(parsedCommand);
+        int listSize = result.getTaskStringList().size();
+
+        // Check if the execution has been successful
+        assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
+        // Check if the output feedback message is correct
+        assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
+        // Check if the display string to be used in the table GUI display is correct
+        assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY, 
+                     result.getTaskStringList().get(listSize - 1));
+    }
+
+    /*
+     * Case with only the name, start time, and priority (valid input partition)
+     * (boundary case with the first and last argument in the string)
+     * (Start time is added so as to prevent dynamic output)
+     */
+    @Test
+    public void unitTestExecutorAdd4() {
+        ExecutableCommand parsedCommand = new ExecutableCommand();
+        parsedCommand.setAction(EXECUTABLECOMMAND_ACTION_ADD);
+        parsedCommand.setTaskName(EXECUTABLECOMMAND_NAME);
+        parsedCommand.setTaskStart(EXECUTABLECOMMAND_START_TIME);
+        parsedCommand.setTaskPriority(EXECUTABLECOMMAND_PRIORITY);
+
+        Feedback result = Controller.startExecutor(parsedCommand);
+        int listSize = result.getTaskStringList().size();
+
+        // Check if the execution has been successful
+        assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, true, result.getResult());
+        // Check if the output feedback message is correct
+        assertEquals(ERROR_MESSAGE_WRONG, SUCCESS_OUTPUT_ADD, result.getMessageShowToUser());
+        // Check if the display string to be used in the table GUI display is correct
+        assertEquals(ERROR_MESSAGE_STRING_WRONG, SUCCESS_OUTPUT_ONLY_NAME, 
+                     result.getTaskStringList().get(listSize - 1));
+    }
+
+    /*
+     * Case with invalid action (invalid input partition)
+     */
+    @Test
+    public void unitTestExecutorAdd5() {
+        ExecutableCommand parsedCommand = new ExecutableCommand();
+        parsedCommand.setAction(INPUT_INVALID);
+
+        Feedback result = Controller.startExecutor(parsedCommand);
+
+        // Check if the execution has been successful
+        assertEquals(ERROR_EXECUTOR_UNSUCCESSFUL, false, result.getResult());
+        // Check if the output feedback message is correct
+        assertEquals(ERROR_MESSAGE_WRONG, ERROR_INVALID_COMMAND_ACTION, 
+                     result.getMessageShowToUser());
+    }
+
+    // The tests below test the analyzer through the controller
+    /*
+     * Case with all data filled (valid input partition)
+     */
+    @Test
+    public void unitTestAnalyzerAdd1() throws ParseException {
+        Command test = new Command(INPUT_ADD_ALL);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_INVALID_ACTION, EXECUTABLECOMMAND_ACTION_ADD, 
+                     Controller.analyzeInput(test).getAction());
+        assertEquals(ERROR_INVALID_NAME, EXECUTABLECOMMAND_NAME, 
+                     Controller.analyzeInput(test).getTaskName());	
+        assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
+                     Controller.analyzeInput(test).getTaskDescription());	
+        assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
+                     Controller.analyzeInput(test).getTaskStart());
+        assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
+                     Controller.analyzeInput(test).getTaskEnd());
+        assertEquals(ERROR_INVALID_LOCATION, EXECUTABLECOMMAND_LOCATION, 
+                     Controller.analyzeInput(test).getTaskLocation());
+        assertEquals(ERROR_INVALID_PRIORITY, EXECUTABLECOMMAND_PRIORITY, 
+                     Controller.analyzeInput(test).getTaskPriority());
+    }
+
+    /*
+     * Case with no priority (valid input partition)
+     */
+    @Test
+    public void unitTestAnalyzerAdd2() throws ParseException {	
+        Command test = new Command(INPUT_ADD_NO_PRIORITY);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_INVALID_ACTION, EXECUTABLECOMMAND_ACTION_ADD, 
+                     Controller.analyzeInput(test).getAction());
+        assertEquals(ERROR_INVALID_NAME, EXECUTABLECOMMAND_NAME, 
+                     Controller.analyzeInput(test).getTaskName());	
+        assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
+                     Controller.analyzeInput(test).getTaskDescription());	
+        assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
+                     Controller.analyzeInput(test).getTaskStart());
+        assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
+                     Controller.analyzeInput(test).getTaskEnd());
+        assertEquals(ERROR_INVALID_LOCATION, EXECUTABLECOMMAND_LOCATION, 
+                     Controller.analyzeInput(test).getTaskLocation());
+        assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskPriority());
+    }
+
+    /*
+     * Case with no location (valid input partition)
+     * This tests the skipping of fields found in the middle of the input string
+     */
+    @Test
+    public void unitTestAnalyzerAdd3() throws ParseException {	
+        Command test = new Command(INPUT_ADD_NO_LOCATION);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_INVALID_ACTION, EXECUTABLECOMMAND_ACTION_ADD, 
+                     Controller.analyzeInput(test).getAction());
+        assertEquals(ERROR_INVALID_NAME, EXECUTABLECOMMAND_NAME, 
+                     Controller.analyzeInput(test).getTaskName());	
+        assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
+                     Controller.analyzeInput(test).getTaskDescription());	
+        assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
+                     Controller.analyzeInput(test).getTaskStart());
+        assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
+                     Controller.analyzeInput(test).getTaskEnd());
+        assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskLocation());
+        assertEquals(ERROR_INVALID_PRIORITY, EXECUTABLECOMMAND_PRIORITY, 
+                     Controller.analyzeInput(test).getTaskPriority());
+    }
+
+    /*
+     * Case with no priority and no location (valid input partition)
+     * This tests the skipping of multiple fields
+     */
+    @Test
+    public void unitTestAnalyzerAdd4() throws ParseException {	
+        Command test = new Command(INPUT_ADD_NO_LOCATION_AND_PRIORITY);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_INVALID_ACTION, EXECUTABLECOMMAND_ACTION_ADD, 
+                     Controller.analyzeInput(test).getAction());
+        assertEquals(ERROR_INVALID_NAME, EXECUTABLECOMMAND_NAME, 
+                     Controller.analyzeInput(test).getTaskName());	
+        assertEquals(ERROR_INVALID_DESCRIPTION, EXECUTABLECOMMAND_DESCRIPTION,
+                     Controller.analyzeInput(test).getTaskDescription());	
+        assertEquals(ERROR_INVALID_START_TIME, EXECUTABLECOMMAND_START_TIME, 
+                     Controller.analyzeInput(test).getTaskStart());
+        assertEquals(ERROR_INVALID_END_TIME, EXECUTABLECOMMAND_END_TIME, 
+                     Controller.analyzeInput(test).getTaskEnd());
+        assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskLocation());
+        assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskPriority());
+    }
+
+    /*
+     * Case with only the name, start time, and priority (valid input partition)
+     * (boundary case with the first and last argument in the string)
+     * 
+     */
+    @Test
+    public void unitTestAnalyzerAdd5() throws ParseException {	
+        Command test = new Command(INPUT_ADD_ONLY_NAME);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_INVALID_ACTION, EXECUTABLECOMMAND_ACTION_ADD, 
+                     Controller.analyzeInput(test).getAction());
+        assertEquals(ERROR_INVALID_NAME, EXECUTABLECOMMAND_NAME, 
+                     Controller.analyzeInput(test).getTaskName());	
+        assertEquals(ERROR_INVALID_DESCRIPTION, EMPTY_STRING,
+                     Controller.analyzeInput(test).getTaskDescription());	
+        assertEquals(ERROR_INVALID_START_TIME, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskStart());
+        assertEquals(ERROR_INVALID_END_TIME, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskEnd());
+        assertEquals(ERROR_INVALID_LOCATION, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskLocation());
+        assertEquals(ERROR_INVALID_PRIORITY, EMPTY_STRING, 
+                     Controller.analyzeInput(test).getTaskPriority());
+    }
+
+    /*
+     * Case with invalid action (invalid input partition)
+     */
+    @Test
+    public void unitTestAnalyzerAdd6() throws ParseException {
+        Command test = new Command(INPUT_INVALID);
+        // Check if the command has been properly broken up and filled
+        assertEquals(ERROR_MESSAGE_MISSING, ERROR_INVALID_COMMAND, 
+                     Controller.analyzeInput(test).getErrorMessage());
+    }
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestSystem.java
+	 */
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+
+public class TestSystem {
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
+                                                "from 24/02/2015 11:30am to 25/02/2015 11:45pm @NUS #medium";
+    private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add meeting with friends; " +
+                                                              "discuss about CS2103T project " +
+                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45pm " +
+                                                              "@NUS #important";
+    
+    private static final String INPUT_UPDATE_NAME = "update 1 name chat with friends";
+    private static final String INPUT_UPDATE_PRIORITY = "update 1 priority low";
+    private static final String INPUT_UPDATE_LOCATION = "update 1 location UTown";
+    private static final String INPUT_UPDATE_DESCRIPTION = "update 1 description talk about movies";
+    
+    private static final String INPUT_SORT_PRIORITY = "sort priority";
+    private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority important";
+    private static final String INPUT_DELETE_1 = "delete 1";
+    
+    private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1 is updated successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Category \"priority\" is sorted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "\"high\" in \"priority\" is searched successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
+    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~low\n";
+    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project~" +
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~high\n";
+    
+    @Test
+    public void systemTestAdd() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+    }
+    
+    @Test
+    public void systemTestUpdate() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        
+        // Test updating the added task
+        // Update name
+        systemTestResult = Controller.startController(INPUT_UPDATE_NAME);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 2));
+        
+        // Update priority
+        systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 2));
+        
+        // Update location
+        systemTestResult = Controller.startController(INPUT_UPDATE_LOCATION);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 2));
+        
+        // Update description
+        systemTestResult = Controller.startController(INPUT_UPDATE_DESCRIPTION);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 2));
+    }
+    
+    @Test
+    public void systemTestClear() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        
+        // Test clear
+        systemTestResult = Controller.startController(StringFormat.CLEAR);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_CLEAR, systemTestResult.getMessageShowToUser());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
+    }
+    
+    @Test
+    public void systemTestDisplay() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+
+        // Test display
+        systemTestResult = Controller.startController(StringFormat.DISPLAY);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_DISPLAY, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+    }
+    
+    @Test
+    public void systemTestDelete() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+
+        // Test delete
+        systemTestResult = Controller.startController(INPUT_DELETE_1);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_DELETE, systemTestResult.getMessageShowToUser());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
+    }
+    
+    @Test
+    public void systemTestSort() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        
+        // Test add
+        systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
+        listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+
+        // Test sort
+        systemTestResult = Controller.startController(INPUT_SORT_PRIORITY);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_SORT, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+    }
+    
+    @Test
+    public void systemTestSearch() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        
+        // Test add
+        systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
+        listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+
+        // Test search
+        systemTestResult = Controller.startController(INPUT_SEARCH_PRIORITY_HIGH);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_SEARCH, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(0));
+    }
+    
+    @Test
+    public void systemTestUndoRedo() {
+        Controller.startController(StringFormat.CLEAR);
+        
+        // Test add
+        Feedback systemTestResult = Controller.startController(INPUT_ADD_ALL);
+        int listSize = systemTestResult.getTaskStringList().size();
+
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+
+        // Test undo
+        systemTestResult = Controller.startController(StringFormat.UNDO);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_UNDO, systemTestResult.getMessageShowToUser());
+        assertEquals(true, systemTestResult.getTaskStringList().isEmpty());
+        
+        // Test redo
+        systemTestResult = Controller.startController(StringFormat.REDO);
+        assertEquals(true, systemTestResult.getResult());
+        assertEquals(FEEDBACK_RESULT_MESSAGE_REDO, systemTestResult.getMessageShowToUser());
+        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+    }
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestSystem.java
+
+
+
+
+

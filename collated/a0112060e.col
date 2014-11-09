@@ -1,0 +1,327 @@
+//@author: a0112060e
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performDeleteAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DELETE, false);
+
+		ArrayList<Integer> targetTaskIndex = command.getTaskId();
+		sort(targetTaskIndex); // from big to small.
+
+		for (int i = 0; i < targetTaskIndex.size(); i++) {
+			int index = targetTaskIndex.get(i);
+			index--;
+
+			try {
+				fb.setResult(Storage.delete(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
+		}
+
+		return fb;
+	}
+
+	/**
+	 * Sorts a index array from big number to small number.
+	 * 
+	 * @param targetTaskIndexArray
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performUpdateAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.UPDATE, false);
+
+		ArrayList<Integer> taskId = command.getTaskId();
+		ArrayList<String> updateIndicator = command.getIndicator();
+		ArrayList<String> updateKeyValue = command.getKey();
+
+		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+
+		for (int i = 0; i < taskId.size(); i++) {
+			int index = taskId.get(i);
+			index--;
+
+			try {
+				fb.setResult(Storage.update(index, updateIndicator.get(i),
+						updateKeyValue.get(i)));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+
+			if (fb.getResult()) {
+				fb.setMessageShowToUser(String.format(
+						MESSAGE_UPDATE_SUCCESSFUL, (index + 1)));
+			}
+		}
+
+		fb.setResult(true);
+
+		return fb;
+	}
+
+	/**
+	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
+	 * to a user.
+	 * 
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performSortAction(ExecutableCommand command) {
+		ArrayList<String> sortKey = command.getIndicator();
+
+		Feedback fb = new Feedback(StringFormat.SORT, false);
+
+		// check what category user want to sort
+		for (int i = 0; i < sortKey.size(); i++) {
+			fb.setResult(Storage.sort(sortKey.get(i)));
+			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
+					sortKey.get(i)));
+		}
+
+		fb.setResult(true);
+
+		return fb;
+	}
+
+	/**
+	 * Performs a/multiple search action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performSearchAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.SEARCH, false);
+
+		ArrayList<String> searchIndicator = command.getIndicator();
+		ArrayList<String> searchValue = command.getKey();
+
+		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
+
+		// check whether Storage can search the result or not
+		for (int i = 0; i < searchIndicator.size(); i++) {
+			Storage.search(searchIndicator.get(i), searchValue.get(i));
+			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+					searchValue.get(i), searchIndicator.get(i)));
+		}
+
+		fb.setResult(true);
+
+		return fb;
+	}
+
+	/**
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
+	 * perform undo multiple-steps.
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performUndoAction() {
+		Feedback fb = new Feedback(StringFormat.UNDO, false);
+
+		// pre-condition
+		if (commandStack.isEmpty()) {
+			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
+			return fb;
+		}
+
+		try {
+			Stack<ExecutableCommand> temp = new Stack<ExecutableCommand>();
+			redoStack.add(commandStack.pop());
+
+			while (!commandStack.isEmpty()) {
+				temp.push(commandStack.pop());
+			}
+
+			// clean the mainTaskList and doneTaskList.
+			Storage.clean();
+			// reload the data from saved file.
+			Storage.reloadFile();
+
+			while (!temp.isEmpty()) {
+				proceedAnalyzedCommand(temp.pop());
+			}
+
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
+		}
+
+		// post-condition
+		if (!commandStack.isEmpty()) {
+			fb.setResult(true);
+			fb.setMessageShowToUser(MESSAGE_UNDO_SUCCESSFULLY);
+		} else {
+			fb.setResult(false);
+			fb.setMessageShowToUser(ERROR_NOTHING_TO_UNDO);
+		}
+
+		return fb;
+	}
+
+	/**
+	 * Redoes the undo steps Can redo the multiple previous undo steps
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performRedoAction() {
+		Feedback fb = new Feedback(StringFormat.REDO, false);
+
+		if (redoStack.isEmpty()) {
+			fb.setMessageShowToUser(ERROR_NOTHING_TO_REDO);
+			return fb;
+		}
+
+		try {
+			proceedAnalyzedCommand(redoStack.pop());
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+			return fb;
+		}
+
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_REDO_SUCCESSFULLY);
+
+		return fb;
+
+	}
+
+	/**
+	 * Obtains a result and message of the reloadFile from Storage
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	private static Feedback performReloadAction() {
+		Feedback fb = new Feedback(StringFormat.RELOAD, false);
+
+		try {
+			Storage.reloadFile();
+		} catch (Exception e) {
+			fb.setMessageShowToUser("Exception in reload.\n");
+			return fb;
+		}
+
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_RELOAD_SUCCESSFULLY);
+
+		return fb;
+	}
+
+	/**
+	 * Performs a exit action with a command object passed from the
+	 * proceedAnalyzedCommand method
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	private static Feedback performExitAction() {
+		Feedback fb = new Feedback(StringFormat.EXIT, false);
+
+		// check whether the storage can store the information into a file.
+		try {
+			Storage.saveFile();
+		} catch (Exception e) {
+			fb.setMessageShowToUser(String.format(ERROR_FAIL_SAVE_TO_FILE));
+			return fb;
+		}
+
+		fb.setResult(true);
+		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
+
+		return fb;
+	}
+
+	/**
+	 * Adds a task into a history list as done.
+	 * 
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
