@@ -9,7 +9,7 @@ public class Executor {
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
 
 	// these are for Update Method.
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task \"%d\" is updated successfully.\n";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
 
 	// these are for Sort Method
 	private static final String MESSAGE_SORT_SUCCESSFUL = "Category \"%s\" is sorted successfully.\n";
@@ -171,7 +171,7 @@ public class Executor {
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
 			index--;
-			
+
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -227,14 +227,14 @@ public class Executor {
 			try {
 				fb.setResult(Storage.update(index, updateIndicator.get(i),
 						updateKeyValue.get(i)));
-
-				Task targetTask = Storage.displayTaskList.getTaskByIndex(index);
-
-				fb.setMessageShowToUser(String.format(
-						MESSAGE_UPDATE_SUCCESSFUL, targetTask.getTaskName()));
 			} catch (Exception e) {
-				fb.setMessageShowToUser("update function\n");
+				fb.setMessageShowToUser(e.getMessage());
 				return fb;
+			}
+
+			if (fb.getResult()) {
+				fb.setMessageShowToUser(String.format(
+						MESSAGE_UPDATE_SUCCESSFUL, (index + 1)));
 			}
 		}
 
@@ -569,7 +569,7 @@ public class Executor {
 		fb.setPassEndTimeIndicator(Storage.getPassEndTimeList());
 		try {
 			fb.setListNameIndicator(Storage.listContainsDisplayList());
-		}catch (Exception e){
+		} catch (Exception e) {
 			fb.setMessageShowToUser(e.getMessage());
 		}
 	}
