@@ -129,7 +129,7 @@ public class Executor {
 	/**
 	 * Adds a Task object to Storage.
 	 * 
-	 * Returns a Feedback object to show to a user. 
+	 * Returns a Feedback object to show to a user.
 	 *
 	 * @param command
 	 * @return
@@ -209,7 +209,7 @@ public class Executor {
 	}
 
 	/**
-	 * Add the task into history list as done.
+	 * Adds a task into a history list as done.
 	 * 
 	 * @param command
 	 * @return
@@ -234,8 +234,8 @@ public class Executor {
 	}
 
 	/**
-	 * Performs an/multiple update action(s) with a command object passed from the
-	 * proceedAnalyzedCommand method
+	 * Performs an/multiple update action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
 	 *
 	 * @param command
 	 * @return
@@ -278,17 +278,20 @@ public class Executor {
 	}
 
 	/**
-	 * Perform multiple delete function in storage. Delete the tasks displayed to user.
+	 * Performs a/multiple delete action(s) in Storage.
+	 * 
+	 * Deletes tasks displayed to a user.
+	 * 
 	 * @param command
-	 * @return 
+	 * @return
 	 */
 	// @author A0119378U
 	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
-		
+
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
-		for (int i=sizeOfDisplayTaskList; i>=1; i--){
-			int index = i-1;
+		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
+			int index = i - 1;
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -296,7 +299,7 @@ public class Executor {
 				return fb;
 			}
 		}
-		if (fb.getResult()){
+		if (fb.getResult()) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_CLEAR_SUCCESSFUL);
 		}
 
@@ -312,11 +315,11 @@ public class Executor {
 	// @author A0119378U
 	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
-		if (command.getIndicator().size() != 1){
+		if (command.getIndicator().size() != 1) {
 			fb.setMessageShowToUser(StringFormat.EXE_ERROR_NO_TASK_LIST_INDICATOR);
 			return fb;
 		}
-		
+
 		String targetListIndicator = command.getIndicator().get(0);
 		try {
 			fb.setResult(Storage.display(targetListIndicator));
@@ -325,7 +328,7 @@ public class Executor {
 			fb.setMessageShowToUser(e.getMessage());
 		}
 
-		if (fb.getResult()){
+		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
 		}
 
@@ -333,7 +336,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform sort action with command object passed from
+	 * Performs a/multiple sort action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 *
 	 * @param command
@@ -341,6 +344,7 @@ public class Executor {
 	 * @return
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performSortAction(ExecutableCommand command) {
 		ArrayList<String> sortKey = command.getIndicator();
 
@@ -365,22 +369,22 @@ public class Executor {
 	}
 
 	/**
-	 * Perform search action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Performs a/multiple search action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
 	 * @return
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
 		ArrayList<String> searchIndicator = command.getIndicator();
 		ArrayList<String> searchValue = command.getKey();
 
-		// assert searchIndicator.size() == searchValue.size() :
-		// "Invalid size of ArrayList in search function";
+		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
@@ -400,11 +404,13 @@ public class Executor {
 	}
 
 	/**
-	 * Perform undo action, which reverses previous steps Can perform undo
-	 * multiple-steps
+	 * Performs an/multiple undo action(s), which reverses previous steps
 	 * 
-	 * @return Feedback object
+	 * Can perform undo multiple-steps.
+	 * 
+	 * @return
 	 */
+	// @author A0112060E
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
@@ -440,10 +446,13 @@ public class Executor {
 	}
 
 	/**
-	 * Redo the undo steps Can redo the multiple previous undo steps
+	 * Redoes the undo steps 
+	 * 
+	 * Can redo the multiple previous undo steps
 	 * 
 	 * @return
 	 */
+	// @author A0112060E
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(StringFormat.REDO, false);
 
