@@ -323,20 +323,28 @@ public class Executor {
 	// @author A0112060E
 	private static Feedback performSortAction(ExecutableCommand command) {
 		ArrayList<String> sortKey = command.getIndicator();
-
+		sortKey = reverse(sortKey);
 		Feedback fb = new Feedback(StringFormat.SORT, false);
-
+		
 		// check what category user want to sort
 		for (int i = 0; i < sortKey.size(); i++) {
 			fb.setResult(Storage.sort(sortKey.get(i)));
 			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
 					sortKey.get(i)));
 		}
-
 		fb.setResult(true);
 
 		return fb;
 	}
+	
+	private static ArrayList<String> reverse(ArrayList<String> sortKeyList){
+		ArrayList<String> newKeyList = new ArrayList<String>();
+		for (int i=0; i<sortKeyList.size(); i++){
+			newKeyList.set(i, sortKeyList.get(sortKeyList.size() - i));
+		}
+		return newKeyList;
+	}
+	
 
 	/**
 	 * Performs a/multiple search action(s) with a command object passed from
