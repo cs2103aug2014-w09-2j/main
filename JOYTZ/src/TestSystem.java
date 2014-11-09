@@ -27,7 +27,7 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Category \"priority\" is sorted successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "high in priority is searched successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "\"high\" in \"priority\" is searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
     private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project~" +
