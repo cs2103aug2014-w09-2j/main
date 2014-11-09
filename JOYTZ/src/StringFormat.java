@@ -50,6 +50,7 @@ public class StringFormat {
 	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
 	public static final String STR_ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
 	public static final String STR_ERROR_UPDATE_DONE_TASK = "Cannot update done tasks.\n";
+	public static final String STR_ERROR_INCONSISTENT_TASKID = "Task in displayList is not consistent with either mainTaskList nor History.";
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
 	

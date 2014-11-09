@@ -339,7 +339,7 @@ public class Executor {
 	private static ArrayList<String> reverse(ArrayList<String> sortKeyList){
 		ArrayList<String> newKeyList = new ArrayList<String>();
 		for (int i=0; i<sortKeyList.size(); i++){
-			newKeyList.set(i, sortKeyList.get(sortKeyList.size() - i));
+			newKeyList.set(i, sortKeyList.get(sortKeyList.size() - 1 - i));
 		}
 		return newKeyList;
 	}

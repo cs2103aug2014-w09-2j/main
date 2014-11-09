@@ -96,8 +96,7 @@ public class Storage {
 		} else if (doneTaskList.containsTaskId(targetTaskId)) {
 			doneTaskList.deleteTaskById(targetTaskId);
 		} else { // not supposed to reach this line;
-			throw new Exception(
-					"No Task with same taskId in either mainTaskList nor History.");
+			throw new Exception(StringFormat.STR_ERROR_INCONSISTENT_TASKID);
 		}
 		displayTaskList.deleteTaskByIndex(index);
 
