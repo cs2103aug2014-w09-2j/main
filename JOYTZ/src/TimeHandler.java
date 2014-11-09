@@ -1,6 +1,9 @@
+//@author A0112162Y
+
 import java.util.Date;
 
 public class TimeHandler {
+	
 	public static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;

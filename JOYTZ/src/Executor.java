@@ -8,16 +8,8 @@ public class Executor {
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 
-	// these are for Delete Method.
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
-	private static final String ERROR_INVALID_DELETE_ATTRIBUTE = "Invalid delete attributes.\n";
-
-	// these are for Clear Method.
-	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
-	private static final String MESSAGE_NO_TASK_DISPLAYED = "There is no task in the table.\n";
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
@@ -45,11 +37,15 @@ public class Executor {
 	public static Feedback feedback;
 
 	/**
-	 * Called by Controller to initialize Executor.
-	 *
+	 * Called by Controller to initialize Executor. Splits into cases for
+	 * processing in Executor component
+	 * 
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
@@ -124,11 +120,15 @@ public class Executor {
 	}
 
 	/**
-	 * Add a new Task Object to the Story.
+	 * Adds a Task object to Storage. Returns a Feedback object to show to a
+	 * user.
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
@@ -160,12 +160,14 @@ public class Executor {
 	}
 
 	/**
-	 * Delete several tasks according to the indexIndicatorArray in command.
+	 * Deletes several tasks at the same time according to indices
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
@@ -191,9 +193,10 @@ public class Executor {
 	}
 
 	/**
-	 * Sort the index array from big number to small number.
+	 * Sorts a index array from big number to small number.
 	 * 
 	 * @param targetTaskIndexArray
+	 * 
 	 */
 	// @author A0119378U
 	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
@@ -202,38 +205,15 @@ public class Executor {
 	}
 
 	/**
-	 * Add the task into history list as done.
-	 * 
-	 * @param command
-	 * @return
-	 */
-	// @author A0119378U
-	private static Feedback performDoneAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(StringFormat.DONE, false);
-		ArrayList<Integer> targetIndexList = command.getTaskId();
-		for (int i = 0; i < targetIndexList.size(); i++) {
-			int index = targetIndexList.get(i);
-			index--;
-			try {
-				fb.setResult(Storage.done(index));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
-		}
-		fb.setResult(true);
-		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
-		return fb;
-	}
-
-	/**
-	 * Perform update action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Performs an/multiple update action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
 	 *
 	 * @param command
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
@@ -241,9 +221,9 @@ public class Executor {
 		ArrayList<String> updateIndicator = command.getIndicator();
 		ArrayList<String> updateKeyValue = command.getKey();
 
-		//assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
-		//assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
-		//assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
 
 		for (int i = 0; i < taskId.size(); i++) {
 			int index = taskId.get(i);
@@ -270,17 +250,21 @@ public class Executor {
 	}
 
 	/**
-	 * Perform multiple delete function in storage. Delete the tasks displayed to user.
+	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
+	 * to a user.
+	 * 
 	 * @param command
-	 * @return 
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0119378U
 	private static Feedback performClearAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
-		
+
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
-		for (int i=sizeOfDisplayTaskList; i>=1; i--){
-			int index = i-1;
+		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
+			int index = i - 1;
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -288,7 +272,7 @@ public class Executor {
 				return fb;
 			}
 		}
-		if (fb.getResult()){
+		if (fb.getResult()) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_CLEAR_SUCCESSFUL);
 		}
 
@@ -296,19 +280,22 @@ public class Executor {
 	}
 
 	/**
-	 * Display the current taskList to the user using a arrayList. Display the
-	 * passed time task using two boolean array.
+	 * Displays the current taskList to a user using an arrayList. Displays the
+	 * passed time task using two boolean arrays.
 	 * 
-	 * @return
+	 * @para command
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	// @author A0119378U
 	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
-		if (command.getIndicator().size() != 1){
+		if (command.getIndicator().size() != 1) {
 			fb.setMessageShowToUser(StringFormat.EXE_ERROR_NO_TASK_LIST_INDICATOR);
 			return fb;
 		}
-		
+
 		String targetListIndicator = command.getIndicator().get(0);
 		try {
 			fb.setResult(Storage.display(targetListIndicator));
@@ -317,7 +304,7 @@ public class Executor {
 			fb.setMessageShowToUser(e.getMessage());
 		}
 
-		if (fb.getResult()){
+		if (fb.getResult()) {
 			fb.setMessageShowToUser(MESSAGE_DISPLAY_SUCCESSFULLY);
 		}
 
@@ -325,7 +312,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform sort action with command object passed from
+	 * Performs a/multiple sort action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 *
 	 * @param command
@@ -333,6 +320,7 @@ public class Executor {
 	 * @return
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performSortAction(ExecutableCommand command) {
 		ArrayList<String> sortKey = command.getIndicator();
 
@@ -357,22 +345,23 @@ public class Executor {
 	}
 
 	/**
-	 * Perform search action with command object passed from
-	 * proceedAnalyzedCommand method
+	 * Performs a/multiple search action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
 	 *
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
-	 * @return
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
 		ArrayList<String> searchIndicator = command.getIndicator();
 		ArrayList<String> searchValue = command.getKey();
 
-		// assert searchIndicator.size() == searchValue.size() :
-		// "Invalid size of ArrayList in search function";
+		assert searchIndicator.size() == searchValue.size() : "Invalid size of ArrayList in search function";
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
@@ -383,20 +372,23 @@ public class Executor {
 				fb.setMessageShowToUser(e.getMessage());
 				return fb;
 			}
+			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
+					searchValue.get(i), searchIndicator.get(i)));
 		}
 
 		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
 		return fb;
 	}
 
 	/**
-	 * Perform undo action, which reverses previous steps Can perform undo
-	 * multiple-steps
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
+	 * perform undo multiple-steps.
 	 * 
-	 * @return Feedback object
+	 * @return a Feedback object
+	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
@@ -432,10 +424,12 @@ public class Executor {
 	}
 
 	/**
-	 * Redo the undo steps Can redo the multiple previous undo steps
+	 * Redoes the undo steps Can redo the multiple previous undo steps
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(StringFormat.REDO, false);
 
@@ -459,10 +453,12 @@ public class Executor {
 	}
 
 	/**
-	 * Obtain the result and message of reloadFile from Storage
+	 * Obtains a result and message of the reloadFile from Storage
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performReloadAction() {
 		Feedback fb = new Feedback(StringFormat.RELOAD, false);
 
@@ -480,10 +476,11 @@ public class Executor {
 	}
 
 	/**
-	 * Perform exit action with command object passed from
+	 * Performs a exit action with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 * 
-	 * @return
+	 * @return a Feedback object
+	 * 
 	 */
 	private static Feedback performExitAction() {
 		Feedback fb = new Feedback(StringFormat.EXIT, false);
@@ -503,18 +500,47 @@ public class Executor {
 	}
 
 	/**
-	 * Return feedback to user
+	 * Adds a task into a history list as done.
 	 * 
-	 * @return
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	// @author A0119378U
+	private static Feedback performDoneAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DONE, false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+		for (int i = 0; i < targetIndexList.size(); i++) {
+			int index = targetIndexList.get(i);
+			index--;
+			try {
+				fb.setResult(Storage.done(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
+		return fb;
+	}
+
+	/**
+	 * Return a feedback object to user
+	 * 
+	 * @return a Feedback object
+	 * 
 	 */
 	public static Feedback getFeedback() {
 		return feedback;
 	}
 
 	/**
-	 * Save user's commands in Stack
+	 * Saves user's commands in a Stack
 	 * 
 	 * @param command
+	 * 
 	 */
 	private static void saveUserCommand(ExecutableCommand command) {
 		if (!command.getAction().equals("undo")
@@ -528,6 +554,7 @@ public class Executor {
 	 * Set displayed messages passed from Storage.
 	 * 
 	 * @param fb
+	 * 
 	 */
 	// @author A0119378U
 	private static void addInDisplayMessage(Feedback fb) {
@@ -537,10 +564,12 @@ public class Executor {
 	}
 
 	/**
-	 * Convert String format of Date to actual date.
+	 * Converts a String of Date to the actual date.
 	 * 
 	 * @param dateTimeString
+	 * 
 	 * @return
+	 * 
 	 */
 	private static Date convertStringToDate(String dateTimeString) {
 		if (dateTimeString.equals("")) {
@@ -553,7 +582,7 @@ public class Executor {
 	}
 
 	/**
-	 * Create a new Task Object based on the attributes.
+	 * Creates a new Task Object based on the attributes.
 	 * 
 	 * @param name
 	 * @param description
@@ -562,6 +591,7 @@ public class Executor {
 	 * @param startDateTime
 	 * @param endDateTime
 	 * @throws Exception
+	 * 
 	 */
 	// @author A0119378U
 	private static Task createNewTask(String name, String description,

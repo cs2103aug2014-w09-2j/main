@@ -1,9 +1,8 @@
+//@author A0112162Y
 import java.util.ArrayList;
 
-//package V1;
-
 public class ExecutableCommand {
-
+	
 	// attributes in this object.
 	private String action;
 
