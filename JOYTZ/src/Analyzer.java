@@ -43,7 +43,7 @@ public class Analyzer {
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
 		case StringFormat.DISPLAY:
-			outputCommand = handlDisplayCommand(commandArgument);
+			outputCommand = handleDisplayCommand(commandArgument);
 			break;
 		case StringFormat.UNDO:
 			outputCommand = handleUndoCommand();
@@ -77,10 +77,10 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "add" action and contains all
+	 * Creates an ExecutableCommand object with "add" action and sets all
 	 * relevant information: task name, task description, task start time, task
-	 * end time, task location, task priority. Task name must be indicated while
-	 * the rest can be absent.
+	 * end time, task location, task priority. Task name must be set while the
+	 * rest can be omitted.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -176,9 +176,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "delete" action and contains all
-	 * relevant information: task index. Task index must be indicated and it can
-	 * be duplicated to perform multiple delete action.
+	 * Creates an ExecutableCommand object with "delete" action and sets all
+	 * relevant information: task index. Task index must be set and it can be
+	 * indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -209,9 +209,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "update" action and contains all
+	 * Creates an ExecutableCommand object with "update" action and sets all
 	 * relevant information: task index, update indicator, update key. All
-	 * attributes stated above must be indicated.
+	 * attributes stated above must be set.
 	 * 
 	 * @param arg
 	 *            The user Argument
@@ -237,6 +237,9 @@ public class Analyzer {
 			return tempCommand;
 		} else if (!StringFormat.isValidIndicator(arg[1])) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			return tempCommand;
+		} else if (arg.length == 2) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 			return tempCommand;
 		}
 
@@ -316,15 +319,16 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "display" action and contains all
+	 * Creates an ExecutableCommand object with "display" action and sets all
 	 * relevant information: display indicator. Display indicator can be
-	 * ignored. In this case, default display operation will be executed.
+	 * ignored. In such case, it will be recognized as default display action
+	 * which will display the main task list.
 	 * 
 	 * @param arg
 	 *            The user argument
 	 * @return ExecutableCommand containing all relevant information
 	 */
-	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+	private static ExecutableCommand handleDisplayCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
 
 		ExecutableCommand tempCommand = new ExecutableCommand(
@@ -345,72 +349,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "undo" action
-	 * 
-	 * @return ExecutableCommand with undo action indicated
-	 */
-	private static ExecutableCommand handleUndoCommand() {
-		return new ExecutableCommand(StringFormat.UNDO);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "redo" action
-	 * 
-	 * @return ExecutableCommand with redo action indicated
-	 */
-	private static ExecutableCommand handleRedoCommand() {
-		return new ExecutableCommand(StringFormat.REDO);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "clear" action
-	 * 
-	 * @return ExecutableCommand with clear action indicated
-	 */
-	private static ExecutableCommand handleClearCommand() {
-		return new ExecutableCommand(StringFormat.CLEAR);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "sort" action and contains all
-	 * relevant information: sort indicator. Sort indicator must be indicated
-	 * and it can be duplicated to perform multiple sort action.
-	 * 
-	 * @param arg
-	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
-	 */
-	private static ExecutableCommand handleSortCommand(String[] arg) {
-		assertNotNull("User argument is null", arg);
-
-		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
-
-		if (arg.length == 0) {
-			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
-
-			return tempCommand;
-		}
-
-		for (int i = 0; i < arg.length; i++) {
-			String sortIndicator = arg[i].toLowerCase();
-
-			if (!StringFormat.isValidIndicator(sortIndicator)) {
-				tempCommand
-						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
-
-				return tempCommand;
-			}
-			tempCommand.setIndicator(sortIndicator);
-		}
-
-		return tempCommand;
-	}
-
-	/**
-	 * create an ExecutableCommand object with "search" action and contains all
-	 * relevant information:search indicator and search key. Search indicator
-	 * and search key must be indicated and they can be duplicated to perform
-	 * multiple search action.
+	 * Creates an ExecutableCommand object with "search" action and sets all
+	 * relevant information: search indicator and search key. Search indicator
+	 * and search key must be set and they can be indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -507,9 +448,44 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "done" action and contains all
-	 * relevant information: task index. Task index must be indicated and it can
-	 * be duplicated to perform multiple done action.
+	 * Creates an ExecutableCommand object with "sort" action and sets all
+	 * relevant information: sort indicator. Sort indicator must be set and it
+	 * can be indicated more than once.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
+	private static ExecutableCommand handleSortCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			String sortIndicator = arg[i].toLowerCase();
+
+			if (!StringFormat.isValidIndicator(sortIndicator)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+				return tempCommand;
+			}
+			tempCommand.setIndicator(sortIndicator);
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "done" action and sets all
+	 * relevant information: task index. Task index must be set and it can
+	 * indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -539,7 +515,34 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "exit" action
+	 * Creates an ExecutableCommand object with "undo" action.
+	 * 
+	 * @return ExecutableCommand with undo action indicated
+	 */
+	private static ExecutableCommand handleUndoCommand() {
+		return new ExecutableCommand(StringFormat.UNDO);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "redo" action.
+	 * 
+	 * @return ExecutableCommand with redo action indicated
+	 */
+	private static ExecutableCommand handleRedoCommand() {
+		return new ExecutableCommand(StringFormat.REDO);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "clear" action.
+	 * 
+	 * @return ExecutableCommand with clear action indicated
+	 */
+	private static ExecutableCommand handleClearCommand() {
+		return new ExecutableCommand(StringFormat.CLEAR);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "exit" action.
 	 * 
 	 * @return ExecutableCommand with exit action indicated
 	 */
