@@ -575,6 +575,11 @@ public class Executor {
 		fb.setTaskStringList(Storage.getStringFormatOfList());
 		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
 		fb.setPassEndTimeIndicator(Storage.getPassEndTimeList());
+		try {
+			fb.setListNameIndicator(Storage.listContainsDisplayList());
+		}catch (Exception e){
+			fb.setMessageShowToUser(e.getMessage());
+		}
 	}
 
 	/**

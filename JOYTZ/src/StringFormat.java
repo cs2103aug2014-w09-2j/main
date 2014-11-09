@@ -54,6 +54,8 @@ public class StringFormat {
 	// In Done Method
 	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "Cannot done a task in done list.\n";
 	
+	// query the display list
+	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
 	//@author A0112162Y
 	/**
 	 * error messages used in Analyzer and TimeHandler

@@ -516,6 +516,23 @@ public class Storage {
 			currTask.setTaskId(currId);
 		}
 	}
+	
+	public static String listContainsDisplayList() throws Exception{
+		if (displayTaskList.size() == 0){
+			return StringFormat.MAIN_TASK_LIST;
+		}
+		Task exampleTask = displayTaskList.getTaskByIndex(0);
+		int exampleTaskId = exampleTask.getTaskId();
+		
+		if (mainTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.MAIN_TASK_LIST;
+		} else if (doneTaskList.containsTaskId(exampleTaskId)){
+			return StringFormat.DONE_TASK_LIST;
+		} else {	// should not reach this line.
+			throw new Exception(StringFormat.STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST);
+		}
+		
+	}
 
 	/**
 	 * These method is only for Unit Test.
