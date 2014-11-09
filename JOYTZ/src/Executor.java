@@ -47,9 +47,12 @@ public class Executor {
 	/**
 	 * Called by Controller to initialize Executor.
 	 *
+	 * Split into cases for processing in Executor component
+	 * 
 	 * @param command
 	 * @return
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
@@ -124,11 +127,14 @@ public class Executor {
 	}
 
 	/**
-	 * Add a new Task Object to the Story.
+	 * Adds a Task object to Storage.
+	 * 
+	 * Returns a Feedback object to show to a user. 
 	 *
 	 * @param command
 	 * @return
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
@@ -160,12 +166,13 @@ public class Executor {
 	}
 
 	/**
-	 * Delete several tasks according to the indexIndicatorArray in command.
+	 * Deletes several tasks at the same time according to indices
 	 *
 	 * @param command
 	 * @return
 	 * 
 	 */
+	// @author A0112060E
 	// @author A0119378U
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
@@ -191,7 +198,7 @@ public class Executor {
 	}
 
 	/**
-	 * Sort the index array from big number to small number.
+	 * Sorts a index array from big number to small number.
 	 * 
 	 * @param targetTaskIndexArray
 	 */
@@ -227,13 +234,14 @@ public class Executor {
 	}
 
 	/**
-	 * Perform update action with command object passed from
+	 * Performs an/multiple update action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 *
 	 * @param command
 	 * @return
 	 * 
 	 */
+	// @author A0112060E
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
@@ -241,9 +249,9 @@ public class Executor {
 		ArrayList<String> updateIndicator = command.getIndicator();
 		ArrayList<String> updateKeyValue = command.getKey();
 
-		//assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
-		//assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
-		//assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
+		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
+		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
 
 		for (int i = 0; i < taskId.size(); i++) {
 			int index = taskId.get(i);
