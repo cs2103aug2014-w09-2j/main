@@ -2,7 +2,6 @@
 
 import static org.junit.Assert.assertNotNull;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class UserInputHandler {

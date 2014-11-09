@@ -61,6 +61,7 @@ public class TimeHandler {
 		return tempCommand;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String inputTimingConvertor(String timing) {
 		if (timing.equals(StringFormat.EMPTY)) {
 			return StringFormat.EMPTY;
@@ -142,16 +143,6 @@ public class TimeHandler {
 
 	private static boolean isLeapYear(int year) {
 		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
-	}
-
-	private static boolean isSameDate(Date first, Date second) {
-		return first.getYear() == second.getYear()
-				&& first.getMonth() == second.getMonth()
-				&& first.getDay() == second.getDay();
-	}
-
-	private static boolean isTimeIndicated(Date d) {
-		return d.getHours() != 0 || d.getMinutes() != 0;
 	}
 
 	private static boolean checkTimeExistence(int[] result) {

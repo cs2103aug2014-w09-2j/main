@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestAnalyzer {
 	
 	private static Date currentDate = new Date(System.currentTimeMillis());
