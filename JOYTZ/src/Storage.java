@@ -278,6 +278,7 @@ public class Storage {
 
 	/**
 	 * Set displayList to be task list indicate by targetListIndicator.
+	 * And display the String format of displayList
 	 * 
 	 * @param targetListIndicator
 	 * @return
