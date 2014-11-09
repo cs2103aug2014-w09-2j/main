@@ -8,16 +8,8 @@ public class Executor {
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
 
-	// these are for Delete Method.
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
-	private static final String ERROR_INVALID_DELETE_ATTRIBUTE = "Invalid delete attributes.\n";
-
-	// these are for Clear Method.
-	private static final String MESSAGE_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
-	private static final String MESSAGE_NO_TASK_DISPLAYED = "There is no task in the table.\n";
 
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
@@ -206,31 +198,6 @@ public class Executor {
 	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
-	}
-
-	/**
-	 * Adds a task into a history list as done.
-	 * 
-	 * @param command
-	 * @return
-	 */
-	// @author A0119378U
-	private static Feedback performDoneAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(StringFormat.DONE, false);
-		ArrayList<Integer> targetIndexList = command.getTaskId();
-		for (int i = 0; i < targetIndexList.size(); i++) {
-			int index = targetIndexList.get(i);
-			index--;
-			try {
-				fb.setResult(Storage.done(index));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
-		}
-		fb.setResult(true);
-		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
-		return fb;
 	}
 
 	/**
@@ -446,7 +413,7 @@ public class Executor {
 	}
 
 	/**
-	 * Redoes the undo steps 
+	 * Redoes the undo steps
 	 * 
 	 * Can redo the multiple previous undo steps
 	 * 
@@ -476,7 +443,7 @@ public class Executor {
 	}
 
 	/**
-	 * Obtain the result and message of reloadFile from Storage
+	 * Obtains the result and message of the reloadFile from Storage
 	 * 
 	 * @return
 	 */
@@ -497,7 +464,7 @@ public class Executor {
 	}
 
 	/**
-	 * Perform exit action with command object passed from
+	 * Performs a exit action with a command object passed from the
 	 * proceedAnalyzedCommand method
 	 * 
 	 * @return
@@ -516,6 +483,31 @@ public class Executor {
 		fb.setResult(true);
 		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
 
+		return fb;
+	}
+	
+	/**
+	 * Adds a task into a history list as done.
+	 * 
+	 * @param command
+	 * @return
+	 */
+	// @author A0119378U
+	private static Feedback performDoneAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.DONE, false);
+		ArrayList<Integer> targetIndexList = command.getTaskId();
+		for (int i = 0; i < targetIndexList.size(); i++) {
+			int index = targetIndexList.get(i);
+			index--;
+			try {
+				fb.setResult(Storage.done(index));
+			} catch (Exception e) {
+				fb.setMessageShowToUser(e.getMessage());
+				return fb;
+			}
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser(StringFormat.EXE_MSG_DONE_SUCCESSFUL);
 		return fb;
 	}
 
