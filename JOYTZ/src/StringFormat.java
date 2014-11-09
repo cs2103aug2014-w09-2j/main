@@ -1,7 +1,8 @@
 import java.text.SimpleDateFormat;
 
 public class StringFormat {
-
+	
+	//@author A0119378U
 	/**
 	 * Format and Static String in FileInOut
 	 */
@@ -16,11 +17,11 @@ public class StringFormat {
 	public static final String IO_TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
 	public static final String IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 	public static final String IO_ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-
+	
+	// @author A0119378U
 	/**
 	 * Message show to the user in Executor
 	 */
-
 	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 	// Add
@@ -33,7 +34,8 @@ public class StringFormat {
 	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
 	// Clear
 	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-
+	
+	// @author A0119378U
 	/**
 	 * Message show to the user in Storage
 	 */
@@ -56,6 +58,7 @@ public class StringFormat {
 	
 	// query the display list
 	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
+	
 	//@author A0112162Y
 	/**
 	 * error messages used in Analyzer and TimeHandler
