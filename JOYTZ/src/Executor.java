@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 import java.util.*;
 
 public class Executor {
@@ -48,10 +44,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-<<<<<<< HEAD
-=======
-	// @author A0119378U
->>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -136,10 +128,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-<<<<<<< HEAD
-=======
-	// @author A0119378U
->>>>>>> fc51a4039ea9d380a4f27551df9d0e1244ae2536
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
 
@@ -203,13 +191,15 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0119378U
 	/**
 	 * Sorts a index array from big number to small number.
 	 * 
 	 * @param targetTaskIndexArray
+	 *            Rearrange the order to avoid the change of list size when
+	 *            small index is deleted.
 	 * 
 	 */
-	// @author A0119378U
 	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
