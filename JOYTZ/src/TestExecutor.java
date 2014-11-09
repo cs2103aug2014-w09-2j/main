@@ -161,6 +161,7 @@ public class TestExecutor {
 		obj.setTaskName("apply scholarship");
 		Executor.proceedAnalyzedCommand(obj);
 
+		// search a word contained in the task list
 		obj.setAction("search");
 		obj.setIndicator("name");
 		obj.setKey("apply");
@@ -168,5 +169,7 @@ public class TestExecutor {
 
 		assertEquals("There are not 2 tasks searched", 2, fb
 				.getTaskStringList().size());
+		
+		Executor.proceedAnalyzedCommand(clear);
 	}
 }
