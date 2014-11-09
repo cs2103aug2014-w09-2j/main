@@ -323,15 +323,9 @@ public class Executor {
 
 		// check what category user want to sort
 		for (int i = 0; i < sortKey.size(); i++) {
-			try {
-				fb.setResult(Storage.sort(sortKey.get(i)));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
+			fb.setResult(Storage.sort(sortKey.get(i)));
 			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
 					sortKey.get(i)));
-
 		}
 
 		fb.setResult(true);
