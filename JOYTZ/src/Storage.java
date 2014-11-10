@@ -22,12 +22,12 @@ public class Storage {
 			.getName());
 
 	// this is the two list of tasks.
-	private static List mainTaskList = new List("Main task List");
-	private static List doneTaskList = new List("History task List");
+	private static List mainTaskList = new List(StringFormat.MAIN_TASK_LIST);
+	private static List doneTaskList = new List(StringFormat.DONE_TASK_LIST);
 	private static Integer taskId = -1; // Unique taskId start from 0.
 
 	// these are for display.
-	public static List displayTaskList = new List();
+	public static List displayTaskList = new List(StringFormat.DISPLAY_TASK_LIST);
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 
@@ -81,7 +81,7 @@ public class Storage {
 		setDisplayList(mainTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Add \n"
-				+ "	Add a new task " + "\n" + "	task id : " + task.getTaskId()
+				+ "\tAdd a new task. " + "	task id : " + task.getTaskId()
 				+ "\n" + "====================\n");
 
 		return true;
@@ -115,10 +115,10 @@ public class Storage {
 		setDisplayList(displayTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Delete \n"
-				+ "	Delete a task. " + "Task index : " + index + "\n"
-				+ "   current Task size. " + "\n" + "	displaytasklist size : "
-				+ displayTaskList.size() + "\n" + "	maintasklist size : "
-				+ mainTaskList.size() + "\n" + "====================\n");
+				+ "Task index : " + index + "\n"
+				+ "\tdisplaytasklist size : " + displayTaskList.size() + "\n"
+				+ "\tmaintasklist size : " + mainTaskList.size() + "\n" 
+				+ "====================\n");
 
 		return true;
 	}
@@ -149,6 +149,15 @@ public class Storage {
 		displayTaskList.deleteTaskByIndex(index);
 
 		doneTaskList.addTask(targetTask);
+		
+		LOGGER.info("==============\n" + "Storage : Done \n"
+				+ "\tDone a task. " + "\n"
+				+ "\tTask index: " + index + "\n"
+				+ "\tCurrent Task List size: " + "\n" 
+				+ "\tDisplaytasklist size : " + displayTaskList.size() + "\n"
+				+ "\tMaintasklist size : " + mainTaskList.size() + "\n" 
+				+ "====================\n");
+		
 		return true;
 	}
 
@@ -180,6 +189,14 @@ public class Storage {
 		update(targetTask, updateIndicator, updateKeyValue);
 
 		setDisplayList(displayTaskList);
+		
+		LOGGER.info("==============\n" + "Storage : Update \n"
+				+ "\tUpdate a task. " + "Task index : " + index + "\n"
+				+ "\tTask Index: " + index + "\n"
+				+ "\tTask Id: " + targetTaskId + "\n"
+				+ "\tupdateIndicator: " + updateIndicator + "\n"
+				+ "\tupdateKeyValue: " + updateKeyValue + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -247,7 +264,7 @@ public class Storage {
 	public static boolean clean() {
 		clean(mainTaskList);
 		clean(doneTaskList);
-
+		
 		return true;
 	}
 
@@ -284,7 +301,10 @@ public class Storage {
 	private static boolean clean(List targetList) {
 		targetList.clean();
 		setDisplayList(displayTaskList);
-
+		
+		LOGGER.info("==============\n" + "Storage : Clean \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -310,6 +330,10 @@ public class Storage {
 					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
 					targetListIndicator));
 		}
+		
+		LOGGER.info("==============\n" + "Storage : Display \n"
+				+ "\ttaskList name: " + targetListIndicator + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -330,6 +354,10 @@ public class Storage {
 
 		setDisplayList(displayTaskList);
 
+		LOGGER.info("==============\n" + "Storage : Sort \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "\tkey: " + key + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -352,9 +380,13 @@ public class Storage {
 				newList.addTask(currTask);
 			}
 		}
-
 		setDisplayList(newList);
-
+		
+		LOGGER.info("==============\n" + "Storage : Search \n"
+				+ "\tindicator: " + indicator + "\n"
+				+ "\tsearchValue: " + searchValue + "\n"
+				+ "\tresultTaskListSize: " + newList.size() + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -387,6 +419,10 @@ public class Storage {
 				}
 			}
 		}
+		
+		LOGGER.info("==============\n" + "Storage : checkTime \n"
+				+ "\ttargetListSize: " + targetList.size() + "\n"
+				+ "====================\n");
 	}
 
 	/**
@@ -463,6 +499,9 @@ public class Storage {
 	public static void saveFile() throws Exception {
 		fileProcesser.saveTaskList(mainTaskList, mainTaskListFileName);
 		fileProcesser.saveTaskList(doneTaskList, doneTaskListFileName);
+		
+		LOGGER.info("==============\n" + "Storage : SaveFile \n"
+				+ "====================\n");
 	}
 
 	/**
@@ -479,11 +518,17 @@ public class Storage {
 
 		resetTaskId();
 		setDisplayList(mainTaskList);
+		
+		LOGGER.info("==============\n" + "Storage : ReloadFile \n"
+				+ "====================\n");
 	}
 
 	private static void setDisplayList(List targetList) {
 		displayTaskList = targetList.copy();
 		checkTime();
+		
+		LOGGER.info("==============\n" + "Storage : Set display list \n"
+				+ "====================\n");
 	}
 
 	/**
