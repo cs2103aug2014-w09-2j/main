@@ -4,10 +4,8 @@ public class Executor {
 
 	private static Stack<ExecutableCommand> commandStack = new Stack<ExecutableCommand>();
 	private static Stack<ExecutableCommand> redoStack = new Stack<ExecutableCommand>();
-	// @author A0119378U
-	// these are for Display method.
-	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
 
+	// @author A0112060E
 	// these are for Update Method.
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
 
@@ -24,6 +22,10 @@ public class Executor {
 	// these are for Redo Method
 	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
 	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
+	
+	// @author A0119378U
+	// these are for Display method.
+	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -156,6 +158,7 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0112060E
 	/**
 	 * Deletes several tasks at the same time according to indices
 	 *
@@ -164,7 +167,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
@@ -204,6 +206,7 @@ public class Executor {
 		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
 
+	// @author A0112060E
 	/**
 	 * Performs an/multiple update action(s) with a command object passed from
 	 * the proceedAnalyzedCommand method
@@ -213,7 +216,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
@@ -310,7 +312,7 @@ public class Executor {
 		return fb;
 	}
 
-	// @author A0119378U
+	// @author A0112060E
 	/**
 	 * Performs a/multiple sort action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
@@ -335,7 +337,7 @@ public class Executor {
 		return fb;
 	}
 	
-
+	// @author A0112060E
 	/**
 	 * Performs a/multiple search action(s) with a command object passed from
 	 * the proceedAnalyzedCommand method
@@ -346,7 +348,6 @@ public class Executor {
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
@@ -366,14 +367,14 @@ public class Executor {
 		return fb;
 	}
 
+	//@author A0112060E
 	/**
-	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
-	 * perform undo multiple-steps.
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps 
+	 * Can perform undo multiple-steps.
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
@@ -417,13 +418,13 @@ public class Executor {
 		return fb;
 	}
 
+	// @author A0112060E
 	/**
 	 * Redo the undo steps Can redo the multiple previous undo steps
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(StringFormat.REDO, false);
 
@@ -446,13 +447,13 @@ public class Executor {
 
 	}
 
+	// @author A0112060E
 	/**
 	 * Obtains a result and message of the reloadFile from Storage
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// @author A0112060E
 	private static Feedback performReloadAction() {
 		Feedback fb = new Feedback(StringFormat.RELOAD, false);
 
@@ -635,5 +636,4 @@ public class Executor {
 
 		return newTask;
 	}
-
 }

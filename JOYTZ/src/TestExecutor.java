@@ -3,8 +3,6 @@
 import static org.junit.Assert.*;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-
 import org.junit.Test;
 
 public class TestExecutor {
@@ -13,7 +11,7 @@ public class TestExecutor {
 	ExecutableCommand clear = new ExecutableCommand("clear");
 
 	@Test
-	public void checkAddMethod() throws ParseException {
+	public void testAddMethod() throws ParseException {
 		// check null object or not
 		assertNull("An object is not null", obj);
 
@@ -58,7 +56,7 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkDeleteMethod() throws ParseException {
+	public void testDeleteMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -97,7 +95,7 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkUpdateMethod() throws ParseException {
+	public void testUpdateMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -130,14 +128,15 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkClearMethod() throws ParseException {
+	public void testClearMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
 		obj.setAction("add");
 		obj.setTaskName("abc");
 		fb = Executor.proceedAnalyzedCommand(obj);
-		assertEquals("More than 1 task", 1, fb.getTaskStringList().size());
+		assertNotEquals("Zero task in the table", 0, fb.getTaskStringList()
+				.size());
 
 		fb.setResult(false);
 		fb = Executor.proceedAnalyzedCommand(clear);
@@ -147,7 +146,7 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkSearchMethod() throws ParseException {
+	public void testSearchMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -169,7 +168,42 @@ public class TestExecutor {
 
 		assertEquals("There are not 2 tasks searched", 2, fb
 				.getTaskStringList().size());
+
+		Executor.proceedAnalyzedCommand(clear);
+	}
+
+	@Test
+	public void testUndoRedoMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("abc");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("name");
+		Executor.proceedAnalyzedCommand(obj);
+
+		Executor.proceedAnalyzedCommand(clear);
+
+		// check undo function
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction(StringFormat.UNDO);
+		fb = Executor.proceedAnalyzedCommand(obj);
 		
+		assertTrue("Cannot undo", fb.getResult());
+		assertEquals("There are some tasks in the table", 2, fb
+				.getTaskStringList().size());
+
+		// check redo function
+		fb.setResult(false);
+		obj.setAction("redo");
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		assertTrue("Cannot redo", fb.getResult());
+
 		Executor.proceedAnalyzedCommand(clear);
 	}
 }
