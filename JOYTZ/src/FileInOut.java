@@ -167,15 +167,11 @@ public class FileInOut {
 			task.setTaskName(taskAttributes[0].trim());
 
 			task.setTaskDescription(taskAttributes[1].trim());
-			if (!taskAttributes[2].equals("")) {
-
-				System.out.println(taskAttributes[2]);
+			if (!taskAttributes[2].trim().equals("")) {
 				task.setStartDateTime(new Date(Long
 						.parseLong(taskAttributes[2])));
-
-				System.out.println("exception here");
 			}
-			if (!taskAttributes[3].equals("")) {
+			if (!taskAttributes[3].trim().equals("")) {
 				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
 			}
 			task.setTaskLocation(taskAttributes[4].trim());

@@ -14,6 +14,7 @@ public class Executor {
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
+	private static final String MESSAGE_EMPTY_SEARCH_RESULT = "Search key was not found.\n";
 
 	// these are for Undo Method
 	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
@@ -354,11 +355,32 @@ public class Executor {
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
-			Storage.search(searchIndicator.get(i), searchValue.get(i));
+			String searchIndicatorString = searchIndicator.get(i);
+			String searchValueString = searchValue.get(i);
+
+			if (searchIndicatorString.equals(StringFormat.START_DATE)
+					|| searchValueString.equals(StringFormat.END_DATE)) {
+				Date date = new Date(Long.parseLong(searchValueString));
+				searchValueString = date.getYear() + "";
+				searchValueString = searchValueString.concat(date.getMonth() + "");
+				searchValueString = searchValueString.concat(date.getDate() + "");
+			} else if (searchIndicatorString.equals(StringFormat.START_TIME)
+					|| searchValueString.equals(StringFormat.END_TIME)) {
+				Date date = new Date(Long.parseLong(searchValueString));
+				searchValueString = date.getHours() + "";
+				searchValueString = searchValueString.concat(date.getMinutes() + "");
+				System.out.println(searchValueString);
+			}
+			
+			Storage.search(searchIndicatorString, searchValueString);
 		}
 
 		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		if (fb.getTaskStringList().size() == 0){
+			fb.setMessageShowToUser(MESSAGE_EMPTY_SEARCH_RESULT);
+		}else {
+			fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		}
 
 		return fb;
 	}

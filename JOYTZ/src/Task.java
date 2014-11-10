@@ -198,56 +198,38 @@ public class Task implements Comparable<Task>{
 		if (startDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(startDateTime.getYear());
-		currDate.setMonth(startDateTime.getMonth());
-		currDate.setDate(startDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
+		String result = startDateTime.getYear() + "";
+		result = result.concat(startDateTime.getMonth() + "");
+		result = result.concat(startDateTime.getDate() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatStartTime(){
 		if (startDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(startDateTime.getHours());
-		currDate.setMinutes(startDateTime.getMinutes());
-		return currDate.getTime() + "";
+		String result = startDateTime.getHours() + "";
+		result = result.concat(startDateTime.getMinutes() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatEndDate(){
 		if (endDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(endDateTime.getYear());
-		currDate.setMonth(endDateTime.getMonth());
-		currDate.setDate(endDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
+		String result = endDateTime.getYear() + "";
+		result = result.concat(endDateTime.getMonth() + "");
+		result = result.concat(endDateTime.getDate() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatEndTime(){
 		if (endDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(endDateTime.getHours());
-		currDate.setMinutes(endDateTime.getMinutes());
-		return currDate.getTime() + "";
+		String result = endDateTime.getHours() + "";
+		result = result.concat(endDateTime.getMinutes() + "");
+		return result;
 	}
 
 	public String getTaskDescription() {

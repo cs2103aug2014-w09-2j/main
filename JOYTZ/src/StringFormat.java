@@ -9,7 +9,7 @@ public class StringFormat {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy.MM.dd HH:mm");
 	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
-			"yyyy.MM.dd 'at' HH:mm");
+			"dd/MM/yyyy 'at' hh:mm a");
 	public static final SimpleDateFormat IO_DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 	public static final String IO_MESSAGE_SAVED_IN_FILE = "Last saved point: ";

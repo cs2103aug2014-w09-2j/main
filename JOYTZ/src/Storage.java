@@ -381,8 +381,8 @@ public class Storage {
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
-			if (currTask.get(indicator).toLowerCase()
-					.contains(searchValue.toLowerCase())) {
+			if (currTask.get(indicator).toLowerCase().trim()
+					.contains(searchValue.toLowerCase().trim())) {
 				newList.addTask(currTask);
 			}
 		}
