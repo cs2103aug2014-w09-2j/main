@@ -9,6 +9,7 @@ public class Controller {
                                                         "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
                                                           "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_CANNOT_LOAD_FILE = "Exception in reload.";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String NULL_STRING = "null";
 
@@ -197,7 +198,8 @@ public class Controller {
                 String displayList = feedback.getListNameIndicator();
                 assert outputString != null;
                 
-                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
+                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST) ||
+                    outputString.trim().equals(ERROR_CANNOT_LOAD_FILE)) {
                     GUI.openTutorial();
                 }
                 
