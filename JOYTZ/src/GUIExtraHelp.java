@@ -1,4 +1,6 @@
 //@author A0094558N
+import java.util.logging.Logger;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -12,7 +14,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.graphics.Point;
 
 public class GUIExtraHelp extends Dialog {
-
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+    
     private static final int PAGE_LAST = 10;
     private static final int PAGE_FIRST = 1;
     private static final String PAGE_ONE = "Welcome to JOYTZ task manager!\n\nHere, you will be " +
@@ -177,6 +180,13 @@ public class GUIExtraHelp extends Dialog {
     }
     
     private void checkPageAndSetText(int currentPage, StyledText label) {
+        assert currentPage <= PAGE_LAST;
+        assert currentPage >= PAGE_FIRST;
+        
+        LOGGER.info("==============\n" +
+                "Current tutorial page: " + currentPage + "\n" + 
+                "====================\n");
+        
         switch(currentPage) {
             case 1:
                 label.setText(PAGE_ONE);
