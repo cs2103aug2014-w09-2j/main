@@ -3,7 +3,7 @@
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Controller.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Controller.java
 	 */
 
 import java.text.ParseException;
@@ -95,7 +95,6 @@ public class Controller {
                     isLastItem = true;
                 }
 
-                /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
     						"    Action = " + action + "\n" + 
@@ -160,12 +159,10 @@ public class Controller {
         inputCommandObject = convertStringToCommand(inputCommandString);
         assert inputCommandObject != null;
 
-        /* Commented because there's too much stuff in the console.
         LOGGER.info("==============\n" +
     				"Command object: \n" + 
     				"	" + inputCommandObject.getUserCommand() + "\n" + 
     				"====================\n");
-         */
 
         try {
             parsedCommand = analyzeInput(inputCommandObject);
@@ -278,14 +275,14 @@ public class Controller {
     }
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Controller.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Controller.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUI.java
 	 */
 
 import java.awt.event.ActionEvent;
@@ -1022,6 +1019,22 @@ public class GUI implements HotkeyListener, IntellitypeListener {
             isNotifOverdueEnabled = GUISettings.DEFAULT_NOTIF_OVERDUE;
             isNotifOngoingEnabled = GUISettings.DEFAULT_NOTIF_ONGOING;
         }
+        assert deadlineRowColorR <= 255;
+        assert deadlineRowColorR >= 0;
+        assert deadlineRowColorG <= 255;
+        assert deadlineRowColorG >= 0;
+        assert deadlineRowColorB <= 255;
+        assert deadlineRowColorB >= 0;
+        assert ongoingRowColorR <= 255;
+        assert ongoingRowColorR >= 0;
+        assert ongoingRowColorG <= 255;
+        assert ongoingRowColorG >= 0;
+        assert ongoingRowColorB <= 255;
+        assert ongoingRowColorB >= 0;
+        assert isNotifOverdueEnabled <= 1;
+        assert isNotifOverdueEnabled >= 0;
+        assert isNotifOngoingEnabled <= 1;
+        assert isNotifOngoingEnabled >= 0;
     }
     
     /** 
@@ -1144,15 +1157,17 @@ public class GUI implements HotkeyListener, IntellitypeListener {
         }
     }
     
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUI.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUI.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUIExtraHelp.java
 	 */
+
+import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -1167,7 +1182,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.graphics.Point;
 
 public class GUIExtraHelp extends Dialog {
-
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+    
     private static final int PAGE_LAST = 10;
     private static final int PAGE_FIRST = 1;
     private static final String PAGE_ONE = "Welcome to JOYTZ task manager!\n\nHere, you will be " +
@@ -1245,14 +1261,14 @@ public class GUIExtraHelp extends Dialog {
     private Button btnNext;
     private StyledText textField;
     
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUIExtraHelp.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUIExtraHelp.java
 	 */
 
     private void createButtonListeners() {
@@ -1286,6 +1302,13 @@ public class GUIExtraHelp extends Dialog {
     }
     
     private void checkPageAndSetText(int currentPage, StyledText label) {
+        assert currentPage <= PAGE_LAST;
+        assert currentPage >= PAGE_FIRST;
+        
+        LOGGER.info("==============\n" +
+                "Current tutorial page: " + currentPage + "\n" + 
+                "====================\n");
+        
         switch(currentPage) {
             case 1:
                 label.setText(PAGE_ONE);
@@ -1347,14 +1370,14 @@ public class GUIExtraHelp extends Dialog {
     }
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUIExtraHelp.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUIExtraHelp.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUISettings.java
 	 */
 
 import org.eclipse.swt.widgets.Dialog;
@@ -1374,6 +1397,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
@@ -1388,6 +1412,7 @@ import org.eclipse.swt.widgets.Button;
 
 
 public class GUISettings extends Dialog {
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
     private static final String ERROR_CREATE_FILE = "There was a problem " +
                                                     "creating a new file: ";
     private static final String ERROR_READING_FILE = "There was a problem " +
@@ -1446,14 +1471,14 @@ public class GUISettings extends Dialog {
     private static Button btnoverdueNotification;
     private static Button btnstartedNotification;
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUISettings.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUISettings.java
 	 */
 
     private void displaySettingsInSettingsGUI() {
@@ -1533,6 +1558,9 @@ public class GUISettings extends Dialog {
         Path filePath = Paths.get(filename);
         // Look for the file in the filepath, and create it if it does not exist
         if (!Files.exists(filePath)) {
+            LOGGER.info("==============\n" +
+                        "Settings file does not exist. Creating new file.\n" +
+                        "====================\n");
             try {
                 settingsFile.createNewFile();
                 initializeWorkingStorage();
@@ -1560,6 +1588,9 @@ public class GUISettings extends Dialog {
 
     // Reads the contents of the file and stores it in an array list
     private static void readFile (String filename) {
+        LOGGER.info("==============\n" +
+                    "Loading settings from file.\n" +
+                    "====================\n");
         String temp;
         int i = 0;
         try {
@@ -1586,6 +1617,9 @@ public class GUISettings extends Dialog {
     
     // Write the contents of the array list into the file
     private static void writeFile (File settingsFile) {
+        LOGGER.info("==============\n" +
+                    "Writing settings back into file.\n" +
+                    "====================\n");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
             // Write all contents of workingStorage to the file
@@ -1664,14 +1698,14 @@ public class GUISettings extends Dialog {
     }
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\GUISettings.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\GUISettings.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestController.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestController.java
 	 */
 
 import static org.junit.Assert.*;
@@ -1721,18 +1755,18 @@ public class TestController {
     
     private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
     
-    private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
+    private static final String SUCCESS_OUTPUT_ADD = "\"meeting with friends\" is added successfully.\n";
     private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about " +
-                                                     "CS2103T project~2015.02.24 at 11:30~" +
-                                                     "2015.02.25 at 11:45~NUS~medium\n";
+                                                     "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                     "25/02/2015 at 11:45 AM~NUS~medium\n";
     private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about" +
-                                                             " CS2103T project~2015.02.24 at 11:30~" +
-                                                             "2015.02.25 at 11:45~NUS~ \n";
+                                                             " CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                             "25/02/2015 at 11:45 AM~NUS~ \n";
     private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
                                                                           "discuss about CS2103T project~" +
-                                                                          "2015.02.24 at 11:30~" +
-                                                                          "2015.02.25 at 11:45~ ~ \n";
-    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30" +
+                                                                          "24/02/2015 at 11:30 AM~" +
+                                                                          "25/02/2015 at 11:45 AM~ ~ \n";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~24/02/2015 at 11:30 AM" +
                                                            "~ ~ ~medium\n";
     
     private static final String EMPTY_STRING = "";
@@ -1986,14 +2020,14 @@ public class TestController {
     }
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestController.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestController.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestSystem.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestSystem.java
 	 */
 
 import static org.junit.Assert.*;
@@ -2019,33 +2053,33 @@ public class TestSystem {
     private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority important";
     private static final String INPUT_DELETE_1 = "delete 1";
     
-    private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_ADD = "\"meeting with friends\" is added successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1 is updated successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "A task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Categories are sorted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "A category is sorted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "Tasks are searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
     private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" + 
+                                                           "25/02/2015 at 11:45 PM~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30" +
-                                                           "~2015.02.25 at 23:45~NUS~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~low\n";
     private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~UTown~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~" +
+                                                           "24/02/2015 at 11:30 AM~25/02/2015 at 11:45 PM~" +
                                                            "UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~high\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~high\n";
     
     @Test
     public void systemTestAdd() {
@@ -2080,6 +2114,7 @@ public class TestSystem {
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_STRING_2, 
                      systemTestResult.getTaskStringList().get(listSize - 2));
+        System.out.println(systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
@@ -2254,7 +2289,7 @@ public class TestSystem {
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestSystem.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestSystem.java
 
 
 

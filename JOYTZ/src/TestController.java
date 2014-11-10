@@ -46,18 +46,18 @@ public class TestController {
     
     private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
     
-    private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
+    private static final String SUCCESS_OUTPUT_ADD = "\"meeting with friends\" is added successfully.\n";
     private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about " +
-                                                     "CS2103T project~2015.02.24 at 11:30~" +
-                                                     "2015.02.25 at 11:45~NUS~medium\n";
+                                                     "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                     "25/02/2015 at 11:45 AM~NUS~medium\n";
     private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about" +
-                                                             " CS2103T project~2015.02.24 at 11:30~" +
-                                                             "2015.02.25 at 11:45~NUS~ \n";
+                                                             " CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                             "25/02/2015 at 11:45 AM~NUS~ \n";
     private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
                                                                           "discuss about CS2103T project~" +
-                                                                          "2015.02.24 at 11:30~" +
-                                                                          "2015.02.25 at 11:45~ ~ \n";
-    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30" +
+                                                                          "24/02/2015 at 11:30 AM~" +
+                                                                          "25/02/2015 at 11:45 AM~ ~ \n";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~24/02/2015 at 11:30 AM" +
                                                            "~ ~ ~medium\n";
     
     private static final String EMPTY_STRING = "";

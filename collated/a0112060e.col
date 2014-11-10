@@ -3,16 +3,54 @@
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	// these are for Update Method.
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
+
+	// these are for Sort Method
+	private static final String MESSAGE_SORT_SUCCESSFUL_ATTRIBUTES = "Categories are sorted successfully.\n";
+	private static final String MESSAGE_SORT_SUCCESSFUL_AN_ATTRIBUTE = "A category is sorted successfully.\n";
+
+	// these are for Search Method
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
+	private static final String MESSAGE_EMPTY_SEARCH_RESULT = "Search key was not found.\n";
+
+	// these are for Undo Method
+	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
+	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.\n";
+
+	// these are for Redo Method
+	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	/**
+	 * Deletes several tasks at the same time according to indices
+	 *
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
-
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
+		int size = targetTaskIndex.size();
+
 		sortFromBigToSmall(targetTaskIndex); // from big to small.
 
-		for (int i = 0; i < targetTaskIndex.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			int index = targetTaskIndex.get(i);
 			index--;
 
@@ -24,67 +62,118 @@
 			}
 		}
 
-		if (fb.getResult()) {
+		if (fb.getResult() && size == 1) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
+		} else if (fb.getResult() && size >= 1) {
+			fb.setMessageShowToUser(String.format(
+					StringFormat.MSG_DELETE_MULTIPLE_TASKS_SUCCESSFUL, size));
 		}
 
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Performs an/multiple update action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
-		ArrayList<Integer> taskId = command.getTaskId();
-		ArrayList<String> updateIndicator = command.getIndicator();
-		ArrayList<String> updateKeyValue = command.getKey();
+		int taskId = command.getTaskId().get(0);
+		String updateIndicator = command.getIndicator().get(0);
+		String updateKeyValue = command.getKey().get(0);
 
-		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
-		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
-		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
-
-		for (int i = 0; i < taskId.size(); i++) {
-			int index = taskId.get(i);
-			index--;
-
-			try {
-				fb.setResult(Storage.update(index, updateIndicator.get(i),
-						updateKeyValue.get(i)));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
-
-			if (fb.getResult()) {
-				fb.setMessageShowToUser(String.format(
-						MESSAGE_UPDATE_SUCCESSFUL, (index + 1)));
-			}
+		taskId--;
+		try {
+			fb.setResult(Storage
+					.update(taskId, updateIndicator, updateKeyValue));
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
 		}
 
-		fb.setResult(true);
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(String.format(MESSAGE_UPDATE_SUCCESSFUL,
+					(taskId + 1)));
+		}
 
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Performs a/multiple sort action(s) with a command object passed from the
+	 * proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
+	 * @return
+	 * 
+	 */
+	private static Feedback performSortAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.SORT, false);
+		ArrayList<String> sortKey = command.getIndicator();
+		int size = sortKey.size();
+
+		Collections.reverse(sortKey);
+
+		for (int i = 0; i < size; i++) {
+			fb.setResult(Storage.sort(sortKey.get(i)));
+		}
+
+		// check size for displaying messages
+		if (size == 1) {
+			fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL_AN_ATTRIBUTE);
+		} else if (size > 1) {
+			fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL_ATTRIBUTES);
+		}
+
+		return fb;
+	}
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	/**
+	 * Performs a/multiple search action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	private static Feedback performSearchAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SEARCH, false);
 
@@ -95,14 +184,46 @@
 
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
-			Storage.search(searchIndicator.get(i), searchValue.get(i));
+			String searchIndicatorString = searchIndicator.get(i);
+			String searchValueString = searchValue.get(i);
+
+			if (searchIndicatorString.equals(StringFormat.START_DATE)
+					|| searchValueString.equals(StringFormat.END_DATE)) {
+				Date date = new Date(Long.parseLong(searchValueString));
+				searchValueString = date.getYear() + "";
+				searchValueString = searchValueString.concat(date.getMonth()
+						+ "");
+				searchValueString = searchValueString.concat(date.getDate()
+						+ "");
+			} else if (searchIndicatorString.equals(StringFormat.START_TIME)
+					|| searchValueString.equals(StringFormat.END_TIME)) {
+				Date date = new Date(Long.parseLong(searchValueString));
+				searchValueString = date.getHours() + "";
+				searchValueString = searchValueString.concat(date.getMinutes()
+						+ "");
+			}
+			fb.setResult(Storage.search(searchIndicatorString,
+					searchValueString));
 		}
 
-		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		if (Storage.displayTaskList.size() == 0) {
+			fb.setMessageShowToUser(MESSAGE_EMPTY_SEARCH_RESULT);
+		} else {
+			fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
+		}
 
 		return fb;
 	}
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+	 */
 
 	/**
 	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
@@ -111,16 +232,6 @@
 	 * @return a Feedback object
 	 * 
 	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-	 */
-
 	private static Feedback performUndoAction() {
 		Feedback fb = new Feedback(StringFormat.UNDO, false);
 
@@ -164,22 +275,22 @@
 		return fb;
 	}
 
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+	 */
+
 	/**
 	 * Redo the undo steps Can redo the multiple previous undo steps
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-	 */
-
 	private static Feedback performRedoAction() {
 		Feedback fb = new Feedback(StringFormat.REDO, false);
 
@@ -202,22 +313,22 @@
 
 	}
 
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
+	 */
+
 	/**
 	 * Obtains a result and message of the reloadFile from Storage
 	 * 
 	 * @return a Feedback object
 	 * 
 	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-	 */
-
 	private static Feedback performReloadAction() {
 		Feedback fb = new Feedback(StringFormat.RELOAD, false);
 
@@ -234,22 +345,20 @@
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestExecutor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestExecutor.java
 	 */
 
 
 import static org.junit.Assert.*;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-
 import org.junit.Test;
 
 public class TestExecutor {
@@ -258,7 +367,7 @@ public class TestExecutor {
 	ExecutableCommand clear = new ExecutableCommand("clear");
 
 	@Test
-	public void checkAddMethod() throws ParseException {
+	public void testAddMethod() throws ParseException {
 		// check null object or not
 		assertNull("An object is not null", obj);
 
@@ -303,7 +412,7 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkDeleteMethod() throws ParseException {
+	public void testDeleteMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -335,14 +444,12 @@ public class TestExecutor {
 		fb = Executor.proceedAnalyzedCommand(obj);
 
 		assertTrue("Cannot delete 2 tasks", fb.getResult());
-		assertEquals("There are 2 tasks in the table", 2, fb
-				.getTaskStringList().size());
 
 		Executor.proceedAnalyzedCommand(clear);
 	}
 
 	@Test
-	public void checkUpdateMethod() throws ParseException {
+	public void testUpdateMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -354,10 +461,15 @@ public class TestExecutor {
 		fb = Executor.proceedAnalyzedCommand(obj);
 
 		// check task Id
-		fb.setResult(false);
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
 		obj.setAction("update");
-		obj.setTaskId(2);
+		obj.setTaskId(3);
+		obj.setIndicator("name");
+		obj.setKey("outing");
 		fb = Executor.proceedAnalyzedCommand(obj);
+		
 		assertFalse("Valid index", fb.getResult());
 
 		// valid input
@@ -375,14 +487,15 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkClearMethod() throws ParseException {
+	public void testClearMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
 		obj.setAction("add");
 		obj.setTaskName("abc");
 		fb = Executor.proceedAnalyzedCommand(obj);
-		assertEquals("More than 1 task", 1, fb.getTaskStringList().size());
+		assertNotEquals("Zero task in the table", 0, fb.getTaskStringList()
+				.size());
 
 		fb.setResult(false);
 		fb = Executor.proceedAnalyzedCommand(clear);
@@ -392,7 +505,7 @@ public class TestExecutor {
 	}
 
 	@Test
-	public void checkSearchMethod() throws ParseException {
+	public void testSearchMethod() throws ParseException {
 		obj = new ExecutableCommand();
 		fb = new Feedback(false);
 
@@ -414,12 +527,45 @@ public class TestExecutor {
 
 		assertEquals("There are not 2 tasks searched", 2, fb
 				.getTaskStringList().size());
-		
+
+		Executor.proceedAnalyzedCommand(clear);
+	}
+
+	@Test
+	public void testUndoRedoMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("abc");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("name");
+		Executor.proceedAnalyzedCommand(obj);
+
+		Executor.proceedAnalyzedCommand(clear);
+
+		// check undo function
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction(StringFormat.UNDO);
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		assertTrue("Cannot undo", fb.getResult());
+
+		// check redo function
+		fb.setResult(false);
+		obj.setAction("redo");
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		assertTrue("Cannot redo", fb.getResult());
+
 		Executor.proceedAnalyzedCommand(clear);
 	}
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestExecutor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestExecutor.java
 
 
 
