@@ -256,19 +256,19 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     /**
      * Updates the table in the GUI based on the given parameters
      *
-     * @param taskNumber    	         Index number of the task in the table
-     * @param startDate    		         Starting time of the given task
-     * @param endDate    		         Deadline of the given task
-     * @param name 				         Name of the given task
-     * @param location			         Location of the given task
-     * @param description		         Description for the given task
-     * @param priority			         Priority level of the given task
-     * @param action			         Action input by the user (add, delete, etc.)
-     * @param taskId                     The taskId of the task given by the user
-     * @param isLastRow			         Is this the last item 
-     * @param isHighlightedPassStart     Has the task passed the start time
-     * @param isHighlightedPassEnd       Has the task passed the end time
-     * @param displayList                Which list is being displayed
+     * @param taskNumber                Index number of the task in the table
+     * @param startDate                 Starting time of the given task
+     * @param endDate                   Deadline of the given task
+     * @param name                      Name of the given task
+     * @param location                  Location of the given task
+     * @param description               Description for the given task
+     * @param priority                  Priority level of the given task
+     * @param action                    Action input by the user (add, delete, etc.)
+     * @param taskId                    The taskId of the task given by the user
+     * @param isLastRow                 Is this the last item 
+     * @param isHighlightedPassStart    Has the task passed the start time
+     * @param isHighlightedPassEnd      Has the task passed the end time
+     * @param displayList               Which list is being displayed
      * 
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,

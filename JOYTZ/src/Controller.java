@@ -219,9 +219,9 @@ public class Controller {
     /**
      * Converts the user's input string into a Command object.
      * 
-     * @param inputCommandString	The user's input
+     * @param inputCommandString    The user's input
      * 
-     * @return						Command object containing the user's input 
+     * @return                      Command object containing the user's input 
      * 
      */
     private static Command convertStringToCommand(String inputCommandString) {
@@ -233,9 +233,9 @@ public class Controller {
     /**
      * Starts the analyzer, and passes the Command object to it
      * 
-     * @param inputCmdObj	Command object containing the user's input
+     * @param inputCmdObj   Command object containing the user's input
      * 
-     * @return						ExecutableCommand object with parsed data
+     * @return              ExecutableCommand object with parsed data
      * 
      */
     public static ExecutableCommand analyzeInput(Command inputCmdObj) throws ParseException {
@@ -247,9 +247,9 @@ public class Controller {
     /**
      * Gets the feedback message to show to the user from the feedback object
      * 
-     * @param feedback		Feedback object containing the feedback message
+     * @param feedback      Feedback object containing the feedback message
      * 
-     * @return				String with feedback to show to user after each command
+     * @return              String with feedback to show to user after each command
      * 
      */
     private static String getFeedbackMessage(Feedback feedback) {
@@ -261,9 +261,9 @@ public class Controller {
     /**
      * Starts the executor, and passes the ExecutableCommand object to it
      * 
-     * @param command	ExecutableCommand object containing the parsed data
+     * @param command   ExecutableCommand object containing the parsed data
      * 
-     * @return			Feedback object with data to display in GUI
+     * @return          Feedback object with data to display in GUI
      * 
      */
     public static Feedback startExecutor(ExecutableCommand command) {
