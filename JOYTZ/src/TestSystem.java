@@ -32,18 +32,23 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
     private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about " +
-                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" + 
+                                                           "25/02/2015 at 11:45 PM~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about " +
-                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~low\n";
     private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about " +
-                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~UTown~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~" +
+                                                           "24/02/2015 at 11:30 AM~25/02/2015 at 11:45 PM~" +
                                                            "UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~high\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 AM~" +
+                                                           "25/02/2015 at 11:45 PM~NUS~high\n";
     
     @Test
     public void systemTestAdd() {

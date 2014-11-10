@@ -20,6 +20,8 @@ public class UserInputHandler {
 		int index;
 		String temp1, temp2;
 
+		// preprocess of the input string to ease the progress of detecting
+		// deadline indicators which are "due at" and "due on"
 		if (input.contains(StringFormat.DUE_INDICATOR)) {
 			index = input.indexOf(StringFormat.DUE_INDICATOR);
 			temp1 = input.substring(index + 4, index + 6);
@@ -35,7 +37,8 @@ public class UserInputHandler {
 
 		String[] arg = input.trim().split(StringFormat.SPACE_INDICATOR);
 		String[] parsedInput;
-		String userAction = arg[0].toLowerCase();
+		String userAction = arg[0].toLowerCase(); // arg[0] stores the action of
+													// the user
 
 		switch (userAction) {
 		case StringFormat.ADD:
@@ -99,7 +102,7 @@ public class UserInputHandler {
 			String temp = str[i];
 
 			if (nameExistence) {
-				output[1] = output[1].concat(temp);
+				output[1] = output[1].concat(temp); 
 				output[1] = output[1].concat(StringFormat.SPACE_INDICATOR);
 				if (temp.contains(StringFormat.SEPARATE_INDICATOR)) {
 					output[1] = output[1].substring(0, output[1].length() - 2);
