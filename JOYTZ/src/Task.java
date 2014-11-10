@@ -178,7 +178,7 @@ public class Task implements Comparable<Task>{
 	 */
 	public String getLongStringFormatStartDateTime(){
 		if (startDateTime == null){
-			return "";
+			return Long.MAX_VALUE + "";
 		}
 		return startDateTime.getTime() + "";
 	}
@@ -189,7 +189,7 @@ public class Task implements Comparable<Task>{
 	 */
 	public String getLongStringFormatEndDateTime(){
 		if (endDateTime == null){
-			return "";
+			return Long.MAX_VALUE + "";
 		}
 		return endDateTime.getTime() + "";
 	}
