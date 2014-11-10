@@ -88,7 +88,6 @@ public class Controller {
                     isLastItem = true;
                 }
 
-                /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
     						"    Action = " + action + "\n" + 
@@ -153,12 +152,10 @@ public class Controller {
         inputCommandObject = convertStringToCommand(inputCommandString);
         assert inputCommandObject != null;
 
-        /* Commented because there's too much stuff in the console.
         LOGGER.info("==============\n" +
     				"Command object: \n" + 
     				"	" + inputCommandObject.getUserCommand() + "\n" + 
     				"====================\n");
-         */
 
         try {
             parsedCommand = analyzeInput(inputCommandObject);

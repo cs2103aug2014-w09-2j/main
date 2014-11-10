@@ -139,6 +139,7 @@ public class StringFormat {
 	 */
 	public static final String MAIN_TASK_LIST = "mainTaskList";
 	public static final String DONE_TASK_LIST = "doneTaskList";
+	public static final String DISPLAY_TASK_LIST = "displayTaskList";
 
 	/**
 	 * invalid and null indicators

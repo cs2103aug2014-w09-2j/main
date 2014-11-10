@@ -34,6 +34,13 @@ public class List {
 	public void setListName(String name) {
 		this.taskListName = name;
 	}
+	/**
+	 * Get the name of this taskList.
+	 * @return
+	 */
+	public String getListName(){
+		return taskListName;
+	}
 	
 	/**
 	 * Get the size of taskList.

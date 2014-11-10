@@ -733,6 +733,22 @@ public class GUI implements HotkeyListener, IntellitypeListener {
             isNotifOverdueEnabled = GUISettings.DEFAULT_NOTIF_OVERDUE;
             isNotifOngoingEnabled = GUISettings.DEFAULT_NOTIF_ONGOING;
         }
+        assert deadlineRowColorR <= 255;
+        assert deadlineRowColorR >= 0;
+        assert deadlineRowColorG <= 255;
+        assert deadlineRowColorG >= 0;
+        assert deadlineRowColorB <= 255;
+        assert deadlineRowColorB >= 0;
+        assert ongoingRowColorR <= 255;
+        assert ongoingRowColorR >= 0;
+        assert ongoingRowColorG <= 255;
+        assert ongoingRowColorG >= 0;
+        assert ongoingRowColorB <= 255;
+        assert ongoingRowColorB >= 0;
+        assert isNotifOverdueEnabled <= 1;
+        assert isNotifOverdueEnabled >= 0;
+        assert isNotifOngoingEnabled <= 1;
+        assert isNotifOngoingEnabled >= 0;
     }
     
     /** 
