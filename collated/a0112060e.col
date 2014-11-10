@@ -10,7 +10,7 @@
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
-		sort(targetTaskIndex); // from big to small.
+		sortFromBigToSmall(targetTaskIndex); // from big to small.
 
 		for (int i = 0; i < targetTaskIndex.size(); i++) {
 			int index = targetTaskIndex.get(i);
@@ -31,12 +31,6 @@
 		return fb;
 	}
 
-	/**
-	 * Sorts a index array from big number to small number.
-	 * 
-	 * @param targetTaskIndexArray
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -81,52 +75,6 @@
 		return fb;
 	}
 
-	/**
-	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
-	 * to a user.
-	 * 
-	 * @param command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-	 */
-
-	private static Feedback performSortAction(ExecutableCommand command) {
-		ArrayList<String> sortKey = command.getIndicator();
-
-		Feedback fb = new Feedback(StringFormat.SORT, false);
-
-		// check what category user want to sort
-		for (int i = 0; i < sortKey.size(); i++) {
-			fb.setResult(Storage.sort(sortKey.get(i)));
-			fb.setMessageShowToUser(String.format(MESSAGE_SORT_SUCCESSFUL,
-					sortKey.get(i)));
-		}
-
-		fb.setResult(true);
-
-		return fb;
-	}
-
-	/**
-	 * Performs a/multiple search action(s) with a command object passed from
-	 * the proceedAnalyzedCommand method
-	 *
-	 * @param command
-	 *            : ExecutableCommand object containing the user's action
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -148,11 +96,10 @@
 		// check whether Storage can search the result or not
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			Storage.search(searchIndicator.get(i), searchValue.get(i));
-			fb.setMessageShowToUser(String.format(MESSAGE_SEARCH_SUCCESSFUL,
-					searchValue.get(i), searchIndicator.get(i)));
 		}
 
 		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 
 		return fb;
 	}
@@ -218,7 +165,7 @@
 	}
 
 	/**
-	 * Redoes the undo steps Can redo the multiple previous undo steps
+	 * Redo the undo steps Can redo the multiple previous undo steps
 	 * 
 	 * @return a Feedback object
 	 * 
@@ -287,39 +234,192 @@
 		return fb;
 	}
 
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
 	/**
-	 * Performs a exit action with a command object passed from the
-	 * proceedAnalyzedCommand method
-	 * 
-	 * @return a Feedback object
-	 * 
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestExecutor.java
 	 */
-	private static Feedback performExitAction() {
-		Feedback fb = new Feedback(StringFormat.EXIT, false);
 
-		// check whether the storage can store the information into a file.
-		try {
-			Storage.saveFile();
-		} catch (Exception e) {
-			fb.setMessageShowToUser(String.format(ERROR_FAIL_SAVE_TO_FILE));
-			return fb;
-		}
 
-		fb.setResult(true);
-		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
+import static org.junit.Assert.*;
 
-		return fb;
+import java.text.ParseException;
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+public class TestExecutor {
+	ExecutableCommand obj;
+	Feedback fb;
+	ExecutableCommand clear = new ExecutableCommand("clear");
+
+	@Test
+	public void checkAddMethod() throws ParseException {
+		// check null object or not
+		assertNull("An object is not null", obj);
+
+		// check the wrong format or not
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("ADdd");
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertFalse("Correct input format", fb.getResult());
+		Executor.proceedAnalyzedCommand(clear);
+
+		// check the input with all attributes correct or not
+		obj.setAction(StringFormat.ADD);
+		obj.setTaskName("buy bread");
+
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertTrue("Wrong input format", fb.getResult());
+
+		obj.setTaskDescription("delicious bread");
+		obj.setTaskLocation("KR MRT");
+		obj.setTaskPriority("important");
+		obj.setTaskStart("1424748600000");
+		obj.setTaskEnd("1424835900000");
+
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertTrue("Fail to add", fb.getResult());
+		Executor.proceedAnalyzedCommand(clear);
+
+		// check the input with the start date < the end date
+		obj.setTaskEnd("1424748000000");
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertFalse("Invalid start and end time", fb.getResult());
+		Executor.proceedAnalyzedCommand(clear);
+
+		// check the input without task name
+		obj.setTaskName(null);
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertFalse("Invalid task name", fb.getResult());
+
+		Executor.proceedAnalyzedCommand(clear);
 	}
 
-	/**
-	 * Adds a task into a history list as done.
-	 * 
-	 * @param command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	@Test
+	public void checkDeleteMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("meeting with friends");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("buy some apples");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("buy car");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("travelling");
+		Executor.proceedAnalyzedCommand(obj);
+
+		// check delete index is valid or not
+		fb = new Feedback(false);
+		obj.setAction("delete");
+		obj.setTaskId(10);
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertFalse("Valid index", fb.getResult());
+
+		// check delete function works or not
+		obj = new ExecutableCommand();
+		obj.setAction("delete");
+		obj.setTaskId(1);
+		obj.setTaskId(3);
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		assertTrue("Cannot delete 2 tasks", fb.getResult());
+		assertEquals("There are 2 tasks in the table", 2, fb
+				.getTaskStringList().size());
+
+		Executor.proceedAnalyzedCommand(clear);
+	}
+
+	@Test
+	public void checkUpdateMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("buy car");
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("buy bananas");
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		// check task Id
+		fb.setResult(false);
+		obj.setAction("update");
+		obj.setTaskId(2);
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertFalse("Valid index", fb.getResult());
+
+		// valid input
+		fb.setResult(false);
+		obj = new ExecutableCommand();
+		obj.setAction("update");
+		obj.setTaskId(1);
+		obj.setIndicator("priority");
+		obj.setKey("high");
+
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertTrue("Invalid indicator", fb.getResult());
+
+		Executor.proceedAnalyzedCommand(clear);
+	}
+
+	@Test
+	public void checkClearMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("abc");
+		fb = Executor.proceedAnalyzedCommand(obj);
+		assertEquals("More than 1 task", 1, fb.getTaskStringList().size());
+
+		fb.setResult(false);
+		fb = Executor.proceedAnalyzedCommand(clear);
+		assertEquals("Not empty", 0, fb.getTaskStringList().size());
+
+		Executor.proceedAnalyzedCommand(clear);
+	}
+
+	@Test
+	public void checkSearchMethod() throws ParseException {
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
+		obj.setAction("add");
+		obj.setTaskName("do assignments");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("apply a part-time job");
+		Executor.proceedAnalyzedCommand(obj);
+
+		obj.setTaskName("apply scholarship");
+		Executor.proceedAnalyzedCommand(obj);
+
+		// search a word contained in the task list
+		obj.setAction("search");
+		obj.setIndicator("name");
+		obj.setKey("apply");
+		fb = Executor.proceedAnalyzedCommand(obj);
+
+		assertEquals("There are not 2 tasks searched", 2, fb
+				.getTaskStringList().size());
+		
+		Executor.proceedAnalyzedCommand(clear);
+	}
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestExecutor.java
 
 
 

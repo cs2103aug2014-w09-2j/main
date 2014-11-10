@@ -31,18 +31,21 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Label;
 
-//import com.melloware.jintellitype.HotkeyListener;
-//import com.melloware.jintellitype.IntellitypeListener;
-//import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.IntellitypeListener;
+import com.melloware.jintellitype.JIntellitype;
 
-public class GUI { //implements HotkeyListener, IntellitypeListener {
+public class GUI implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
-    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
-    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> from <start date> " +
+    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\"" +
+                                                     " do not have to be typed): \n";
+    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> " +
+                                                "from <start date> " +
     											"to <end time> @<location> #<priority>\n";
     private static final String HELP_TEXT_DELETE =  "\t    delete <index number>\n";
-    private static final String HELP_TEXT_UPDATE = "\t    update <index number> <attribute> <new data>\n";
+    private static final String HELP_TEXT_UPDATE = "\t    update <index number> " +
+                                                   "<attribute> <new data>\n";
     private static final String HELP_TEXT_SEARCH = "\t    search <attribute> <search for>\n";
     private static final String HELP_TEXT_SORT = "\t    sort <attribute>\n";
     private static final String HELP_TEXT_UNDO = "\t    undo\n";
@@ -53,8 +56,10 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_TUTORIAL ="\t    tutorial\n";
     private static final String HELP_TEXT_SETTINGS ="\t    settings\n";
     private static final String HELP_TEXT_EXIT = "\t    exit\n";
-    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
-	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx," +
+                                                       "xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the" +
+                                                             "headings on the table";
     private static final String HELP_TEXT_SHORTCUT_MAXIMIZE = "\t    ALT+A to maximize application";
     private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
     private static final String HELP_TEXT_PREVIOUS_COMMAND = "\t    ALT+up to get your previous command";
@@ -83,8 +88,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
 	private static int ongoingRowColorR;
 	private static int ongoingRowColorG;
 	private static int ongoingRowColorB;
-	private static int isNotifcationsOverdueEnabled;
-    private static int isNotifcationsOngoingEnabled;
+	private static int isNotifOverdueEnabled;
+    private static int isNotifOngoingEnabled;
 	private static List<Integer> settingsStorage;
 	
     private static StyledText inputField;
@@ -251,19 +256,19 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     /**
      * Updates the table in the GUI based on the given parameters
      *
-     * @param taskNumber    	         Index number of the task in the table
-     * @param startDate    		         Starting time of the given task
-     * @param endDate    		         Deadline of the given task
-     * @param name 				         Name of the given task
-     * @param location			         Location of the given task
-     * @param description		         Description for the given task
-     * @param priority			         Priority level of the given task
-     * @param action			         Action input by the user (add, delete, etc.)
-     * @param taskId                     The taskId of the task given by the user
-     * @param isLastRow			         Is this the last item 
-     * @param isHighlightedPassStart     Has the task passed the start time
-     * @param isHighlightedPassEnd       Has the task passed the end time
-     * @param displayList                Which list is being displayed
+     * @param taskNumber                Index number of the task in the table
+     * @param startDate                 Starting time of the given task
+     * @param endDate                   Deadline of the given task
+     * @param name                      Name of the given task
+     * @param location                  Location of the given task
+     * @param description               Description for the given task
+     * @param priority                  Priority level of the given task
+     * @param action                    Action input by the user (add, delete, etc.)
+     * @param taskId                    The taskId of the task given by the user
+     * @param isLastRow                 Is this the last item 
+     * @param isHighlightedPassStart    Has the task passed the start time
+     * @param isHighlightedPassEnd      Has the task passed the end time
+     * @param displayList               Which list is being displayed
      * 
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,
@@ -271,7 +276,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                                    String description, String priority,
                                    String action, int taskId, boolean isLastRow,
                                    boolean isHighlightedPassStart,
-                                   boolean isHighlightedPassEnd, String displayList) {
+                                   boolean isHighlightedPassEnd, 
+                                   String displayList) {
         
         stopTimerIfSortingOrSearching(action);
         
@@ -289,7 +295,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             assert taskTable.getItemCount() == 0;
         }
 
-        if (!action.equals(StringFormat.CLEAR) && !startDate.equals(Controller.NULL_STRING)) {
+        if (!action.equals(StringFormat.CLEAR) && 
+            !startDate.equals(Controller.NULL_STRING)) {
             // Debugging code
             LOGGER.info("==============\n" +
                         "Writing to table (GUI):  \n" + 
@@ -303,14 +310,17 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
-                                                                     startDate, endDate, priority});
+            TableItem item = newTableItem(taskTable, 
+                                          new String[] { (taskNumber+1) + ".", name, 
+                                                          startDate, endDate, priority});
             
             TableItem item2;
             if (location.equals(EMPTY_STRING)) {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location });
+                item2 = newTableItem(taskTable, 
+                                     new String[] {EMPTY_STRING, location });
             } else {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location });
+                item2 = newTableItem(taskTable, 
+                                     new String[] {EMPTY_STRING, "at " + location });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -374,7 +384,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         if (isHighlightedPassStart == true) {
             colorOngoingRow(item);
             colorOngoingRow(item2);
-            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOngoingEnabled == 1) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifOngoingEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), EMPTY_STRING);
             }
         }
@@ -383,7 +393,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         if (isHighlightedPassEnd == true) {
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
-            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifOverdueEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), EMPTY_STRING);
             }
         }
@@ -406,10 +416,13 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         
         // Making tasks with high priority bold
         if (priority.trim().equals("high")) {
-            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.BOLD));
-            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.BOLD));
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                    11, SWT.BOLD));
+            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                     9, SWT.BOLD));
         } else {
-            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                    11, SWT.NORMAL));
         }
     } 
     
@@ -540,7 +553,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-//        initJIntellitype();
+        initJIntellitype();
         initializeVariables();
         getSettings();
         applySettings();
@@ -568,8 +581,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         ongoingRowColorR = NULL_NUMBER;
         ongoingRowColorG = NULL_NUMBER;
         ongoingRowColorB = NULL_NUMBER;
-        isNotifcationsOverdueEnabled = NULL_NUMBER;
-        isNotifcationsOngoingEnabled = NULL_NUMBER;
+        isNotifOverdueEnabled = NULL_NUMBER;
+        isNotifOngoingEnabled = NULL_NUMBER;
     }
     
     /** 
@@ -584,11 +597,11 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         
         inputField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.CR) {                        // "enter" key
+                if (e.character == SWT.CR) {                                  // "enter" key
                     restorePreviousInputStack();
                     handleUserInput();
                 }
-                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {  // Ctrl+A     
+                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {            // Ctrl+A     
                     inputField.selectAll();
                 }
                 if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_UP) {    // Alt+Up arrow
@@ -694,32 +707,48 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             LOGGER.info("==============\n" +
                         "Loading settings from file.\n" +
                         "====================\n");
-            refreshRate = settingsStorage.get(GUISettings.SETTINGS_NOTIF_FREQ_INDEX);
+            refreshRate = settingsStorage.get(GUISettings.NOTIF_FREQ_INDEX);
             refreshRate *= IN_MILLISECONDS_ONE_MINUTE;
-            deadlineRowColorR = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_R_INDEX);
-            deadlineRowColorG = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_G_INDEX);
-            deadlineRowColorB = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_B_INDEX);
-            ongoingRowColorR = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_R_INDEX);
-            ongoingRowColorG = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_G_INDEX);
-            ongoingRowColorB = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_B_INDEX);
-            isNotifcationsOverdueEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
-            isNotifcationsOngoingEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+            deadlineRowColorR = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_R);
+            deadlineRowColorG = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_G);
+            deadlineRowColorB = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_B);
+            ongoingRowColorR = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_R);
+            ongoingRowColorG = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_G);
+            ongoingRowColorB = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_B);
+            isNotifOverdueEnabled = settingsStorage.get(GUISettings.NOTIFICATIONS_OVERDUE_INDEX);
+            isNotifOngoingEnabled = settingsStorage.get(GUISettings.NOTIFICATIONS_ONGOING_INDEX);
         } else {
             LOGGER.info("==============\n" +
                         "No settings found. Using default settings.\n" +
                         "====================\n");
-            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
-            deadlineRowColorR = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_R;
-            deadlineRowColorG = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_G;
-            deadlineRowColorB = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_B;
+            refreshRate = GUISettings.DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
+            deadlineRowColorR = GUISettings.DEFAULT_DEADLINE_COLOR_R;
+            deadlineRowColorG = GUISettings.DEFAULT_DEADLINE_COLOR_G;
+            deadlineRowColorB = GUISettings.DEFAULT_DEADLINE_COLOR_B;
             
-            ongoingRowColorR = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_R;
-            ongoingRowColorG = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_G;
-            ongoingRowColorB = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_B;
+            ongoingRowColorR = GUISettings.DEFAULT_ONGOING_COLOR_R;
+            ongoingRowColorG = GUISettings.DEFAULT_ONGOING_COLOR_G;
+            ongoingRowColorB = GUISettings.DEFAULT_ONGOING_COLOR_B;
             
-            isNotifcationsOverdueEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_OVERDUE;
-            isNotifcationsOngoingEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_ONGOING;
+            isNotifOverdueEnabled = GUISettings.DEFAULT_NOTIF_OVERDUE;
+            isNotifOngoingEnabled = GUISettings.DEFAULT_NOTIF_ONGOING;
         }
+        assert deadlineRowColorR <= 255;
+        assert deadlineRowColorR >= 0;
+        assert deadlineRowColorG <= 255;
+        assert deadlineRowColorG >= 0;
+        assert deadlineRowColorB <= 255;
+        assert deadlineRowColorB >= 0;
+        assert ongoingRowColorR <= 255;
+        assert ongoingRowColorR >= 0;
+        assert ongoingRowColorG <= 255;
+        assert ongoingRowColorG >= 0;
+        assert ongoingRowColorB <= 255;
+        assert ongoingRowColorB >= 0;
+        assert isNotifOverdueEnabled <= 1;
+        assert isNotifOverdueEnabled >= 0;
+        assert isNotifOngoingEnabled <= 1;
+        assert isNotifOngoingEnabled >= 0;
     }
     
     /** 
@@ -833,7 +862,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static void readingAndDispatching() {
         while(!shell.isDisposed()) {
 
-            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
+            if (displayTimer.isRunning() == false && 
+                isSortingOrSearching == false) {
                 startDisplayTimer();
             }
 
@@ -858,13 +888,16 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         shell.setText("JOYTZ");
         
         lblIncompleteTasks = new Label(shell, SWT.NONE);
-        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
-        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                              9, SWT.NORMAL));
+        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, 
+                                                      false, false, 1, 1));
         lblIncompleteTasks.setAlignment(SWT.CENTER);
         lblIncompleteTasks.setText("Task List: Incomplete Tasks");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                     9, SWT.NORMAL));
         taskTable.setHeaderVisible(true);
         taskTable.setSize(new Point(400, 400));
         taskTable.setToolTipText("View your tasks here");
@@ -899,8 +932,10 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
-        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                         11, SWT.NORMAL));
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL,
+                                                 true, false, 1, 1);
         gd_feedbackTable.heightHint = 121;
         feedbackTable.setLayoutData(gd_feedbackTable);
         
@@ -909,18 +944,23 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         tblclmnFeedback.setText("Feedback");
         
         Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, 
+                                                       false, false, 1, 1);
         gd_horizontalSeparator.widthHint = 550;
         horizontalSeparator.setLayoutData(gd_horizontalSeparator);
         
         lblInputBox = new Label(shell, SWT.NONE);
-        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
-        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                       9, SWT.NORMAL));
+        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, 
+                                               false, false, 1, 1));
         lblInputBox.setAlignment(SWT.CENTER);
         lblInputBox.setText("Input Box");
 
-        inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 14, SWT.NORMAL));
+        inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | 
+                                    SWT.V_SCROLL | SWT.MULTI);
+        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                      14, SWT.NORMAL));
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
@@ -928,122 +968,141 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         inputField.setLayoutData(gd_inputField);
     }
     
-//    //@author A0094558N-reused
-//    /*
-//     * (non-Javadoc)
-//     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
-//     */
-//    public void onHotKey(int aIdentifier) {
-//        if (aIdentifier == 1) {
-//           System.out.println("WINDOWS+A hotkey pressed");
-//           
-//           // Ensure that the following code runs in the 
-//           // same thread as the application itself
-//           Display.getDefault().syncExec(new Runnable() {
-//               public void run() {
-//                   if (shell.getMaximized() == true) { 
-//                       shell.forceActive();     // Bring application to front
-//                       shell.setMaximized(true);
-//                   } else if (shell.getMaximized() == false) { 
-//                       shell.forceActive();     // Bring application to front
-//                       shell.setMinimized(false);
-//                   }
-//               }
-//           });
-//        }
-//        if (aIdentifier == 2) {
-//            System.out.println("WINDOWS+Z hotkey pressed");
-//            
-//            // Ensure that the following code runs in the 
-//            // same thread as the application itself
-//            Display.getDefault().syncExec(new Runnable() {
-//                public void run() {
-//                    shell.setMinimized(true);
-//                }
-//            });
-//         }
-//     }
-//    
-//    /**
-//     * Initialize the JInitellitype library making sure the DLL is located.
-//     */
-//    public static void initJIntellitype() {
-//        mainFrame = new GUI();
-//        
-//        try {
-//           // initialize JIntellitype with the frame so all windows commands can
-//           // be attached to this window
-//           JIntellitype.getInstance().addHotKeyListener(mainFrame);
-//           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
-//           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
-//           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
-//           System.out.println("JIntellitype initialized");
-//        } catch (RuntimeException ex) {
-//           System.out.println("Either you are not on Windows, or there is a problem with the JIntellitype library!");
-//        }
-//     }
-//    
-//    /*
-//     * (non-Javadoc)
-//     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
-//     */
-//    public void onIntellitype(int aCommand) {
-//
-//       switch (aCommand) {
-//       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
-//           System.out.println("BROWSER_BACKWARD message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
-//           System.out.println("BROWSER_FAVOURITES message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
-//           System.out.println("BROWSER_FORWARD message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_HOME:
-//           System.out.println("BROWSER_HOME message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
-//           System.out.println("BROWSER_REFRESH message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
-//           System.out.println("BROWSER_SEARCH message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_STOP:
-//           System.out.println("BROWSER_STOP message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
-//           System.out.println("LAUNCH_APP1 message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
-//           System.out.println("LAUNCH_APP2 message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
-//           System.out.println("LAUNCH_MAIL message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-//           System.out.println("MEDIA_NEXTTRACK message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-//           System.out.println("MEDIA_PLAY_PAUSE message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
-//           System.out.println("MEDIA_PREVIOUSTRACK message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_STOP:
-//           System.out.println("MEDIA_STOP message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
-//           System.out.println("VOLUME_DOWN message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_UP:
-//           System.out.println("VOLUME_UP message received " + Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
-//           System.out.println("VOLUME_MUTE message received " + Integer.toString(aCommand));
-//          break;
-//       default:
-//           System.out.println("Undefined INTELLITYPE message caught " + Integer.toString(aCommand));
-//          break;
-//       }
-//    }
+    //@author A0094558N-reused
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
+     */
+    public void onHotKey(int aIdentifier) {
+        if (aIdentifier == 1) {
+           System.out.println("WINDOWS+A hotkey pressed");
+           
+           // Ensure that the following code runs in the 
+           // same thread as the application itself
+           Display.getDefault().syncExec(new Runnable() {
+               public void run() {
+                   if (shell.getMaximized() == true) { 
+                       shell.forceActive();     // Bring application to front
+                       shell.setMaximized(true);
+                   } else if (shell.getMaximized() == false) { 
+                       shell.forceActive();     // Bring application to front
+                       shell.setMinimized(false);
+                   }
+               }
+           });
+        }
+        if (aIdentifier == 2) {
+            System.out.println("WINDOWS+Z hotkey pressed");
+            
+            // Ensure that the following code runs in the 
+            // same thread as the application itself
+            Display.getDefault().syncExec(new Runnable() {
+                public void run() {
+                    shell.setMinimized(true);
+                }
+            });
+         }
+     }
+    
+    /**
+     * Initialize the JInitellitype library making sure the DLL is located.
+     */
+    public static void initJIntellitype() {
+        mainFrame = new GUI();
+        
+        try {
+           // initialize JIntellitype with the frame so all windows commands can
+           // be attached to this window
+           JIntellitype.getInstance().addHotKeyListener(mainFrame);
+           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
+           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
+           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
+           System.out.println("JIntellitype initialized");
+        } catch (RuntimeException ex) {
+           System.out.println("Either you are not on Windows," +
+                              "or there is a problem with the JIntellitype library!");
+        }
+     }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
+     */
+    public void onIntellitype(int aCommand) {
+
+       switch (aCommand) {
+       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
+           System.out.println("BROWSER_BACKWARD message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
+           System.out.println("BROWSER_FAVOURITES message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
+           System.out.println("BROWSER_FORWARD message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_HOME:
+           System.out.println("BROWSER_HOME message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
+           System.out.println("BROWSER_REFRESH message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
+           System.out.println("BROWSER_SEARCH message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_STOP:
+           System.out.println("BROWSER_STOP message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
+           System.out.println("LAUNCH_APP1 message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
+           System.out.println("LAUNCH_APP2 message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
+           System.out.println("LAUNCH_MAIL message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+           System.out.println("MEDIA_NEXTTRACK message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+           System.out.println("MEDIA_PLAY_PAUSE message received " +  
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+           System.out.println("MEDIA_PREVIOUSTRACK message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_STOP:
+           System.out.println("MEDIA_STOP message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
+           System.out.println("VOLUME_DOWN message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_UP:
+           System.out.println("VOLUME_UP message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
+           System.out.println("VOLUME_MUTE message received " + 
+                              Integer.toString(aCommand));
+          break;
+       default:
+           System.out.println("Undefined INTELLITYPE message caught " + 
+                              Integer.toString(aCommand));
+          break;
+       }
+    }
 }

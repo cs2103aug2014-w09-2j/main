@@ -7,22 +7,26 @@ import org.junit.Test;
 public class TestController {
     private static final String INPUT_INVALID = "sdfsf";
     
-    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
-                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
-    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends; discuss about CS2103T project " +
-                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS";
-    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends; discuss about CS2103T project " +
-                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am #medium";
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about" +
+                                                " CS2103T project from 24/02/2015 11:30am " +
+                                                "to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends; discuss " +
+                                                        "about CS2103T project from 24/02/2015 " +
+                                                        "11:30am to 25/02/2015 11:45am @NUS";
+    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends; discuss about " +
+                                                        "CS2103T project from 24/02/2015 11:30am " +
+                                                        "to 25/02/2015 11:45am #medium";
     private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add meeting with friends; " +
                                                                      "discuss about CS2103T project " +
-                                                                     "from 24/02/2015 11:30am to 25/02/2015 11:45am";
+                                                                     "from 24/02/2015 11:30am to " +
+                                                                     "25/02/2015 11:45am";
     private static final String INPUT_ADD_ONLY_NAME = "add meeting with friends";
     
     private static final String EXECUTABLECOMMAND_ACTION_ADD = "add";
     private static final String EXECUTABLECOMMAND_NAME = "meeting with friends";
     private static final String EXECUTABLECOMMAND_DESCRIPTION = "discuss about CS2103T project";
-    private static final String EXECUTABLECOMMAND_START_TIME = "1424748600000";     // 24/02/2015 11:30am
-    private static final String EXECUTABLECOMMAND_END_TIME = "1424835900000";       // 25/02/2015 11:45am
+    private static final String EXECUTABLECOMMAND_START_TIME = "1424748600000";   // 24/02/2015 11:30am
+    private static final String EXECUTABLECOMMAND_END_TIME = "1424835900000";     // 25/02/2015 11:45am
     private static final String EXECUTABLECOMMAND_LOCATION = "NUS";
     private static final String EXECUTABLECOMMAND_PRIORITY = "medium";
     
@@ -43,14 +47,18 @@ public class TestController {
     private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
     
     private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
-    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about CS2103T project~" +
-                                                     "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~medium\n";
-    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about CS2103T project~" + 
-                                                             "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~ \n";
+    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about " +
+                                                     "CS2103T project~2015.02.24 at 11:30~" +
+                                                     "2015.02.25 at 11:45~NUS~medium\n";
+    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about" +
+                                                             " CS2103T project~2015.02.24 at 11:30~" +
+                                                             "2015.02.25 at 11:45~NUS~ \n";
     private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
                                                                           "discuss about CS2103T project~" +
-                                                                          "2015.02.24 at 11:30~2015.02.25 at 11:45~ ~ \n";
-    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30~ ~ ~medium\n";
+                                                                          "2015.02.24 at 11:30~" +
+                                                                          "2015.02.25 at 11:45~ ~ \n";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30" +
+                                                           "~ ~ ~medium\n";
     
     private static final String EMPTY_STRING = "";
 

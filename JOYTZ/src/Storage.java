@@ -10,10 +10,10 @@ import java.util.logging.Logger;
  * 1. Storage contains mainTaskList, doneTaskList, displayTaskList. Tasks in
  * displayTaskList will be show to user. 2. The User action will first be done
  * in the displayTaskList. And then perform the same action to either
- * mainTaskList or doneTaskList. 3. Index shown to user start from 1; index in
- * each taskList start from zero; TaskId start from zero.
+ * mainTaskList or doneTaskList using the unique taskId. 3. Index shown to user
+ * start from 1; index in each taskList start from zero; TaskId start from zero.
  * 
- * @author Zhang Kai (A0119378U)
+ *
  *
  */
 public class Storage {
@@ -22,12 +22,13 @@ public class Storage {
 			.getName());
 
 	// this is the two list of tasks.
-	private static List mainTaskList = new List("Main task List");
-	private static List doneTaskList = new List("History task List");
+	private static List mainTaskList = new List(StringFormat.MAIN_TASK_LIST);
+	private static List doneTaskList = new List(StringFormat.DONE_TASK_LIST);
 	private static Integer taskId = -1; // Unique taskId start from 0.
 
 	// these are for display.
-	public static List displayTaskList = new List();
+	public static List displayTaskList = new List(
+			StringFormat.DISPLAY_TASK_LIST);
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 
@@ -37,7 +38,9 @@ public class Storage {
 	private static FileInOut fileProcesser = new FileInOut();
 
 	/**
-	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
+	 * Provide a unique taskId to the task. Add a task in the mainTaskList, set
+	 * the display list to be mainTaskList. User will see the mainTaskList after
+	 * the add action.
 	 * 
 	 * @param Task
 	 * @throws Exception
@@ -81,15 +84,16 @@ public class Storage {
 		setDisplayList(mainTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Add \n"
-				+ "	Add a new task " + "\n" + "	task id : " + task.getTaskId()
+				+ "\tAdd a new task. " + "	task id : " + task.getTaskId()
 				+ "\n" + "====================\n");
 
 		return true;
 	}
 
 	/**
-	 * Delete a task from taskList, and move it to history. Invalid taskId will
-	 * throw NullPointerException;
+	 * Delete a task from displayTaskList, and find the task with same taskId in
+	 * either mainTaskList or doneTaskList. Remove that task also. Throws
+	 * Exception when invalid task index is passed in.
 	 * 
 	 * @param index
 	 * @return
@@ -115,16 +119,16 @@ public class Storage {
 		setDisplayList(displayTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Delete \n"
-				+ "	Delete a task. " + "Task index : " + index + "\n"
-				+ "   current Task size. " + "\n" + "	displaytasklist size : "
-				+ displayTaskList.size() + "\n" + "	maintasklist size : "
+				+ "Task index : " + index + "\n" + "\tdisplaytasklist size : "
+				+ displayTaskList.size() + "\n" + "\tmaintasklist size : "
 				+ mainTaskList.size() + "\n" + "====================\n");
 
 		return true;
 	}
 
 	/**
-	 * Move the targetTask from mainTaskList to historyTaskList.
+	 * Move the targetTask from mainTaskList to historyTaskList. Throws
+	 * Exception if the taskId is not inside the mainTaskList.
 	 * 
 	 * @param index
 	 * @return
@@ -149,11 +153,21 @@ public class Storage {
 		displayTaskList.deleteTaskByIndex(index);
 
 		doneTaskList.addTask(targetTask);
+
+		LOGGER.info("==============\n" + "Storage : Done \n"
+				+ "\tDone a task. " + "\n" + "\tTask index: " + index + "\n"
+				+ "\tCurrent Task List size: " + "\n"
+				+ "\tDisplaytasklist size : " + displayTaskList.size() + "\n"
+				+ "\tMaintasklist size : " + mainTaskList.size() + "\n"
+				+ "====================\n");
+
 		return true;
 	}
 
 	/**
-	 * Update a task's certain attributes
+	 * Update a task's certain attributes. Find the task index in mainTaskList
+	 * by the taskId. Reset the updated task Object to the same index in
+	 * mainTaskList. Throws Exception if the target task is inside doneTaskList.
 	 * 
 	 * @param taskId
 	 * @param updateIndicator
@@ -172,14 +186,23 @@ public class Storage {
 		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		int taskIndexInMainTaskList = mainTaskList
+				.getIndexByTaskId(targetTaskId);
 		// user cannot update tasks that has been done.
 		if (doneTaskList.containsTaskId(targetTaskId)) {
 			throw new Exception(StringFormat.STR_ERROR_UPDATE_DONE_TASK);
 		}
 		// update the old task.
 		update(targetTask, updateIndicator, updateKeyValue);
-
+		mainTaskList.setTask(taskIndexInMainTaskList, targetTask);
 		setDisplayList(displayTaskList);
+
+		LOGGER.info("==============\n" + "Storage : Update \n"
+				+ "\tUpdate a task. " + "Task index : " + index + "\n"
+				+ "\tTask Index: " + index + "\n" + "\tTask Id: "
+				+ targetTaskId + "\n" + "\tupdateIndicator: " + updateIndicator
+				+ "\n" + "\tupdateKeyValue: " + updateKeyValue + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -240,14 +263,15 @@ public class Storage {
 	}
 
 	/**
-	 * Clean all the tasks inside mainTaskList and doneTaskList.
+	 * Clean all the tasks inside mainTaskList and doneTaskList. Set the
+	 * displayTaskList to be mainTaskList.
 	 * 
 	 * @return
 	 */
 	public static boolean clean() {
 		clean(mainTaskList);
 		clean(doneTaskList);
-
+		clean(displayTaskList);
 		return true;
 	}
 
@@ -277,7 +301,7 @@ public class Storage {
 
 	/**
 	 * Clear tasks inside target TaskList.
-	 * 
+	 * DisplayTaskList will not change.
 	 * @param targetList
 	 * @return
 	 */
@@ -285,6 +309,9 @@ public class Storage {
 		targetList.clean();
 		setDisplayList(displayTaskList);
 
+		LOGGER.info("==============\n" + "Storage : Clean \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -310,6 +337,10 @@ public class Storage {
 					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
 					targetListIndicator));
 		}
+
+		LOGGER.info("==============\n" + "Storage : Display \n"
+				+ "\ttaskList name: " + targetListIndicator + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -330,6 +361,9 @@ public class Storage {
 
 		setDisplayList(displayTaskList);
 
+		LOGGER.info("==============\n" + "Storage : Sort \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "\tkey: " + key + "\n" + "====================\n");
 		return true;
 	}
 
@@ -352,9 +386,12 @@ public class Storage {
 				newList.addTask(currTask);
 			}
 		}
-
 		setDisplayList(newList);
 
+		LOGGER.info("==============\n" + "Storage : Search \n"
+				+ "\tindicator: " + indicator + "\n" + "\tsearchValue: "
+				+ searchValue + "\n" + "\tresultTaskListSize: "
+				+ newList.size() + "\n" + "====================\n");
 		return true;
 	}
 
@@ -387,6 +424,10 @@ public class Storage {
 				}
 			}
 		}
+
+		LOGGER.info("==============\n" + "Storage : checkTime \n"
+				+ "\ttargetListSize: " + targetList.size() + "\n"
+				+ "====================\n");
 	}
 
 	/**
@@ -463,6 +504,9 @@ public class Storage {
 	public static void saveFile() throws Exception {
 		fileProcesser.saveTaskList(mainTaskList, mainTaskListFileName);
 		fileProcesser.saveTaskList(doneTaskList, doneTaskListFileName);
+
+		LOGGER.info("==============\n" + "Storage : SaveFile \n"
+				+ "====================\n");
 	}
 
 	/**
@@ -479,11 +523,17 @@ public class Storage {
 
 		resetTaskId();
 		setDisplayList(mainTaskList);
+
+		LOGGER.info("==============\n" + "Storage : ReloadFile \n"
+				+ "====================\n");
 	}
 
 	private static void setDisplayList(List targetList) {
 		displayTaskList = targetList.copy();
 		checkTime();
+
+		LOGGER.info("==============\n" + "Storage : Set display list \n"
+				+ "====================\n");
 	}
 
 	/**

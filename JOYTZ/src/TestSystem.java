@@ -5,12 +5,13 @@ import org.junit.Test;
 
 
 public class TestSystem {
-    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
-                                                "from 24/02/2015 11:30am to 25/02/2015 11:45pm @NUS #medium";
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about " +
+                                                "CS2103T project from 24/02/2015 11:30am to " +
+                                                "25/02/2015 11:45pm @NUS #medium";
     private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add meeting with friends; " +
                                                               "discuss about CS2103T project " +
-                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45pm " +
-                                                              "@NUS #important";
+                                                              "from 24/02/2015 11:30am to " +
+                                                              "25/02/2015 11:45pm @NUS #important";
     
     private static final String INPUT_UPDATE_NAME = "update 1 name chat with friends";
     private static final String INPUT_UPDATE_PRIORITY = "update 1 priority low";
@@ -26,22 +27,28 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Category \"priority\" is sorted successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "\"high\" in \"priority\" is searched successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Categories are sorted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "Tasks are searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
-    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
-    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
-    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~low\n";
-    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30" +
+                                                           "~2015.02.25 at 23:45~NUS~low\n";
+    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
-    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~high\n";
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~" +
+                                                           "UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~high\n";
     
     @Test
     public void systemTestAdd() {
@@ -53,7 +60,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -66,31 +74,36 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test updating the added task
         // Update name
         systemTestResult = Controller.startController(INPUT_UPDATE_NAME);
         assertEquals(true, systemTestResult.getResult());
-        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_2, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_3, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update location
         systemTestResult = Controller.startController(INPUT_UPDATE_LOCATION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_4, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update description
         systemTestResult = Controller.startController(INPUT_UPDATE_DESCRIPTION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_5, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
     }
     
     @Test
@@ -103,7 +116,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test clear
         systemTestResult = Controller.startController(StringFormat.CLEAR);
@@ -122,13 +136,15 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test display
         systemTestResult = Controller.startController(StringFormat.DISPLAY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_DISPLAY, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -141,7 +157,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test delete
         systemTestResult = Controller.startController(INPUT_DELETE_1);
@@ -160,7 +177,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
@@ -168,14 +186,17 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test sort
         systemTestResult = Controller.startController(INPUT_SORT_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_SORT, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 2));
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -188,7 +209,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
@@ -196,7 +218,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test search
         systemTestResult = Controller.startController(INPUT_SEARCH_PRIORITY_HIGH);
@@ -215,7 +238,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test undo
         systemTestResult = Controller.startController(StringFormat.UNDO);
@@ -227,7 +251,8 @@ public class TestSystem {
         systemTestResult = Controller.startController(StringFormat.REDO);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_REDO, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
 
 }

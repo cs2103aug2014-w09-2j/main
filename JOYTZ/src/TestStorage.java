@@ -10,7 +10,7 @@ import org.junit.Test;
  * The FileInOut and checkTime() will be tested in the Integrated Test for the
  * Software.
  *
- *@author Zhang Kai
+ *
  */
 public class TestStorage {
 

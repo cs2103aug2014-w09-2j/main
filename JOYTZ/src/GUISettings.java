@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 
 
 public class GUISettings extends Dialog {
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
     private static final String ERROR_CREATE_FILE = "There was a problem " +
                                                     "creating a new file: ";
     private static final String ERROR_READING_FILE = "There was a problem " +
@@ -37,25 +39,25 @@ public class GUISettings extends Dialog {
     private static final String ERROR_WRITING_FILE = "There was a problem " +
                                                      "writing to file: ";
     public static final String FILENAME = "settings.txt";
-    private static final int SETTINGS_TOTAL_NUMBER = 9;
-    public static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
-    public static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
-    public static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
-    public static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
-    public static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
-    public static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
-    public static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
-    public static final int SETTINGS_NOTIFICATIONS_ONGOING_INDEX = 7;
-    public static final int SETTINGS_NOTIFICATIONS_OVERDUE_INDEX = 8;
-    public static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
-    public static final int SETTINGS_DEFAULT_NOTIF_OVERDUE = 1;
-    public static final int SETTINGS_DEFAULT_NOTIF_ONGOING = 1;
+    private static final int TOTAL_NUMBER = 9;
+    public static final int NOTIF_FREQ_INDEX = 0;
+    public static final int DEADLINE_INDEX_COLOR_R = 1;
+    public static final int DEADLINE_INDEX_COLOR_G = 2;
+    public static final int DEADLINE_INDEX_COLOR_B = 3;
+    public static final int ONGOING_INDEX_COLOR_R = 4;
+    public static final int ONGOING_INDEX_COLOR_G = 5;
+    public static final int ONGOING_INDEX_COLOR_B = 6;
+    public static final int NOTIFICATIONS_ONGOING_INDEX = 7;
+    public static final int NOTIFICATIONS_OVERDUE_INDEX = 8;
+    public static final int DEFAULT_NOTIF_FREQ = 60;
+    public static final int DEFAULT_DEADLINE_COLOR_R = 255;
+    public static final int DEFAULT_DEADLINE_COLOR_G = 0;
+    public static final int DEFAULT_DEADLINE_COLOR_B = 0;
+    public static final int DEFAULT_ONGOING_COLOR_R = 0;
+    public static final int DEFAULT_ONGOING_COLOR_G = 128;
+    public static final int DEFAULT_ONGOING_COLOR_B = 0;
+    public static final int DEFAULT_NOTIF_OVERDUE = 1;
+    public static final int DEFAULT_NOTIF_ONGOING = 1;
     private static final int COLOR_RED_R = 255;
     private static final int COLOR_RED_G = 0;
     private static final int COLOR_RED_B = 0;
@@ -228,10 +230,10 @@ public class GUISettings extends Dialog {
     
     //@author A0094558N
     private void displaySettingsInSettingsGUI() {
-        spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
+        spinnerNotifFreq.setSelection(workingStorage.get(NOTIF_FREQ_INDEX));
         
-        int loadedNotifOverdue = workingStorage.get(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
-        int loadedNotifOngoing = workingStorage.get(SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+        int loadedNotifOverdue = workingStorage.get(NOTIFICATIONS_OVERDUE_INDEX);
+        int loadedNotifOngoing = workingStorage.get(NOTIFICATIONS_ONGOING_INDEX);
         if (loadedNotifOverdue == 1) {
             btnoverdueNotification.setSelection(true);
         } else {
@@ -244,9 +246,9 @@ public class GUISettings extends Dialog {
             btnstartedNotification.setSelection(false);
         }
         
-        int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);
-        int loadedDeadlineColorG = workingStorage.get(SETTINGS_DEADLINE_COLOR_G_INDEX);
-        int loadedDeadlineColorB = workingStorage.get(SETTINGS_DEADLINE_COLOR_B_INDEX);
+        int loadedDeadlineColorR = workingStorage.get(DEADLINE_INDEX_COLOR_R);
+        int loadedDeadlineColorG = workingStorage.get(DEADLINE_INDEX_COLOR_G);
+        int loadedDeadlineColorB = workingStorage.get(DEADLINE_INDEX_COLOR_B);
         if (loadedDeadlineColorR == COLOR_BLUE_R &&
             loadedDeadlineColorG == COLOR_BLUE_G &&
             loadedDeadlineColorB == COLOR_BLUE_B) {
@@ -265,9 +267,9 @@ public class GUISettings extends Dialog {
             tltmDeadlineGreen.setSelection(true);
         }
         
-        int loadedOngoingColorR = workingStorage.get(SETTINGS_ONGOING_COLOR_R_INDEX);
-        int loadedOngoingColorG = workingStorage.get(SETTINGS_ONGOING_COLOR_G_INDEX);
-        int loadedOngoingColorB = workingStorage.get(SETTINGS_ONGOING_COLOR_B_INDEX);
+        int loadedOngoingColorR = workingStorage.get(ONGOING_INDEX_COLOR_R);
+        int loadedOngoingColorG = workingStorage.get(ONGOING_INDEX_COLOR_G);
+        int loadedOngoingColorB = workingStorage.get(ONGOING_INDEX_COLOR_B);
         if (loadedOngoingColorR == COLOR_BLUE_R &&
             loadedOngoingColorG == COLOR_BLUE_G &&
             loadedOngoingColorB == COLOR_BLUE_B) {
@@ -295,7 +297,7 @@ public class GUISettings extends Dialog {
     
     private static void initializeVariables() {
         settingsFile = new File(FILENAME);
-        workingStorage = new ArrayList<Integer>(SETTINGS_TOTAL_NUMBER);
+        workingStorage = new ArrayList<Integer>(TOTAL_NUMBER);
     }
     
     // Checks whether the given file exists, and creates one if it does not
@@ -304,6 +306,9 @@ public class GUISettings extends Dialog {
         Path filePath = Paths.get(filename);
         // Look for the file in the filepath, and create it if it does not exist
         if (!Files.exists(filePath)) {
+            LOGGER.info("==============\n" +
+                        "Settings file does not exist. Creating new file.\n" +
+                        "====================\n");
             try {
                 settingsFile.createNewFile();
                 initializeWorkingStorage();
@@ -315,22 +320,25 @@ public class GUISettings extends Dialog {
     }
     
     private static void initializeWorkingStorage() {
-        for (int i = 0; i < SETTINGS_TOTAL_NUMBER; i++) {
+        for (int i = 0; i < TOTAL_NUMBER; i++) {
             workingStorage.add(-1);
         }
-        workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, SETTINGS_DEFAULT_NOTIF_FREQ);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_R);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_G);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_B);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_R);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_G);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_B);
-        workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, SETTINGS_DEFAULT_NOTIF_ONGOING);
-        workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, SETTINGS_DEFAULT_NOTIF_OVERDUE);
+        workingStorage.set(NOTIF_FREQ_INDEX, DEFAULT_NOTIF_FREQ);
+        workingStorage.set(DEADLINE_INDEX_COLOR_R, DEFAULT_DEADLINE_COLOR_R);
+        workingStorage.set(DEADLINE_INDEX_COLOR_G, DEFAULT_DEADLINE_COLOR_G);
+        workingStorage.set(DEADLINE_INDEX_COLOR_B, DEFAULT_DEADLINE_COLOR_B);
+        workingStorage.set(ONGOING_INDEX_COLOR_R, DEFAULT_ONGOING_COLOR_R);
+        workingStorage.set(ONGOING_INDEX_COLOR_G, DEFAULT_ONGOING_COLOR_G);
+        workingStorage.set(ONGOING_INDEX_COLOR_B, DEFAULT_ONGOING_COLOR_B);
+        workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, DEFAULT_NOTIF_ONGOING);
+        workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, DEFAULT_NOTIF_OVERDUE);
     }
 
     // Reads the contents of the file and stores it in an array list
     private static void readFile (String filename) {
+        LOGGER.info("==============\n" +
+                    "Loading settings from file.\n" +
+                    "====================\n");
         String temp;
         int i = 0;
         try {
@@ -357,6 +365,9 @@ public class GUISettings extends Dialog {
     
     // Write the contents of the array list into the file
     private static void writeFile (File settingsFile) {
+        LOGGER.info("==============\n" +
+                    "Writing settings back into file.\n" +
+                    "====================\n");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
             // Write all contents of workingStorage to the file
@@ -381,54 +392,54 @@ public class GUISettings extends Dialog {
 
             private void readSettingsFromDialog() {
                 int notificationFreq = Integer.parseInt(spinnerNotifFreq.getText());
-                workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, notificationFreq);
+                workingStorage.set(NOTIF_FREQ_INDEX, notificationFreq);
                 
                 if (btnoverdueNotification.getSelection() == true) {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 1);
+                    workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, 1);
                 } else {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 0);
+                    workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, 0);
                 }
                 
                 if (btnstartedNotification.getSelection() == true) {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 1);
+                    workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, 1);
                 } else {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 0);
+                    workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, 0);
                 }
                 
                 if (tltmOngoingRed.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_RED_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_RED_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_RED_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_RED_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_RED_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_RED_B);
                 } else if (tltmOngoingBlue.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_BLUE_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_BLUE_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_BLUE_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_BLUE_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_BLUE_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_BLUE_B);
                 } else if (tltmOngoingOrange.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_ORANGE_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_ORANGE_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_ORANGE_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_ORANGE_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_ORANGE_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_ORANGE_B);
                 } else if (tltmOngoingGreen.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_GREEN_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_GREEN_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_GREEN_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_GREEN_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_GREEN_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_GREEN_B);
                 } 
                 
                 if (tltmDeadlineRed.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_RED_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_RED_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_RED_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_RED_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_RED_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_RED_B);
                 } else if (tltmDeadlineBlue.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_BLUE_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_BLUE_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_BLUE_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_BLUE_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_BLUE_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_BLUE_B);
                 } else if (tltmDeadlineOrange.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_ORANGE_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_ORANGE_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_ORANGE_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_ORANGE_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_ORANGE_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_ORANGE_B);
                 } else if (tltmDeadlineGreen.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_GREEN_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_GREEN_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_GREEN_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_GREEN_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_GREEN_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_GREEN_B);
                 } 
             }
         });

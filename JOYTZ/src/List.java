@@ -6,7 +6,7 @@ import java.util.Collections;
  * Description : 
  * 
  * List Object contains Task Objects.
- * @author Zhang Kai (A0119378U)
+ *
  *
  */
 public class List {
@@ -33,6 +33,13 @@ public class List {
 	 */
 	public void setListName(String name) {
 		this.taskListName = name;
+	}
+	/**
+	 * Get the name of this taskList.
+	 * @return
+	 */
+	public String getListName(){
+		return taskListName;
 	}
 	
 	/**

@@ -9,6 +9,7 @@ public class Controller {
                                                         "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
                                                           "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_CANNOT_LOAD_FILE = "Exception in reload.";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
     public static final String NULL_STRING = "null";
 
@@ -87,7 +88,6 @@ public class Controller {
                     isLastItem = true;
                 }
 
-                /* Commented because there's too much stuff in the console*/
 				LOGGER.info("==============\n" +
     						"After splitting: \n" + 
     						"    Action = " + action + "\n" + 
@@ -106,8 +106,9 @@ public class Controller {
                  */ 
                 assert parameterArr.length == 6;
                 GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
-                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd, displayList);
+                                parameterArr[4], parameterArr[1], parameterArr[5], 
+                                action, taskId, isLastItem, isHighlightedPassStart, 
+                                isHighlightedPassEnd, displayList);
             }
         }
     }
@@ -151,12 +152,10 @@ public class Controller {
         inputCommandObject = convertStringToCommand(inputCommandString);
         assert inputCommandObject != null;
 
-        /* Commented because there's too much stuff in the console.
         LOGGER.info("==============\n" +
     				"Command object: \n" + 
     				"	" + inputCommandObject.getUserCommand() + "\n" + 
     				"====================\n");
-         */
 
         try {
             parsedCommand = analyzeInput(inputCommandObject);
@@ -197,13 +196,14 @@ public class Controller {
                 String displayList = feedback.getListNameIndicator();
                 assert outputString != null;
                 
-                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
+                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST) ||
+                    outputString.trim().equals(ERROR_CANNOT_LOAD_FILE)) {
                     GUI.openTutorial();
                 }
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
+                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
                     displayInGUI(outputString, parsedCommand, isFeedbackSuccess, displayList);
                 }
             }
@@ -216,9 +216,9 @@ public class Controller {
     /**
      * Converts the user's input string into a Command object.
      * 
-     * @param inputCommandString	The user's input
+     * @param inputCommandString    The user's input
      * 
-     * @return						Command object containing the user's input 
+     * @return                      Command object containing the user's input 
      * 
      */
     private static Command convertStringToCommand(String inputCommandString) {
@@ -230,13 +230,13 @@ public class Controller {
     /**
      * Starts the analyzer, and passes the Command object to it
      * 
-     * @param inputCommandObject	Command object containing the user's input
+     * @param inputCmdObj   Command object containing the user's input
      * 
-     * @return						ExecutableCommand object with parsed data
+     * @return              ExecutableCommand object with parsed data
      * 
      */
-    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
-        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+    public static ExecutableCommand analyzeInput(Command inputCmdObj) throws ParseException {
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCmdObj);
 
         return parsedCommand;
     }
@@ -244,9 +244,9 @@ public class Controller {
     /**
      * Gets the feedback message to show to the user from the feedback object
      * 
-     * @param feedback		Feedback object containing the feedback message
+     * @param feedback      Feedback object containing the feedback message
      * 
-     * @return				String with feedback to show to user after each command
+     * @return              String with feedback to show to user after each command
      * 
      */
     private static String getFeedbackMessage(Feedback feedback) {
@@ -258,9 +258,9 @@ public class Controller {
     /**
      * Starts the executor, and passes the ExecutableCommand object to it
      * 
-     * @param command	ExecutableCommand object containing the parsed data
+     * @param command   ExecutableCommand object containing the parsed data
      * 
-     * @return			Feedback object with data to display in GUI
+     * @return          Feedback object with data to display in GUI
      * 
      */
     public static Feedback startExecutor(ExecutableCommand command) {

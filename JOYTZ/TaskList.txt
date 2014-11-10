@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-Last saved point: 周日 2014.11.09 at 09:43:45 下午 SGT
-=======
-Last saved point: Sun 2014.11.09 at 10:28:34 PM SGT
->>>>>>> af5424e77c090092e996c68794eb8c9200976526
+Last saved point: Mon 2014.11.10 at 05:13:51 PM SGT
 complete financial report~~~1415955600000~office~high 
 complete presentation~~~1416175200000~~high 
 buy bananas~~1415548800000~1415869200000~NTUC~medium 

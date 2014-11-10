@@ -6,6 +6,53 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	// these are for Display method.
+	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
+
+	// these are for Update Method.
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
+
+	// these are for Sort Method
+	private static final String MESSAGE_SORT_SUCCESSFUL = "Categories are sorted successfully.\n";
+
+	// these are for Search Method
+	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
+
+	// these are for Undo Method
+	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
+	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.\n";
+
+	// these are for Redo Method
+	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
+	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
+
+	// these are for Save and Reload.
+	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
+	private static final String MESSAGE_SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
+	private static final String MESSAGE_RELOAD_SUCCESSFULLY = "The Storage is reloaded successfully.\n";
+
+	public static Feedback feedback;
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	/**
+	 * Called by Controller to initialize Executor. Splits into cases for
+	 * processing in Executor component
+	 * 
+	 * @param command
+	 *            ExecutableCommand from Controller.
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	public static Feedback proceedAnalyzedCommand(ExecutableCommand command) {
 		feedback = new Feedback(false);
 
@@ -28,7 +75,7 @@
 			break;
 
 		case StringFormat.CLEAR:
-			feedback = performClearAction(command);
+			feedback = performClearAction();
 			break;
 
 		case StringFormat.DISPLAY:
@@ -78,15 +125,6 @@
 		return feedback;
 	}
 
-	/**
-	 * Adds a Task object to Storage. Returns a Feedback object to show to a
-	 * user.
-	 *
-	 * @param command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -97,6 +135,17 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Adds a Task object to Storage. Returns a Feedback object to show to a
+	 * user.
+	 *
+	 * @param command
+	 *            ExecutableCommand from Controller. Need the Task Attributes
+	 *            inside the Object.
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	private static Feedback performAddAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.ADD, false);
 
@@ -144,7 +193,15 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
-	private static void sort(ArrayList<Integer> targetTaskIndexArray) {
+	/**
+	 * Sorts a index array from big number to small number.
+	 * 
+	 * @param targetTaskIndexArray
+	 *            Rearrange the order to avoid the change of list size when
+	 *            small index is deleted.
+	 * 
+	 */
+	private static void sortFromBigToSmall(ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
@@ -168,12 +225,19 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
-	private static Feedback performClearAction(ExecutableCommand command) {
+	/**
+	 * Performs a/multiple delete action(s) in Storage. Deletes tasks displayed
+	 * to a user.
+	 *
+	 * @return a Feedback object
+	 * 
+	 */
+	private static Feedback performClearAction() {
 		Feedback fb = new Feedback(StringFormat.CLEAR, false);
 
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
 		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
-			int index = i - 1;
+			int index = i - 1;	// index in storage start from zero.
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -189,15 +253,6 @@
 		return fb;
 	}
 
-	/**
-	 * Displays the current taskList to a user using an arrayList. Displays the
-	 * passed time task using two boolean arrays.
-	 * 
-	 * @para command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -208,6 +263,16 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Displays the current taskList to a user using an arrayList. Displays the
+	 * passed time task using two boolean arrays.
+	 * 
+	 * @para command ExecutableCommand passed from Controller. Need the
+	 *       indicator inside.
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
 	private static Feedback performDisplayAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DISPLAY, false);
 		if (command.getIndicator().size() != 1) {
@@ -230,6 +295,16 @@
 		return fb;
 	}
 
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
 	/**
 	 * Performs a/multiple sort action(s) with a command object passed from the
 	 * proceedAnalyzedCommand method
@@ -237,6 +312,32 @@
 	 * @param command
 	 *            : ExecutableCommand object containing the user's action
 	 * @return
+	 * 
+	 */
+	private static Feedback performSortAction(ExecutableCommand command) {
+		Feedback fb = new Feedback(StringFormat.SORT, false);
+		ArrayList<String> sortKey = command.getIndicator();
+		Collections.reverse(sortKey);
+		
+		// check what category user want to sort
+		for (int i = 0; i < sortKey.size(); i++) {
+			fb.setResult(Storage.sort(sortKey.get(i)));
+		}
+		fb.setResult(true);
+		fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
+
+		return fb;
+	}
+	
+
+	/**
+	 * Performs a/multiple search action(s) with a command object passed from
+	 * the proceedAnalyzedCommand method
+	 *
+	 * @param command
+	 *            : ExecutableCommand object containing the user's action
+	 * 
+	 * @return a Feedback object
 	 * 
 	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
@@ -249,13 +350,55 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Performs a exit action with a command object passed from the
+	 * proceedAnalyzedCommand method
+	 * 
+	 * @return a Feedback object
+	 * 
+	 */
+	private static Feedback performExitAction() {
+		Feedback fb = new Feedback(StringFormat.EXIT, false);
+
+		// check whether the storage can store the information into a file.
+		try {
+			Storage.saveFile();
+		} catch (Exception e) {
+			fb.setMessageShowToUser(String.format(ERROR_FAIL_SAVE_TO_FILE));
+			return fb;
+		}
+
+		fb.setResult(true);
+		fb.setMessageShowToUser(String.format(MESSAGE_SAVE_SUCCESSFUL));
+
+		return fb;
+	}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 */
+
+	/**
+	 * Adds a task into a history list as done.
+	 * 
+	 * @param command
+	 *            ExecutableCommand Object passed from Controller.
+	 * 
+	 * @return a Feedback object
+	 */
 	private static Feedback performDoneAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DONE, false);
 		ArrayList<Integer> targetIndexList = command.getTaskId();
 
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
-			index--;
+			index--;	// index in storage start from zero.
 			try {
 				fb.setResult(Storage.done(index));
 			} catch (Exception e) {
@@ -284,6 +427,7 @@
 	 * Saves user's commands in a Stack
 	 * 
 	 * @param command
+	 *            ExecutableCommand Object passed in.
 	 * 
 	 */
 	private static void saveUserCommand(ExecutableCommand command) {
@@ -294,12 +438,6 @@
 		}
 	}
 
-	/**
-	 * Set displayed messages passed from Storage.
-	 * 
-	 * @param fb
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -310,6 +448,13 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Set displayed messages passed from Storage.
+	 * 
+	 * @param fb
+	 *            feedback object that will be returned to Controller.
+	 * 
+	 */
 	private static void addInDisplayMessage(Feedback fb) {
 		fb.setTaskStringList(Storage.getStringFormatOfList());
 		fb.setPassStartTimeIndicator(Storage.getPassStartTimeList());
@@ -340,18 +485,6 @@
 		return dateTimeDate;
 	}
 
-	/**
-	 * Creates a new Task Object based on the attributes.
-	 * 
-	 * @param name
-	 * @param description
-	 * @param location
-	 * @param priority
-	 * @param startDateTime
-	 * @param endDateTime
-	 * @throws Exception
-	 * 
-	 */
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 
 
@@ -362,17 +495,35 @@
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
 	 */
 
+	/**
+	 * Creates a new Task Object based on the attributes.
+	 * 
+	 * @param name
+	 *            name string from ExecutableCommand Object
+	 * @param description
+	 *            description string from ExecutableCommand Object
+	 * @param location
+	 *            location string from ExecutableCommand Object
+	 * @param priority
+	 *            priority string from ExecutableCommand Object
+	 * @param startDateTime
+	 *            startDateTime long string from ExecutableCommand Object
+	 * @param endDateTime
+	 *            endDateTime long string from ExecutableCommand Object
+	 * @throws Exception
+	 *             throw Exception if the name is null or empty String.
+	 * 
+	 */
 	private static Task createNewTask(String name, String description,
 			Date startDateTime, Date endDateTime, String location,
 			String priority) throws Exception {
 
-		if (name.equals(null)) {
+		if (name.equals(null) || name.equals("")) {
 			throw new Exception("Null task name");
 		}
 
 		Task newTask = new Task(name);
-		newTask.setTaskId(Storage.obtainNewTaskId());
-
+		
 		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
 		}
@@ -513,6 +664,424 @@ public class Feedback {
 
 
 	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FileInOut.java
+	 */
+
+import java.io.*;
+import java.util.Date;
+import java.util.logging.Logger;
+
+/**
+ * Description :
+ * 
+ * FileInOut class in charge of save taskList from memory to .txt file and
+ * reload a txt file to taskList.
+ * 
+ *
+ *
+ */
+public class FileInOut {
+	private static final Logger LOGGER = Logger.getLogger(FileInOut.class
+			.getName());
+
+	private File file;
+	private FileReader fileReader;
+	private BufferedReader bufferedReader;
+	private FileWriter fileWriter;
+
+	public FileInOut() {
+	}
+
+	/**
+	 * Save the given taskList to local file.
+	 * 
+	 * @param targetList
+	 * @param fileName
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean saveTaskList(List targetList, String fileName)
+			throws Exception {
+		file = new File(fileName);
+
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		fileWriter = new FileWriter(file);
+		fileWriter.write(getFirstLineMsg());
+
+		for (int index = 0; index < targetList.size(); index++) {
+			Task currTask = targetList.getTaskByIndex(index);
+			String currTaskString = convertTaskToString(currTask);
+			fileWriter.write(currTaskString);
+		}
+
+		fileWriter.close();
+
+		LOGGER.info("==============\n" + "FileInOut : Save \n"
+				+ "====================\n");
+		return true;
+	}
+
+	/**
+	 * Read the file and create a taskList from the file.
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws Exception
+	 */
+	public List readTaskList(String fileName) throws Exception {
+		file = new File(fileName);
+		List resultList = new List();
+
+		if (!file.exists()) {
+			throw new Exception(
+					StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST);
+		}
+
+		fileReader = new FileReader(file);
+		bufferedReader = new BufferedReader(fileReader);
+		// read the first line.
+		String messageLine = bufferedReader.readLine();
+		String taskString = bufferedReader.readLine();
+		while (taskString != null) {
+			System.out.println("task Strng : " + taskString);
+			Task task = converStringToTask(taskString);
+			resultList.addTask(task);
+			taskString = bufferedReader.readLine();
+		}
+
+		LOGGER.info("==============\n" + "FileInOut : Read \n"
+				+ "	resultList size: " + resultList.size() + "\n"
+				+ "====================\n");
+		return resultList;
+
+	}
+
+	/**
+	 * Get the first line to be written in the file. Include time info.
+	 * 
+	 * @return String format of the message.
+	 */
+	public String getFirstLineMsg() {
+		Date now = new Date();
+		String msgString = StringFormat.IO_MESSAGE_SAVED_IN_FILE;
+		String dateString = StringFormat.IO_DATE_FORMAT_SAVED_IN_FILE
+				.format(now) + "\n";
+
+		return msgString + dateString;
+	}
+
+	/**
+	 * Convert a Task Object to String. Follow the given Format.
+	 * 
+	 * @param task
+	 * @return
+	 */
+	public String convertTaskToString(Task task) {
+		String emptySpace = " ";
+		String resultString = task.getTaskName().concat("~");
+
+		// add in description information.
+
+		resultString = resultString.concat(task.getTaskDescription());
+
+		resultString = resultString.concat("~");
+
+		// add in start date time information.
+		if (task.getStartDateTime() != null) {
+			resultString = resultString.concat(task
+					.getLongStringFormatStartDateTime());
+		}
+		resultString = resultString.concat("~");
+
+		// add in end date time information.
+		if (task.getEndDateTime() != null) {
+			resultString = resultString.concat(task
+					.getLongStringFormatEndDateTime());
+		}
+		resultString = resultString.concat("~");
+
+		// add in location information.
+		resultString = resultString.concat(task.getTaskLocation());
+		resultString = resultString.concat("~");
+
+		// add in priority information.
+		resultString = resultString.concat(task.getTaskPriority());
+		resultString = resultString.concat(emptySpace);
+
+		resultString = resultString.concat("\n");
+		return resultString;
+	}
+
+	/**
+	 * Convert a String in the saved .txt file to a Task Object.
+	 * 
+	 * @param taskString
+	 * @return
+	 * @throws Exception
+	 */
+
+	public Task converStringToTask(String taskString) throws Exception {
+		String[] taskAttributes = taskString.split("~");
+
+		if (taskAttributes.length != 6) {
+			throw new Exception(String.format(
+					StringFormat.IO_ERROR_INVALID_TASK_RECORD, taskString));
+		} else {
+
+			Task task = new Task();
+			task.setTaskName(taskAttributes[0].trim());
+
+			task.setTaskDescription(taskAttributes[1].trim());
+			if (!taskAttributes[2].equals("")) {
+
+				System.out.println(taskAttributes[2]);
+				task.setStartDateTime(new Date(Long
+						.parseLong(taskAttributes[2])));
+
+				System.out.println("exception here");
+			}
+			if (!taskAttributes[3].equals("")) {
+				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
+			}
+			task.setTaskLocation(taskAttributes[4].trim());
+			task.setTaskPriority(taskAttributes[5].trim());
+			return task;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FileInOut.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\List.java
+	 */
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+/**
+ * Description : 
+ * 
+ * List Object contains Task Objects.
+ *
+ *
+ */
+public class List {
+	ArrayList<Task> taskList = new ArrayList<Task>();
+	String taskListName;
+
+	/**
+	 * Constructor
+	 */
+	List() {
+	}
+
+	List(String name) {
+		this.taskListName = name;
+	}
+
+	/**
+	 * Methods
+	 */
+	
+	/**
+	 * Set the nameString of this List.
+	 * @param name
+	 */
+	public void setListName(String name) {
+		this.taskListName = name;
+	}
+	
+	/**
+	 * Get the size of taskList.
+	 * @return
+	 */
+	public int size() {
+		return taskList.size();
+	}
+	
+	/**
+	 * Add a new task into the taskList.
+	 * @param t
+	 * @return
+	 */
+	public boolean addTask(Task t) {
+		if (t == null) {
+			return false;
+		}
+		taskList.add(t);
+		return true;
+	}
+
+	/**
+	 * Delete a task by the index of the task in the ArrayList.
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public boolean deleteTaskByIndex(int index) {
+		if (index < 0 || index >= taskList.size()) {
+			return false;
+		}
+		taskList.remove(index);
+		return true;
+	}
+
+	/**
+	 * Delete a task by it unique taskId.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean deleteTaskById(int id) {
+		for (int index = 0; index < taskList.size(); index++) {
+			Task currTask = taskList.get(index);
+			if (currTask.getTaskId() == id) {
+				taskList.remove(index);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Return the Task object in the given position of taskList.
+	 * @param index
+	 * @return
+	 */
+	public Task getTaskByIndex(int index) {
+		if (index < 0 || index >= taskList.size()) {
+			return null;
+		}
+		return taskList.get(index);
+	}
+	
+	/**
+	 * Get the index of task with provided Id. 
+	 * Search through the list.
+	 * @param targetTaskId
+	 * @return
+	 */
+	public int getIndexByTaskId(int targetTaskId){
+		int result = -1;
+		for (int index=0; index<taskList.size(); index++){
+			Task currTask = taskList.get(index);
+			if (currTask.getTaskId() == targetTaskId){
+				result = index;
+				break;
+			}
+		}
+		return result;
+	}
+	/**
+	 * Sort the taskList array. The key is in the Task object.
+	 */
+	public void sortList() {
+		Collections.sort(taskList);
+	}
+
+	/**
+	 * Add in a task to a certain position in taskList array, and remove the
+	 * original one.
+	 * 
+	 * @param index
+	 * @param task
+	 * @return
+	 */
+	public boolean setTask(int index, Task task) {
+		if (index < 0 || index >= taskList.size()) {
+			return false;
+		}
+		taskList.set(index, task);
+		return true;
+	}
+
+	/**
+	 * Delete all tasks in this list.
+	 */
+	public void clean() {
+		taskList.clear();
+	}
+
+	/**
+	 * Reture true if taskList contains a task with the same Id as given
+	 * targetId.
+	 * 
+	 * @param targetTaskId
+	 * @return
+	 */
+	public boolean containsTaskId(int targetTaskId) {
+		for (int index = 0; index < taskList.size(); index++) {
+			Task currTask = taskList.get(index);
+			if (currTask.getTaskId() == targetTaskId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Return a new list contains the same task objects.
+	 * 
+	 * @return
+	 */
+	public List copy() {
+		List copyList = new List();
+		for (int index = 0; index < size(); index++) {
+			copyList.addTask(taskList.get(index));
+		}
+		return copyList;
+	}
+
+	/**
+	 * Return an arrayList contains the String format of every task inside the
+	 * taskList.
+	 * 
+	 * @return
+	 */
+	public ArrayList<String> convertToString() {
+		ArrayList<String> resultList = new ArrayList<String>();
+
+		for (int index = 0; index < size(); index++) {
+			resultList.add(taskList.get(index).toString());
+		}
+		return resultList;
+	}
+
+	/**
+	 * Task has unique TaskId when the program is run. Use this feature to
+	 * compare two list.
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public boolean equals(List list) {
+		for (int index = 0; index < taskList.size(); index++) {
+			Task currTask = taskList.get(index);
+			int currId = currTask.getTaskId();
+			if (!list.containsTaskId(currId)) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\List.java
+
+
+
+
+
+	/**
 	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
 	 */
 
@@ -521,6 +1090,18 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * Description of Storage :
+ * 
+ * 1. Storage contains mainTaskList, doneTaskList, displayTaskList. Tasks in
+ * displayTaskList will be show to user. 2. The User action will first be done
+ * in the displayTaskList. And then perform the same action to either
+ * mainTaskList or doneTaskList. 3. Index shown to user start from 1; index in
+ * each taskList start from zero; TaskId start from zero.
+ * 
+ *
+ *
+ */
 public class Storage {
 
 	private static final Logger LOGGER = Logger.getLogger(Storage.class
@@ -581,6 +1162,7 @@ public class Storage {
 					task.getFormatEndDateTime()));
 		}
 
+		task.setTaskId(obtainNewTaskId());
 		mainTaskList.addTask(task);
 		setDisplayList(mainTaskList);
 
@@ -612,8 +1194,7 @@ public class Storage {
 		} else if (doneTaskList.containsTaskId(targetTaskId)) {
 			doneTaskList.deleteTaskById(targetTaskId);
 		} else { // not supposed to reach this line;
-			throw new Exception(
-					"No Task with same taskId in either mainTaskList nor History.");
+			throw new Exception(StringFormat.STR_ERROR_INCONSISTENT_TASKID);
 		}
 		displayTaskList.deleteTaskByIndex(index);
 
@@ -677,12 +1258,12 @@ public class Storage {
 		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
-		mainTaskList.deleteTaskById(targetTaskId);
+		// user cannot update tasks that has been done.
+		if (doneTaskList.containsTaskId(targetTaskId)) {
+			throw new Exception(StringFormat.STR_ERROR_UPDATE_DONE_TASK);
+		}
 		// update the old task.
 		update(targetTask, updateIndicator, updateKeyValue);
-		// add the new task back.
-		displayTaskList.setTask(index, targetTask);
-		mainTaskList.addTask(targetTask);
 
 		setDisplayList(displayTaskList);
 		return true;
@@ -794,7 +1375,8 @@ public class Storage {
 	}
 
 	/**
-	 * Set displayList to be task list indicate by targetListIndicator.
+	 * Set displayList to be task list indicate by targetListIndicator. And
+	 * display the String format of displayList
 	 * 
 	 * @param targetListIndicator
 	 * @return
@@ -847,7 +1429,7 @@ public class Storage {
 	}
 
 	private static boolean search(List targetList, String indicator,
-			String searchValue){
+			String searchValue) {
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
@@ -936,7 +1518,7 @@ public class Storage {
 	}
 
 	/**
-	 * get the string format of all tasks in taskList and store in arrayList.
+	 * Get the string format of all tasks in taskList and store in arrayList.
 	 * 
 	 * @return
 	 */
@@ -970,7 +1552,7 @@ public class Storage {
 	}
 
 	/**
-	 * reload mainTaskList and doneTaskList from .txt file
+	 * Reload mainTaskList and doneTaskList from .txt file
 	 * 
 	 * @throws Exception
 	 */
@@ -981,6 +1563,7 @@ public class Storage {
 		mainTaskList = fileProcesser.readTaskList(mainTaskListFileName);
 		doneTaskList = fileProcesser.readTaskList(doneTaskListFileName);
 
+		resetTaskId();
 		setDisplayList(mainTaskList);
 	}
 
@@ -1017,7 +1600,7 @@ public class Storage {
 	 * Integer TaskId is out of range when create a new Task, this method will
 	 * reset the TaskId to fill the empty holes.
 	 */
-	private static void resetTaskId() {
+	public static void resetTaskId() {
 		taskId = -1; // set the start taskId to be 0;
 		for (int index = 0; index < doneTaskList.size(); index++) {
 			int currId = obtainNewTaskId();
@@ -1031,6 +1614,13 @@ public class Storage {
 		}
 	}
 
+	/**
+	 * Find whether mainTaskList or doneTaskList contains the displayList by
+	 * search for the taskId in displayList.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public static String listContainsDisplayList() throws Exception {
 		if (displayTaskList.size() == 0) {
 			return StringFormat.MAIN_TASK_LIST;
@@ -1050,7 +1640,7 @@ public class Storage {
 	}
 
 	/**
-	 * These method is only for Unit Test.
+	 * These three below method is only for Unit Test.
 	 */
 	public static List getMainTaskList() {
 		return mainTaskList;
@@ -1060,9 +1650,98 @@ public class Storage {
 		return doneTaskList;
 	}
 
+	public static List getDisplayTaskList() {
+		return displayTaskList;
+	}
+
 }
 
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 */
+
+	/**
+	 * Format and Static String in FileInOut
+	 */
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+			"yyyy.MM.dd HH:mm");
+	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
+			"yyyy.MM.dd 'at' HH:mm");
+	public static final SimpleDateFormat IO_DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
+			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
+	public static final String IO_MESSAGE_SAVED_IN_FILE = "Last saved point: ";
+	// indicate name-description-start-end-location-priority.
+	public static final String IO_TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
+	public static final String IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
+	public static final String IO_ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
+	
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 */
+
+	/**
+	 * Message show to the user in Executor
+	 */
+	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
+	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
+	// Add
+	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	// Delete
+	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
+	// Done
+	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
+	// Display
+	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
+	// Clear
+	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
+	
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 */
+
+	/**
+	 * Message show to the user in Storage
+	 */
+	// In Add Method
+	public static final String STR_ERROR_NULL_TASK_OBJECT = "Cannot add a null task.\n";
+	public static final String STR_ERROR_NO_TASK_NAME = "Cannot add a task without a name.\n";
+	public static final String STR_ERROR_START_TIME_AFTER_END_TIME = "Start time is after End time. Start time : %s; End time : %s.\n";
+	public static final String STR_ERROR_START_TIME_BEFORE_CURRENT_TIME = "Start time is before current time. Start time : %s.\n";
+	public static final String STR_ERROR_END_TIME_BEFORE_CURRENT_TIME = "End time is before current time. End time : %s.\n";
+
+	// In Delete, Update Method
+	public static final String STR_ERROR_INVALID_TASK_INDEX = "Task index is out of range. Index : %d.\n";
+	public static final String STR_ERROR_INVALID_INDICATOR = "The update indicator '%s' is invalid.\n";
+	public static final String STR_ERROR_UPDATE_DONE_TASK = "Cannot update done tasks.\n";
+	public static final String STR_ERROR_INCONSISTENT_TASKID = "Task in displayList is not consistent with either mainTaskList nor History.";
+	// In Display, Clean Method
+	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
+	
+	// In Done Method
+	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "The task has been done.\n";
+	
+	// query the display list
+	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
+	
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
 
 
 
@@ -1087,7 +1766,7 @@ public class Task implements Comparable<Task>{
 	public boolean passStartDateTime = false;
 	public boolean passEndDateTime = false;
 	
-	private int taskId = -1;
+	private int taskId;
 	
 	// the sortKey is name by default;
 	private static String sortKey = "name";
@@ -1422,21 +2101,14 @@ public class Task implements Comparable<Task>{
 			return "d";
 		}
 	}
-
+	
+	/**
+	 * Task Id is unique.
+	 */
 	@Override
 	public boolean equals(Object o){
 		Task that = (Task) o;
-		if (!that.getTaskName().equals(taskName)){
-			return false;
-		}else if(!that.getStartDateTime().equals(getStartDateTime())){
-			return false;
-		}else if(!that.getEndDateTime().equals(getEndDateTime())){
-			return false;
-		}else if(!that.getTaskDescription().equals(taskDescription)){
-			return false;
-		}else if(!that.getTaskLocation().equals(taskLocation)){
-			return false;
-		}else if(!that.getTaskPriority().equals(taskPriority)){
+		if (this.taskId != that.taskId){
 			return false;
 		}
 		return true;
@@ -1493,6 +2165,538 @@ public class Task implements Comparable<Task>{
 }
 
 	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestStorage.java
+	 */
+
+import static org.junit.Assert.*;
+
+import java.util.Date;
+
+import org.junit.Test;
+
+/**
+ * This test for Storage contains tests for ADD, DELETE, UPDATE, SORT, SEARCH.
+ * The FileInOut and checkTime() will be tested in the Integrated Test for the
+ * Software.
+ *
+ *
+ */
+public class TestStorage {
+
+	@Test
+	// Add normal Task Object.
+	public void testAddNormalTask() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("task1"); // Only with name.
+		Task task2 = new Task("task2");
+		{// With start date time.
+			task2.setStartDateTime(new Date(Long.MAX_VALUE));
+		}
+		Task task3 = new Task("task3");
+		{// With end date time.
+			task3.setEndDateTime(new Date(Long.MAX_VALUE));
+		}
+		Task task4 = new Task("task4");
+		{// With location.
+			task4.setTaskLocation("SoC");
+		}
+		Task task5 = new Task("task5");
+		{// With priority.
+			task5.setTaskPriority("high");
+		}
+
+		boolean expectedResult = true;
+
+		try {
+			assertEquals(expectedResult, Storage.add(task1));
+			assertEquals(expectedResult, Storage.add(task2));
+			assertEquals(expectedResult, Storage.add(task3));
+			assertEquals(expectedResult, Storage.add(task4));
+			assertEquals(expectedResult, Storage.add(task5));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Add null Task Object & Task without name.
+	public void testAddTaskWithoutName() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = null; // Null task.
+		Task task2 = new Task();
+		{// Only with start date time.
+			task2.setStartDateTime(new Date());
+		}
+		Task task3 = new Task();
+		{// Only with end date time.
+			task3.setEndDateTime(new Date());
+		}
+		Task task4 = new Task();
+		{// Only with location.
+			task4.setTaskLocation("SoC");
+		}
+		Task task5 = new Task();
+		{// Only with priority.
+			task5.setTaskPriority("high");
+		}
+
+		String expectedResult1 = "Cannot add a null task.\n";
+		String expectedResult2 = "Cannot add a task without a name.\n";
+		String expectedResult3 = "Cannot add a task without a name.\n";
+		String expectedResult4 = "Cannot add a task without a name.\n";
+		String expectedResult5 = "Cannot add a task without a name.\n";
+
+		try {
+			Storage.add(task1);
+		} catch (Exception e) {
+			assertEquals(expectedResult1, e.getMessage());
+			;
+		}
+		try {
+			Storage.add(task2);
+		} catch (Exception e) {
+			assertEquals(expectedResult2, e.getMessage());
+			;
+		}
+		try {
+			Storage.add(task3);
+		} catch (Exception e) {
+			assertEquals(expectedResult3, e.getMessage());
+			;
+		}
+		try {
+			Storage.add(task4);
+		} catch (Exception e) {
+			assertEquals(expectedResult4, e.getMessage());
+			;
+		}
+		try {
+			Storage.add(task5);
+		} catch (Exception e) {
+			assertEquals(expectedResult5, e.getMessage());
+			;
+		}
+	}
+
+	@Test
+	// Add Task Object with invalid time.
+	public void testAddTaskWithInvalidTime() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Long time = System.currentTimeMillis();
+		Long timeBeforeNow = time - 1000;
+		Long timeAfterNow = time + 10000;
+		Long timeEvenAfterNow = time + 100000;
+
+		Task task1 = new Task("task1");
+		{ // Start time is before current time.
+			task1.setStartDateTime(new Date(timeBeforeNow));
+		}
+		Task task2 = new Task("task2");
+		{ // End time is before current time.
+			task2.setEndDateTime(new Date(timeBeforeNow));
+		}
+		Task task3 = new Task("task3");
+		{ // Start time is after End time.
+			task3.setStartDateTime(new Date(timeEvenAfterNow));
+			task3.setEndDateTime(new Date(timeAfterNow));
+		}
+
+		String expectedResult1 = "Start time is before current time.";
+		String expectedResult2 = "End time is before current time. ";
+		String expectedResult3 = "Start time is after End time.";
+
+		try {
+			Storage.add(task1);
+		} catch (Exception e) {
+			assertEquals(true, e.getMessage().contains(expectedResult1));
+			;
+		}
+		try {
+			Storage.add(task2);
+		} catch (Exception e) {
+			assertEquals(true, e.getMessage().contains(expectedResult2));
+			;
+		}
+		try {
+			Storage.add(task3);
+		} catch (Exception e) {
+			assertEquals(true, e.getMessage().contains(expectedResult3));
+			;
+		}
+
+	}
+
+	@Test
+	// Delete Task Object.
+	public void testDeleteNormalIndex() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("task1", 0);
+		Task task2 = new Task("task2", 1);
+		Task task3 = new Task("task3", 2);
+		Task task4 = new Task("task4", 3);
+		Task task5 = new Task("task5", 4);
+
+		List expectedMainTaskList1 = new List();
+		{
+			expectedMainTaskList1.addTask(task2);
+			expectedMainTaskList1.addTask(task3);
+			expectedMainTaskList1.addTask(task4);
+			expectedMainTaskList1.addTask(task5);
+		}
+		List expectedMainTaskList2 = new List();
+		{
+			expectedMainTaskList1.addTask(task3);
+			expectedMainTaskList1.addTask(task4);
+			expectedMainTaskList1.addTask(task5);
+		}
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+			Storage.add(task4);
+			Storage.add(task5);
+
+			Storage.delete(0);
+			assertEquals(true,
+					expectedMainTaskList1.equals(Storage.getMainTaskList()));
+
+			Storage.delete(1);
+			assertEquals(true,
+					expectedMainTaskList2.equals(Storage.getMainTaskList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Delete with invalid index.
+	public void testDeleteInvalidIndex() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("task1");
+		Task task2 = new Task("task2");
+		Task task3 = new Task("task3");
+
+		String expectedResult1 = "Task index is out of range. Index : 0.\n";
+		String expectedResult2 = "Task index is out of range. Index : 4.\n";
+
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.delete(-1);
+		} catch (Exception e) {
+			assertEquals(expectedResult1, e.getMessage());
+		}
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.delete(3);
+		} catch (Exception e) {
+			assertEquals(expectedResult2, e.getMessage());
+		}
+	}
+
+	@Test
+	// update normal task object.
+	public void testUpdateNormalIndicator() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("task1", 0);
+		Task task2 = new Task("task2", 1);
+		Task task3 = new Task("task3", 2);
+
+		List expectedDoneTaskList1 = new List();
+		{
+			expectedDoneTaskList1.addTask(task1);
+			expectedDoneTaskList1.addTask(task2);
+			expectedDoneTaskList1.addTask(task3);
+		}
+		List expectedDoneTaskList2 = new List();
+		{
+			expectedDoneTaskList2.addTask(task1);
+			expectedDoneTaskList2.addTask(task2);
+		}
+		List expectedDoneTaskList3 = new List();
+		{
+			expectedDoneTaskList3.addTask(task1);
+		}
+		List expectedDoneTaskList4 = new List();
+
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			assertEquals(true,
+					expectedDoneTaskList4.equals(Storage.getDoneTaskList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.done(0);
+			assertEquals(true,
+					expectedDoneTaskList3.equals(Storage.getDoneTaskList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.done(0);
+			Storage.done(0);
+			assertEquals(true,
+					expectedDoneTaskList2.equals(Storage.getDoneTaskList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Storage.clean();
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.done(0);
+			Storage.done(0);
+			Storage.done(0);
+			assertEquals(true,
+					expectedDoneTaskList1.equals(Storage.getDoneTaskList()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// clean taskList and doneList.
+	public void testClean() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("task1"); // Only with name.
+		Task task2 = new Task("task2");
+		{// With start date time.
+			task2.setStartDateTime(new Date(Long.MAX_VALUE));
+		}
+		Task task3 = new Task("task3");
+		{// With end date time.
+			task3.setEndDateTime(new Date(Long.MAX_VALUE));
+		}
+		Task task4 = new Task("task4");
+		{// With location.
+			task4.setTaskLocation("SoC");
+		}
+		Task task5 = new Task("task5");
+		{// With priority.
+			task5.setTaskPriority("high");
+		}
+
+		int expectedTaskListSizeBeforeClean = 4;
+		int expectedTaskListSizeAfterClean = 0;
+		int expectedDoneListSizeBeforeClean = 1;
+		int expectedDoneListSizeAfterClean = 0;
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+			Storage.add(task4);
+			Storage.add(task5);
+			Storage.done(0);
+
+			assertEquals(expectedTaskListSizeBeforeClean, Storage
+					.getMainTaskList().size());
+			assertEquals(expectedDoneListSizeBeforeClean, Storage
+					.getDoneTaskList().size());
+
+			Storage.clean();
+			assertEquals(expectedTaskListSizeAfterClean, Storage
+					.getMainTaskList().size());
+			assertEquals(expectedDoneListSizeAfterClean, Storage
+					.getDoneTaskList().size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Sort by name.
+	public void testSortByName() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("e"); // Only with name.
+		Task task2 = new Task("d");
+		Task task3 = new Task("c");
+		Task task4 = new Task("b");
+		Task task5 = new Task("a");
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+			Storage.add(task4);
+			Storage.add(task5);
+
+			assertEquals(task1, Storage.getMainTaskList().getTaskByIndex(0));
+			assertEquals(task2, Storage.getDoneTaskList().getTaskByIndex(1));
+			assertEquals(task3, Storage.getDoneTaskList().getTaskByIndex(2));
+			assertEquals(task4, Storage.getDoneTaskList().getTaskByIndex(3));
+			assertEquals(task5, Storage.getDoneTaskList().getTaskByIndex(4));
+
+			Storage.sort("name");
+
+			assertEquals(task5, Storage.getMainTaskList().getTaskByIndex(0));
+			assertEquals(task4, Storage.getDoneTaskList().getTaskByIndex(1));
+			assertEquals(task3, Storage.getDoneTaskList().getTaskByIndex(2));
+			assertEquals(task2, Storage.getDoneTaskList().getTaskByIndex(3));
+			assertEquals(task1, Storage.getDoneTaskList().getTaskByIndex(4));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Sort by priority.
+	public void testSortByPriority() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("e");
+		{
+			task1.setTaskPriority("low");
+		}
+		Task task2 = new Task("c");
+		{
+			task2.setTaskPriority("medium");
+		}
+		Task task3 = new Task("a");
+		{
+			task3.setTaskPriority("high");
+		}
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			assertEquals(task1, Storage.getMainTaskList().getTaskByIndex(0));
+			assertEquals(task2, Storage.getDoneTaskList().getTaskByIndex(1));
+			assertEquals(task3, Storage.getDoneTaskList().getTaskByIndex(2));
+
+			Storage.sort("priority");
+
+			assertEquals(task3, Storage.getMainTaskList().getTaskByIndex(0));
+			assertEquals(task2, Storage.getDoneTaskList().getTaskByIndex(1));
+			assertEquals(task1, Storage.getDoneTaskList().getTaskByIndex(2));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Search the name of Task.
+	public void testSearchNormalCase() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("e");
+		{
+			task1.setTaskPriority("low");
+		}
+		Task task2 = new Task("c");
+		{
+			task2.setTaskPriority("medium");
+		}
+		Task task3 = new Task("a");
+		{
+			task3.setTaskPriority("high");
+		}
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.search("name", "a");
+			assertEquals(task3, Storage.getDisplayTaskList().getTaskByIndex(0));
+
+			Storage.display("mainTaskList");
+
+			Storage.search("priority", "low");
+			assertEquals(task1, Storage.getDisplayTaskList().getTaskByIndex(0));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	// Search for invalid indicator of Task.
+	public void testSearchInvalidIndicator() {
+		Storage.clean();
+		Storage.resetTaskId();
+
+		Task task1 = new Task("e");
+		{
+			task1.setTaskPriority("low");
+		}
+		Task task2 = new Task("c");
+		{
+			task2.setTaskPriority("medium");
+		}
+		Task task3 = new Task("a");
+		{
+			task3.setTaskPriority("high");
+		}
+
+		int expectedDisplayListSize = 0;
+
+		try {
+			Storage.add(task1);
+			Storage.add(task2);
+			Storage.add(task3);
+
+			Storage.search("name", "b");
+			assertEquals(expectedDisplayListSize, Storage.getDisplayTaskList()
+					.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestStorage.java
 
 
 
