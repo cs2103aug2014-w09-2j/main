@@ -372,9 +372,7 @@ public class Executor {
 				searchValueString = date.getHours() + "";
 				searchValueString = searchValueString.concat(date.getMinutes()
 						+ "");
-				System.out.println(searchValueString);
 			}
-
 			fb.setResult(Storage.search(searchIndicatorString,
 					searchValueString));
 		}
