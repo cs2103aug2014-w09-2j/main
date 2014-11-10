@@ -22,7 +22,7 @@ public class Executor {
 	// these are for Redo Method
 	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
 	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
-	
+
 	// @author A0119378U
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
@@ -169,11 +169,12 @@ public class Executor {
 	 */
 	private static Feedback performDeleteAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
-
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
+		int size = targetTaskIndex.size();
+		
 		sortFromBigToSmall(targetTaskIndex); // from big to small.
 
-		for (int i = 0; i < targetTaskIndex.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			int index = targetTaskIndex.get(i);
 			index--;
 
@@ -185,8 +186,11 @@ public class Executor {
 			}
 		}
 
-		if (fb.getResult()) {
+		if (fb.getResult() && size == 1) {
 			fb.setMessageShowToUser(StringFormat.EXE_MSG_DELETE_SUCCESSFUL);
+		} else if (fb.getResult() && size >= 1) {
+			fb.setMessageShowToUser(String.format(
+					StringFormat.MSG_DELETE_MULTIPLE_TASKS_SUCCESSFUL, size));
 		}
 
 		return fb;
@@ -194,14 +198,15 @@ public class Executor {
 
 	// @author A0119378U
 	/**
-	 * Sorts a index array from big number to small number.
+	 * Sorts a index array from a big number to a small number.
 	 * 
 	 * @param targetTaskIndexArray
 	 *            Rearrange the order to avoid the change of list size when
 	 *            small index is deleted.
 	 * 
 	 */
-	private static void sortFromBigToSmall(ArrayList<Integer> targetTaskIndexArray) {
+	private static void sortFromBigToSmall(
+			ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
@@ -223,6 +228,7 @@ public class Executor {
 		ArrayList<String> updateIndicator = command.getIndicator();
 		ArrayList<String> updateKeyValue = command.getKey();
 
+		// pre-condition
 		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
 		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
 		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
@@ -263,7 +269,7 @@ public class Executor {
 
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
 		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
-			int index = i - 1;	// index in storage start from zero.
+			int index = i - 1; // index in storage start from zero.
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -326,7 +332,7 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.SORT, false);
 		ArrayList<String> sortKey = command.getIndicator();
 		Collections.reverse(sortKey);
-		
+
 		// check what category user want to sort
 		for (int i = 0; i < sortKey.size(); i++) {
 			fb.setResult(Storage.sort(sortKey.get(i)));
@@ -336,7 +342,7 @@ public class Executor {
 
 		return fb;
 	}
-	
+
 	// @author A0112060E
 	/**
 	 * Performs a/multiple search action(s) with a command object passed from
@@ -367,10 +373,10 @@ public class Executor {
 		return fb;
 	}
 
-	//@author A0112060E
+	// @author A0112060E
 	/**
-	 * Performs an/multiple undo action(s), which reverse(s) previous steps 
-	 * Can perform undo multiple-steps.
+	 * Performs an/multiple undo action(s), which reverse(s) previous steps Can
+	 * perform undo multiple-steps.
 	 * 
 	 * @return a Feedback object
 	 * 
@@ -510,7 +516,7 @@ public class Executor {
 
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
-			index--;	// index in storage start from zero.
+			index--; // index in storage start from zero.
 			try {
 				fb.setResult(Storage.done(index));
 			} catch (Exception e) {
@@ -617,7 +623,7 @@ public class Executor {
 		}
 
 		Task newTask = new Task(name);
-		
+
 		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
 		}
