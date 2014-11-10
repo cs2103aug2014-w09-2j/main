@@ -242,8 +242,6 @@ public class Executor {
 					(taskId + 1)));
 		}
 
-		fb.setResult(true);
-
 		return fb;
 	}
 
