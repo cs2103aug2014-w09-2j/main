@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class UserInputHandler {
 
 	/**
-	 * Convert the user input into a string array which contains all relevant
-	 * information
+	 * Converts the input string into a string array.
 	 * 
 	 * @param input
 	 *            The user input
-	 * @return String array containing all relevant information
+	 * @return String array containing all relevant attributes according to the
+	 *         user action
 	 */
 	public static String[] convertUserInput(String input) {
 		assertNotNull("User input is null", input);
@@ -68,14 +68,15 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "add" action and contains all relevant
+	 * Creates an string array with "add" action and contains all relevant
 	 * information input by the user: task name, task description, task start
 	 * time, task end time, task location, task priority. Task name must be
 	 * indicated while the rest can be absent.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "add" action containing all relevant attributes
+	 *         stated above wherever applicable
 	 */
 	private static String[] handleAddInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -313,13 +314,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "delete" action and contains all relevant
+	 * Creates an string array with "delete" action and contains all relevant
 	 * information input by the user: task index. Task index must be indicated
 	 * and it can be duplicated.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "delete" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleDeleteInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -344,13 +346,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "update" action and contains all relevant
+	 * Creates an string array with "update" action and contains all relevant
 	 * information: task index, update indicator, update key. All attributes
 	 * stated above must be indicated.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "update" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleUpdateInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -379,13 +382,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "search" action and contains all relevant
+	 * Creates an string array with "search" action and contains all relevant
 	 * information:search indicator and search key. Search indicator and search
 	 * key must be indicated and they can be duplicated.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "search" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleSearchInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -548,13 +552,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "sort" action and contains all relevant
+	 * Creates an string array with "sort" action and contains all relevant
 	 * information: sort indicator. Sort indicator must be indicated and it can
 	 * be duplicated.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "sort" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleSortInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -578,13 +583,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "done" action and contains all relevant
+	 * Creates an string array with "done" action and contains all relevant
 	 * information: task index. Task index must be indicated and it can be
 	 * duplicated.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array which contain all relevant information
+	 * @return String array with "done" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleDoneInput(String[] str) {
 		assertNotNull("User input is null", str);
@@ -609,13 +615,14 @@ public class UserInputHandler {
 	}
 
 	/**
-	 * create an string array with "display" action and contains all relevant
+	 * Creates an string array with "display" action and contains all relevant
 	 * information: display indicator. Display indicator can be ignored. In this
 	 * case, default display operation will be executed.
 	 * 
 	 * @param str
 	 *            The user input which stored in string array
-	 * @return String array containing all relevant information
+	 * @return String array with "display" action containing all relevant
+	 *         attributes stated above wherever applicable
 	 */
 	private static String[] handleDisplayInput(String[] str) {
 		assertNotNull("User input is null", str);

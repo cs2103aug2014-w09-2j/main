@@ -1,18 +1,22 @@
 //@author A0112162Y
 import static org.junit.Assert.assertNotNull;
 
+import java.util.logging.Logger;
 import java.util.Date;
 import java.text.ParseException;
 
 public class Analyzer {
 
+	private static final Logger LOGGER = Logger.getLogger(Analyzer.class
+			.getName());
+
 	/**
-	 * run Analyzer and return ExecutableCommand containing all relevant
-	 * information
+	 * Runs Analyzer
 	 * 
 	 * @param userInput
 	 *            The user input
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand containing all relevant attributes according to
+	 *         the user action
 	 * @throws ParseException
 	 *             If there is an error during parsing operation
 	 */
@@ -73,6 +77,43 @@ public class Analyzer {
 			outputCommand.setErrorMessage(StringFormat.ERROR_INVALID_COMMAND);
 		}
 
+		// Debugging code
+		LOGGER.info("==============\n" + "After analyzing (Analyzer):  \n"
+				+ "	Action = "
+				+ outputCommand.getAction()
+				+ "\n"
+				+ "	Name = "
+				+ outputCommand.getTaskName()
+				+ "\n"
+				+ "	Start time = "
+				+ outputCommand.getTaskStart()
+				+ "\n"
+				+ "	End time = "
+				+ outputCommand.getTaskEnd()
+				+ "\n"
+				+ "	Description = "
+				+ outputCommand.getTaskDescription()
+				+ "\n"
+				+ "	Location = "
+				+ outputCommand.getTaskLocation()
+				+ "\n"
+				+ "	Priority = "
+				+ outputCommand.getTaskPriority()
+				+ "\n"
+				+ "	Task index = "
+				+ outputCommand.getTaskId()
+				+ "\n"
+				+ "	Indicator = "
+				+ outputCommand.getIndicator()
+				+ "\n"
+				+ "	Key = "
+				+ outputCommand.getKey()
+				+ "\n"
+				+ "	Error message = "
+				+ outputCommand.getErrorMessage()
+				+ "\n"
+				+ "====================\n");
+
 		return outputCommand;
 	}
 
@@ -84,7 +125,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "add" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 * @throws ParseException
 	 *             If there is an error during parsing operation
 	 */
@@ -120,8 +163,8 @@ public class Analyzer {
 
 				return tempCommand;
 			}
-			
-			startTiming = TimeHandler.inputTimingConvertor(temp);
+
+			startTiming = TimeHandler.inputTimeConvertor(temp);
 
 			if (startTiming == null) {
 				tempCommand.setErrorMessage(String.format(
@@ -144,7 +187,7 @@ public class Analyzer {
 				return tempCommand;
 			}
 
-			endTiming = TimeHandler.inputTimingConvertor(temp);
+			endTiming = TimeHandler.inputTimeConvertor(temp);
 
 			if (endTiming == null) {
 				tempCommand.setErrorMessage(String.format(
@@ -154,7 +197,7 @@ public class Analyzer {
 			}
 		}
 
-		tempCommand = TimeHandler.timingAnalyzer(startTiming, endTiming,
+		tempCommand = TimeHandler.timeAnalyzer(startTiming, endTiming,
 				tempCommand);
 
 		if (arg.length >= 5) {
@@ -182,7 +225,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return Executable Command containing all relevant information
+	 * @return ExecutableCommand with "delete" containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 */
 	private static ExecutableCommand handleDeleteCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
@@ -215,7 +260,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user Argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "update" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 * @throws ParseException
 	 *             If there is an error during parsing operation
 	 */
@@ -258,7 +305,7 @@ public class Analyzer {
 
 				return tempCommand;
 			}
-			updatedItem = TimeHandler.inputTimingConvertor(arg[2]);
+			updatedItem = TimeHandler.inputTimeConvertor(arg[2]);
 
 			if (updatedItem == null) {
 				if (indicator.equals(StringFormat.START)) {
@@ -326,7 +373,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "display" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 */
 	private static ExecutableCommand handleDisplayCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
@@ -355,7 +404,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "search" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 * @throws ParseException
 	 *             If there is an error during parsing operation
 	 */
@@ -403,7 +454,7 @@ public class Analyzer {
 			} else if (argumentExistence) {
 				if (StringFormat.isTimeOrDate(temp)) {
 					String indicator = arg[i - 1];
-					String searchKey = TimeHandler.inputTimingConvertor(temp);
+					String searchKey = TimeHandler.inputTimeConvertor(temp);
 
 					if (searchKey == null) {
 						if (indicator.equals(StringFormat.START)) {
@@ -454,7 +505,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "sort" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 */
 	private static ExecutableCommand handleSortCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
@@ -489,7 +542,9 @@ public class Analyzer {
 	 * 
 	 * @param arg
 	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
+	 * @return ExecutableCommand with "done" action containing all relevant
+	 *         attributes stated above wherever applicable, or error message if
+	 *         there is error encountered
 	 */
 	private static ExecutableCommand handleDoneCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
@@ -517,7 +572,7 @@ public class Analyzer {
 	/**
 	 * Creates an ExecutableCommand object with "undo" action.
 	 * 
-	 * @return ExecutableCommand with undo action indicated
+	 * @return ExecutableCommand with "undo" action
 	 */
 	private static ExecutableCommand handleUndoCommand() {
 		return new ExecutableCommand(StringFormat.UNDO);
@@ -526,7 +581,7 @@ public class Analyzer {
 	/**
 	 * Creates an ExecutableCommand object with "redo" action.
 	 * 
-	 * @return ExecutableCommand with redo action indicated
+	 * @return ExecutableCommand with "redo" action
 	 */
 	private static ExecutableCommand handleRedoCommand() {
 		return new ExecutableCommand(StringFormat.REDO);
@@ -535,7 +590,7 @@ public class Analyzer {
 	/**
 	 * Creates an ExecutableCommand object with "clear" action.
 	 * 
-	 * @return ExecutableCommand with clear action indicated
+	 * @return ExecutableCommand with "clear" action
 	 */
 	private static ExecutableCommand handleClearCommand() {
 		return new ExecutableCommand(StringFormat.CLEAR);
@@ -544,16 +599,29 @@ public class Analyzer {
 	/**
 	 * Creates an ExecutableCommand object with "exit" action.
 	 * 
-	 * @return ExecutableCommand with exit action indicated
+	 * @return ExecutableCommand with "exit" action
 	 */
 	private static ExecutableCommand handleExitCommand() {
 		return new ExecutableCommand(StringFormat.EXIT);
 	}
 
+	/**
+	 * Creates an ExecutableCommand object with "reload" action.
+	 * 
+	 * @return ExecutableCommand with "reload" action
+	 */
 	private static ExecutableCommand handleReloadCommand() {
 		return new ExecutableCommand(StringFormat.RELOAD);
 	}
 
+	/**
+	 * Checks if the input string is a valid integer or not.
+	 * 
+	 * @param input
+	 *            Input string
+	 * @return True if the input string is a valid integer, otherwise return
+	 *         false
+	 */
 	private static boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -563,10 +631,24 @@ public class Analyzer {
 		}
 	}
 
+	/**
+	 * Extracts action out of the parsedInput.
+	 * 
+	 * @param parsedInput
+	 *            Parsed input in string array
+	 * @return The action
+	 */
 	private static String getUserAction(String[] parsedInput) {
 		return parsedInput[0].toLowerCase();
 	}
 
+	/**
+	 * Extracts argument out of the parsedInput.
+	 * 
+	 * @param parsedInput
+	 *            Parsed input in string array
+	 * @return The argument
+	 */
 	private static String[] getArgument(String[] parsedInput) {
 		String[] arg = new String[parsedInput.length - 1];
 
