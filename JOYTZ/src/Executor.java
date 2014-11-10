@@ -171,7 +171,7 @@ public class Executor {
 		Feedback fb = new Feedback(StringFormat.DELETE, false);
 		ArrayList<Integer> targetTaskIndex = command.getTaskId();
 		int size = targetTaskIndex.size();
-		
+
 		sortFromBigToSmall(targetTaskIndex); // from big to small.
 
 		for (int i = 0; i < size; i++) {
@@ -224,31 +224,21 @@ public class Executor {
 	private static Feedback performUpdateAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.UPDATE, false);
 
-		ArrayList<Integer> taskId = command.getTaskId();
-		ArrayList<String> updateIndicator = command.getIndicator();
-		ArrayList<String> updateKeyValue = command.getKey();
+		int taskId = command.getTaskId().get(0);
+		String updateIndicator = command.getIndicator().get(0);
+		String updateKeyValue = command.getKey().get(0);
 
-		// pre-condition
-		assert taskId.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 1";
-		assert taskId.size() == updateKeyValue.size() : "Invalid size of ArrayList in update function 2";
-		assert updateKeyValue.size() == updateIndicator.size() : "Invalid size of ArrayList in update function 3";
+		taskId--;
+		try {
+			fb.setResult(Storage
+					.update(taskId, updateIndicator, updateKeyValue));
+		} catch (Exception e) {
+			fb.setMessageShowToUser(e.getMessage());
+		}
 
-		for (int i = 0; i < taskId.size(); i++) {
-			int index = taskId.get(i);
-			index--;
-
-			try {
-				fb.setResult(Storage.update(index, updateIndicator.get(i),
-						updateKeyValue.get(i)));
-			} catch (Exception e) {
-				fb.setMessageShowToUser(e.getMessage());
-				return fb;
-			}
-
-			if (fb.getResult()) {
-				fb.setMessageShowToUser(String.format(
-						MESSAGE_UPDATE_SUCCESSFUL, (index + 1)));
-			}
+		if (fb.getResult()) {
+			fb.setMessageShowToUser(String.format(MESSAGE_UPDATE_SUCCESSFUL,
+					(taskId + 1)));
 		}
 
 		fb.setResult(true);
