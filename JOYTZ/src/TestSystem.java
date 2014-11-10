@@ -22,33 +22,28 @@ public class TestSystem {
     private static final String INPUT_SEARCH_PRIORITY_HIGH = "search priority important";
     private static final String INPUT_DELETE_1 = "delete 1";
     
-    private static final String FEEDBACK_RESULT_MESSAGE_ADD = "meeting with friends is added successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_ADD = "\"meeting with friends\" is added successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UPDATE = "Task 1 is updated successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "A task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Categories are sorted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "A category is sorted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "Tasks are searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
     private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~medium\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~medium\n";
     private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30" +
-                                                           "~2015.02.25 at 23:45~NUS~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~low\n";
     private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~UTown~low\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~" +
+                                                           "24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~" +
                                                            "UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about " +
-                                                           "CS2103T project~2015.02.24 at 11:30~" +
-                                                           "2015.02.25 at 23:45~NUS~high\n";
+                                                           "CS2103T project~24/02/2015 at 11:30 上午~25/02/2015 at 11:45 下午~NUS~high\n";
     
     @Test
     public void systemTestAdd() {
@@ -83,6 +78,7 @@ public class TestSystem {
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_STRING_2, 
                      systemTestResult.getTaskStringList().get(listSize - 2));
+        System.out.println(systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
