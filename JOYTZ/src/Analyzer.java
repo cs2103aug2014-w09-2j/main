@@ -140,6 +140,7 @@ public class Analyzer {
 		String endTiming = StringFormat.EMPTY;
 		String temp;
 
+		// arg[0] stores the task name, if null returns error message
 		if (arg[0] == StringFormat.EMPTY) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK);
 			return tempCommand;
@@ -148,10 +149,11 @@ public class Analyzer {
 		tempCommand.setTaskName(arg[0]);
 
 		if (arg.length >= 2) {
-			tempCommand.setTaskDescription(arg[1]);
+			tempCommand.setTaskDescription(arg[1]); // arg[1] stores the task
+													// description
 		}
 		if (arg.length >= 3) {
-			temp = arg[2];
+			temp = arg[2]; // arg[2] stores the task start time
 
 			if (temp.equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(
@@ -174,7 +176,7 @@ public class Analyzer {
 			}
 		}
 		if (arg.length >= 4) {
-			temp = arg[3];
+			temp = arg[3]; // arg[3] stores ask end time
 
 			if (temp.equals(StringFormat.INVALID)) {
 				tempCommand.setErrorMessage(String.format(
@@ -201,10 +203,10 @@ public class Analyzer {
 				tempCommand);
 
 		if (arg.length >= 5) {
-			tempCommand.setTaskLocation(arg[4]);
+			tempCommand.setTaskLocation(arg[4]); // arg[4] stores task location
 		}
 		if (arg.length >= 6) {
-			temp = arg[5].toLowerCase();
+			temp = arg[5].toLowerCase(); // arg[5] stores task priority
 
 			if (!StringFormat.isValidPriority(temp)
 					&& !temp.equals(StringFormat.EMPTY)) {
@@ -235,6 +237,8 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.DELETE);
 
+		// arg[] stores the task index to be deleted, if null returns error
+		// message
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 			return tempCommand;
@@ -290,14 +294,17 @@ public class Analyzer {
 			return tempCommand;
 		}
 
-		String taskToBeUpdated = arg[0];
+		String taskToBeUpdated = arg[0]; // arg[0] stores the task index to be
+											// updated
 		tempCommand.setTaskId(Integer.parseInt(taskToBeUpdated));
 
-		String indicator = arg[1].toLowerCase();
+		String indicator = arg[1].toLowerCase(); // arg[1] stores the update
+													// indicator
 		String updatedItem;
 
 		tempCommand.setIndicator(indicator);
 
+		// arg[2] stores the item to be updated
 		if (indicator.equals(StringFormat.START)
 				|| indicator.equals(StringFormat.END)) {
 			if (arg.length < 3) {
@@ -383,6 +390,8 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.DISPLAY);
 
+		// arg[0] stores the display indicator which is "done", if display
+		// indicator is not input, the default display action will be executed
 		if (arg.length == 0) {
 			tempCommand.setIndicator(StringFormat.MAIN_TASK_LIST);
 			return tempCommand;
@@ -417,6 +426,7 @@ public class Analyzer {
 		ExecutableCommand tempCommand = new ExecutableCommand(
 				StringFormat.SEARCH);
 
+		// arg[0] stores the search indicator, if null returns error message
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 
@@ -433,6 +443,8 @@ public class Analyzer {
 
 		boolean priorityExistence = false;
 
+		// arg[1...] stores the key to be searched, if invalid returns error
+		// message
 		for (int i = 0; i < arg.length; i++) {
 			String temp = arg[i];
 			boolean indicatorExistence = i % 2 == 0 ? true : false;
@@ -514,6 +526,7 @@ public class Analyzer {
 
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
 
+		// arg[] stores the sort indicators, if null returns error message
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
 
@@ -551,6 +564,7 @@ public class Analyzer {
 
 		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.DONE);
 
+		// arg[] stores the task index to be done, if null returns error message
 		if (arg.length == 0) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_TASK_INDEX);
 			return tempCommand;
@@ -639,6 +653,7 @@ public class Analyzer {
 	 * @return The action
 	 */
 	private static String getUserAction(String[] parsedInput) {
+		// parsedInput[0] stores the user action
 		return parsedInput[0].toLowerCase();
 	}
 
@@ -650,6 +665,7 @@ public class Analyzer {
 	 * @return The argument
 	 */
 	private static String[] getArgument(String[] parsedInput) {
+		// arg[1...] stores the user arguments
 		String[] arg = new String[parsedInput.length - 1];
 
 		for (int i = 1; i < parsedInput.length; i++) {
