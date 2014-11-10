@@ -3,28 +3,11 @@
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	// these are for Display method.
 	private static final String MESSAGE_DISPLAY_SUCCESSFULLY = "Tasks are displayed successfully.\n";
-
-	// these are for Update Method.
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
-
-	// these are for Sort Method
-	private static final String MESSAGE_SORT_SUCCESSFUL = "Categories are sorted successfully.\n";
-
-	// these are for Search Method
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
-
-	// these are for Undo Method
-	private static final String MESSAGE_UNDO_SUCCESSFULLY = "Undo one step successfully.\n";
-	private static final String ERROR_NOTHING_TO_UNDO = "There is nothing to undo.\n";
-
-	// these are for Redo Method
-	private static final String ERROR_NOTHING_TO_REDO = "There is nothing to redo.\n";
-	private static final String MESSAGE_REDO_SUCCESSFULLY = "Redo one step successfully.\n";
 
 	// these are for Save and Reload.
 	private static final String ERROR_FAIL_SAVE_TO_FILE = "Fail to save the Storage to file\n";
@@ -33,14 +16,14 @@
 
 	public static Feedback feedback;
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -125,14 +108,14 @@
 		return feedback;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -175,54 +158,38 @@
 		return fb;
 	}
 
-	/**
-	 * Deletes several tasks at the same time according to indices
-	 *
-	 * @param command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
-	 * Sorts a index array from big number to small number.
+	 * Sorts a index array from a big number to a small number.
 	 * 
 	 * @param targetTaskIndexArray
 	 *            Rearrange the order to avoid the change of list size when
 	 *            small index is deleted.
 	 * 
 	 */
-	private static void sortFromBigToSmall(ArrayList<Integer> targetTaskIndexArray) {
+	private static void sortFromBigToSmall(
+			ArrayList<Integer> targetTaskIndexArray) {
 		Comparator<Integer> reverseComparator = Collections.reverseOrder();
 		Collections.sort(targetTaskIndexArray, reverseComparator);
 	}
 
-	/**
-	 * Performs an/multiple update action(s) with a command object passed from
-	 * the proceedAnalyzedCommand method
-	 *
-	 * @param command
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -237,7 +204,7 @@
 
 		int sizeOfDisplayTaskList = Storage.getDisplayTaskListSize();
 		for (int i = sizeOfDisplayTaskList; i >= 1; i--) {
-			int index = i - 1;	// index in storage start from zero.
+			int index = i - 1; // index in storage start from zero.
 			try {
 				fb.setResult(Storage.delete(index));
 			} catch (Exception e) {
@@ -253,14 +220,14 @@
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -295,59 +262,14 @@
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-	 */
-
-	/**
-	 * Performs a/multiple sort action(s) with a command object passed from the
-	 * proceedAnalyzedCommand method
-	 *
-	 * @param command
-	 *            : ExecutableCommand object containing the user's action
-	 * @return
-	 * 
-	 */
-	private static Feedback performSortAction(ExecutableCommand command) {
-		Feedback fb = new Feedback(StringFormat.SORT, false);
-		ArrayList<String> sortKey = command.getIndicator();
-		Collections.reverse(sortKey);
-		
-		// check what category user want to sort
-		for (int i = 0; i < sortKey.size(); i++) {
-			fb.setResult(Storage.sort(sortKey.get(i)));
-		}
-		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
-
-		return fb;
-	}
-	
-
-	/**
-	 * Performs a/multiple search action(s) with a command object passed from
-	 * the proceedAnalyzedCommand method
-	 *
-	 * @param command
-	 *            : ExecutableCommand object containing the user's action
-	 * 
-	 * @return a Feedback object
-	 * 
-	 */
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
-
-
-
-
-
-	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -374,14 +296,14 @@
 		return fb;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -398,7 +320,7 @@
 
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
-			index--;	// index in storage start from zero.
+			index--; // index in storage start from zero.
 			try {
 				fb.setResult(Storage.done(index));
 			} catch (Exception e) {
@@ -438,14 +360,14 @@
 		}
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -485,14 +407,14 @@
 		return dateTimeDate;
 	}
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 	 */
 
 	/**
@@ -523,7 +445,7 @@
 		}
 
 		Task newTask = new Task(name);
-		
+
 		if (!(description.equals(""))) {
 			newTask.setTaskDescription(description);
 		}
@@ -542,17 +464,15 @@
 
 		return newTask;
 	}
-
 }
-
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Executor.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Executor.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Feedback.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Feedback.java
 	 */
 
 import java.util.ArrayList;
@@ -657,14 +577,14 @@ public class Feedback {
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Feedback.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Feedback.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FileInOut.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\FileInOut.java
 	 */
 
 import java.io.*;
@@ -835,15 +755,11 @@ public class FileInOut {
 			task.setTaskName(taskAttributes[0].trim());
 
 			task.setTaskDescription(taskAttributes[1].trim());
-			if (!taskAttributes[2].equals("")) {
-
-				System.out.println(taskAttributes[2]);
+			if (!taskAttributes[2].trim().equals("")) {
 				task.setStartDateTime(new Date(Long
 						.parseLong(taskAttributes[2])));
-
-				System.out.println("exception here");
 			}
-			if (!taskAttributes[3].equals("")) {
+			if (!taskAttributes[3].trim().equals("")) {
 				task.setEndDateTime(new Date(Long.parseLong(taskAttributes[3])));
 			}
 			task.setTaskLocation(taskAttributes[4].trim());
@@ -854,14 +770,14 @@ public class FileInOut {
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\FileInOut.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\FileInOut.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\List.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\List.java
 	 */
 
 import java.util.ArrayList;
@@ -898,6 +814,13 @@ public class List {
 	 */
 	public void setListName(String name) {
 		this.taskListName = name;
+	}
+	/**
+	 * Get the name of this taskList.
+	 * @return
+	 */
+	public String getListName(){
+		return taskListName;
 	}
 	
 	/**
@@ -1075,14 +998,14 @@ public class List {
 	}
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\List.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\List.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Storage.java
 	 */
 
 
@@ -1096,8 +1019,8 @@ import java.util.logging.Logger;
  * 1. Storage contains mainTaskList, doneTaskList, displayTaskList. Tasks in
  * displayTaskList will be show to user. 2. The User action will first be done
  * in the displayTaskList. And then perform the same action to either
- * mainTaskList or doneTaskList. 3. Index shown to user start from 1; index in
- * each taskList start from zero; TaskId start from zero.
+ * mainTaskList or doneTaskList using the unique taskId. 3. Index shown to user
+ * start from 1; index in each taskList start from zero; TaskId start from zero.
  * 
  *
  *
@@ -1108,12 +1031,13 @@ public class Storage {
 			.getName());
 
 	// this is the two list of tasks.
-	private static List mainTaskList = new List("Main task List");
-	private static List doneTaskList = new List("History task List");
+	private static List mainTaskList = new List(StringFormat.MAIN_TASK_LIST);
+	private static List doneTaskList = new List(StringFormat.DONE_TASK_LIST);
 	private static Integer taskId = -1; // Unique taskId start from 0.
 
 	// these are for display.
-	public static List displayTaskList = new List();
+	public static List displayTaskList = new List(
+			StringFormat.DISPLAY_TASK_LIST);
 	public static boolean[] passStartTimeList = {};
 	public static boolean[] passEndTimeList = {};
 
@@ -1123,7 +1047,9 @@ public class Storage {
 	private static FileInOut fileProcesser = new FileInOut();
 
 	/**
-	 * Add a task in the mainTaskList, set the display list to be mainTaskList.
+	 * Provide a unique taskId to the task. Add a task in the mainTaskList, set
+	 * the display list to be mainTaskList. User will see the mainTaskList after
+	 * the add action.
 	 * 
 	 * @param Task
 	 * @throws Exception
@@ -1167,15 +1093,16 @@ public class Storage {
 		setDisplayList(mainTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Add \n"
-				+ "	Add a new task " + "\n" + "	task id : " + task.getTaskId()
+				+ "\tAdd a new task. " + "	task id : " + task.getTaskId()
 				+ "\n" + "====================\n");
 
 		return true;
 	}
 
 	/**
-	 * Delete a task from taskList, and move it to history. Invalid taskId will
-	 * throw NullPointerException;
+	 * Delete a task from displayTaskList, and find the task with same taskId in
+	 * either mainTaskList or doneTaskList. Remove that task also. Throws
+	 * Exception when invalid task index is passed in.
 	 * 
 	 * @param index
 	 * @return
@@ -1201,16 +1128,16 @@ public class Storage {
 		setDisplayList(displayTaskList);
 
 		LOGGER.info("==============\n" + "Storage : Delete \n"
-				+ "	Delete a task. " + "Task index : " + index + "\n"
-				+ "   current Task size. " + "\n" + "	displaytasklist size : "
-				+ displayTaskList.size() + "\n" + "	maintasklist size : "
+				+ "Task index : " + index + "\n" + "\tdisplaytasklist size : "
+				+ displayTaskList.size() + "\n" + "\tmaintasklist size : "
 				+ mainTaskList.size() + "\n" + "====================\n");
 
 		return true;
 	}
 
 	/**
-	 * Move the targetTask from mainTaskList to historyTaskList.
+	 * Move the targetTask from mainTaskList to historyTaskList. Throws
+	 * Exception if the taskId is not inside the mainTaskList.
 	 * 
 	 * @param index
 	 * @return
@@ -1235,11 +1162,21 @@ public class Storage {
 		displayTaskList.deleteTaskByIndex(index);
 
 		doneTaskList.addTask(targetTask);
+
+		LOGGER.info("==============\n" + "Storage : Done \n"
+				+ "\tDone a task. " + "\n" + "\tTask index: " + index + "\n"
+				+ "\tCurrent Task List size: " + "\n"
+				+ "\tDisplaytasklist size : " + displayTaskList.size() + "\n"
+				+ "\tMaintasklist size : " + mainTaskList.size() + "\n"
+				+ "====================\n");
+
 		return true;
 	}
 
 	/**
-	 * Update a task's certain attributes
+	 * Update a task's certain attributes. Find the task index in mainTaskList
+	 * by the taskId. Reset the updated task Object to the same index in
+	 * mainTaskList. Throws Exception if the target task is inside doneTaskList.
 	 * 
 	 * @param taskId
 	 * @param updateIndicator
@@ -1258,14 +1195,23 @@ public class Storage {
 		// remove the old task in both display list and main list.
 		Task targetTask = displayTaskList.getTaskByIndex(index);
 		int targetTaskId = targetTask.getTaskId();
+		int taskIndexInMainTaskList = mainTaskList
+				.getIndexByTaskId(targetTaskId);
 		// user cannot update tasks that has been done.
 		if (doneTaskList.containsTaskId(targetTaskId)) {
 			throw new Exception(StringFormat.STR_ERROR_UPDATE_DONE_TASK);
 		}
 		// update the old task.
 		update(targetTask, updateIndicator, updateKeyValue);
-
+		mainTaskList.setTask(taskIndexInMainTaskList, targetTask);
 		setDisplayList(displayTaskList);
+
+		LOGGER.info("==============\n" + "Storage : Update \n"
+				+ "\tUpdate a task. " + "Task index : " + index + "\n"
+				+ "\tTask Index: " + index + "\n" + "\tTask Id: "
+				+ targetTaskId + "\n" + "\tupdateIndicator: " + updateIndicator
+				+ "\n" + "\tupdateKeyValue: " + updateKeyValue + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -1326,14 +1272,15 @@ public class Storage {
 	}
 
 	/**
-	 * Clean all the tasks inside mainTaskList and doneTaskList.
+	 * Clean all the tasks inside mainTaskList and doneTaskList. Set the
+	 * displayTaskList to be mainTaskList.
 	 * 
 	 * @return
 	 */
 	public static boolean clean() {
 		clean(mainTaskList);
 		clean(doneTaskList);
-
+		clean(displayTaskList);
 		return true;
 	}
 
@@ -1363,7 +1310,7 @@ public class Storage {
 
 	/**
 	 * Clear tasks inside target TaskList.
-	 * 
+	 * DisplayTaskList will not change.
 	 * @param targetList
 	 * @return
 	 */
@@ -1371,6 +1318,9 @@ public class Storage {
 		targetList.clean();
 		setDisplayList(displayTaskList);
 
+		LOGGER.info("==============\n" + "Storage : Clean \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -1396,6 +1346,10 @@ public class Storage {
 					StringFormat.STR_ERROR_INVALID_TASK_LIST_INDICATOR,
 					targetListIndicator));
 		}
+
+		LOGGER.info("==============\n" + "Storage : Display \n"
+				+ "\ttaskList name: " + targetListIndicator + "\n"
+				+ "====================\n");
 		return true;
 	}
 
@@ -1416,6 +1370,9 @@ public class Storage {
 
 		setDisplayList(displayTaskList);
 
+		LOGGER.info("==============\n" + "Storage : Sort \n"
+				+ "\ttaskList name: " + targetList.getListName() + "\n"
+				+ "\tkey: " + key + "\n" + "====================\n");
 		return true;
 	}
 
@@ -1433,14 +1390,17 @@ public class Storage {
 		List newList = new List();
 		for (int index = 0; index < targetList.size(); index++) {
 			Task currTask = targetList.getTaskByIndex(index);
-			if (currTask.get(indicator).toLowerCase()
-					.contains(searchValue.toLowerCase())) {
+			if (currTask.get(indicator).toLowerCase().trim()
+					.contains(searchValue.toLowerCase().trim())) {
 				newList.addTask(currTask);
 			}
 		}
-
 		setDisplayList(newList);
 
+		LOGGER.info("==============\n" + "Storage : Search \n"
+				+ "\tindicator: " + indicator + "\n" + "\tsearchValue: "
+				+ searchValue + "\n" + "\tresultTaskListSize: "
+				+ newList.size() + "\n" + "====================\n");
 		return true;
 	}
 
@@ -1473,6 +1433,10 @@ public class Storage {
 				}
 			}
 		}
+
+		LOGGER.info("==============\n" + "Storage : checkTime \n"
+				+ "\ttargetListSize: " + targetList.size() + "\n"
+				+ "====================\n");
 	}
 
 	/**
@@ -1549,6 +1513,9 @@ public class Storage {
 	public static void saveFile() throws Exception {
 		fileProcesser.saveTaskList(mainTaskList, mainTaskListFileName);
 		fileProcesser.saveTaskList(doneTaskList, doneTaskListFileName);
+
+		LOGGER.info("==============\n" + "Storage : SaveFile \n"
+				+ "====================\n");
 	}
 
 	/**
@@ -1565,11 +1532,17 @@ public class Storage {
 
 		resetTaskId();
 		setDisplayList(mainTaskList);
+
+		LOGGER.info("==============\n" + "Storage : ReloadFile \n"
+				+ "====================\n");
 	}
 
 	private static void setDisplayList(List targetList) {
 		displayTaskList = targetList.copy();
 		checkTime();
+
+		LOGGER.info("==============\n" + "Storage : Set display list \n"
+				+ "====================\n");
 	}
 
 	/**
@@ -1656,14 +1629,14 @@ public class Storage {
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Storage.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Storage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 	 */
 
 	/**
@@ -1672,7 +1645,7 @@ public class Storage {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy.MM.dd HH:mm");
 	public static final SimpleDateFormat DATE_FORMAT_SHOWN_TO_USER = new SimpleDateFormat(
-			"yyyy.MM.dd 'at' HH:mm");
+			"dd/MM/yyyy 'at' hh:mm a");
 	public static final SimpleDateFormat IO_DATE_FORMAT_SAVED_IN_FILE = new SimpleDateFormat(
 			"E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 	public static final String IO_MESSAGE_SAVED_IN_FILE = "Last saved point: ";
@@ -1680,15 +1653,15 @@ public class Storage {
 	public static final String IO_TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
 	public static final String IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 	public static final String IO_ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-	
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 	 */
 
 	/**
@@ -1697,24 +1670,25 @@ public class Storage {
 	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 	// Add
-	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	public static final String EXE_MSG_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
 	// Delete
-	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
+	public static final String EXE_MSG_DELETE_SUCCESSFUL = "A task is deleted successfully.\n";
+	public static final String MSG_DELETE_MULTIPLE_TASKS_SUCCESSFUL = "%d tasks are deleted successfully.\n";
 	// Done
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
 	// Display
 	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
 	// Clear
 	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-	
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 	 */
 
 	/**
@@ -1734,21 +1708,21 @@ public class Storage {
 	public static final String STR_ERROR_INCONSISTENT_TASKID = "Task in displayList is not consistent with either mainTaskList nor History.";
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
-	
+
 	// In Done Method
 	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "The task has been done.\n";
-	
+
 	// query the display list
 	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
-	
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\StringFormat.java
+
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\StringFormat.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Task.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Task.java
 	 */
 
 import java.util.Date;
@@ -1930,7 +1904,7 @@ public class Task implements Comparable<Task>{
 	 */
 	public String getLongStringFormatStartDateTime(){
 		if (startDateTime == null){
-			return "";
+			return Long.MAX_VALUE + "";
 		}
 		return startDateTime.getTime() + "";
 	}
@@ -1941,7 +1915,7 @@ public class Task implements Comparable<Task>{
 	 */
 	public String getLongStringFormatEndDateTime(){
 		if (endDateTime == null){
-			return "";
+			return Long.MAX_VALUE + "";
 		}
 		return endDateTime.getTime() + "";
 	}
@@ -1950,56 +1924,38 @@ public class Task implements Comparable<Task>{
 		if (startDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(startDateTime.getYear());
-		currDate.setMonth(startDateTime.getMonth());
-		currDate.setDate(startDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
+		String result = startDateTime.getYear() + "";
+		result = result.concat(startDateTime.getMonth() + "");
+		result = result.concat(startDateTime.getDate() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatStartTime(){
 		if (startDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(startDateTime.getHours());
-		currDate.setMinutes(startDateTime.getMinutes());
-		return currDate.getTime() + "";
+		String result = startDateTime.getHours() + "";
+		result = result.concat(startDateTime.getMinutes() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatEndDate(){
 		if (endDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(endDateTime.getYear());
-		currDate.setMonth(endDateTime.getMonth());
-		currDate.setDate(endDateTime.getDate());
-		
-		currDate.setHours(0);
-		currDate.setMinutes(0);
-		return currDate.getTime() + "";
+		String result = endDateTime.getYear() + "";
+		result = result.concat(endDateTime.getMonth() + "");
+		result = result.concat(endDateTime.getDate() + "");
+		return result;
 	}
 	
 	public String getLongStringFormatEndTime(){
 		if (endDateTime == null){
 			return "";
 		}
-		Date currDate = new Date();
-		currDate.setYear(0);
-		currDate.setMonth(0);
-		currDate.setDate(0);
-		
-		currDate.setHours(endDateTime.getHours());
-		currDate.setMinutes(endDateTime.getMinutes());
-		return currDate.getTime() + "";
+		String result = endDateTime.getHours() + "";
+		result = result.concat(endDateTime.getMinutes() + "");
+		return result;
 	}
 
 	public String getTaskDescription() {
@@ -2164,14 +2120,14 @@ public class Task implements Comparable<Task>{
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\Task.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\Task.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestStorage.java
+	 * origin: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestStorage.java
 	 */
 
 import static org.junit.Assert.*;
@@ -2696,7 +2652,7 @@ public class TestStorage {
 
 }
 
-	// End of segment: C:\Users\Joel\Desktop\Repositories\cs2103aug2014-w09-2j\JOYTZ\src\TestStorage.java
+	// End of segment: C:\Users\user\Desktop\Repositories\cs2103-w09-2j\JOYTZ\src\TestStorage.java
 
 
 
