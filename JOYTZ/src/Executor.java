@@ -379,6 +379,7 @@ public class Executor {
 		if (fb.getTaskStringList().size() == 0){
 			fb.setMessageShowToUser(MESSAGE_EMPTY_SEARCH_RESULT);
 		}else {
+			fb.setResult(true);
 			fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 		}
 
