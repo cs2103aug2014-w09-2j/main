@@ -107,8 +107,9 @@ public class Controller {
                  */ 
                 assert parameterArr.length == 6;
                 GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
-                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd, displayList);
+                                parameterArr[4], parameterArr[1], parameterArr[5], 
+                                action, taskId, isLastItem, isHighlightedPassStart, 
+                                isHighlightedPassEnd, displayList);
             }
         }
     }
@@ -205,7 +206,7 @@ public class Controller {
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
+                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
                     displayInGUI(outputString, parsedCommand, isFeedbackSuccess, displayList);
                 }
             }
@@ -232,13 +233,13 @@ public class Controller {
     /**
      * Starts the analyzer, and passes the Command object to it
      * 
-     * @param inputCommandObject	Command object containing the user's input
+     * @param inputCmdObj	Command object containing the user's input
      * 
      * @return						ExecutableCommand object with parsed data
      * 
      */
-    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
-        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+    public static ExecutableCommand analyzeInput(Command inputCmdObj) throws ParseException {
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCmdObj);
 
         return parsedCommand;
     }
