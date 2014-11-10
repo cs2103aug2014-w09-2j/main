@@ -6,7 +6,7 @@ import java.util.Collections;
  * Description : 
  * 
  * List Object contains Task Objects.
- * @author Zhang Kai (A0119378U)
+ *
  *
  */
 public class List {

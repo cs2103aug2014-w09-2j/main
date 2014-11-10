@@ -22,13 +22,16 @@
         shell.setText("JOYTZ");
         
         lblIncompleteTasks = new Label(shell, SWT.NONE);
-        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
-        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblIncompleteTasks.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                              9, SWT.NORMAL));
+        lblIncompleteTasks.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, 
+                                                      false, false, 1, 1));
         lblIncompleteTasks.setAlignment(SWT.CENTER);
         lblIncompleteTasks.setText("Task List: Incomplete Tasks");
 
         taskTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
+        taskTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                     9, SWT.NORMAL));
         taskTable.setHeaderVisible(true);
         taskTable.setSize(new Point(400, 400));
         taskTable.setToolTipText("View your tasks here");
@@ -63,8 +66,10 @@
         tblclmnPriority.setText("Priority");
         
         feedbackTable = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
-        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        feedbackTable.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                         11, SWT.NORMAL));
+        GridData gd_feedbackTable = new GridData(SWT.FILL, SWT.FILL,
+                                                 true, false, 1, 1);
         gd_feedbackTable.heightHint = 121;
         feedbackTable.setLayoutData(gd_feedbackTable);
         
@@ -73,18 +78,23 @@
         tblclmnFeedback.setText("Feedback");
         
         Label horizontalSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+        GridData gd_horizontalSeparator = new GridData(SWT.FILL, SWT.CENTER, 
+                                                       false, false, 1, 1);
         gd_horizontalSeparator.widthHint = 550;
         horizontalSeparator.setLayoutData(gd_horizontalSeparator);
         
         lblInputBox = new Label(shell, SWT.NONE);
-        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.NORMAL));
-        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+        lblInputBox.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                       9, SWT.NORMAL));
+        lblInputBox.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, 
+                                               false, false, 1, 1));
         lblInputBox.setAlignment(SWT.CENTER);
         lblInputBox.setText("Input Box");
 
-        inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
-        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 14, SWT.NORMAL));
+        inputField = new StyledText(shell, SWT.BORDER | SWT.WRAP | 
+                                    SWT.V_SCROLL | SWT.MULTI);
+        inputField.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                      14, SWT.NORMAL));
         inputField.setToolTipText("Enter your commands here");
         inputField.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
         GridData gd_inputField = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);

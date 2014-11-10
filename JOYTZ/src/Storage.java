@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * mainTaskList or doneTaskList. 3. Index shown to user start from 1; index in
  * each taskList start from zero; TaskId start from zero.
  * 
- * @author Zhang Kai (A0119378U)
+ *
  *
  */
 public class Storage {

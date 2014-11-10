@@ -16,8 +16,9 @@ public class Controller {
                                                         "Type \"help\" or \"tutorial\".\n";
     private static final String ERROR_INVALID_PARAMETER = "Invalid parameter. Need help? " +
                                                           "Type \"help\" or \"tutorial\".\n";
+    private static final String ERROR_CANNOT_LOAD_FILE = "Exception in reload.";
     private static final String SAVE_SUCCESSFUL = "The Storage is saved to file successfully.\n";
-    public static final String EMPTY_LIST = "null";
+    public static final String NULL_STRING = "null";
 
     private static Command inputCommandObject;
     private static Feedback feedback;
@@ -32,10 +33,11 @@ public class Controller {
      * 					                after each command
      * @param command			        ExecutableCommand object containing the
      * 					                user's action and taskId
+     * @param displayList               Which list is being displayed
      * 
      */
     private static void displayInGUI(String outputFeedbackString, ExecutableCommand command,
-                                     boolean isSuccessful) {
+                                     boolean isSuccessful, String displayList) {
         assert outputFeedbackString != null;
         assert command != null;
         assert outputFeedbackString.length() != 0;
@@ -50,7 +52,7 @@ public class Controller {
                 taskId = command.getTaskId().get(0);
             }
 
-            parseDisplayTasks(action, taskId);
+            parseDisplayTasks(action, taskId, displayList);
         }
     }
 
@@ -62,19 +64,21 @@ public class Controller {
      * empty values, leave it blank. For example: "name~~~end date~~priority"
      * to leave the description and location empty.
      * 
-     * @param action	The user's input action (add, delete, etc.)
-     * @param taskId    The id of the task given by the user
+     * @param action	        The user's input action (add, delete, etc.)
+     * @param taskId            The id of the task given by the user
+     * @param displayList       Which list is being displayed
      * 
      */
-    private static void parseDisplayTasks(String action, int taskId) {
+    private static void parseDisplayTasks(String action, int taskId, String displayList) {
         boolean isLastItem = false;
         boolean isHighlightedPassStart = false;
         boolean isHighlightedPassEnd = false;
 
         if (feedback.getTaskStringList().size() == 0) {
             isLastItem = true;
-            GUI.updateTable(0, EMPTY_LIST, "", "", "", "", "", action, taskId,
-                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+            GUI.updateTable(0, NULL_STRING, "", "", "", "", "", action, taskId,
+                            isLastItem, isHighlightedPassStart, isHighlightedPassEnd,
+                            displayList);
 
         } else {
             for (int i = 0; i < feedback.getTaskStringList().size(); i++) {
@@ -110,8 +114,9 @@ public class Controller {
                  */ 
                 assert parameterArr.length == 6;
                 GUI.updateTable(i, parameterArr[2], parameterArr[3], parameterArr[0], 
-                                parameterArr[4], parameterArr[1], parameterArr[5], action, taskId,
-                                isLastItem, isHighlightedPassStart, isHighlightedPassEnd);
+                                parameterArr[4], parameterArr[1], parameterArr[5], 
+                                action, taskId, isLastItem, isHighlightedPassStart, 
+                                isHighlightedPassEnd, displayList);
             }
         }
     }
@@ -184,7 +189,7 @@ public class Controller {
 
             if (parsedCommand.getErrorMessage().length() != 0) {	// There is an error
                 outputString = parsedCommand.getErrorMessage();
-                displayInGUI(outputString, parsedCommand, false);
+                displayInGUI(outputString, parsedCommand, false, NULL_STRING);
             } else {	
 
                 if(parsedCommand != null){
@@ -198,20 +203,22 @@ public class Controller {
 
                 outputString = getFeedbackMessage(feedback);
                 boolean isFeedbackSuccess = feedback.getResult();
+                String displayList = feedback.getListNameIndicator();
                 assert outputString != null;
                 
-                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST)) {
+                if (outputString.equals(StringFormat.IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST) ||
+                    outputString.trim().equals(ERROR_CANNOT_LOAD_FILE)) {
                     GUI.openTutorial();
                 }
                 
                 if (outputString.equals(SAVE_SUCCESSFUL)) {
                     System.exit(0);
-                } else if (GUI.getShell() != null){      // Only display in GUI if the window is running
-                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess);
+                } else if (GUI.getShell() != null){      // Only display in GUI if it is running
+                    displayInGUI(outputString, parsedCommand, isFeedbackSuccess, displayList);
                 }
             }
         } catch (ParseException e) {
-            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true);
+            displayInGUI(ERROR_INVALID_PARAMETER, parsedCommand, true, NULL_STRING);
         }   
         return feedback;    // used exclusively for JUnit testing
     }
@@ -219,9 +226,9 @@ public class Controller {
     /**
      * Converts the user's input string into a Command object.
      * 
-     * @param inputCommandString	The user's input
+     * @param inputCommandString    The user's input
      * 
-     * @return						Command object containing the user's input 
+     * @return                      Command object containing the user's input 
      * 
      */
     private static Command convertStringToCommand(String inputCommandString) {
@@ -233,13 +240,13 @@ public class Controller {
     /**
      * Starts the analyzer, and passes the Command object to it
      * 
-     * @param inputCommandObject	Command object containing the user's input
+     * @param inputCmdObj   Command object containing the user's input
      * 
-     * @return						ExecutableCommand object with parsed data
+     * @return              ExecutableCommand object with parsed data
      * 
      */
-    public static ExecutableCommand analyzeInput(Command inputCommandObject) throws ParseException {
-        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCommandObject);
+    public static ExecutableCommand analyzeInput(Command inputCmdObj) throws ParseException {
+        ExecutableCommand parsedCommand = Analyzer.runAnalyzer(inputCmdObj);
 
         return parsedCommand;
     }
@@ -247,9 +254,9 @@ public class Controller {
     /**
      * Gets the feedback message to show to the user from the feedback object
      * 
-     * @param feedback		Feedback object containing the feedback message
+     * @param feedback      Feedback object containing the feedback message
      * 
-     * @return				String with feedback to show to user after each command
+     * @return              String with feedback to show to user after each command
      * 
      */
     private static String getFeedbackMessage(Feedback feedback) {
@@ -261,9 +268,9 @@ public class Controller {
     /**
      * Starts the executor, and passes the ExecutableCommand object to it
      * 
-     * @param command	ExecutableCommand object containing the parsed data
+     * @param command   ExecutableCommand object containing the parsed data
      * 
-     * @return			Feedback object with data to display in GUI
+     * @return          Feedback object with data to display in GUI
      * 
      */
     public static Feedback startExecutor(ExecutableCommand command) {
@@ -320,11 +327,14 @@ import org.eclipse.swt.widgets.Label;
 public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
-    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\" do not have to be typed): \n";
-    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> from <start date> " +
+    private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\"" +
+                                                     " do not have to be typed): \n";
+    private static final String HELP_TEXT_ADD = "\t    add <task name>; <description> " +
+                                                "from <start date> " +
     											"to <end time> @<location> #<priority>\n";
     private static final String HELP_TEXT_DELETE =  "\t    delete <index number>\n";
-    private static final String HELP_TEXT_UPDATE = "\t    update <index number> <attribute> <new data>\n";
+    private static final String HELP_TEXT_UPDATE = "\t    update <index number> " +
+                                                   "<attribute> <new data>\n";
     private static final String HELP_TEXT_SEARCH = "\t    search <attribute> <search for>\n";
     private static final String HELP_TEXT_SORT = "\t    sort <attribute>\n";
     private static final String HELP_TEXT_UNDO = "\t    undo\n";
@@ -335,8 +345,10 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static final String HELP_TEXT_TUTORIAL ="\t    tutorial\n";
     private static final String HELP_TEXT_SETTINGS ="\t    settings\n";
     private static final String HELP_TEXT_EXIT = "\t    exit\n";
-    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx, xx = am or pm)\n";
-	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the headings on the table";
+    private static final String HELP_TEXT_TIME_GUIDE = "\t    Time entry: (dd/mm/yyyy hh:mmxx," +
+                                                       "xx = am or pm)\n";
+	private static final String HELP_TEXT_ATTRIBUTES_GUIDE = "\t    Attributes: Refer to the" +
+                                                             "headings on the table";
     private static final String HELP_TEXT_SHORTCUT_MAXIMIZE = "\t    ALT+A to maximize application";
     private static final String HELP_TEXT_SHORTCUT_MINIMIZE = "\t    ALT+Z to minimize application";
     private static final String HELP_TEXT_PREVIOUS_COMMAND = "\t    ALT+up to get your previous command";
@@ -365,8 +377,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
 	private static int ongoingRowColorR;
 	private static int ongoingRowColorG;
 	private static int ongoingRowColorB;
-	private static int isNotifcationsOverdueEnabled;
-    private static int isNotifcationsOngoingEnabled;
+	private static int isNotifOverdueEnabled;
+    private static int isNotifOngoingEnabled;
 	private static List<Integer> settingsStorage;
 	
     private static StyledText inputField;
@@ -533,18 +545,19 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     /**
      * Updates the table in the GUI based on the given parameters
      *
-     * @param taskNumber    	         Index number of the task in the table
-     * @param startDate    		         Starting time of the given task
-     * @param endDate    		         Deadline of the given task
-     * @param name 				         Name of the given task
-     * @param location			         Location of the given task
-     * @param description		         Description for the given task
-     * @param priority			         Priority level of the given task
-     * @param action			         Action input by the user (add, delete, etc.)
-     * @param taskId                     The taskId of the task given by the user
-     * @param isLastRow			         Is this the last item 
-     * @param isHighlightedPassStart     Has the task passed the start time
-     * @param isHighlightedPassEnd       Has the task passed the end time
+     * @param taskNumber                Index number of the task in the table
+     * @param startDate                 Starting time of the given task
+     * @param endDate                   Deadline of the given task
+     * @param name                      Name of the given task
+     * @param location                  Location of the given task
+     * @param description               Description for the given task
+     * @param priority                  Priority level of the given task
+     * @param action                    Action input by the user (add, delete, etc.)
+     * @param taskId                    The taskId of the task given by the user
+     * @param isLastRow                 Is this the last item 
+     * @param isHighlightedPassStart    Has the task passed the start time
+     * @param isHighlightedPassEnd      Has the task passed the end time
+     * @param displayList               Which list is being displayed
      * 
      */
     public static void updateTable(int taskNumber, String startDate, String endDate,
@@ -552,9 +565,18 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                                    String description, String priority,
                                    String action, int taskId, boolean isLastRow,
                                    boolean isHighlightedPassStart,
-                                   boolean isHighlightedPassEnd) {
+                                   boolean isHighlightedPassEnd, 
+                                   String displayList) {
         
         stopTimerIfSortingOrSearching(action);
+        
+        System.out.println("Display list = " + displayList);
+        
+        if (displayList.equals(StringFormat.MAIN_TASK_LIST)) {
+            lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
+        } else if (displayList.equals(StringFormat.DONE_TASK_LIST)) {
+            lblIncompleteTasks.setText(LABEL_TASKS_DONE);
+        }
 
         // To prevent multiple of the same entries, we clear the whole table first
         if (taskNumber == 0 || action.equals("null")) {
@@ -562,7 +584,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             assert taskTable.getItemCount() == 0;
         }
 
-        if (!action.equals(StringFormat.CLEAR) && !startDate.equals(Controller.EMPTY_LIST)) {
+        if (!action.equals(StringFormat.CLEAR) && 
+            !startDate.equals(Controller.NULL_STRING)) {
             // Debugging code
             LOGGER.info("==============\n" +
                         "Writing to table (GUI):  \n" + 
@@ -576,14 +599,17 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                         "====================\n");
 
             // 1 row = 1 TableItem
-            TableItem item = newTableItem(taskTable, new String[] { (taskNumber+1) + ".", name, 
-                                                                     startDate, endDate, priority});
+            TableItem item = newTableItem(taskTable, 
+                                          new String[] { (taskNumber+1) + ".", name, 
+                                                          startDate, endDate, priority});
             
             TableItem item2;
             if (location.equals(EMPTY_STRING)) {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, location });
+                item2 = newTableItem(taskTable, 
+                                     new String[] {EMPTY_STRING, location });
             } else {
-                item2 = newTableItem(taskTable, new String[] {EMPTY_STRING, "at " + location });
+                item2 = newTableItem(taskTable, 
+                                     new String[] {EMPTY_STRING, "at " + location });
             }
             taskTable.setTopIndex(taskTable.getItemCount() - 1);
             
@@ -647,7 +673,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         if (isHighlightedPassStart == true) {
             colorOngoingRow(item);
             colorOngoingRow(item2);
-            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOngoingEnabled == 1) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifOngoingEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_START, name), EMPTY_STRING);
             }
         }
@@ -656,7 +682,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         if (isHighlightedPassEnd == true) {
             colorDeadlineRow(item);
             colorDeadlineRow(item2);
-            if (action.equals(StringFormat.DISPLAY) && isNotifcationsOverdueEnabled == 1) {
+            if (action.equals(StringFormat.DISPLAY) && isNotifOverdueEnabled == 1) {
                 NotifierDialog.notify(String.format(NOTIFICATION_OVERDUE, name), EMPTY_STRING);
             }
         }
@@ -679,10 +705,13 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         
         // Making tasks with high priority bold
         if (priority.trim().equals("high")) {
-            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.BOLD));
-            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 9, SWT.BOLD));
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                    11, SWT.BOLD));
+            item2.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                     9, SWT.BOLD));
         } else {
-            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 11, SWT.NORMAL));
+            item.setFont(SWTResourceManager.getFont("HelveticaNeueLT Pro 55 Roman", 
+                                                    11, SWT.NORMAL));
         }
     } 
     
@@ -841,8 +870,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         ongoingRowColorR = NULL_NUMBER;
         ongoingRowColorG = NULL_NUMBER;
         ongoingRowColorB = NULL_NUMBER;
-        isNotifcationsOverdueEnabled = NULL_NUMBER;
-        isNotifcationsOngoingEnabled = NULL_NUMBER;
+        isNotifOverdueEnabled = NULL_NUMBER;
+        isNotifOngoingEnabled = NULL_NUMBER;
     }
     
     /** 
@@ -857,11 +886,11 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         
         inputField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.CR) {                        // "enter" key
+                if (e.character == SWT.CR) {                                  // "enter" key
                     restorePreviousInputStack();
                     handleUserInput();
                 }
-                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {  // Ctrl+A     
+                if (e.stateMask == SWT.CTRL && e.keyCode == 'a') {            // Ctrl+A     
                     inputField.selectAll();
                 }
                 if (e.stateMask == SWT.ALT && e.keyCode == SWT.ARROW_UP) {    // Alt+Up arrow
@@ -922,12 +951,6 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
                     initializeDisplayRefreshTimer(refreshRate);
                     Controller.startController(StringFormat.DISPLAY);
                 } else {
-                    if (userInput.equals("display done")) { 
-                        lblIncompleteTasks.setText(LABEL_TASKS_DONE);
-                    } else if (userInput.equals("display")) {
-                        lblIncompleteTasks.setText(LABEL_TASKS_INCOMPLETE);
-                    }
-                    
                     previousUserInputStack.push(userInput);
                     Controller.startController(userInput);
 
@@ -973,31 +996,31 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
             LOGGER.info("==============\n" +
                         "Loading settings from file.\n" +
                         "====================\n");
-            refreshRate = settingsStorage.get(GUISettings.SETTINGS_NOTIF_FREQ_INDEX);
+            refreshRate = settingsStorage.get(GUISettings.NOTIF_FREQ_INDEX);
             refreshRate *= IN_MILLISECONDS_ONE_MINUTE;
-            deadlineRowColorR = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_R_INDEX);
-            deadlineRowColorG = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_G_INDEX);
-            deadlineRowColorB = settingsStorage.get(GUISettings.SETTINGS_DEADLINE_COLOR_B_INDEX);
-            ongoingRowColorR = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_R_INDEX);
-            ongoingRowColorG = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_G_INDEX);
-            ongoingRowColorB = settingsStorage.get(GUISettings.SETTINGS_ONGOING_COLOR_B_INDEX);
-            isNotifcationsOverdueEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
-            isNotifcationsOngoingEnabled = settingsStorage.get(GUISettings.SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+            deadlineRowColorR = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_R);
+            deadlineRowColorG = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_G);
+            deadlineRowColorB = settingsStorage.get(GUISettings.DEADLINE_INDEX_COLOR_B);
+            ongoingRowColorR = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_R);
+            ongoingRowColorG = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_G);
+            ongoingRowColorB = settingsStorage.get(GUISettings.ONGOING_INDEX_COLOR_B);
+            isNotifOverdueEnabled = settingsStorage.get(GUISettings.NOTIFICATIONS_OVERDUE_INDEX);
+            isNotifOngoingEnabled = settingsStorage.get(GUISettings.NOTIFICATIONS_ONGOING_INDEX);
         } else {
             LOGGER.info("==============\n" +
                         "No settings found. Using default settings.\n" +
                         "====================\n");
-            refreshRate = GUISettings.SETTINGS_DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
-            deadlineRowColorR = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_R;
-            deadlineRowColorG = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_G;
-            deadlineRowColorB = GUISettings.SETTINGS_DEFAULT_DEADLINE_COLOR_B;
+            refreshRate = GUISettings.DEFAULT_NOTIF_FREQ * IN_MILLISECONDS_ONE_MINUTE;
+            deadlineRowColorR = GUISettings.DEFAULT_DEADLINE_COLOR_R;
+            deadlineRowColorG = GUISettings.DEFAULT_DEADLINE_COLOR_G;
+            deadlineRowColorB = GUISettings.DEFAULT_DEADLINE_COLOR_B;
             
-            ongoingRowColorR = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_R;
-            ongoingRowColorG = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_G;
-            ongoingRowColorB = GUISettings.SETTINGS_DEFAULT_ONGOING_COLOR_B;
+            ongoingRowColorR = GUISettings.DEFAULT_ONGOING_COLOR_R;
+            ongoingRowColorG = GUISettings.DEFAULT_ONGOING_COLOR_G;
+            ongoingRowColorB = GUISettings.DEFAULT_ONGOING_COLOR_B;
             
-            isNotifcationsOverdueEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_OVERDUE;
-            isNotifcationsOngoingEnabled = GUISettings.SETTINGS_DEFAULT_NOTIF_ONGOING;
+            isNotifOverdueEnabled = GUISettings.DEFAULT_NOTIF_OVERDUE;
+            isNotifOngoingEnabled = GUISettings.DEFAULT_NOTIF_ONGOING;
         }
     }
     
@@ -1112,7 +1135,8 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
     private static void readingAndDispatching() {
         while(!shell.isDisposed()) {
 
-            if (displayTimer.isRunning() == false && isSortingOrSearching == false) {
+            if (displayTimer.isRunning() == false && 
+                isSortingOrSearching == false) {
                 startDisplayTimer();
             }
 
@@ -1146,72 +1170,72 @@ public class GUIExtraHelp extends Dialog {
 
     private static final int PAGE_LAST = 10;
     private static final int PAGE_FIRST = 1;
-    private static final String PAGE_ONE_TEXT = "Welcome to JOYTZ task manager!\n\nHere, you will be " +
-                                                "brought through a step by step guide on the available " +
-                                                "functions that are available.\n\nTo come back to this " +
-                                                "tutorial next time, type \"tutorial\". If you need a " +
-                                                "quick help, just type \"help\".\n\n In general, the commands used " +
-                                                "for input is usually first preceded by the action command, " +
-                                                "followed by the necessary attributes needed for the action.\n\n" +
-                                                "Click \"Next\" to continue.";
-    private static final String PAGE_TWO_TEXT = "How to add tasks:\nJOYTZ allows you to add many attributes " +
-                                                "to your tasks. The available attributes are:\n" +
-                                                "    - Start time\n    - End time\n    - Name\n" +
-                                                "    - Description\n    - Location\n    - Priority\n\n" +
-                                                "To add a task, simply follow this syntax (without typing " +
-                                                "the \"<\" and \">\"):\n" +
-                                                "add <name>; <description> from <start time> to <end time> " +
-                                                "@<location> #<priority>\n\n" +
-                                                "Not all attributes have to be filled when adding a task. " +
-                                                "For example, to only add the task's name, type:\n" +
-                                                "add <name>\n\nThe syntax needed for the time is:\n" +
-                                                "DD/MM/YYYY HH:MMxx, xx being am or pm.\n\nThe priorities " +
-                                                "allowed are:\n    - important\n    - medium\n    - low";
-    private static final String PAGE_THREE_TEXT = "How to edit tasks:\nYou can also edit tasks that have " +
-                                                  "been added. The syntax is (without typing " +
-                                                  "the \"<\" and \">\"):\n" +
-                                                  "update <index> <attribute> <new data>\n\n" +
-                                                  "    - The index can be found " +
-                                                  "on the first column of each task.\n    - The attribute " +
-                                                  "corresponds to the attribute that you want to change. " +
-                                                  "These attributes can be easily referenced from the table " +
-                                                  "headings.\n    - The new data is the what you want to update " +
-                                                  "the current entry to.";
-    private static final String PAGE_FOUR_TEXT = "How to delete tasks:\nThe syntax is (without typing " +
-                                                  "the \"<\" and \">\"):\ndelete <index>\n\n" +
-                                                 "The index can be found on the first column of each task.";
-    private static final String PAGE_FIVE_TEXT = "How to clear tasks:\nThe syntax is:\nclear\n\n" +
-                                                 "WARNING: This command deletes everything in your list.";
-    private static final String PAGE_SIX_TEXT = "How to undo/redo:\nTo undo, type:\nundo\n\nTo redo, type:\n" +
-                                                "redo\n\nNote: You are able to perform multiple undo and redo.";
-    private static final String PAGE_SEVEN_TEXT = "How to sort tasks:\nThe syntax is (without typing " +
-                                                  "the \"<\" and \">\"):\nsort <attribute>\n\n" +
-                                                  "The attribute can be easily referenced from the table headings.\n\n" +
-                                                  "You can also sort using multiple attributes. For example, to sort " +
-                                                  "using priority, then the end date:\n" +
-                                                  "\"sort priority end\".";
-    private static final String PAGE_EIGHT_TEXT = "How to search for tasks:\nThe syntax is (without typing " +
-                                                  "the \"<\" and \">\"):\n" +
-                                                  "search <attribute> <search for>\n\n" +
-                                                  "The attribute to search for can be referenced from the table " +
-                                                  "headings.\n\nYou can also search for multiple items. For example:\n" +
-                                                  "search <attribute1> <search for1>; <attribute2> <search for 2>\n\n" +
-                                                  "Note: searching is case-insensitive.\nAlso, " +                                                   
-                                                  "to bring back all your tasks in view, type \"display\"";
-    private static final String PAGE_NINE_TEXT = "How to display all tasks:\nThe syntax is:\ndisplay\n\n" +
-                                                 "After searching, you are not shown all your tasks. Using " +
-                                                 "this command brings all your tasks back up.";
-    private static final String PAGE_TEN_TEXT = "Extra features:\n\nThis tutorial can be brought back by " +
-                                                 "typing \"tutorial\".\nTo view a quick list of the command " +
-                                                 "syntax, type \"help\".\n\nJOYTZ also features keyboard " +
-                                                 "shortcuts to maximize and minimize the application. " +
-                                                 "To maximize the application, press \"ALT+A\". To " +
-                                                 "minimize the application, press \"ALT+Z\".\n\nColor-coded " +
-                                                 "tasks are also featured. By default, tasks in red have " +
-                                                 "passed the deadline, and those in green are still ongoing. " +
-                                                 "All remaining tasks are in black.\n\nTo change these colors " +
-                                                 "or change the frequency of notifications, type \"settings\".\n\n" +
-                                                 "To begin using JOYTZ, close this window!";
+    private static final String PAGE_ONE = "Welcome to JOYTZ task manager!\n\nHere, you will be " +
+                                           "brought through a step by step guide on the available " +
+                                           "functions that are available.\n\nTo come back to this " +
+                                           "tutorial next time, type \"tutorial\". If you need a " +
+                                           "quick help, just type \"help\".\n\n In general, the commands used " +
+                                           "for input is usually first preceded by the action command, " +
+                                           "followed by the necessary attributes needed for the action.\n\n" +
+                                           "Click \"Next\" to continue.";
+    private static final String PAGE_TWO = "How to add tasks:\nJOYTZ allows you to add many attributes " +
+                                           "to your tasks. The available attributes are:\n" +
+                                           "    - Start time\n    - End time\n    - Name\n" +
+                                           "    - Description\n    - Location\n    - Priority\n\n" +
+                                           "To add a task, simply follow this syntax (without typing " +
+                                           "the \"<\" and \">\"):\n" +
+                                           "add <name>; <description> from <start time> to <end time> " +
+                                           "@<location> #<priority>\n\n" +
+                                           "Not all attributes have to be filled when adding a task. " +
+                                           "For example, to only add the task's name, type:\n" +
+                                           "add <name>\n\nThe syntax needed for the time is:\n" +
+                                           "DD/MM/YYYY HH:MMxx, xx being am or pm.\n\nThe priorities " +
+                                           "allowed are:\n    - important\n    - medium\n    - low";
+    private static final String PAGE_THREE = "How to edit tasks:\nYou can also edit tasks that have " +
+                                             "been added. The syntax is (without typing " +
+                                             "the \"<\" and \">\"):\n" +
+                                             "update <index> <attribute> <new data>\n\n" +
+                                             "    - The index can be found " +
+                                             "on the first column of each task.\n    - The attribute " +
+                                             "corresponds to the attribute that you want to change. " +
+                                             "These attributes can be easily referenced from the table " +
+                                             "headings.\n    - The new data is the what you want to update " +
+                                             "the current entry to.";
+    private static final String PAGE_FOUR = "How to delete tasks:\nThe syntax is (without typing " +
+                                            "the \"<\" and \">\"):\ndelete <index>\n\n" +
+                                            "The index can be found on the first column of each task.";
+    private static final String PAGE_FIVE = "How to clear tasks:\nThe syntax is:\nclear\n\n" +
+                                            "WARNING: This command deletes everything in your list.";
+    private static final String PAGE_SIX = "How to undo/redo:\nTo undo, type:\nundo\n\nTo redo, type:\n" +
+                                           "redo\n\nNote: You are able to perform multiple undo and redo.";
+    private static final String PAGE_SEVEN = "How to sort tasks:\nThe syntax is (without typing " +
+                                             "the \"<\" and \">\"):\nsort <attribute>\n\n" +
+                                             "The attribute can be easily referenced from the table headings.\n\n" +
+                                             "You can also sort using multiple attributes. For example, to sort " +
+                                             "using priority, then the end date:\n" +
+                                             "\"sort priority end\".";
+    private static final String PAGE_EIGHT = "How to search for tasks:\nThe syntax is (without typing " +
+                                             "the \"<\" and \">\"):\n" +
+                                             "search <attribute> <search for>\n\n" +
+                                             "The attribute to search for can be referenced from the table " +
+                                             "headings.\n\nYou can also search for multiple items. For example:\n" +
+                                             "search <attribute1> <search for1>; <attribute2> <search for 2>\n\n" +
+                                             "Note: searching is case-insensitive.\nAlso, " +                                                   
+                                             "to bring back all your tasks in view, type \"display\"";
+    private static final String PAGE_NINE = "How to display all tasks:\nThe syntax is:\ndisplay\n\n" +
+                                            "After searching, you are not shown all your tasks. Using " +
+                                            "this command brings all your tasks back up.";
+    private static final String PAGE_TEN = "Extra features:\n\nThis tutorial can be brought back by " +
+                                           "typing \"tutorial\".\nTo view a quick list of the command " +
+                                           "syntax, type \"help\".\n\nJOYTZ also features keyboard " +
+                                           "shortcuts to maximize and minimize the application. " +
+                                           "To maximize the application, press \"ALT+A\". To " +
+                                           "minimize the application, press \"ALT+Z\".\n\nColor-coded " +
+                                           "tasks are also featured. By default, tasks in red have " +
+                                           "passed the deadline, and those in green are still ongoing. " +
+                                           "All remaining tasks are in black.\n\nTo change these colors " +
+                                           "or change the frequency of notifications, type \"settings\".\n\n" +
+                                           "To begin using JOYTZ, close this window!";
     
     
     protected Object result;
@@ -1264,55 +1288,55 @@ public class GUIExtraHelp extends Dialog {
     private void checkPageAndSetText(int currentPage, StyledText label) {
         switch(currentPage) {
             case 1:
-                label.setText(PAGE_ONE_TEXT);
+                label.setText(PAGE_ONE);
                 shell.setText("Tutorial");
                 btnBack.setEnabled(false);
                 break;
                 
             case 2:
-                label.setText(PAGE_TWO_TEXT);
+                label.setText(PAGE_TWO);
                 shell.setText("Tutorial: Add");
                 btnBack.setEnabled(true);
                 break;
                 
             case 3:
-                label.setText(PAGE_THREE_TEXT);
+                label.setText(PAGE_THREE);
                 shell.setText("Tutorial: Edit");
                 break;
                 
             case 4:
-                label.setText(PAGE_FOUR_TEXT);
+                label.setText(PAGE_FOUR);
                 shell.setText("Tutorial: Delete");
                 break;
                 
             case 5:
-                label.setText(PAGE_FIVE_TEXT);
+                label.setText(PAGE_FIVE);
                 shell.setText("Tutorial: Clear");
                 break;
                 
             case 6:
-                label.setText(PAGE_SIX_TEXT);
+                label.setText(PAGE_SIX);
                 shell.setText("Tutorial: Undo/Redo");
                 break;
                 
             case 7:
-                label.setText(PAGE_SEVEN_TEXT);
+                label.setText(PAGE_SEVEN);
                 shell.setText("Tutorial: Sort");
                 break;
                 
             case 8:
-                label.setText(PAGE_EIGHT_TEXT);
+                label.setText(PAGE_EIGHT);
                 shell.setText("Tutorial: Search");
                 break;
                 
             case 9:
-                label.setText(PAGE_NINE_TEXT);
+                label.setText(PAGE_NINE);
                 shell.setText("Tutorial: Display");
                 btnNext.setEnabled(true);
                 break;
                 
             case 10:
-                label.setText(PAGE_TEN_TEXT);
+                label.setText(PAGE_TEN);
                 shell.setText("Tutorial: Extra Features");
                 btnNext.setEnabled(false);
                 break;
@@ -1371,25 +1395,25 @@ public class GUISettings extends Dialog {
     private static final String ERROR_WRITING_FILE = "There was a problem " +
                                                      "writing to file: ";
     public static final String FILENAME = "settings.txt";
-    private static final int SETTINGS_TOTAL_NUMBER = 9;
-    public static final int SETTINGS_NOTIF_FREQ_INDEX = 0;
-    public static final int SETTINGS_DEADLINE_COLOR_R_INDEX = 1;
-    public static final int SETTINGS_DEADLINE_COLOR_G_INDEX = 2;
-    public static final int SETTINGS_DEADLINE_COLOR_B_INDEX = 3;
-    public static final int SETTINGS_ONGOING_COLOR_R_INDEX = 4;
-    public static final int SETTINGS_ONGOING_COLOR_G_INDEX = 5;
-    public static final int SETTINGS_ONGOING_COLOR_B_INDEX = 6;
-    public static final int SETTINGS_NOTIFICATIONS_ONGOING_INDEX = 7;
-    public static final int SETTINGS_NOTIFICATIONS_OVERDUE_INDEX = 8;
-    public static final int SETTINGS_DEFAULT_NOTIF_FREQ = 60;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_R = 255;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_G = 0;
-    public static final int SETTINGS_DEFAULT_DEADLINE_COLOR_B = 0;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_R = 0;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_G = 128;
-    public static final int SETTINGS_DEFAULT_ONGOING_COLOR_B = 0;
-    public static final int SETTINGS_DEFAULT_NOTIF_OVERDUE = 1;
-    public static final int SETTINGS_DEFAULT_NOTIF_ONGOING = 1;
+    private static final int TOTAL_NUMBER = 9;
+    public static final int NOTIF_FREQ_INDEX = 0;
+    public static final int DEADLINE_INDEX_COLOR_R = 1;
+    public static final int DEADLINE_INDEX_COLOR_G = 2;
+    public static final int DEADLINE_INDEX_COLOR_B = 3;
+    public static final int ONGOING_INDEX_COLOR_R = 4;
+    public static final int ONGOING_INDEX_COLOR_G = 5;
+    public static final int ONGOING_INDEX_COLOR_B = 6;
+    public static final int NOTIFICATIONS_ONGOING_INDEX = 7;
+    public static final int NOTIFICATIONS_OVERDUE_INDEX = 8;
+    public static final int DEFAULT_NOTIF_FREQ = 60;
+    public static final int DEFAULT_DEADLINE_COLOR_R = 255;
+    public static final int DEFAULT_DEADLINE_COLOR_G = 0;
+    public static final int DEFAULT_DEADLINE_COLOR_B = 0;
+    public static final int DEFAULT_ONGOING_COLOR_R = 0;
+    public static final int DEFAULT_ONGOING_COLOR_G = 128;
+    public static final int DEFAULT_ONGOING_COLOR_B = 0;
+    public static final int DEFAULT_NOTIF_OVERDUE = 1;
+    public static final int DEFAULT_NOTIF_ONGOING = 1;
     private static final int COLOR_RED_R = 255;
     private static final int COLOR_RED_G = 0;
     private static final int COLOR_RED_B = 0;
@@ -1433,10 +1457,10 @@ public class GUISettings extends Dialog {
 	 */
 
     private void displaySettingsInSettingsGUI() {
-        spinnerNotifFreq.setSelection(workingStorage.get(SETTINGS_NOTIF_FREQ_INDEX));
+        spinnerNotifFreq.setSelection(workingStorage.get(NOTIF_FREQ_INDEX));
         
-        int loadedNotifOverdue = workingStorage.get(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX);
-        int loadedNotifOngoing = workingStorage.get(SETTINGS_NOTIFICATIONS_ONGOING_INDEX);
+        int loadedNotifOverdue = workingStorage.get(NOTIFICATIONS_OVERDUE_INDEX);
+        int loadedNotifOngoing = workingStorage.get(NOTIFICATIONS_ONGOING_INDEX);
         if (loadedNotifOverdue == 1) {
             btnoverdueNotification.setSelection(true);
         } else {
@@ -1449,9 +1473,9 @@ public class GUISettings extends Dialog {
             btnstartedNotification.setSelection(false);
         }
         
-        int loadedDeadlineColorR = workingStorage.get(SETTINGS_DEADLINE_COLOR_R_INDEX);
-        int loadedDeadlineColorG = workingStorage.get(SETTINGS_DEADLINE_COLOR_G_INDEX);
-        int loadedDeadlineColorB = workingStorage.get(SETTINGS_DEADLINE_COLOR_B_INDEX);
+        int loadedDeadlineColorR = workingStorage.get(DEADLINE_INDEX_COLOR_R);
+        int loadedDeadlineColorG = workingStorage.get(DEADLINE_INDEX_COLOR_G);
+        int loadedDeadlineColorB = workingStorage.get(DEADLINE_INDEX_COLOR_B);
         if (loadedDeadlineColorR == COLOR_BLUE_R &&
             loadedDeadlineColorG == COLOR_BLUE_G &&
             loadedDeadlineColorB == COLOR_BLUE_B) {
@@ -1470,9 +1494,9 @@ public class GUISettings extends Dialog {
             tltmDeadlineGreen.setSelection(true);
         }
         
-        int loadedOngoingColorR = workingStorage.get(SETTINGS_ONGOING_COLOR_R_INDEX);
-        int loadedOngoingColorG = workingStorage.get(SETTINGS_ONGOING_COLOR_G_INDEX);
-        int loadedOngoingColorB = workingStorage.get(SETTINGS_ONGOING_COLOR_B_INDEX);
+        int loadedOngoingColorR = workingStorage.get(ONGOING_INDEX_COLOR_R);
+        int loadedOngoingColorG = workingStorage.get(ONGOING_INDEX_COLOR_G);
+        int loadedOngoingColorB = workingStorage.get(ONGOING_INDEX_COLOR_B);
         if (loadedOngoingColorR == COLOR_BLUE_R &&
             loadedOngoingColorG == COLOR_BLUE_G &&
             loadedOngoingColorB == COLOR_BLUE_B) {
@@ -1500,7 +1524,7 @@ public class GUISettings extends Dialog {
     
     private static void initializeVariables() {
         settingsFile = new File(FILENAME);
-        workingStorage = new ArrayList<Integer>(SETTINGS_TOTAL_NUMBER);
+        workingStorage = new ArrayList<Integer>(TOTAL_NUMBER);
     }
     
     // Checks whether the given file exists, and creates one if it does not
@@ -1520,18 +1544,18 @@ public class GUISettings extends Dialog {
     }
     
     private static void initializeWorkingStorage() {
-        for (int i = 0; i < SETTINGS_TOTAL_NUMBER; i++) {
+        for (int i = 0; i < TOTAL_NUMBER; i++) {
             workingStorage.add(-1);
         }
-        workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, SETTINGS_DEFAULT_NOTIF_FREQ);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_R);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_G);
-        workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, SETTINGS_DEFAULT_DEADLINE_COLOR_B);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_R);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_G);
-        workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, SETTINGS_DEFAULT_ONGOING_COLOR_B);
-        workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, SETTINGS_DEFAULT_NOTIF_ONGOING);
-        workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, SETTINGS_DEFAULT_NOTIF_OVERDUE);
+        workingStorage.set(NOTIF_FREQ_INDEX, DEFAULT_NOTIF_FREQ);
+        workingStorage.set(DEADLINE_INDEX_COLOR_R, DEFAULT_DEADLINE_COLOR_R);
+        workingStorage.set(DEADLINE_INDEX_COLOR_G, DEFAULT_DEADLINE_COLOR_G);
+        workingStorage.set(DEADLINE_INDEX_COLOR_B, DEFAULT_DEADLINE_COLOR_B);
+        workingStorage.set(ONGOING_INDEX_COLOR_R, DEFAULT_ONGOING_COLOR_R);
+        workingStorage.set(ONGOING_INDEX_COLOR_G, DEFAULT_ONGOING_COLOR_G);
+        workingStorage.set(ONGOING_INDEX_COLOR_B, DEFAULT_ONGOING_COLOR_B);
+        workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, DEFAULT_NOTIF_ONGOING);
+        workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, DEFAULT_NOTIF_OVERDUE);
     }
 
     // Reads the contents of the file and stores it in an array list
@@ -1586,54 +1610,54 @@ public class GUISettings extends Dialog {
 
             private void readSettingsFromDialog() {
                 int notificationFreq = Integer.parseInt(spinnerNotifFreq.getText());
-                workingStorage.set(SETTINGS_NOTIF_FREQ_INDEX, notificationFreq);
+                workingStorage.set(NOTIF_FREQ_INDEX, notificationFreq);
                 
                 if (btnoverdueNotification.getSelection() == true) {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 1);
+                    workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, 1);
                 } else {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_OVERDUE_INDEX, 0);
+                    workingStorage.set(NOTIFICATIONS_OVERDUE_INDEX, 0);
                 }
                 
                 if (btnstartedNotification.getSelection() == true) {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 1);
+                    workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, 1);
                 } else {
-                    workingStorage.set(SETTINGS_NOTIFICATIONS_ONGOING_INDEX, 0);
+                    workingStorage.set(NOTIFICATIONS_ONGOING_INDEX, 0);
                 }
                 
                 if (tltmOngoingRed.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_RED_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_RED_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_RED_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_RED_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_RED_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_RED_B);
                 } else if (tltmOngoingBlue.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_BLUE_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_BLUE_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_BLUE_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_BLUE_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_BLUE_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_BLUE_B);
                 } else if (tltmOngoingOrange.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_ORANGE_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_ORANGE_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_ORANGE_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_ORANGE_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_ORANGE_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_ORANGE_B);
                 } else if (tltmOngoingGreen.getSelection() == true) {
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_R_INDEX, COLOR_GREEN_R);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_G_INDEX, COLOR_GREEN_G);
-                    workingStorage.set(SETTINGS_ONGOING_COLOR_B_INDEX, COLOR_GREEN_B);
+                    workingStorage.set(ONGOING_INDEX_COLOR_R, COLOR_GREEN_R);
+                    workingStorage.set(ONGOING_INDEX_COLOR_G, COLOR_GREEN_G);
+                    workingStorage.set(ONGOING_INDEX_COLOR_B, COLOR_GREEN_B);
                 } 
                 
                 if (tltmDeadlineRed.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_RED_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_RED_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_RED_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_RED_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_RED_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_RED_B);
                 } else if (tltmDeadlineBlue.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_BLUE_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_BLUE_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_BLUE_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_BLUE_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_BLUE_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_BLUE_B);
                 } else if (tltmDeadlineOrange.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_ORANGE_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_ORANGE_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_ORANGE_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_ORANGE_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_ORANGE_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_ORANGE_B);
                 } else if (tltmDeadlineGreen.getSelection() == true) {
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_R_INDEX, COLOR_GREEN_R);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_G_INDEX, COLOR_GREEN_G);
-                    workingStorage.set(SETTINGS_DEADLINE_COLOR_B_INDEX, COLOR_GREEN_B);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_R, COLOR_GREEN_R);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_G, COLOR_GREEN_G);
+                    workingStorage.set(DEADLINE_INDEX_COLOR_B, COLOR_GREEN_B);
                 } 
             }
         });
@@ -1658,22 +1682,26 @@ import org.junit.Test;
 public class TestController {
     private static final String INPUT_INVALID = "sdfsf";
     
-    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
-                                                "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS #medium";
-    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends; discuss about CS2103T project " +
-                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am @NUS";
-    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends; discuss about CS2103T project " +
-                                                        "from 24/02/2015 11:30am to 25/02/2015 11:45am #medium";
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about" +
+                                                " CS2103T project from 24/02/2015 11:30am " +
+                                                "to 25/02/2015 11:45am @NUS #medium";
+    private static final String INPUT_ADD_NO_PRIORITY = "add meeting with friends; discuss " +
+                                                        "about CS2103T project from 24/02/2015 " +
+                                                        "11:30am to 25/02/2015 11:45am @NUS";
+    private static final String INPUT_ADD_NO_LOCATION = "add meeting with friends; discuss about " +
+                                                        "CS2103T project from 24/02/2015 11:30am " +
+                                                        "to 25/02/2015 11:45am #medium";
     private static final String INPUT_ADD_NO_LOCATION_AND_PRIORITY = "add meeting with friends; " +
                                                                      "discuss about CS2103T project " +
-                                                                     "from 24/02/2015 11:30am to 25/02/2015 11:45am";
+                                                                     "from 24/02/2015 11:30am to " +
+                                                                     "25/02/2015 11:45am";
     private static final String INPUT_ADD_ONLY_NAME = "add meeting with friends";
     
     private static final String EXECUTABLECOMMAND_ACTION_ADD = "add";
     private static final String EXECUTABLECOMMAND_NAME = "meeting with friends";
     private static final String EXECUTABLECOMMAND_DESCRIPTION = "discuss about CS2103T project";
-    private static final String EXECUTABLECOMMAND_START_TIME = "1424748600000";     // 24/02/2015 11:30am
-    private static final String EXECUTABLECOMMAND_END_TIME = "1424835900000";       // 25/02/2015 11:45am
+    private static final String EXECUTABLECOMMAND_START_TIME = "1424748600000";   // 24/02/2015 11:30am
+    private static final String EXECUTABLECOMMAND_END_TIME = "1424835900000";     // 25/02/2015 11:45am
     private static final String EXECUTABLECOMMAND_LOCATION = "NUS";
     private static final String EXECUTABLECOMMAND_PRIORITY = "medium";
     
@@ -1694,14 +1722,18 @@ public class TestController {
     private static final String ERROR_EXECUTOR_UNSUCCESSFUL = "Executor unsuccessful";
     
     private static final String SUCCESS_OUTPUT_ADD = "meeting with friends is added successfully.\n";
-    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about CS2103T project~" +
-                                                     "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~medium\n";
-    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about CS2103T project~" + 
-                                                             "2015.02.24 at 11:30~2015.02.25 at 11:45~NUS~ \n";
+    private static final String SUCCESS_OUTPUT_ALL = "meeting with friends~discuss about " +
+                                                     "CS2103T project~2015.02.24 at 11:30~" +
+                                                     "2015.02.25 at 11:45~NUS~medium\n";
+    private static final String SUCCESS_OUTPUT_NO_PRIORITY = "meeting with friends~discuss about" +
+                                                             " CS2103T project~2015.02.24 at 11:30~" +
+                                                             "2015.02.25 at 11:45~NUS~ \n";
     private static final String SUCCESS_OUTPUT_NO_LOCATION_AND_PRIORITY = "meeting with friends~" +
                                                                           "discuss about CS2103T project~" +
-                                                                          "2015.02.24 at 11:30~2015.02.25 at 11:45~ ~ \n";
-    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30~ ~ ~medium\n";
+                                                                          "2015.02.24 at 11:30~" +
+                                                                          "2015.02.25 at 11:45~ ~ \n";
+    private static final String SUCCESS_OUTPUT_ONLY_NAME = "meeting with friends~ ~2015.02.24 at 11:30" +
+                                                           "~ ~ ~medium\n";
     
     private static final String EMPTY_STRING = "";
 
@@ -1970,12 +2002,13 @@ import org.junit.Test;
 
 
 public class TestSystem {
-    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about CS2103T project " +
-                                                "from 24/02/2015 11:30am to 25/02/2015 11:45pm @NUS #medium";
+    private static final String INPUT_ADD_ALL = "add meeting with friends; discuss about " +
+                                                "CS2103T project from 24/02/2015 11:30am to " +
+                                                "25/02/2015 11:45pm @NUS #medium";
     private static final String INPUT_ADD_ALL_HIGH_PRIORITY = "add meeting with friends; " +
                                                               "discuss about CS2103T project " +
-                                                              "from 24/02/2015 11:30am to 25/02/2015 11:45pm " +
-                                                              "@NUS #important";
+                                                              "from 24/02/2015 11:30am to " +
+                                                              "25/02/2015 11:45pm @NUS #important";
     
     private static final String INPUT_UPDATE_NAME = "update 1 name chat with friends";
     private static final String INPUT_UPDATE_PRIORITY = "update 1 priority low";
@@ -1991,22 +2024,28 @@ public class TestSystem {
     private static final String FEEDBACK_RESULT_MESSAGE_DISPLAY = "Tasks are displayed successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_DELETE = "Task is deleted successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_CLEAR = "All tasks are cleared successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Category \"priority\" is sorted successfully.\n";
-    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "\"high\" in \"priority\" is searched successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SORT = "Categories are sorted successfully.\n";
+    private static final String FEEDBACK_RESULT_MESSAGE_SEARCH = "Tasks are searched successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_UNDO = "Undo one step successfully.\n";
     private static final String FEEDBACK_RESULT_MESSAGE_REDO = "Redo one step successfully.\n";
-    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
-    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~medium\n";
-    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~low\n";
-    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_1 = "meeting with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_2 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~medium\n";
+    private static final String FEEDBACK_RESULT_STRING_3 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30" +
+                                                           "~2015.02.25 at 23:45~NUS~low\n";
+    private static final String FEEDBACK_RESULT_STRING_4 = "chat with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~UTown~low\n";
     private static final String FEEDBACK_RESULT_STRING_5 = "chat with friends~talk about movies~"+
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~UTown~low\n";
-    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about CS2103T project~" +
-                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~NUS~high\n";
+                                                           "2015.02.24 at 11:30~2015.02.25 at 23:45~" +
+                                                           "UTown~low\n";
+    private static final String FEEDBACK_RESULT_STRING_6 = "meeting with friends~discuss about " +
+                                                           "CS2103T project~2015.02.24 at 11:30~" +
+                                                           "2015.02.25 at 23:45~NUS~high\n";
     
     @Test
     public void systemTestAdd() {
@@ -2018,7 +2057,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -2031,31 +2071,36 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test updating the added task
         // Update name
         systemTestResult = Controller.startController(INPUT_UPDATE_NAME);
         assertEquals(true, systemTestResult.getResult());
-        assertEquals(FEEDBACK_RESULT_STRING_2, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_2, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update priority
         systemTestResult = Controller.startController(INPUT_UPDATE_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_3, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_3, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update location
         systemTestResult = Controller.startController(INPUT_UPDATE_LOCATION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_4, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_4, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
         
         // Update description
         systemTestResult = Controller.startController(INPUT_UPDATE_DESCRIPTION);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_UPDATE, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_5, systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_5, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
     }
     
     @Test
@@ -2068,7 +2113,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test clear
         systemTestResult = Controller.startController(StringFormat.CLEAR);
@@ -2087,13 +2133,15 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test display
         systemTestResult = Controller.startController(StringFormat.DISPLAY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_DISPLAY, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -2106,7 +2154,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test delete
         systemTestResult = Controller.startController(INPUT_DELETE_1);
@@ -2125,7 +2174,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
@@ -2133,14 +2183,17 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test sort
         systemTestResult = Controller.startController(INPUT_SORT_PRIORITY);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_SORT, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 2));
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 2));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
     
     @Test
@@ -2153,7 +2206,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
         
         // Test add
         systemTestResult = Controller.startController(INPUT_ADD_ALL_HIGH_PRIORITY);
@@ -2161,7 +2215,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_6, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_6, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test search
         systemTestResult = Controller.startController(INPUT_SEARCH_PRIORITY_HIGH);
@@ -2180,7 +2235,8 @@ public class TestSystem {
 
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_ADD, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
 
         // Test undo
         systemTestResult = Controller.startController(StringFormat.UNDO);
@@ -2192,7 +2248,8 @@ public class TestSystem {
         systemTestResult = Controller.startController(StringFormat.REDO);
         assertEquals(true, systemTestResult.getResult());
         assertEquals(FEEDBACK_RESULT_MESSAGE_REDO, systemTestResult.getMessageShowToUser());
-        assertEquals(FEEDBACK_RESULT_STRING_1, systemTestResult.getTaskStringList().get(listSize - 1));
+        assertEquals(FEEDBACK_RESULT_STRING_1, 
+                     systemTestResult.getTaskStringList().get(listSize - 1));
     }
 
 }

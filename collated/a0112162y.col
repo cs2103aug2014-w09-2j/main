@@ -50,7 +50,7 @@ public class Analyzer {
 			outputCommand = handleUpdateCommand(commandArgument);
 			break;
 		case StringFormat.DISPLAY:
-			outputCommand = handlDisplayCommand(commandArgument);
+			outputCommand = handleDisplayCommand(commandArgument);
 			break;
 		case StringFormat.UNDO:
 			outputCommand = handleUndoCommand();
@@ -84,10 +84,10 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "add" action and contains all
+	 * Creates an ExecutableCommand object with "add" action and sets all
 	 * relevant information: task name, task description, task start time, task
-	 * end time, task location, task priority. Task name must be indicated while
-	 * the rest can be absent.
+	 * end time, task location, task priority. Task name must be set while the
+	 * rest can be omitted.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -127,7 +127,7 @@ public class Analyzer {
 
 				return tempCommand;
 			}
-
+			
 			startTiming = TimeHandler.inputTimingConvertor(temp);
 
 			if (startTiming == null) {
@@ -183,9 +183,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "delete" action and contains all
-	 * relevant information: task index. Task index must be indicated and it can
-	 * be duplicated to perform multiple delete action.
+	 * Creates an ExecutableCommand object with "delete" action and sets all
+	 * relevant information: task index. Task index must be set and it can be
+	 * indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -216,9 +216,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "update" action and contains all
+	 * Creates an ExecutableCommand object with "update" action and sets all
 	 * relevant information: task index, update indicator, update key. All
-	 * attributes stated above must be indicated.
+	 * attributes stated above must be set.
 	 * 
 	 * @param arg
 	 *            The user Argument
@@ -244,6 +244,9 @@ public class Analyzer {
 			return tempCommand;
 		} else if (!StringFormat.isValidIndicator(arg[1])) {
 			tempCommand.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+			return tempCommand;
+		} else if (arg.length == 2) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
 			return tempCommand;
 		}
 
@@ -323,15 +326,16 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "display" action and contains all
+	 * Creates an ExecutableCommand object with "display" action and sets all
 	 * relevant information: display indicator. Display indicator can be
-	 * ignored. In this case, default display operation will be executed.
+	 * ignored. In such case, it will be recognized as default display action
+	 * which will display the main task list.
 	 * 
 	 * @param arg
 	 *            The user argument
 	 * @return ExecutableCommand containing all relevant information
 	 */
-	private static ExecutableCommand handlDisplayCommand(String[] arg) {
+	private static ExecutableCommand handleDisplayCommand(String[] arg) {
 		assertNotNull("User argument is null", arg);
 
 		ExecutableCommand tempCommand = new ExecutableCommand(
@@ -352,72 +356,9 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "undo" action
-	 * 
-	 * @return ExecutableCommand with undo action indicated
-	 */
-	private static ExecutableCommand handleUndoCommand() {
-		return new ExecutableCommand(StringFormat.UNDO);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "redo" action
-	 * 
-	 * @return ExecutableCommand with redo action indicated
-	 */
-	private static ExecutableCommand handleRedoCommand() {
-		return new ExecutableCommand(StringFormat.REDO);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "clear" action
-	 * 
-	 * @return ExecutableCommand with clear action indicated
-	 */
-	private static ExecutableCommand handleClearCommand() {
-		return new ExecutableCommand(StringFormat.CLEAR);
-	}
-
-	/**
-	 * create an ExecutableCommand object with "sort" action and contains all
-	 * relevant information: sort indicator. Sort indicator must be indicated
-	 * and it can be duplicated to perform multiple sort action.
-	 * 
-	 * @param arg
-	 *            The user argument
-	 * @return ExecutableCommand containing all relevant information
-	 */
-	private static ExecutableCommand handleSortCommand(String[] arg) {
-		assertNotNull("User argument is null", arg);
-
-		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
-
-		if (arg.length == 0) {
-			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
-
-			return tempCommand;
-		}
-
-		for (int i = 0; i < arg.length; i++) {
-			String sortIndicator = arg[i].toLowerCase();
-
-			if (!StringFormat.isValidIndicator(sortIndicator)) {
-				tempCommand
-						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
-
-				return tempCommand;
-			}
-			tempCommand.setIndicator(sortIndicator);
-		}
-
-		return tempCommand;
-	}
-
-	/**
-	 * create an ExecutableCommand object with "search" action and contains all
-	 * relevant information:search indicator and search key. Search indicator
-	 * and search key must be indicated and they can be duplicated to perform
-	 * multiple search action.
+	 * Creates an ExecutableCommand object with "search" action and sets all
+	 * relevant information: search indicator and search key. Search indicator
+	 * and search key must be set and they can be indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -514,9 +455,44 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "done" action and contains all
-	 * relevant information: task index. Task index must be indicated and it can
-	 * be duplicated to perform multiple done action.
+	 * Creates an ExecutableCommand object with "sort" action and sets all
+	 * relevant information: sort indicator. Sort indicator must be set and it
+	 * can be indicated more than once.
+	 * 
+	 * @param arg
+	 *            The user argument
+	 * @return ExecutableCommand containing all relevant information
+	 */
+	private static ExecutableCommand handleSortCommand(String[] arg) {
+		assertNotNull("User argument is null", arg);
+
+		ExecutableCommand tempCommand = new ExecutableCommand(StringFormat.SORT);
+
+		if (arg.length == 0) {
+			tempCommand.setErrorMessage(StringFormat.ERROR_NULL_INDICATOR);
+
+			return tempCommand;
+		}
+
+		for (int i = 0; i < arg.length; i++) {
+			String sortIndicator = arg[i].toLowerCase();
+
+			if (!StringFormat.isValidIndicator(sortIndicator)) {
+				tempCommand
+						.setErrorMessage(StringFormat.ERROR_INVALID_INDICATOR);
+
+				return tempCommand;
+			}
+			tempCommand.setIndicator(sortIndicator);
+		}
+
+		return tempCommand;
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "done" action and sets all
+	 * relevant information: task index. Task index must be set and it can
+	 * indicated more than once.
 	 * 
 	 * @param arg
 	 *            The user argument
@@ -546,7 +522,34 @@ public class Analyzer {
 	}
 
 	/**
-	 * create an ExecutableCommand object with "exit" action
+	 * Creates an ExecutableCommand object with "undo" action.
+	 * 
+	 * @return ExecutableCommand with undo action indicated
+	 */
+	private static ExecutableCommand handleUndoCommand() {
+		return new ExecutableCommand(StringFormat.UNDO);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "redo" action.
+	 * 
+	 * @return ExecutableCommand with redo action indicated
+	 */
+	private static ExecutableCommand handleRedoCommand() {
+		return new ExecutableCommand(StringFormat.REDO);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "clear" action.
+	 * 
+	 * @return ExecutableCommand with clear action indicated
+	 */
+	private static ExecutableCommand handleClearCommand() {
+		return new ExecutableCommand(StringFormat.CLEAR);
+	}
+
+	/**
+	 * Creates an ExecutableCommand object with "exit" action.
 	 * 
 	 * @return ExecutableCommand with exit action indicated
 	 */
@@ -839,8 +842,8 @@ public class ExecutableCommand {
 	/**
 	 * current task list and done task list indicators
 	 */
-	public static final String MAIN_TASK_LIST = "main task list";
-	public static final String DONE_TASK_LIST = "done task list";
+	public static final String MAIN_TASK_LIST = "mainTaskList";
+	public static final String DONE_TASK_LIST = "doneTaskList";
 
 	/**
 	 * invalid and null indicators
@@ -928,6 +931,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestAnalyzer {
 	
 	private static Date currentDate = new Date(System.currentTimeMillis());
@@ -942,6 +946,8 @@ public class TestAnalyzer {
 	private static Date d6 = new Date(currentYear, currentMonth, currentDay,
 			23, 59);
 	private static Date d7 = new Date(115, 9, 20, 16, 50);
+	private static Date d8 = new Date(115, 9, 14, 16, 50);
+
 
 	@Test
 	public void testHandleAddCommand() throws ParseException {
@@ -983,11 +989,20 @@ public class TestAnalyzer {
 		Command test27 = new Command(
 				"add assignment from Ms Khoo from 20/10/2015 2:38AM to 4:50pm");
 		Command test28 = new Command("add assignment from");
-		Command test29 = new Command("add assignement on");
+		Command test29 = new Command("add assignment on");
 		Command test30 = new Command("add assignment from");
-		Command test31 = new Command("add assignement due at");
+		Command test31 = new Command("add assignment due at");
 		Command test32 = new Command("add assignment due on");
-		Command test33 = new Command("add assignement at");
+		Command test33 = new Command("add assignment at");
+		Command test34 = new Command("add assignment at 3:4pm");
+		Command test35 = new Command("add assignment at 3p:49am");
+		Command test36 = new Command("add assignment on 3/5p/2016");
+		Command test37 = new Command("add assignment on 4a/3/2015");
+		Command test38 = new Command("add assignment due at 3p:49am");
+		Command test39 = new Command("add assignment due on 3/5p/2016");
+		Command test40 = new Command("add assignment from 4a/3/2015 to 4:50pm");
+		Command test41 = new Command("add assignment from 4/3/2015 to 4:5ppm");
+		Command test42 = new Command("add assignment from 14/10/2015 to 4:50pm");
 
 		ExecutableCommand expected = new ExecutableCommand(StringFormat.ADD);
 		expected.setErrorMessage(StringFormat.ERROR_NULL_TASK);
@@ -1020,6 +1035,7 @@ public class TestAnalyzer {
 
 		ExecutableCommand expected5 = new ExecutableCommand(StringFormat.ADD);
 		expected5.setErrorMessage(StringFormat.ERROR_NULL_ARGUMENT);
+		expected5.setTaskEnd(String.valueOf(d8.getTime()));
 
 		// test case 1: test if the error catcher is working
 		assertEquals("null argument case is not handled",
@@ -1193,6 +1209,56 @@ public class TestAnalyzer {
 		assertEquals("fail to detect null argument",
 				expected5.getErrorMessage(), Analyzer.runAnalyzer(test33)
 						.getErrorMessage());
+		
+		// test case 35: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test34)
+						.getErrorMessage());
+		
+		// test case 36: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test35)
+						.getErrorMessage());
+		
+		// test case 37: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test36)
+						.getErrorMessage());
+		
+		// test case 38: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test37)
+						.getErrorMessage());
+		
+		// test case 39: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test38)
+						.getErrorMessage());
+		
+		// test case 40: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test39)
+						.getErrorMessage());
+		
+		// test case 41: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task start time",
+				expected2.getErrorMessage(), Analyzer.runAnalyzer(test40)
+						.getErrorMessage());
+		
+		// test case 42: test if the invalid time is able to be detected
+		assertEquals("fail to detect invalid task end time",
+				expected4.getErrorMessage(), Analyzer.runAnalyzer(test41)
+						.getErrorMessage());
+		
+		// test case 43: test if the timed task can be added correctly
+		assertEquals("fail to get timed task to be added",
+				expected.getTaskStart(), Analyzer.runAnalyzer(test42)
+						.getTaskStart());
+		
+		// test case 44: test if the timed task can be added correctly
+		assertEquals("fail to get timed task to be added",
+				expected5.getTaskEnd(), Analyzer.runAnalyzer(test42)
+						.getTaskEnd());
 	}
 
 	@Test
@@ -1267,6 +1333,7 @@ public class TestAnalyzer {
 		assertEquals("multiple delete action is not analyzed correctly",
 				expected2.getTaskId(), Analyzer.runAnalyzer(test9).getTaskId());
 
+		
 	}
 
 	@Test
@@ -1963,10 +2030,11 @@ public class TestAnalyzer {
 	 */
 
 
+import java.text.ParseException;
 import java.util.Date;
 
 public class TimeHandler {
-	
+
 	public static ExecutableCommand timingAnalyzer(String start, String end,
 			ExecutableCommand tempCommand) {
 		Long startTiming = (long) 0;
@@ -1995,10 +2063,12 @@ public class TimeHandler {
 			} else {
 				if (tempStartDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+							StringFormat.ERROR_INVALID_EARLIER_TIME,
+							StringFormat.START));
 				} else if (tempEndDate.before(currentDate)) {
 					tempCommand.setErrorMessage(String.format(
-							StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+							StringFormat.ERROR_INVALID_EARLIER_TIME,
+							StringFormat.END));
 				} else {
 					tempCommand
 							.setErrorMessage(StringFormat.ERROR_INVALID_END_EARLIER_THAN_START);
@@ -2010,20 +2080,23 @@ public class TimeHandler {
 				tempCommand.setTaskStart(String.valueOf(startTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.START));
+						StringFormat.ERROR_INVALID_EARLIER_TIME,
+						StringFormat.START));
 			}
 		} else if (endTiming != 0) {
 			if (tempEndDate.after(currentDate)) {
 				tempCommand.setTaskEnd(String.valueOf(endTiming));
 			} else {
 				tempCommand.setErrorMessage(String.format(
-						StringFormat.ERROR_INVALID_EARLIER_TIME, StringFormat.END));
+						StringFormat.ERROR_INVALID_EARLIER_TIME,
+						StringFormat.END));
 			}
 		}
 
 		return tempCommand;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String inputTimingConvertor(String timing) {
 		if (timing.equals(StringFormat.EMPTY)) {
 			return StringFormat.EMPTY;
@@ -2035,14 +2108,22 @@ public class TimeHandler {
 		Date convertedDate;
 
 		if (dateTime.length >= 1) {
-			result = dateTimeSeparator(dateTime[0], result);
+			try {
+				result = dateTimeSeparator(dateTime[0], result);
+			} catch (ParseException e) {
+				return null;
+			}
 			if (result == null) {
 				return null;
 			}
 		}
 
 		if (dateTime.length == 2) {
-			result = dateTimeSeparator(dateTime[1], result);
+			try {
+				result = dateTimeSeparator(dateTime[1], result);
+			} catch (ParseException e) {
+				return null;
+			}
 			if (result == null) {
 				return null;
 			}
@@ -2107,16 +2188,6 @@ public class TimeHandler {
 		return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
 	}
 
-	private static boolean isSameDate(Date first, Date second) {
-		return first.getYear() == second.getYear()
-				&& first.getMonth() == second.getMonth()
-				&& first.getDay() == second.getDay();
-	}
-
-	private static boolean isTimeIndicated(Date d) {
-		return d.getHours() != 0 || d.getMinutes() != 0;
-	}
-
 	private static boolean checkTimeExistence(int[] result) {
 		return result[3] != -1 && result[4] != -1;
 	}
@@ -2125,7 +2196,8 @@ public class TimeHandler {
 		return result[0] != -1 && result[1] != -1 && result[2] != -1;
 	}
 
-	private static int[] dateTimeSeparator(String dateTime, int[] result) {
+	private static int[] dateTimeSeparator(String dateTime, int[] result)
+			throws ParseException {
 		String[] temp;
 		int year = result[0];
 		int month = result[1];
@@ -2136,13 +2208,23 @@ public class TimeHandler {
 
 		if (dateTime.contains(StringFormat.DATE_INDICATOR)) {
 			temp = dateTime.trim().split(StringFormat.DATE_INDICATOR);
-			day = Integer.parseInt(temp[0]);
-			month = Integer.parseInt(temp[1]);
-			year = Integer.parseInt(temp[2]);
+
+			try {
+				day = Integer.parseInt(temp[0]);
+				month = Integer.parseInt(temp[1]);
+				year = Integer.parseInt(temp[2]);
+			} catch (Exception e) {
+				return null;
+			}
 		} else if (dateTime.contains(StringFormat.TIME_INDICATOR)) {
 			if (dateTime.length() == 7) {
-				hour = Integer.parseInt(dateTime.substring(0, 2));
-				minute = Integer.parseInt(dateTime.substring(3, 5));
+				try {
+					hour = Integer.parseInt(dateTime.substring(0, 2));
+					minute = Integer.parseInt(dateTime.substring(3, 5));
+				} catch (Exception e) {
+					return null;
+				}
+
 				indicator = dateTime.substring(5).toLowerCase();
 
 				if (indicator.equals(StringFormat.PM_INDICATOR) && hour != 12) {
@@ -2151,12 +2233,18 @@ public class TimeHandler {
 					} else {
 						hour = hour + 12;
 					}
-				} else if (indicator.equals(StringFormat.AM_INDICATOR) && hour == 12) {
+				} else if (indicator.equals(StringFormat.AM_INDICATOR)
+						&& hour == 12) {
 					hour = 0;
 				}
 			} else {
-				hour = Integer.parseInt(dateTime.substring(0, 1));
-				minute = Integer.parseInt(dateTime.substring(2, 4));
+				try {
+					hour = Integer.parseInt(dateTime.substring(0, 1));
+					minute = Integer.parseInt(dateTime.substring(2, 4));
+				} catch (Exception e) {
+					return null;
+				}
+
 				indicator = dateTime.substring(4).toLowerCase();
 
 				if (indicator.equals(StringFormat.PM_INDICATOR)) {
@@ -2196,7 +2284,6 @@ public class TimeHandler {
 
 import static org.junit.Assert.assertNotNull;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class UserInputHandler {

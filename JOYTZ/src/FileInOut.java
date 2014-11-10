@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  * FileInOut class in charge of save taskList from memory to .txt file and
  * reload a txt file to taskList.
  * 
- * @author zk
+ *
  *
  */
 public class FileInOut {
