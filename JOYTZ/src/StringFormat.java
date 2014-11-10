@@ -1,8 +1,8 @@
 import java.text.SimpleDateFormat;
 
 public class StringFormat {
-	
-	//@author A0119378U
+
+	// @author A0119378U
 	/**
 	 * Format and Static String in FileInOut
 	 */
@@ -17,7 +17,7 @@ public class StringFormat {
 	public static final String IO_TASK_STRING_FORMAT_SAVED_IN_FILE = "%s-%s-%s-%s-%s-%s\n";
 	public static final String IO_MESSAGE_TASK_LIST_FILE_NOT_EXIST = "TaskListFile not exist.\n";
 	public static final String IO_ERROR_INVALID_TASK_RECORD = "Invalid task record: %s\n";
-	
+
 	// @author A0119378U
 	/**
 	 * Message show to the user in Executor
@@ -25,16 +25,17 @@ public class StringFormat {
 	public static final String EXE_ERROR_NULL_EXECUTABLE_COMMAND = "Null command.\n";
 	public static final String EXE_ERROR_INVALID_COMMAND_ACTION = "Invalid command action: %s.\n";
 	// Add
-	public static final String EXE_MSG_ADD_SUCCESSFUL = "%s is added successfully.\n";
+	public static final String EXE_MSG_ADD_SUCCESSFUL = "\"%s\" is added successfully.\n";
 	// Delete
-	public static final String EXE_MSG_DELETE_SUCCESSFUL = "Task is deleted successfully.\n";
+	public static final String EXE_MSG_DELETE_SUCCESSFUL = "A task is deleted successfully.\n";
+	public static final String MSG_DELETE_MULTIPLE_TASKS_SUCCESSFUL = "%d tasks are deleted successfully.\n";
 	// Done
 	public static final String EXE_MSG_DONE_SUCCESSFUL = "Add done task to history successfully.\n";
 	// Display
 	public static final String EXE_ERROR_NO_TASK_LIST_INDICATOR = "No Task List indicator.\n";
 	// Clear
 	public static final String EXE_MSG_CLEAR_SUCCESSFUL = "All tasks are cleared successfully.\n";
-	
+
 	// @author A0119378U
 	/**
 	 * Message show to the user in Storage
@@ -53,14 +54,14 @@ public class StringFormat {
 	public static final String STR_ERROR_INCONSISTENT_TASKID = "Task in displayList is not consistent with either mainTaskList nor History.";
 	// In Display, Clean Method
 	public static final String STR_ERROR_INVALID_TASK_LIST_INDICATOR = "No such taskList. List name : %s.\n";
-	
+
 	// In Done Method
 	public static final String STR_ERROR_CANNOT_DONE_TASK_IN_DONE_LIST = "The task has been done.\n";
-	
+
 	// query the display list
 	public static final String STR_ERROR_DISPLAY_LIST_BELONG_TO_NO_LIST = "This list belongs to no list.\n";
-	
-	//@author A0112162Y
+
+	// @author A0112162Y
 	/**
 	 * error messages used in Analyzer and TimeHandler
 	 */
