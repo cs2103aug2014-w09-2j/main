@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 
 
 public class GUISettings extends Dialog {
+    private final static Logger LOGGER = Logger.getLogger(Controller.class.getName());
     private static final String ERROR_CREATE_FILE = "There was a problem " +
                                                     "creating a new file: ";
     private static final String ERROR_READING_FILE = "There was a problem " +
@@ -304,6 +306,9 @@ public class GUISettings extends Dialog {
         Path filePath = Paths.get(filename);
         // Look for the file in the filepath, and create it if it does not exist
         if (!Files.exists(filePath)) {
+            LOGGER.info("==============\n" +
+                        "Settings file does not exist. Creating new file.\n" +
+                        "====================\n");
             try {
                 settingsFile.createNewFile();
                 initializeWorkingStorage();
@@ -331,6 +336,9 @@ public class GUISettings extends Dialog {
 
     // Reads the contents of the file and stores it in an array list
     private static void readFile (String filename) {
+        LOGGER.info("==============\n" +
+                    "Loading settings from file.\n" +
+                    "====================\n");
         String temp;
         int i = 0;
         try {
@@ -357,6 +365,9 @@ public class GUISettings extends Dialog {
     
     // Write the contents of the array list into the file
     private static void writeFile (File settingsFile) {
+        LOGGER.info("==============\n" +
+                    "Writing settings back into file.\n" +
+                    "====================\n");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
             // Write all contents of workingStorage to the file
