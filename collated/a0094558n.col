@@ -320,11 +320,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Label;
 
-//import com.melloware.jintellitype.HotkeyListener;
-//import com.melloware.jintellitype.IntellitypeListener;
-//import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.IntellitypeListener;
+import com.melloware.jintellitype.JIntellitype;
 
-public class GUI { //implements HotkeyListener, IntellitypeListener {
+public class GUI implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\"" +
@@ -842,7 +842,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-//        initJIntellitype();
+        initJIntellitype();
         initializeVariables();
         getSettings();
         applySettings();

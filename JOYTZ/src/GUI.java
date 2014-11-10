@@ -31,11 +31,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Label;
 
-//import com.melloware.jintellitype.HotkeyListener;
-//import com.melloware.jintellitype.IntellitypeListener;
-//import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.HotkeyListener;
+import com.melloware.jintellitype.IntellitypeListener;
+import com.melloware.jintellitype.JIntellitype;
 
-public class GUI { //implements HotkeyListener, IntellitypeListener {
+public class GUI implements HotkeyListener, IntellitypeListener {
     private static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     private static final String HELP_TEXT_COMMANDS = "List of Commands (\"<\" and \">\"" +
@@ -553,7 +553,7 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
      * 
      */
     private static void startupProgram() {
-//        initJIntellitype();
+        initJIntellitype();
         initializeVariables();
         getSettings();
         applySettings();
@@ -952,141 +952,141 @@ public class GUI { //implements HotkeyListener, IntellitypeListener {
         inputField.setLayoutData(gd_inputField);
     }
     
-//    //@author A0094558N-reused
-//    /*
-//     * (non-Javadoc)
-//     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
-//     */
-//    public void onHotKey(int aIdentifier) {
-//        if (aIdentifier == 1) {
-//           System.out.println("WINDOWS+A hotkey pressed");
-//           
-//           // Ensure that the following code runs in the 
-//           // same thread as the application itself
-//           Display.getDefault().syncExec(new Runnable() {
-//               public void run() {
-//                   if (shell.getMaximized() == true) { 
-//                       shell.forceActive();     // Bring application to front
-//                       shell.setMaximized(true);
-//                   } else if (shell.getMaximized() == false) { 
-//                       shell.forceActive();     // Bring application to front
-//                       shell.setMinimized(false);
-//                   }
-//               }
-//           });
-//        }
-//        if (aIdentifier == 2) {
-//            System.out.println("WINDOWS+Z hotkey pressed");
-//            
-//            // Ensure that the following code runs in the 
-//            // same thread as the application itself
-//            Display.getDefault().syncExec(new Runnable() {
-//                public void run() {
-//                    shell.setMinimized(true);
-//                }
-//            });
-//         }
-//     }
-//    
-//    /**
-//     * Initialize the JInitellitype library making sure the DLL is located.
-//     */
-//    public static void initJIntellitype() {
-//        mainFrame = new GUI();
-//        
-//        try {
-//           // initialize JIntellitype with the frame so all windows commands can
-//           // be attached to this window
-//           JIntellitype.getInstance().addHotKeyListener(mainFrame);
-//           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
-//           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
-//           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
-//           System.out.println("JIntellitype initialized");
-//        } catch (RuntimeException ex) {
-//           System.out.println("Either you are not on Windows, +
-//                              "or there is a problem with the JIntellitype library!");
-//        }
-//     }
-//    
-//    /*
-//     * (non-Javadoc)
-//     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
-//     */
-//    public void onIntellitype(int aCommand) {
-//
-//       switch (aCommand) {
-//       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
-//           System.out.println("BROWSER_BACKWARD message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
-//           System.out.println("BROWSER_FAVOURITES message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
-//           System.out.println("BROWSER_FORWARD message received " +
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_HOME:
-//           System.out.println("BROWSER_HOME message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
-//           System.out.println("BROWSER_REFRESH message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
-//           System.out.println("BROWSER_SEARCH message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_BROWSER_STOP:
-//           System.out.println("BROWSER_STOP message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
-//           System.out.println("LAUNCH_APP1 message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
-//           System.out.println("LAUNCH_APP2 message received " +
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
-//           System.out.println("LAUNCH_MAIL message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-//           System.out.println("MEDIA_NEXTTRACK message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-//           System.out.println("MEDIA_PLAY_PAUSE message received " +  
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
-//           System.out.println("MEDIA_PREVIOUSTRACK message received " +
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_MEDIA_STOP:
-//           System.out.println("MEDIA_STOP message received " +
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
-//           System.out.println("VOLUME_DOWN message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_UP:
-//           System.out.println("VOLUME_UP message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
-//           System.out.println("VOLUME_MUTE message received " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       default:
-//           System.out.println("Undefined INTELLITYPE message caught " + 
-//                              Integer.toString(aCommand));
-//          break;
-//       }
-//    }
+    //@author A0094558N-reused
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.HotkeyListener#onHotKey(int)
+     */
+    public void onHotKey(int aIdentifier) {
+        if (aIdentifier == 1) {
+           System.out.println("WINDOWS+A hotkey pressed");
+           
+           // Ensure that the following code runs in the 
+           // same thread as the application itself
+           Display.getDefault().syncExec(new Runnable() {
+               public void run() {
+                   if (shell.getMaximized() == true) { 
+                       shell.forceActive();     // Bring application to front
+                       shell.setMaximized(true);
+                   } else if (shell.getMaximized() == false) { 
+                       shell.forceActive();     // Bring application to front
+                       shell.setMinimized(false);
+                   }
+               }
+           });
+        }
+        if (aIdentifier == 2) {
+            System.out.println("WINDOWS+Z hotkey pressed");
+            
+            // Ensure that the following code runs in the 
+            // same thread as the application itself
+            Display.getDefault().syncExec(new Runnable() {
+                public void run() {
+                    shell.setMinimized(true);
+                }
+            });
+         }
+     }
+    
+    /**
+     * Initialize the JInitellitype library making sure the DLL is located.
+     */
+    public static void initJIntellitype() {
+        mainFrame = new GUI();
+        
+        try {
+           // initialize JIntellitype with the frame so all windows commands can
+           // be attached to this window
+           JIntellitype.getInstance().addHotKeyListener(mainFrame);
+           JIntellitype.getInstance().addIntellitypeListener(mainFrame);
+           JIntellitype.getInstance().registerHotKey(1, JIntellitype.MOD_ALT, (int)'A');    // WIN+A
+           JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_ALT, (int)'Z');    // WIN+Z
+           System.out.println("JIntellitype initialized");
+        } catch (RuntimeException ex) {
+           System.out.println("Either you are not on Windows," +
+                              "or there is a problem with the JIntellitype library!");
+        }
+     }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.melloware.jintellitype.IntellitypeListener#onIntellitype(int)
+     */
+    public void onIntellitype(int aCommand) {
+
+       switch (aCommand) {
+       case JIntellitype.APPCOMMAND_BROWSER_BACKWARD:
+           System.out.println("BROWSER_BACKWARD message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FAVOURITES:
+           System.out.println("BROWSER_FAVOURITES message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_FORWARD:
+           System.out.println("BROWSER_FORWARD message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_HOME:
+           System.out.println("BROWSER_HOME message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_REFRESH:
+           System.out.println("BROWSER_REFRESH message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_SEARCH:
+           System.out.println("BROWSER_SEARCH message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_BROWSER_STOP:
+           System.out.println("BROWSER_STOP message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP1:
+           System.out.println("LAUNCH_APP1 message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_APP2:
+           System.out.println("LAUNCH_APP2 message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_LAUNCH_MAIL:
+           System.out.println("LAUNCH_MAIL message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+           System.out.println("MEDIA_NEXTTRACK message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+           System.out.println("MEDIA_PLAY_PAUSE message received " +  
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+           System.out.println("MEDIA_PREVIOUSTRACK message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_MEDIA_STOP:
+           System.out.println("MEDIA_STOP message received " +
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_DOWN:
+           System.out.println("VOLUME_DOWN message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_UP:
+           System.out.println("VOLUME_UP message received " + 
+                              Integer.toString(aCommand));
+          break;
+       case JIntellitype.APPCOMMAND_VOLUME_MUTE:
+           System.out.println("VOLUME_MUTE message received " + 
+                              Integer.toString(aCommand));
+          break;
+       default:
+           System.out.println("Undefined INTELLITYPE message caught " + 
+                              Integer.toString(aCommand));
+          break;
+       }
+    }
 }
