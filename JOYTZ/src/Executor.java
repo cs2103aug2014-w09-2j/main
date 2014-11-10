@@ -362,24 +362,26 @@ public class Executor {
 					|| searchValueString.equals(StringFormat.END_DATE)) {
 				Date date = new Date(Long.parseLong(searchValueString));
 				searchValueString = date.getYear() + "";
-				searchValueString = searchValueString.concat(date.getMonth() + "");
-				searchValueString = searchValueString.concat(date.getDate() + "");
+				searchValueString = searchValueString.concat(date.getMonth()
+						+ "");
+				searchValueString = searchValueString.concat(date.getDate()
+						+ "");
 			} else if (searchIndicatorString.equals(StringFormat.START_TIME)
 					|| searchValueString.equals(StringFormat.END_TIME)) {
 				Date date = new Date(Long.parseLong(searchValueString));
 				searchValueString = date.getHours() + "";
-				searchValueString = searchValueString.concat(date.getMinutes() + "");
+				searchValueString = searchValueString.concat(date.getMinutes()
+						+ "");
 				System.out.println(searchValueString);
 			}
-			
-			Storage.search(searchIndicatorString, searchValueString);
+
+			fb.setResult(Storage.search(searchIndicatorString,
+					searchValueString));
 		}
 
-		fb.setResult(true);
-		if (fb.getTaskStringList().size() == 0){
+		if (Storage.displayTaskList.size() == 0) {
 			fb.setMessageShowToUser(MESSAGE_EMPTY_SEARCH_RESULT);
-		}else {
-			fb.setResult(true);
+		} else {
 			fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 		}
 
