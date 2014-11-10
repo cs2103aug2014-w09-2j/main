@@ -300,8 +300,8 @@ public class Storage {
 	}
 
 	/**
-	 * Clear tasks inside target TaskList.
-	 * DisplayTaskList will not change.
+	 * Clear tasks inside target TaskList. DisplayTaskList will not change.
+	 * 
 	 * @param targetList
 	 * @return
 	 */

@@ -362,22 +362,7 @@ public class Executor {
 		for (int i = 0; i < searchIndicator.size(); i++) {
 			String searchIndicatorString = searchIndicator.get(i);
 			String searchValueString = searchValue.get(i);
-
-			if (searchIndicatorString.equals(StringFormat.START_DATE)
-					|| searchValueString.equals(StringFormat.END_DATE)) {
-				Date date = new Date(Long.parseLong(searchValueString));
-				searchValueString = date.getYear() + "";
-				searchValueString = searchValueString.concat(date.getMonth()
-						+ "");
-				searchValueString = searchValueString.concat(date.getDate()
-						+ "");
-			} else if (searchIndicatorString.equals(StringFormat.START_TIME)
-					|| searchValueString.equals(StringFormat.END_TIME)) {
-				Date date = new Date(Long.parseLong(searchValueString));
-				searchValueString = date.getHours() + "";
-				searchValueString = searchValueString.concat(date.getMinutes()
-						+ "");
-			}
+			
 			fb.setResult(Storage.search(searchIndicatorString,
 					searchValueString));
 		}
