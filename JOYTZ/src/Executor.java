@@ -10,7 +10,8 @@ public class Executor {
 	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task %d is updated successfully.\n";
 
 	// these are for Sort Method
-	private static final String MESSAGE_SORT_SUCCESSFUL = "Categories are sorted successfully.\n";
+	private static final String MESSAGE_SORT_SUCCESSFUL_ATTRIBUTES = "Categories are sorted successfully.\n";
+	private static final String MESSAGE_SORT_SUCCESSFUL_AN_ATTRIBUTE = "A category is sorted successfully.\n";
 
 	// these are for Search Method
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Tasks are searched successfully.\n";
@@ -242,8 +243,6 @@ public class Executor {
 					(taskId + 1)));
 		}
 
-		fb.setResult(true);
-
 		return fb;
 	}
 
@@ -322,14 +321,20 @@ public class Executor {
 	private static Feedback performSortAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.SORT, false);
 		ArrayList<String> sortKey = command.getIndicator();
+		int size = sortKey.size();
+
 		Collections.reverse(sortKey);
 
-		// check what category user want to sort
-		for (int i = 0; i < sortKey.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			fb.setResult(Storage.sort(sortKey.get(i)));
 		}
-		fb.setResult(true);
-		fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL);
+
+		// check size for displaying messages
+		if (size == 1) {
+			fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL_AN_ATTRIBUTE);
+		} else if (size > 1) {
+			fb.setMessageShowToUser(MESSAGE_SORT_SUCCESSFUL_ATTRIBUTES);
+		}
 
 		return fb;
 	}
@@ -362,24 +367,24 @@ public class Executor {
 					|| searchValueString.equals(StringFormat.END_DATE)) {
 				Date date = new Date(Long.parseLong(searchValueString));
 				searchValueString = date.getYear() + "";
-				searchValueString = searchValueString.concat(date.getMonth() + "");
-				searchValueString = searchValueString.concat(date.getDate() + "");
+				searchValueString = searchValueString.concat(date.getMonth()
+						+ "");
+				searchValueString = searchValueString.concat(date.getDate()
+						+ "");
 			} else if (searchIndicatorString.equals(StringFormat.START_TIME)
 					|| searchValueString.equals(StringFormat.END_TIME)) {
 				Date date = new Date(Long.parseLong(searchValueString));
 				searchValueString = date.getHours() + "";
-				searchValueString = searchValueString.concat(date.getMinutes() + "");
-				System.out.println(searchValueString);
+				searchValueString = searchValueString.concat(date.getMinutes()
+						+ "");
 			}
-			
-			Storage.search(searchIndicatorString, searchValueString);
+			fb.setResult(Storage.search(searchIndicatorString,
+					searchValueString));
 		}
 
-		fb.setResult(true);
-		if (fb.getTaskStringList().size() == 0){
+		if (Storage.displayTaskList.size() == 0) {
 			fb.setMessageShowToUser(MESSAGE_EMPTY_SEARCH_RESULT);
-		}else {
-			fb.setResult(true);
+		} else {
 			fb.setMessageShowToUser(MESSAGE_SEARCH_SUCCESSFUL);
 		}
 

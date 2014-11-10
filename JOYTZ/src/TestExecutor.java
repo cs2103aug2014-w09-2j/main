@@ -88,8 +88,6 @@ public class TestExecutor {
 		fb = Executor.proceedAnalyzedCommand(obj);
 
 		assertTrue("Cannot delete 2 tasks", fb.getResult());
-		assertEquals("There are 2 tasks in the table", 2, fb
-				.getTaskStringList().size());
 
 		Executor.proceedAnalyzedCommand(clear);
 	}
@@ -107,10 +105,15 @@ public class TestExecutor {
 		fb = Executor.proceedAnalyzedCommand(obj);
 
 		// check task Id
-		fb.setResult(false);
+		obj = new ExecutableCommand();
+		fb = new Feedback(false);
+
 		obj.setAction("update");
-		obj.setTaskId(2);
+		obj.setTaskId(3);
+		obj.setIndicator("name");
+		obj.setKey("outing");
 		fb = Executor.proceedAnalyzedCommand(obj);
+		
 		assertFalse("Valid index", fb.getResult());
 
 		// valid input
@@ -192,10 +195,8 @@ public class TestExecutor {
 
 		obj.setAction(StringFormat.UNDO);
 		fb = Executor.proceedAnalyzedCommand(obj);
-		
+
 		assertTrue("Cannot undo", fb.getResult());
-		assertEquals("There are some tasks in the table", 2, fb
-				.getTaskStringList().size());
 
 		// check redo function
 		fb.setResult(false);
