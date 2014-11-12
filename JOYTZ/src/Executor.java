@@ -516,7 +516,9 @@ public class Executor {
 	private static Feedback performDoneAction(ExecutableCommand command) {
 		Feedback fb = new Feedback(StringFormat.DONE, false);
 		ArrayList<Integer> targetIndexList = command.getTaskId();
-
+		
+		// sorr the index
+		sortFromBigToSmall(targetIndexList);
 		for (int i = 0; i < targetIndexList.size(); i++) {
 			int index = targetIndexList.get(i);
 			index--; // index in storage start from zero.
